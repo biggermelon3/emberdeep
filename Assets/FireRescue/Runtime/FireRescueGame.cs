@@ -196,13 +196,13 @@ namespace FireRescue
             if(!Player.IsXR)
             {
                 Player.ViewCamera.transform.position=new Vector3(0,1.65f,0);
-                Player.ViewCamera.transform.rotation=Quaternion.Euler(55,0,0);
+                Player.ViewCamera.transform.rotation=Quaternion.Euler(25,0,0);
                 Player.ViewCamera.fieldOfView=70;
                 Player.ViewCamera.backgroundColor=new Color(.065f,.12f,.145f);
             }
             var view=Player.ViewCamera.transform;
             FireMiniature.Place(Arena,view.position,view.forward,Player.FloorHeight);
-            hud.SetPositionAndRotation(Arena.TransformPoint(new Vector3(0,-.1f,-1.8f)),Arena.rotation*Quaternion.Euler(55,0,0));
+            PlaceHud();
             xrPlaced=Player.IsXR && hands.HeadReady;
             PositionRack();UpdateTargets();
             PositionWaterStations();
@@ -210,13 +210,13 @@ namespace FireRescue
 
         void Update()
         {
-            if(!Player || !Arena || trees.Count==0 || acquiringPose)return;
+            if(!Player || !Arena || trees.Count==0 || acquiringPose){Run.ResetRecovery();return;}
             bool ready=focused && !paused && hands.HeadReady && !navigation.IsTransitioning && !returningToCamp;
             if(!ready){ResetInput(true,!returningToCamp && !navigation.IsTransitioning);return;} // Input pauses; last held pose stays visual only.
             if(hydrantStation)hydrantStation.TickOutlet(Time.unscaledDeltaTime);
             if(Player.IsXR && !xrPlaced){Recenter();return;}
-            if(ProcessInterfaceInput()){Refresh();return;}
-            if(ShopOpen){CancelWeaponInput();Refresh();return;}
+            if(ProcessInterfaceInput()){Run.ResetRecovery();Refresh();return;}
+            if(ShopOpen){Run.ResetRecovery();CancelWeaponInput();Refresh();return;}
             if(Player.IsXR && !Run.Supply.Locked && !interfaceHovered)
             {
                 for(int hand=0;hand<2;hand++)
@@ -281,6 +281,7 @@ namespace FireRescue
             if(valid)heldView.transform.SetPositionAndRotation(nozzlePosition-rotation*heldView.Grip.localPosition,rotation);
             if(ProcessRefillInput(palm,valid,Time.unscaledDeltaTime))
             {
+                Run.ResetRecovery();
                 CancelWeaponInput();
                 float supplyDt=Run.Supply.Assisted?0:Mathf.Min(Time.unscaledDeltaTime,.1f);
                 Run.Tick(introStarted?supplyDt:0,false);
@@ -303,6 +304,7 @@ namespace FireRescue
             }
             float launchCharge=Run.Charge01;
             Spraying=Run.Tick(introStarted?dt:0,trigger && valid && grip.Held && !ShopOpen,pump.Active);
+            ProcessWaterRecovery(dt,RecoveryTrackingAvailable(valid),RecoveryTriggerHeld(trigger,pinch));
             if(Spraying && Run.Equipment.Delivery==FireDelivery.Charge)
             {Effects.Launch(origin,velocity.normalized,launchCharge);Feedback.Launch(launchCharge);}
             jet.Step(dt,origin,velocity,Run.SprayAmount,Run.Range*FireMiniature.Scale,Arena,waterTargets,OnWaterImpact,Run.ShotRadius,Run.ShotWetness,Run.ShotSpread,Run.Equipment.Delivery);
@@ -344,6 +346,9 @@ namespace FireRescue
         }
         void ResetInput(bool clearProjectiles=true,bool retainHeldPresentation=false)
         {
+            Run.ResetRecovery();
+            if(recoveryLabel)recoveryLabel.gameObject.SetActive(false);
+            if(recoveryDroplet)recoveryDroplet.gameObject.SetActive(false);
             StopRefill();CancelWeaponInput();if(handMenu)handMenu.ResetInput();interfaceHovered=false;
             if(hydrantStation)hydrantStation.ShowTutorial(Run,heldView,grip.Held,null,false);
             if(creekStation)creekStation.ShowTutorial(Run,heldView,grip.Held,null,false);
@@ -391,11 +396,12 @@ namespace FireRescue
             if(!Player.IsXR && !Run.Supply.Locked)help.text+=" | H: dock water station";
             RefreshWaterStations();
             RefreshShop();
+            RefreshRecoveryFeedback();
             if(rackControls)rackControls.rotation=Player.ViewCamera.transform.rotation;
             actionButton.Interactable=Run.Supply.Locked || Run.Phase==FirePhase.Cleared;
             actionText.text=Run.Supply.Locked?(Run.Supply.Assisted?"REFILL ASSIST ON":"REFILL ASSIST"):Run.Phase==FirePhase.Cleared?"NEXT INCIDENT >":"CONTAIN THE FIRE";
             upgradeButton.Interactable=Run.InSupply;
-            upgradeText.text=Run.InSupply?"GEAR SHOP >":"SHOP AFTER ROUND";
+            upgradeText.text=Run.InSupply?"GEAR SHOP >":Run.Phase==FirePhase.Won?"SHOP CLOSED":"SHOP AFTER ROUND";
             handText.text=grip.Held?"RETURN TOOL":"TAKE OWNED TOOL";
             reward.gameObject.SetActive(now<rewardUntil);
             if(now<rewardUntil){reward.transform.localPosition=rewardStart+Vector3.up*(2-(rewardUntil-now))*.16f;reward.transform.rotation=Player.ViewCamera.transform.rotation;}
@@ -433,54 +439,18 @@ namespace FireRescue
         public void OpenShop()
         {
             if(!Run.InSupply)return;
-            ReturnEquipment();ShopOpen=true;dashboard.gameObject.SetActive(false);shop.gameObject.SetActive(true);RefreshShop();
+            ReturnEquipment();ShopOpen=true;ShopPage=EmberdeepShopPage.Equipment;ShopShowingCurrentStation=false;dashboard.gameObject.SetActive(false);shop.gameObject.SetActive(true);PlaceHud();RefreshShop();
         }
         public void CloseShop()
         {
             ShopOpen=false;shop.gameObject.SetActive(false);dashboard.gameObject.SetActive(true);
-            if(!Run.Owns(SelectedEquipment)){SelectedEquipment=Run.Equipped;RefreshEquipment();}
-            ResetInput();Refresh();
+            if(!Run.Owns(SelectedEquipment))SelectedEquipment=Run.Equipped;
+            RefreshEquipment();ResetInput();PlaceHud();Refresh();
         }
-        public void SelectEquipment(int index){SelectedEquipment=(FireEquipmentId)((index%4+4)%4);RefreshEquipment();RefreshShop();}
+        public void SelectEquipment(int index){SelectedEquipment=(FireEquipmentId)((index%4+4)%4);ShopPage=EmberdeepShopPage.Equipment;ShopShowingCurrentStation=false;handMenu?.ResetInput();if(!ShopOpen)RefreshEquipment();RefreshShop();}
         public bool BuySelectedEquipment()
         {
             bool bought=Run.BuyEquipment(SelectedEquipment);RefreshShop();return bought;
-        }
-        void BuildShop()
-        {
-            shop=new GameObject("Equipment shop").transform;shop.SetParent(hud,false);
-            Shape("Shop panel",PrimitiveType.Cube,shop,new Vector3(0,-.20f,.02f),new Vector3(2.85f,1.43f,.035f),PanelMaterial);
-            Text(shop,"F I R E H O U S E   /   G E A R",new Vector3(0,.39f,-.02f),.05f,new Color(1,.7f,.25f));
-            shopName=Text(shop,"",new Vector3(0,.23f,-.03f),.055f,Color.white);
-            shopDescription=Text(shop,"",new Vector3(0,.075f,-.03f),.03f,new Color(.7f,.9f,1));
-            shopStats=Text(shop,"",new Vector3(0,-.075f,-.03f),.034f,Color.white);
-            shopState=Text(shop,"",new Vector3(0,-.2f,-.03f),.035f,new Color(1,.8f,.4f));
-            Button("Previous gear",new Vector3(-.88f,-.4f,0),()=>SelectEquipment((int)SelectedEquipment-1),out var previous,shop);previous.text="< PREVIOUS";
-            shopBuy=Button("Buy gear",new Vector3(0,-.4f,0),()=>BuySelectedEquipment(),out shopBuyText,shop);
-            Button("Next gear",new Vector3(.88f,-.4f,0),()=>SelectEquipment((int)SelectedEquipment+1),out var next,shop);next.text="NEXT >";
-            shopUpgrade=Button("Tune gear",new Vector3(-.44f,-.6f,0),()=>{if(Run.Equip(SelectedEquipment))BuyUpgrade();},out shopUpgradeText,shop);
-            Button("Leave shop",new Vector3(.44f,-.6f,0),CloseShop,out var back,shop);back.text="BACK / PICK UP";
-            stationUpgrade=Button("Upgrade water station",new Vector3(0,-.80f,0),()=>BuyStationUpgrade(),out stationUpgradeText,shop);
-            stationUpgrade.transform.localScale=new Vector3(2.12f,.14f,.055f);
-            shop.gameObject.SetActive(false);
-        }
-        void RefreshShop()
-        {
-            if(!shopName)return;var item=FireEquipment.Get(SelectedEquipment);bool owned=Run.Owns(SelectedEquipment);
-            int ownedCount=0;for(int i=0;i<4;i++)if(Run.Owns((FireEquipmentId)i))ownedCount++;
-            rackControls.gameObject.SetActive(!ShopOpen && ownedCount>1);
-            previousOwned.Interactable=nextOwned.Interactable=ownedCount>1;
-            shopName.text=item.Name;shopDescription.text=item.Description+"\n"+item.Controls;
-            shopStats.text=$"TANK {item.Capacity+Run.UpgradeFor(SelectedEquipment)*25:0}  |  REACH {(item.Range+Run.UpgradeFor(SelectedEquipment)*2.5f)*.08f:0.0}m  |  TUNE +{Run.UpgradeFor(SelectedEquipment)}";
-            shopState.text=$"CASH $ {Run.Coins}  |  "+(owned?"OWNED - pick up from the rack":Run.ClearedIncidents<item.Unlock?$"UNLOCK: clear incident {item.Unlock}":$"PRICE $ {item.Price}");
-            shopBuy.Interactable=Run.CanBuy(SelectedEquipment);shopBuyText.text=owned?"OWNED":$"BUY $ {item.Price}";
-            int level=Run.UpgradeFor(SelectedEquipment),cost=Run.UpgradeCostFor(SelectedEquipment);
-            shopUpgrade.Interactable=owned && Run.InSupply && cost>0 && Run.Coins>=cost;
-            shopUpgradeText.text=cost==0?"MAX TUNING":$"TUNE +{level+1}  $ {cost}";
-            stationUpgrade.Interactable=Run.CanUpgradeStation;
-            stationUpgradeText.text=Run.StationTier==WaterStationTier.PushButton?"WATER STATION / AUTOMATIC":
-                $"WATER: {(Run.StationTier==WaterStationTier.LeverWell?"ROTARY HYDRANT":"PUSH BUTTON")}  $ {Run.StationUpgradeCost}";
-            if(rackLabel){rackLabel.gameObject.SetActive(!grip.Held && !ShopOpen);rackLabel.text=owned?"PINCH GRIP TO TAKE":"SHOP PREVIEW";rackLabel.transform.localPosition=new Vector3(0,-.27f,-.34f);if(Player)rackLabel.transform.rotation=Player.ViewCamera.transform.rotation;}
         }
         void OnExtinguished(int i)
         {
@@ -524,7 +494,7 @@ namespace FireRescue
         void OnApplicationFocus(bool value){focused=value;if(!value)ResetInput(true,true);}
         void OnApplicationPause(bool value){paused=value;if(value)ResetInput(true,true);}
         void OnDisable(){ResetInput();}
-        void OnDestroy(){Run.Extinguished-=OnExtinguished;Run.PropActivated-=OnPropActivated;Run.CabinLost-=OnCabinLost;Run.Supply.DockConfirmed-=OnSupplyDock;Run.Supply.PumpStroke-=OnSupplyStroke;Run.Supply.Disconnected-=OnSupplyDisconnect;RenderSettings.ambientLight=savedAmbient;RenderSettings.ambientMode=savedAmbientMode;RenderSettings.fog=savedFog;if(changedPipeline && QualitySettings.renderPipeline==art.Pipeline)QualitySettings.renderPipeline=previousPipeline;}
+        void OnDestroy(){if(recoveryIconMesh)Destroy(recoveryIconMesh);Run.Extinguished-=OnExtinguished;Run.PropActivated-=OnPropActivated;Run.CabinLost-=OnCabinLost;Run.Supply.DockConfirmed-=OnSupplyDock;Run.Supply.PumpStroke-=OnSupplyStroke;Run.Supply.Disconnected-=OnSupplyDisconnect;RenderSettings.ambientLight=savedAmbient;RenderSettings.ambientMode=savedAmbientMode;RenderSettings.fog=savedFog;if(changedPipeline && QualitySettings.renderPipeline==art.Pipeline)QualitySettings.renderPipeline=previousPipeline;}
     }
 }
 

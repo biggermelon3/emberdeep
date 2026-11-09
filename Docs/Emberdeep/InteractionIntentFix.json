@@ -1,0 +1,608 @@
+{
+  "revision": "0.2.10",
+  "date": "2026-11-09",
+  "candidate": {
+    "version": "0.2.10",
+    "android_version_code": 13
+  },
+  "status": "IMPLEMENTED_CANDIDATE 0.2.10 / code 13; 184 EditMode and 115 PlayMode passed; both APKs built/audited; Quest installed; launch not attempted; device testing deferred by user.",
+  "user_feedback": "The user partially approved Quest 0.2.9 panel height but requested slightly higher placement. They then clarified that when trying to click a menu, pump or gameplay interactions may trigger, and they are unsure of the exact cause. The primary report is menu intent losing priority to physical/weapon actions, not confirmed accidental UI activation while playing. The second-incident right creek was only a suspected factor.",
+  "historical_029_feedback": {
+    "device": "Quest 3",
+    "version": "0.2.9",
+    "accepted_scope": "Partial panel position improvement only; user still requested more height",
+    "remaining_issue": "Menu intent may trigger pump/gameplay instead; user unsure of cause. Right-side creek only a hypothesis.",
+    "not_established": [
+      "all interactions",
+      "purchases",
+      "full placement comfort",
+      "PICO compatibility",
+      "performance"
+    ]
+  },
+  "authority": "Current height, creek layout, deliberate docking and menu-intent priority are implemented candidates. Valid eligible UI intent precedes new physical/weapon acquisition; an existing refill operator stays exclusive. ReleaseAcceptance passed; physical device evidence is deferred/pending. No claim that every accidental interaction is fixed.",
+  "requirements": [
+    {
+      "id": "II-01 / GD-PLACE-01",
+      "rule": "Raise the HUD/Shop pivot 8 cm by changing EmberdeepHudPose.EyeDrop from 0.12 m to 0.04 m. Forward distance remains 0.9 m. Retain yaw-only world anchoring, valid eye-height/heading checks, event-based placement and no XR camera movement.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Verify eye-relative drop 0.04 m at seated/standing heights, unchanged forward distance and event-only world anchoring. Inspect whether every row remains readable and slightly higher on Quest/PICO; no comfort acceptance is implied by pose math.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(0)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(1)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(2)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(3)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(4)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(5)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(6)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(85.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(89.9f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.1f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(95.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(-90.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.1f,0.0f,90.0f,70.0f,20.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.65f,0.0f,-45.0f,-70.0f,-25.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(3.1f,2.0f,145.0f,0.0f,30.0f)",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "id": "II-02 / GD-WATER-06 / GD-HAND-03",
+      "rule": "The creek remains available only when Run.Stage > 0, as designed. Its final Arena-local position is (-side * 4, 0.2, 3.5), mirrored opposite the starter station. At the current 0.08 Arena scale this is 0.32 m laterally from center and approximately 0.60 m forward of the player: 5.6 cm farther sideways and 24.8 cm farther forward than the previous released location. Keep the equipment rack and all four tools clear. Label it CREEK / OPTIONAL REFILL. It is an optional second supply source, not a newly mandatory pump.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillTutorial.cs"
+      ],
+      "acceptance": "Verify no creek in the first incident and creek from the second; assert final mirrored side/forward position and safe spacing from the rack and each of four equipment views on both handed layouts. Check the optional label, deliberate docking and seated/standing reach without obstruction or a dry-tank progression lock.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepRefillApproachPlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.SecondSectorOptionalCreekStaysOutsideBothNormalToolSides"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "id": "II-03 / GD-WATER-02 / GD-HAND-01",
+      "rule": "TryGuideHeldTool accepts only finite pinch distance >= 0.035 m (default argument 0.04 m) and an active station whose calculated docking Grip target is within 0.16 m of the sampled grip position. This replaces broad fixture proximity for guidance only. Actual docking still requires the real port within 0.08 m, alignment within 35 degrees and 0.25 s dwell. During unlocked Process, a tool-hand pinch below 0.035 m interrupts alignment with Release pinch before docking and cannot dock.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Closed/firing pinch near either source must not rotate-guide or accumulate a dock; opening deliberately near the docking grip may guide, then actual port/dwell must pass. Test boundary distances, nonfinite pinch, inactive creek, both hands, interrupted dwell and zero resource grants from guidance.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepRefillApproachPlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.FingertipAtUndockedValveCannotGrantAnyWater",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftCannonChargeCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftExtinguisherFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftFanFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftHandApproachesGuidedDockThenTurnsWithFingertip",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftPistolFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.MalformedFingertipInterruptsAcceptedFlowWithoutExtraTransfer",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightCannonChargeCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightExtinguisherFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightFanFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightHandApproachesGuidedDockThenTurnsWithFingertip",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightPistolFiringPinchCannotBeCapturedByCreek"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "id": "II-04 / GD-HAND-01 / GD-HAND-02",
+      "rule": "Fireground HUD/Shop targets must lie within 25 degrees of ViewCamera.forward through EmberdeepHandRayMenu.Eligible, in addition to existing viewport/button eligibility. The shared component default remains 180 degrees for camp. This is a head-direction attention gate, not eye tracking or a new gaze-click input system.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Aim a hand ray at an otherwise visible fireground button while looking outside/inside the 25-degree cone. Only the inside target becomes eligible. Check all rows, near-boundary behavior and that camp keeps its previous 180-degree policy.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LookingAwayDropsToolHandUiOwnershipAndClosedReturnCannotClick",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.VisibleHudOutsideHeadIntentConeCannotHoverOrCancelChargeFromEitherHand"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "id": "II-05 / GD-HAND-02 / GD-PAUSE-01",
+      "rule": "A valid hand ray hitting an eligible fireground button inside the 25-degree head-direction cone reserves UI immediately, before station/rack proximity, dwell or first closed-pinch acquisition can trigger physical/weapon actions. The actual current refill operator remains exclusive. The UI hand stays physically reserved until release; existing pinch filtering still requires an observed open hand and fresh edge before clicking. With no actual refill operator, UI reservation blocks new guide/dock/pump and cancels pending stroke state. With another actual refill operator, hover reservation preserves that operator and its complete stroke while suppressing only the UI hand physical pinch; tracking remains real. Tracking loss/invalid data still interrupt and return equipment safely. A confirmed UI action retains normal deliberate modal/return cleanup. Camp acquisition, phase restrictions and resource conservation remain unchanged.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs"
+      ],
+      "acceptance": "Point at eligible menu buttons while the same hand is near a station, rack or idle lever, including before dwell and first entry with pinch already closed. Gameplay must be suppressed without a UI click until deliberate release/rearm. Verify an already operating refill hand remains exclusive, the free hand works, and phase-disabled/out-of-cone targets do not claim UI. Repeat held-tool and empty-hand cases; record remaining failures.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED in ReleaseAcceptance",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "new_cases": [
+          "LeftHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+          "RightHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+          "NearRackAndSourceUiIntentCanSettleThenClickWithoutPhysicalAcquisition",
+          "DockedUiIntentCancelsPendingHalfStrokeBeforeDwellAndCannotPump",
+          "UiDockOwnerKeepsTrackingWhileOtherHandOwnsLeverAndCompletesStroke",
+          "ReservedUiCannotHideDockOwnerTrackingLossOrContinueValveTransfer"
+        ],
+        "updated_existing_cases": [
+          "LeftChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+          "RightChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick"
+        ],
+        "count_note": "Six final priority cases and two revised charging-hand cases pass within the 115 total; all are included in the 19 net new PlayMode cases relative to 0.2.9."
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    }
+  ],
+  "test_evidence": {
+    "EditMode": {
+      "status": "PASSED",
+      "total": 184,
+      "passed": 184,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json"
+    },
+    "PlayMode": {
+      "status": "PASSED",
+      "total": 115,
+      "passed": 115,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.10",
+      "signatureVerified": true,
+      "sha256": "f5c7fb4126b94b495643435fd2e70fdd07e5539859e3e9ad4784a5fc77afe3e0",
+      "target": "Quest",
+      "bytes": 105521287,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 13,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 13,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.10.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.10.manifest.json",
+      "audit": "Logs/EmberdeepInteractionGuard/Quest-Audit.json",
+      "errors": 0,
+      "warnings": 8,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepInteractionGuard/Quest-SettingsRestoration.json"
+      }
+    },
+    "Pico": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.10",
+      "signatureVerified": true,
+      "sha256": "4ae1616be095891013ed76490820e602afc5b33a24acb7dc32c37e3becf6ed5b",
+      "target": "Pico",
+      "bytes": 87214299,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 13,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 13,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.10-Pico.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.10-Pico.manifest.json",
+      "audit": "Logs/EmberdeepInteractionGuard/Pico-Audit.json",
+      "errors": 0,
+      "warnings": 12,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepInteractionGuard/Pico-SettingsRestoration.json"
+      }
+    }
+  },
+  "devices": {
+    "Quest3": {
+      "version": "0.2.10",
+      "versionCode": 13,
+      "device": "Quest 3",
+      "package": "com.metahackathon2026.emberdeep",
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.10.apk",
+      "sha256": "f5c7fb4126b94b495643435fd2e70fdd07e5539859e3e9ad4784a5fc77afe3e0",
+      "status": "INSTALLED_AND_VERSION_VERIFIED",
+      "installMethod": "metavr_app install replace=true; app info verified 0.2.10 / 13",
+      "checkedUtc": "2026-11-09T18:49:43.4854928Z",
+      "power": "Asleep",
+      "processRunning": false,
+      "launch": "NOT_ATTEMPTED while headset asleep",
+      "headsetInteractionAcceptance": "PENDING: user will test later this round",
+      "userFeedback": "User deferred 0.2.10 testing: 这轮稍后再测. No new headset interaction acceptance.",
+      "evidence": "Logs/EmberdeepInteractionGuard/Quest-Install.json",
+      "scope": "Installation/version verified only; launch not attempted and physical testing deferred by user."
+    },
+    "PICO4": "PENDING physical usability and performance baseline"
+  },
+  "release_evidence": "Logs/EmberdeepInteractionGuard/ReleaseEvidence.json",
+  "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.10-Device-Checks.txt",
+  "documents": {
+    "generation": "Three final 0.2.10 Word drafts generated from authoritative source; no layout approval",
+    "structural_review": "PASS: all three final Word drafts match exact ordered source content. Counts/hashes: Logs/EmberdeepInteractionGuard/Docs/qa.json.",
+    "visual_review": "NOT_ASSESSED; known missing soffice.exe limitation remains; no page-layout approval"
+  },
+  "pages": [
+    {
+      "title": "0 2 10 Intentional Docking and UI Attention",
+      "intro": "CURRENT 0.2.10 implements higher HUD, separated optional creek and explicit menu-intent priority after clarified feedback. Current ReleaseAcceptance passed 184 EditMode and 115 PlayMode, zero failed, skipped or inconclusive. The 19 additional PlayMode cases are included in 115; the 17 HUD EditMode cases already existed. Both Quest and PICO APKs passed version 0.2.10/code 13, ARM64, signature/icon, camp/fireground scene-whitelist and 28-setting restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings; they are not warning-free builds. Quest 3 replacement installation and app info verified 0.2.10/code 13. The headset was Asleep, no app process was observed, and launch was not attempted. The user explicitly deferred testing until later this round; current placement/menu interaction acceptance remains pending. Do not infer acceptance from old feedback or ask again this round. No PICO 4 physical usability or performance acceptance.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "The user partially approved Quest 0.2.9 panel height but requested slightly higher placement. They then clarified that when trying to click a menu, pump or gameplay interactions may trigger, and they are unsure of the exact cause. The primary report is menu intent losing priority to physical/weapon actions, not confirmed accidental UI activation while playing. The second-incident right creek was only a suspected factor."
+        },
+        {
+          "kind": "p",
+          "text": "Raise the HUD/Shop pivot 8 cm by changing EmberdeepHudPose.EyeDrop from 0.12 m to 0.04 m. Forward distance remains 0.9 m. Retain yaw-only world anchoring, valid eye-height/heading checks, event-based placement and no XR camera movement."
+        },
+        {
+          "kind": "p",
+          "text": "The creek remains available only when Run.Stage > 0, as designed. Its final Arena-local position is (-side * 4, 0.2, 3.5), mirrored opposite the starter station. At the current 0.08 Arena scale this is 0.32 m laterally from center and approximately 0.60 m forward of the player: 5.6 cm farther sideways and 24.8 cm farther forward than the previous released location. Keep the equipment rack and all four tools clear. Label it CREEK / OPTIONAL REFILL. It is an optional second supply source, not a newly mandatory pump."
+        },
+        {
+          "kind": "p",
+          "text": "TryGuideHeldTool accepts only finite pinch distance >= 0.035 m (default argument 0.04 m) and an active station whose calculated docking Grip target is within 0.16 m of the sampled grip position. This replaces broad fixture proximity for guidance only. Actual docking still requires the real port within 0.08 m, alignment within 35 degrees and 0.25 s dwell. During unlocked Process, a tool-hand pinch below 0.035 m interrupts alignment with Release pinch before docking and cannot dock."
+        }
+      ]
+    },
+    {
+      "title": "0 2 10 Interaction Guard Verification",
+      "intro": "Preserve deliberate refill and Shop access while testing accidental-action paths separately.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Fireground HUD/Shop targets must lie within 25 degrees of ViewCamera.forward through EmberdeepHandRayMenu.Eligible, in addition to existing viewport/button eligibility. The shared component default remains 180 degrees for camp. This is a head-direction attention gate, not eye tracking or a new gaze-click input system."
+        },
+        {
+          "kind": "p",
+          "text": "A valid hand ray hitting an eligible fireground button inside the 25-degree head-direction cone reserves UI immediately, before station/rack proximity, dwell or first closed-pinch acquisition can trigger physical/weapon actions. The actual current refill operator remains exclusive. The UI hand stays physically reserved until release; existing pinch filtering still requires an observed open hand and fresh edge before clicking. With no actual refill operator, UI reservation blocks new guide/dock/pump and cancels pending stroke state. With another actual refill operator, hover reservation preserves that operator and its complete stroke while suppressing only the UI hand physical pinch; tracking remains real. Tracking loss/invalid data still interrupt and return equipment safely. A confirmed UI action retains normal deliberate modal/return cleanup. Camp acquisition, phase restrictions and resource conservation remain unchanged."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Requirement",
+            "Acceptance focus"
+          ],
+          "rows": [
+            [
+              "II-01 / GD-PLACE-01",
+              "Verify eye-relative drop 0.04 m at seated/standing heights, unchanged forward distance and event-only world anchoring. Inspect whether every row remains readable and slightly higher on Quest/PICO; no comfort acceptance is implied by pose math."
+            ],
+            [
+              "II-02 / GD-WATER-06 / GD-HAND-03",
+              "Verify no creek in the first incident and creek from the second; assert final mirrored side/forward position and safe spacing from the rack and each of four equipment views on both handed layouts. Check the optional label, deliberate docking and seated/standing reach without obstruction or a dry-tank progression lock."
+            ],
+            [
+              "II-03 / GD-WATER-02 / GD-HAND-01",
+              "Closed/firing pinch near either source must not rotate-guide or accumulate a dock; opening deliberately near the docking grip may guide, then actual port/dwell must pass. Test boundary distances, nonfinite pinch, inactive creek, both hands, interrupted dwell and zero resource grants from guidance."
+            ],
+            [
+              "II-04 / GD-HAND-01 / GD-HAND-02",
+              "Aim a hand ray at an otherwise visible fireground button while looking outside/inside the 25-degree cone. Only the inside target becomes eligible. Check all rows, near-boundary behavior and that camp keeps its previous 180-degree policy."
+            ],
+            [
+              "II-05 / GD-HAND-02 / GD-PAUSE-01",
+              "Point at eligible menu buttons while the same hand is near a station, rack or idle lever, including before dwell and first entry with pinch already closed. Gameplay must be suppressed without a UI click until deliberate release/rearm. Verify an already operating refill hand remains exclusive, the free hand works, and phase-disabled/out-of-cone targets do not claim UI. Repeat held-tool and empty-hand cases; record remaining failures."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Current ReleaseAcceptance passed 184 EditMode and 115 PlayMode, zero failed, skipped or inconclusive. The 19 additional PlayMode cases are included in 115; the 17 HUD EditMode cases already existed. Both Quest and PICO APKs passed version 0.2.10/code 13, ARM64, signature/icon, camp/fireground scene-whitelist and 28-setting restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings; they are not warning-free builds. Quest 3 replacement installation and app info verified 0.2.10/code 13. The headset was Asleep, no app process was observed, and launch was not attempted. The user explicitly deferred testing until later this round; current placement/menu interaction acceptance remains pending. Do not infer acceptance from old feedback or ask again this round. No PICO 4 physical usability or performance acceptance. Evidence: Logs/EmberdeepInteractionGuard/ReleaseAcceptance, Quest-Audit.json, Quest-Install.json and Pico-Audit.json / ReleaseEvidence.json."
+        },
+        {
+          "kind": "p",
+          "text": "Historical 0.2.9 passed 184 EditMode and 96 PlayMode tests and both APK audits. Its later partial placement feedback does not validate 0.2.10. The right pump remains the designed optional creek source; its role in accidental interactions is a user hypothesis. This candidate does not claim zero accidental actions. Real handedness, reach, comfort and performance still need device checks. M2/M3 and durable expedition saves remain proposed."
+        },
+        {
+          "kind": "p",
+          "text": "Two intermediate suites passed 184 EditMode and 109 PlayMode tests before the final UI-priority implementation. They remain diagnostic history; the subsequent full ReleaseAcceptance suite is the current passing evidence."
+        },
+        {
+          "kind": "p",
+          "text": "ProcessHandInterfaceSamples takes separate physical-hand and ray samples and shares the production sample-aware AllowHandInterface policy. The game ReadIntent path accepts a valid raw pointer on first closed pinch for reservation only; existing open/rearm and fresh-edge confirmation remain. Camp keeps its previous Read path. Six final priority cases and two revised charging-hand cases pass in EmberdeepHandRayGamePlayTests.cs within the current 115 PlayMode total. Synthetic samples do not establish SDK/IHand delivery or headset usability."
+        },
+        {
+          "kind": "p",
+          "text": "The preceding FinalAcceptance run passed 184 EditMode and 114/115 PlayMode. ConfirmQuitRequiresModalAndIsAnEditorNoOpAfterRequest failed in SetUp waiting up to 10 seconds for stable menu placement, before Quit behavior. Root cause remains unconfirmed. WaitPlaced diagnostics were expanded; the 10-second threshold and runtime were unchanged. The subsequent full ReleaseAcceptance rerun passed 184/115; the earlier failure and stack trace remain in test_history."
+        },
+        {
+          "kind": "p",
+          "text": "Current final Editor captures: Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-Dashboard.png, Editor-Synthetic-Seated-Shop.png, Editor-Synthetic-Standing-Dashboard.png, Editor-Synthetic-Standing-Shop.png and Editor-Synthetic-Seated-StageTwo-Overview.png. Horizontal synthetic gaze at 1.1 m and 1.7 m eye height shows complete HUD/Shop; a synthetic physical hand at Hydrant.Lever points its ray to Shop through shared ProcessHandInterfaceSamples policy and can hover/open. Frames 4443, 6784 and 9613 show player-loop advancement. The separate overview uses a 25-degree downward view and injected XR tutorial availability; desktop status retains keyboard prompts. Review covers HUD/Shop/source placement only; grayboxes and transient synthetic-clear reward feedback remain visible. This is not final art, real SDK tracking, headset usability or performance evidence."
+        },
+        {
+          "kind": "p",
+          "text": "Final source integrity: 94 verified source/scene files remained unchanged after acceptance. Both build audits restored 28 settings hashes; source and restoration evidence are recorded in ReleaseEvidence.json and each platform SettingsRestoration.json."
+        }
+      ]
+    }
+  ],
+  "test_history": {
+    "intermediate": {
+      "EditMode": {
+        "status": "PASSED_INTERMEDIATE_SUPERSEDED_BY_LAYOUT_CHANGE",
+        "total": 184,
+        "passed": 184,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepInteractionGuard/FinalVerification/EditMode-results.json",
+        "scope": "Before the final creek/rack clearance revision; not verification of the current layout."
+      },
+      "PlayMode": {
+        "status": "PASSED_INTERMEDIATE_SUPERSEDED_BY_LAYOUT_CHANGE",
+        "total": 109,
+        "passed": 109,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepInteractionGuard/FinalVerification/PlayMode-results.json",
+        "scope": "Before the final creek/rack clearance revision; not verification of the current layout."
+      }
+    },
+    "reason": "FinalVerification preceded the last creek placement revision. ReleaseVerification 184/109 passed after that layout revision, before the subsequent menu-intent priority change. Neither verifies the final UI-priority implementation.",
+    "after_layout_before_ui_priority": {
+      "EditMode": {
+        "status": "PASSED_INTERMEDIATE_BEFORE_UI_PRIORITY_REVISION",
+        "total": 184,
+        "passed": 184,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepInteractionGuard/ReleaseVerification/EditMode-results.json",
+        "scope": "Final creek/rack geometry and existing behavior only; later UI-intent ownership change is unverified."
+      },
+      "PlayMode": {
+        "status": "PASSED_INTERMEDIATE_BEFORE_UI_PRIORITY_REVISION",
+        "total": 109,
+        "passed": 109,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepInteractionGuard/ReleaseVerification/PlayMode-results.json",
+        "scope": "Final creek/rack geometry and existing behavior only; later UI-intent ownership change is unverified."
+      }
+    },
+    "placement_timeout_attempt": {
+      "reports": {
+        "EditMode": {
+          "status": "completed",
+          "total": 184,
+          "passed": 184,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepInteractionGuard/FinalAcceptance/EditMode-results.json"
+        },
+        "PlayMode": {
+          "status": "completed",
+          "total": 115,
+          "passed": 114,
+          "failed": 1,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepInteractionGuard/FinalAcceptance/PlayMode-results.json"
+        }
+      },
+      "failed_case": {
+        "FullName": "FireRescue.Tests.EmberdeepMenuPlayTests.ConfirmQuitRequiresModalAndIsAnEditorNoOpAfterRequest",
+        "Status": "Failed",
+        "Duration": 10.3860853,
+        "Message": "SetUp :   Menu failed to acquire stable placement\r\n  Expected: True\r\n  But was:  False\r\n",
+        "StackTrace": "at FireRescue.Tests.EmberdeepMenuPlayTests+<WaitPlaced>d__27.MoveNext () [0x0006d] in E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Assets\\FireRescue\\Tests\\PlayMode\\EmberdeepMenuPlayTests.cs:242\r\nat UnityEngine.TestTools.EnumeratorHelper+<ProgressOnEnumerator>d__5.MoveNext () [0x00017] in .\\Library\\PackageCache\\com.unity.test-framework@bd7f943e9647\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\EnumeratorHelper.cs:35\r\nat UnityEngine.TestTools.BeforeAfterTestCommandBase`1+<ExecuteEnumerable>d__16[T].MoveNext () [0x00132] in .\\Library\\PackageCache\\com.unity.test-framework@bd7f943e9647\\UnityEngine.TestRunner\\NUnitExtensions\\Commands\\BeforeAfterTestCommandBase.cs:155\r\n"
+      },
+      "scope": "FinalAcceptance passed 184 EditMode and 114 of 115 PlayMode tests. One existing ConfirmQuitRequiresModalAndIsAnEditorNoOpAfterRequest case failed in SetUp while waiting up to 10 seconds for stable menu placement; the Quit behavior was not reached. Root cause is unconfirmed. WaitPlaced now reports frames/focus/pause/XR/eye/floor/dt for diagnosis; the 10-second threshold and runtime behavior are unchanged. A full ReleaseAcceptance rerun is pending.",
+      "priority_cases_passed": [
+        "LeftHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+        "RightHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+        "NearRackAndSourceUiIntentCanSettleThenClickWithoutPhysicalAcquisition",
+        "DockedUiIntentCancelsPendingHalfStrokeBeforeDwellAndCannotPump",
+        "UiDockOwnerKeepsTrackingWhileOtherHandOwnsLeverAndCompletesStroke",
+        "ReservedUiCannotHideDockOwnerTrackingLossOrContinueValveTransfer",
+        "LeftChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+        "RightChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick"
+      ],
+      "suite_passed": false,
+      "subsequent_result": "Full ReleaseAcceptance rerun passed 184/115. The original stable-placement SetUp timeout remains a recorded failure with unconfirmed root cause; only diagnostics were added, not a relaxed threshold."
+    }
+  },
+  "captures": {
+    "source": "Editor PlayMode, production scene; synthetic seated/standing head poses with horizontal gaze and synthetic rays. Stage two includes optional creek. Near-well physical hand plus ray use the shared production UI policy. No LookAt correction.",
+    "paths": [
+      "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-Dashboard.png",
+      "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-Shop.png",
+      "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-StageTwo-Overview.png",
+      "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Standing-Dashboard.png",
+      "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Standing-Shop.png"
+    ],
+    "record": "Logs/EmberdeepInteractionGuard/Capture.json",
+    "visual_review_record": "Logs/EmberdeepInteractionGuard/VisualReview.json",
+    "review": {
+      "status": "PASS scoped Editor HUD/Shop and source placement review",
+      "reviewed_images": [
+        "Editor-Synthetic-Seated-Dashboard.png",
+        "Editor-Synthetic-Seated-Shop.png",
+        "Editor-Synthetic-Seated-StageTwo-Overview.png",
+        "Editor-Synthetic-Standing-Dashboard.png",
+        "Editor-Synthetic-Standing-Shop.png"
+      ],
+      "observations": [
+        "HUD and Shop fully visible at synthetic eye heights 1.1m and 1.7m with horizontal gaze.",
+        "Physical hand at the well lever can highlight/open Shop through the shared production physical+ray policy.",
+        "Optional creek label visible; revised source and equipment rack have distinct interaction positions.",
+        "Overview retains blockout supply fixtures and temporary synthetic-clear reward feedback; it is not final art or a headset comfort assessment."
+      ],
+      "headset_usability": "PENDING",
+      "performance": "NOT_ASSESSED"
+    },
+    "frames": [
+      4443,
+      6784,
+      9613
+    ],
+    "poses": [
+      {
+        "posture": "Seated",
+        "eyeHeight": 1.1,
+        "headPosition": {
+          "x": 0.0,
+          "y": 1.1,
+          "z": 0.0
+        },
+        "panelPosition": {
+          "x": 0.0,
+          "y": 1.06000006,
+          "z": 0.9
+        },
+        "shopViewport": {
+          "x": 0.5,
+          "y": 0.375037134,
+          "z": 0.9
+        },
+        "shopOpened": true,
+        "cameraAndArenaUnchanged": true
+      },
+      {
+        "posture": "Standing",
+        "eyeHeight": 1.7,
+        "headPosition": {
+          "x": 0.0,
+          "y": 1.7,
+          "z": 0.0
+        },
+        "panelPosition": {
+          "x": 0.0,
+          "y": 1.66000009,
+          "z": 0.9
+        },
+        "shopViewport": {
+          "x": 0.5,
+          "y": 0.375037134,
+          "z": 0.9
+        },
+        "shopOpened": true,
+        "cameraAndArenaUnchanged": true
+      }
+    ],
+    "additional_view": "Seated StageTwo Overview uses a separate 25-degree downward head rotation with injected XR tutorial availability; desktop status may retain keyboard prompts. All scene and hand/ray inputs are synthetic Editor evidence.",
+    "playerLoopAdvanced": true,
+    "headset_acceptance": false,
+    "real_hand_tracking": false
+  },
+  "feedback_clarification": {
+    "original_user_quote": "我想要点菜单的时候，会触发水泵和游玩的互动，我也不确定",
+    "meaning": "Attempted menu action may be consumed by pump/gameplay; cause not confirmed",
+    "correction": "Do not describe the primary complaint as confirmed UI clicks caused by ordinary gameplay."
+  },
+  "input_contract": {
+    "api": "public bool ProcessHandInterfaceSamples(EmberdeepRefillInteraction.Hand leftHand, EmberdeepRefillInteraction.Hand rightHand, EmberdeepHandRay.Sample left, EmberdeepHandRay.Sample right, bool available, float dt)",
+    "production_path": "EmberdeepHandRayMenu.Process uses the game sampleAllowed callback AllowPointedInterface; it reads actual physical hand data and shares AllowHandInterface(hand, physical, ray) with the synthetic API. HasIntent reuses eligible target hit testing.",
+    "raw_pointer_acquisition": "Game-only ReadIntent uses valid provider ReadHand and ReadInteractionAim, including the first closed sample; this can reserve UI but cannot bypass the existing open/rearm/fresh-edge pinch filter. Camp keeps EmberdeepHandRay.Read and the default 180-degree eligibility limit.",
+    "physical_mask": "interfacePhysicalBlocked persists until release or invalid physical data. No actual refill operator: consume pending stroke and block acquisition. Other actual operator: keep actual tracking and replace only reserved UI hand pinch with open distance; do not invent tracked=true.",
+    "scope": "Synthetic samples test shared arbitration, not raw SDK/IHand acquisition or real headset usability."
+  },
+  "new_regression_cases": {
+    "baseline_version": "0.2.9",
+    "baseline_playmode": 96,
+    "current_playmode": 115,
+    "net_new_playmode": 19,
+    "new_case_names_vs_baseline": [
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.DockedUiIntentCancelsPendingHalfStrokeBeforeDwellAndCannotPump",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LeftChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LeftHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LookingAwayDropsToolHandUiOwnershipAndClosedReturnCannotClick",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.NearRackAndSourceUiIntentCanSettleThenClickWithoutPhysicalAcquisition",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.ReservedUiCannotHideDockOwnerTrackingLossOrContinueValveTransfer",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.RightChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.RightHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.UiDockOwnerKeepsTrackingWhileOtherHandOwnsLeverAndCompletesStroke",
+      "FireRescue.Tests.EmberdeepHandRayGamePlayTests.VisibleHudOutsideHeadIntentConeCannotHoverOrCancelChargeFromEitherHand",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftCannonChargeCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftExtinguisherFiringPinchCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftFanFiringPinchCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftPistolFiringPinchCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightCannonChargeCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightExtinguisherFiringPinchCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightFanFiringPinchCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightPistolFiringPinchCannotBeCapturedByCreek",
+      "FireRescue.Tests.EmberdeepRefillApproachPlayTests.SecondSectorOptionalCreekStaysOutsideBothNormalToolSides"
+    ],
+    "editmode_note": "184 total; the 17 existing HUD cases are updated, not newly added.",
+    "coverage_boundary": "Shared-policy synthetic samples do not execute or validate raw SDK/IHand acquisition or prove device comfort."
+  },
+  "device_test_deferral": {
+    "device": "Quest 3",
+    "version": "0.2.10",
+    "user_statement": "This round, I will test later.",
+    "scope": "Current physical acceptance deferred; no repeat test request this round.",
+    "evidence": "Logs/EmberdeepInteractionGuard/Quest-Install.json"
+  },
+  "source_integrity": {
+    "unchanged_after_verification": true,
+    "file_count": 94,
+    "snapshot": "Logs/EmberdeepInteractionGuard/VerifiedSources.json"
+  }
+}

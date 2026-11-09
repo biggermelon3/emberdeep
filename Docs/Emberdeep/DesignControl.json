@@ -6,7 +6,7 @@
       "blocks": [
         {
           "kind": "p",
-          "text": "Revision 0.8 | 9 November 2026 | Current candidate Emberdeep 0.2.7 / Android code 10. Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending. The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical. Read PinchRestore.json for current controls. Word remains a draft because page rendering is blocked by missing soffice.exe."
+          "text": "Revision 0.13 | 9 November 2026 | Candidate Emberdeep 0.2.11 / Android code 14 implements the approved 0.12 direction. Slow recovery, explicit accounting and renderer-only catalogue previews are implemented as a candidate. FinalVerification passed 204 EditMode and 144 PlayMode with zero failed, skipped or inconclusive. This includes 20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases; restored coverage is not newly authored. Twelve final Editor synthetic captures passed visual review. Quest and PICO APKs passed version 0.2.11/code 14, ARM64, signature/icon, exact Camp/Fireground scene whitelist and settings-restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings. Source integrity is recorded in Logs/EmberdeepRecoveryShop/ReleaseEvidence.json; these build checks do not establish headset operation or performance. Quest 3 replacement installation and app info verified 0.2.11/code 14. The device was Asleep and no app process was observed; physical hand tracking, comfort, stereo readability and performance remain pending. No PICO hardware acceptance is claimed. Historical 0.2.10 / code 13 passed 184 EditMode and 115 PlayMode and built both APKs. Those reports, screenshots, installation and user feedback do not validate 0.2.11. Read WaterRecoveryAndShopPreview.json and ImplementationStatus.json for current scope. Prior placement, menu and hand confirmations remain version-specific. Generated Word content checks and rendered-page QA are separate gates."
         },
         {
           "kind": "h2",
@@ -14,7 +14,7 @@
         },
         {
           "kind": "p",
-          "text": "CURRENT v0.1 in original sections denotes their historical inspected baseline. IMPLEMENTED describes candidate code, not hardware acceptance. PROPOSED and TARGET remain future work. Read ImplementationStatus.json and the final PinchRestore.json section for the current override and evidence. Prior device confirmations retain their version and question scope."
+          "text": "CURRENT v0.1 in original sections denotes their historical inspected baseline. IMPLEMENTED describes candidate code, not hardware acceptance. PROPOSED and TARGET remain future work. Read ImplementationStatus.json and InteractionIntentFix.json for runtime evidence. WaterRecoveryAndShopPreview.json is the newest implementation override: slow recovery and shop catalogue previews are implemented as a candidate; final Editor verification passed 204 EditMode and 144 PlayMode; APK audits passed; device gates remain pending. Prior device confirmations retain their version and question scope."
         },
         {
           "kind": "h2",
@@ -61,7 +61,7 @@
           "kind": "bullets",
           "items": [
             "DD-01: One active tabletop sector at a time; deeper exploration changes the active sector without requiring physical room traversal.",
-            "DD-02: Manual supply replaces passive regeneration. A reusable hydrant or creek source must remain reachable with an empty tank.",
+            "DD-02 revised in 0.12: retain manual supply and add very slow automatic recovery under GD-WATER-10/11. A reusable free hydrant or creek source remains reachable with an empty tank. Revision 0.13 implements this as candidate 0.2.11 through an explicit eligibility and accounting API; 0.2.10 remains the historical manual-only baseline.",
             "DD-03: Containment leads to safe search. Animal rescue is rewarding and gentle; it cannot become a mandatory progression lock.",
             "DD-04: Equipment changes interaction and water coverage, not only numerical damage. Preserve the existing ballistic water and hand interaction investment.",
             "DD-05: Ship a standalone firefighting experience with the camp and fireground only; no route into the shadow or car games."

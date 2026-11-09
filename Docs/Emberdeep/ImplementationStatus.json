@@ -1,10 +1,10 @@
 {
-  "revision": "0.2.7",
+  "revision": "0.2.11",
   "date": "2026-11-09",
   "candidate": {
-    "version": "0.2.7",
-    "android_version_code": 10,
-    "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING."
+    "version": "0.2.11",
+    "android_version_code": 14,
+    "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending."
   },
   "historical_delivery": {
     "version": "0.1.1",
@@ -12,11 +12,11 @@
     "menu_user_confirmation": "Front position only"
   },
   "milestones": {
-    "M0": "Stable placement and scoped prior menu behavior retained. Current Editor regressions passed; new physical button and posture acceptance remains pending.",
-    "M1": "0.2.7 restores pinch-operated starter lever, empty pumping and anchored hand display. Fresh 167 EditMode / 87 PlayMode passed; device acceptance pending.",
+    "M0": "Retained HUD/menu-intent rules passed the final 204 EditMode and 144 PlayMode suite. Physical acceptance is still version-scoped and pending for 0.2.11.",
+    "M1": "Manual supply plus explicit slow recovery passed the final 204 EditMode and 144 PlayMode suite. Twelve Editor captures were reviewed. Hardware timing, comfort and performance acceptance pending.",
     "M2": "PROPOSED: safe search, loot, optional animals, pending ledger, durable saves",
     "M3": "PROPOSED: authored teaching progression, sidegrades and measured feedback",
-    "M4": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING."
+    "M4": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending."
   },
   "evidence": {
     "version_scope": "Historical 0.2.0 / code 3 only; current evidence is in current_iteration.",
@@ -61,30 +61,32 @@
     "device_checklist": "Docs/Emberdeep/M1DeviceAcceptance.json"
   },
   "current_iteration": {
-    "version": "0.2.7",
-    "android_version_code": 10,
+    "version": "0.2.11",
+    "android_version_code": 14,
     "date": "2026-11-09",
-    "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
-    "source": "PinchRestore.json",
-    "evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json",
+    "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
+    "source": "WaterRecoveryAndShopPreview.json",
+    "evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
     "tests": {
       "EditMode": {
         "status": "PASSED",
-        "total": 167,
-        "passed": 167,
+        "total": 204,
+        "passed": 204,
         "failed": 0,
         "skipped": 0,
         "inconclusive": 0,
-        "path": "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json"
+        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
+        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
       },
       "PlayMode": {
         "status": "PASSED",
-        "total": 87,
-        "passed": 87,
+        "total": 144,
+        "passed": 144,
         "failed": 0,
         "skipped": 0,
         "inconclusive": 0,
-        "path": "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
+        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
       }
     },
     "builds": {
@@ -92,83 +94,170 @@
         "status": "BUILT_AND_AUDITED",
         "settingsRestored": true,
         "sceneWhitelistPassed": true,
-        "version": "0.2.7",
+        "version": "0.2.11",
         "signatureVerified": true,
-        "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+        "sha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363",
         "target": "Quest",
-        "bytes": 105508923,
+        "bytes": 105528715,
         "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "versionCode": 10,
+        "versionCode": 14,
         "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
-        "android_version_code": 10,
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
-        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7.manifest.json",
-        "audit": "Logs/EmberdeepPinchRestore/Quest-Audit.json",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11.manifest.json",
+        "audit": "Logs/EmberdeepRecoveryShop/Quest-Audit.json",
         "errors": 0,
-        "settings_restoration": {
-          "changed": [],
-          "audited_count": 28,
-          "unchanged": true,
-          "path": "Logs/EmberdeepPinchRestore/Quest-SettingsRestoration.json"
-        }
+        "warnings": 8,
+        "settings_audited": 28
       },
-      "Pico": {
+      "PICO": {
         "status": "BUILT_AND_AUDITED",
         "settingsRestored": true,
         "sceneWhitelistPassed": true,
-        "version": "0.2.7",
+        "version": "0.2.11",
         "signatureVerified": true,
-        "sha256": "06bb290fed74218bcc5b7edd247bceace8d575281f6b30d1f6f9d8b85a27d2e2",
+        "sha256": "06fc81735916822c2a525218596255d18145170c7552d29d768b389576f1f203",
         "target": "Pico",
-        "bytes": 87208527,
+        "bytes": 87230967,
         "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "versionCode": 10,
+        "versionCode": 14,
         "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
-        "android_version_code": 10,
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.apk",
-        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.manifest.json",
-        "audit": "Logs/EmberdeepPinchRestore/Pico-Audit.json",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.manifest.json",
+        "audit": "Logs/EmberdeepRecoveryShop/Pico-Audit.json",
         "errors": 0,
-        "settings_restoration": {
-          "changed": [],
-          "audited_count": 28,
-          "unchanged": true,
-          "path": "Logs/EmberdeepPinchRestore/Pico-SettingsRestoration.json"
-        }
+        "warnings": 12,
+        "settings_audited": 28
       }
+    },
+    "captures": {
+      "status": "EDITOR_VISUAL_REVIEW_PASSED",
+      "reviewed_images": 12,
+      "capture": "Logs/EmberdeepRecoveryShop/Capture.json",
+      "review": "Logs/EmberdeepRecoveryShop/VisualReview.json",
+      "images": [
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Active.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Waiting.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-CurrentLever.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Extinguisher.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PressureCannon.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PulsePistol.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PushButton.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RainFan.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RotaryHydrant.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning-Purchased.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Standing-Shop-PushButton.png"
+      ],
+      "scope": "Editor synthetic eye positions, hand rays and domain time; station second comparison and purchase use public scene APIs to avoid same-frame UI debounce. Not headset or physical feel evidence.",
+      "checks": [
+        "All four tool models are visible and contained",
+        "Tuning text and price no longer overlap",
+        "Current and upgraded station models are distinct",
+        "Waiting and active recovery feedback are visible",
+        "Seated and standing synthetic eye heights keep shop forward"
+      ],
+      "limitations": [
+        "Existing blockout models reused",
+        "Synthetic Editor captures do not establish headset legibility, comfort or performance"
+      ],
+      "capture_helper_history": [
+        "Prior capture attempts hit same-frame WorkshopButton debounce, Vector3 JSON recursion and restart ordering; helper corrected and final run completed with 12 captures. These are capture-helper failures, distinct from runtime regression results."
+      ]
     },
     "devices": {
-      "Quest3": "PENDING",
-      "PICO4": "PENDING performance baseline"
+      "Quest3": {
+        "status": "INSTALLED_VERSION_VERIFIED",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.11",
+        "versionCode": 14,
+        "installedInfo": {
+          "package": "com.metahackathon2026.emberdeep",
+          "version_name": "0.2.11",
+          "version_code": "14",
+          "install_path": "/data/app/~~iNIbpQzmHNl-b8_XruGT4g==/com.metahackathon2026.emberdeep-J_LNuVyIc7P2i9QCQASYQg==",
+          "is_system": false,
+          "first_install_time": "2026-11-06 13:30:58",
+          "last_update_time": "2026-11-10 04:44:47",
+          "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+        },
+        "method": "metavr install --replace, followed by metavr app info",
+        "powerState": "Asleep",
+        "processRunning": false,
+        "physicalAcceptance": "PENDING; no physical hand tracking, comfort, stereo readability or performance result claimed",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+        "apkSha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363"
+      },
+      "PICO4": "Physical hand tracking, readability, comfort and performance acceptance pending"
     },
-    "user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
-    "known_limits": [
-      "Worn-headset operation, hand fit and performance remain pending.",
-      "Existing well and display-hand pose assets remain grayboxes; no physical finger collision.",
-      "M2/M3 and durable saves remain proposed.",
-      "Word content checks do not establish visual layout approval."
-    ],
-    "captures": {
-      "source": "Isolated Editor PlayMode with injected outlet event",
-      "paths": [
-        "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png",
-        "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png"
+    "documents": {
+      "generation": "GENERATED final revision 0.13 from current JSON and final release evidence",
+      "structural_review": "PASSED exact ordered JSON source comparison for all three DOCX",
+      "structural_evidence": "Logs/EmberdeepRecoveryShop/Docs/qa.json",
+      "visual_review": "BLOCKED; all three packaged render attempts failed because LibreOffice soffice.exe is absent. Bounded hidden Word COM fallback failed before opening the task DOCX because Application.Hwnd returned null. No PDF or page images produced; no layout approval claimed.",
+      "render_logs": [
+        "Logs/EmberdeepRecoveryShop/Docs/render-design.log",
+        "Logs/EmberdeepRecoveryShop/Docs/render-art.log",
+        "Logs/EmberdeepRecoveryShop/Docs/render-v2.log"
       ],
-      "visual_review": "Outlet arc/drops visible in burst and absent in stopped capture; labels explicitly identify injected samples. This is presentation inspection, not physical hand acceptance.",
-      "waterTransferred": false,
-      "real_hand_tracking": false,
-      "engine_progression": {
-        "from_frame": 8782,
-        "from_time": 8.604,
-        "to_frame": 16381,
-        "to_time": 17.152,
-        "scope": "Editor engine progression observed by parent QA; no device performance inference."
-      }
+      "delivery_status": "Generated drafts pending visual layout acceptance",
+      "fallback_log": "Logs/EmberdeepRecoveryShop/Docs/word-result.log"
     },
+    "device_checklist": "Docs/Emberdeep/RecoveryShopDeviceAcceptance.json",
+    "historical_evidence_scope": "Historical 0.2.10 / code 13 passed 184 EditMode and 115 PlayMode and built both APKs. Those reports, screenshots, installation and user feedback do not validate 0.2.11.",
+    "verification_attempts": [
+      {
+        "scope": "0.2.11 intermediate attempt only; not release acceptance",
+        "path": "Logs/EmberdeepRecoveryShop/InitialVerification",
+        "compile_history": "Initial missing PhysicalAssembly namespace import in FireRescueGame.Shop.cs corrected before this test run.",
+        "EditMode": {
+          "passed": 204,
+          "failed": 0
+        },
+        "PlayMode": {
+          "total": 132,
+          "passed": 62,
+          "failed": 70
+        },
+        "cause": "New preview instantiated MaterialPropertyBlock in a MonoBehaviour field initializer; Unity CreateImpl rejected this construction path. Root moved creation into Show.",
+        "coverage_repair": "Three test scripts had 33-character GUIDs and were not compiled: EmberdeepShopPreviewPlayTests, EmberdeepOutletFeedbackPlayTests and EmberdeepStationShopPlayTests. Root verified no external asset references to those invalid GUIDs, normalized them to 32 characters and force-reimported. The latter two are restored existing test groups, not newly authored coverage.",
+        "status": "SUPERSEDED_BY_PASSING_RELEASEVERIFICATION_AFTER_FIXES"
+      },
+      {
+        "scope": "Intermediate passing suite before final preview layout corrections",
+        "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification",
+        "tests": {
+          "EditMode": {
+            "status": "PASSED",
+            "total": 204,
+            "passed": 204,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/EditMode-results.json",
+            "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
+          },
+          "PlayMode": {
+            "status": "PASSED",
+            "total": 143,
+            "passed": 143,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/PlayMode-results.json",
+            "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
+          }
+        },
+        "status": "PASSED_BEFORE_FINAL_LAYOUT_CHANGES",
+        "subsequent_changes": "Larger previews, one-line tuning description, lower price row and corrected world-space speed units; one layout regression added. FinalVerification supersedes this run when completed."
+      }
+    ],
+    "test_count_scope": "20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases relative to historical 184/115.",
+    "release_evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
     "source_integrity": {
       "unchanged_after_verification": true,
-      "file_count": 93,
-      "snapshot": "Logs/EmberdeepPinchRestore/VerifiedSources.json"
+      "file_count": 100
     }
   },
   "requirements": [
@@ -401,7 +490,7 @@
         "Assets/FireRescue/Tests/PlayMode/EmberdeepFreeLeverGripTests.cs",
         "Assets/FireRescue/Tests/PlayMode/EmberdeepStationTierInteractionTests.cs"
       ],
-      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "status": "HISTORICAL_0.2.7_TESTED_RULE_RETAINED; current 0.2.8 regression pending",
       "evidence": [
         "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
         "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
@@ -422,7 +511,7 @@
         "Assets/FireRescue/Tests/PlayMode/EmberdeepStationTierInteractionTests.cs",
         "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
       ],
-      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "status": "HISTORICAL_0.2.7_TESTED_RULE_RETAINED; current 0.2.8 regression pending",
       "evidence": [
         "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
         "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
@@ -443,7 +532,7 @@
         "Assets/FireRescue/Tests/PlayMode/EmberdeepFreeLeverGripTests.cs",
         "Assets/FireRescue/Tests/PlayMode/EmberdeepOutletFeedbackPlayTests.cs"
       ],
-      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "status": "HISTORICAL_0.2.7_TESTED_RULE_RETAINED; current 0.2.8 regression pending",
       "evidence": [
         "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
         "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
@@ -465,12 +554,548 @@
         "Assets/FireRescue/Tests/EditMode/EmberdeepNaturalPumpTutorialTests.cs",
         "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
       ],
-      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "status": "HISTORICAL_0.2.7_TESTED_RULE_RETAINED; current 0.2.8 regression pending",
       "evidence": [
         "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
         "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
       ],
       "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "requirement_ids": [
+        "SA-01 / GD-HAND-01"
+      ],
+      "rule": "Remove the global held-tool NearStation gate that blocks both hands. Evaluate each hand independently: keep its own nearStation/nearLever exclusions and operating-hand priority. An eligible free hand away from those reserved controls may highlight and activate visible UI with its own fresh pinch.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Repeat with a tool held left/right near supply and the free hand outside control reach. Free-hand hover/click works; moving that same free hand into its own reserved control region still suppresses UI. The operating hand cannot click simultaneously.",
+      "status": "HISTORICAL_0.2.8_RULE_RETAINED; current full 0.2.9 suite passed; device scope separate",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "LeftFreeHandCanOpenShopWhileRightToolHandIsNearSource",
+          "RightFreeHandCanOpenShopWhileLeftToolHandIsNearSource"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "Scoped Quest 3 0.2.8 user confirmation: Shop highlight and entry after firefighting. The specific left/right, near-source, docked cleanup and resource boundaries remain independently unconfirmed on hardware."
+    },
+    {
+      "requirement_ids": [
+        "SA-02 / GD-LOOP-01 / GD-PAUSE-01"
+      ],
+      "rule": "When Run.InSupply allows trading, a docked tool must not hide or block the Gear shop entry from the eligible free hand. OpenShop returns the tool and disconnects supply through existing cleanup, cancels unfinished strokes/charge and enters the shop without granting water.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "acceptance": "Clear an incident, leave the tool docked, hover/click Gear shop with the free hand and confirm ShopOpen, no supply lock, no incomplete action or projectile and no increase in water.",
+      "status": "HISTORICAL_0.2.8_RULE_RETAINED; current full 0.2.9 suite passed; device scope separate",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "Scoped Quest 3 0.2.8 user confirmation: Shop highlight and entry after firefighting. The specific left/right, near-source, docked cleanup and resource boundaries remain independently unconfirmed on hardware."
+    },
+    {
+      "requirement_ids": [
+        "SA-03 / GD-ECON-01 / GD-WATER-05"
+      ],
+      "rule": "Retain Run.InSupply as the purchase gate. The fix does not enable shopping during Fighting, change item prices, grant water, or settle unearned rewards. Closing the shop and re-equipping require normal input rearming.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "acceptance": "Attempt entry/purchase during Fighting, then repeat after Cleared. Only the valid phase permits trade; water, supplied-water and coin accounting follow accepted purchases only.",
+      "status": "HISTORICAL_0.2.8_RULE_RETAINED; current full 0.2.9 suite passed; device scope separate",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase",
+          "FightingShopRemainsUnavailableThroughPhysicalPolicyAndViewportGate"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING"
+    },
+    {
+      "requirement_ids": [
+        "SA-04 / GD-HAND-02 / GD-PAUSE-01"
+      ],
+      "rule": "Keep the existing contextual system hand ray and same-hand fresh pinch. One gesture cannot activate Shop and operate supply/fire. Tracking loss, focus/pause and ownership changes discard pending selection and partial actions.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs"
+      ],
+      "acceptance": "Test held pinch, other-hand pinch, half lever/pump stroke, valve flow, interruption and resume. No click-through, refill grant or release shot.",
+      "status": "HISTORICAL_0.2.8_RULE_RETAINED; current full 0.2.9 suite passed; device scope separate",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase",
+          "ActiveLeverOperatorCannotOpenShopEvenAfterPointingAwayFromSource"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING"
+    },
+    {
+      "requirement_ids": [
+        "SA-05 / GD-LOOP-01"
+      ],
+      "rule": "Won displays SHOP CLOSED instead of the misleading SHOP AFTER ROUND label. Do not expand Run.InSupply or permit purchases in Won or Fighting.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.cs",
+        "Assets/FireRescue/Runtime/FireRun.cs"
+      ],
+      "acceptance": "Verify Ready/Cleared eligible, Fighting deferred and Won closed text with matching button interactability; the label change never enables an invalid purchase.",
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING",
+      "status": "HISTORICAL_0.2.8_RULE_RETAINED; current full 0.2.9 suite passed; device scope separate",
+      "tests": {
+        "status": "No dedicated Won-label assertion; code review and device checklist remain distinct from automated coverage",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": []
+      }
+    },
+    {
+      "requirement_ids": [
+        "HP-01 / GD-PLACE-01"
+      ],
+      "rule": "Fireground HUD/Shop pose is independent of miniature Arena coordinates: pivot 0.9 m along current horizontal head heading and 0.12 m below tracked eyes; yaw-only upright rotation, independent of floor height and Arena scale.",
+      "acceptance": "At seated and standing tracked eye heights, assert forward distance and eye-relative vertical offset, upright orientation, and independence from Arena transform/scale. Visually check that panel and all buttons are in front rather than near the legs.",
+      "status": "HISTORICAL_0.2.9; EyeDrop superseded by 0.2.10; retained rules require current regression",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [
+            "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.1f,0.0f,90.0f,70.0f,20.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.65f,0.0f,-45.0f,-70.0f,-25.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(3.1f,2.0f,145.0f,0.0f,30.0f)"
+          ],
+          "PlayMode": [
+            "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+            "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "requirement_ids": [
+        "HP-02 / GD-PLACE-01"
+      ],
+      "rule": "EmberdeepHudPose.TryCalculate rejects nonfinite position/rotation/floor, zero or invalid quaternion norm, and eyes less than 0.45 m above floor. Normalize head rotation before projecting forward. If horizontal heading squared magnitude is below 0.01, use previous HUD heading (initially Arena heading); reject if fallback is invalid. Initial XR placement and explicit recenter retain stable head acquisition. Shop open/close use the current valid pose and focused/HeadReady gate.",
+      "acceptance": "Check nonfinite data, invalid quaternion norm, eye-height threshold, non-unit quaternion normalization, vertical/near-vertical heading fallback and no-valid-heading rejection. Verify initial stable acquisition, recenter and Shop transitions from changed yaw/eye height.",
+      "status": "HISTORICAL_0.2.9; EyeDrop superseded by 0.2.10; retained rules require current regression",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(0)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(1)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(2)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(3)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(4)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(5)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(6)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(85.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(89.9f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.1f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(95.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(-90.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback"
+          ],
+          "PlayMode": [
+            "HudVerticalFallbackAndUnavailableHeadCannotMovePanelToFloor"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "requirement_ids": [
+        "HP-03 / GD-HAND-04"
+      ],
+      "rule": "PlaceHud runs only on initial stable ApplyWorldPose, explicit recenter, or opening/closing Shop. The panel stays world anchored between these events and never follows the head. XR camera is never moved; Shop transitions leave Arena and camera unchanged.",
+      "acceptance": "After placement change head pose without a placement event: HUD remains fixed. Recenter repositions it. Shop open/close repositions HUD without changing camera or Arena. Verify upright rotation and scale independence.",
+      "status": "HISTORICAL_0.2.9; EyeDrop superseded by 0.2.10; retained rules require current regression",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [],
+          "PlayMode": [
+            "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+            "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "requirement_ids": [
+        "HP-04 / GD-HAND-02 / GD-PAUSE-01"
+      ],
+      "rule": "A successful reposition resets hand-menu target/pinch state, clears interfaceHovered and synchronizes colliders. Retain contextual rays, same-hand fresh pinch, per-hand control exclusion and operation ownership. Keep Run.InSupply and safe dock-to-Shop cleanup with no resource grant.",
+      "acceptance": "After repositioning, use each hand to highlight/open/close Shop; repeat while tool is held/docked. Verify fresh-pinch rearming, charge/stroke cancellation and unchanged water/coin accounting; Fighting/Won purchase restrictions remain.",
+      "status": "HISTORICAL_0.2.9; EyeDrop superseded by 0.2.10; retained rules require current regression",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [],
+          "PlayMode": [
+            "HudRepositionClearsHoverAndRequiresReleaseBeforeShopClick"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "requirement_ids": [
+        "HP-05 / GD-HAND-05"
+      ],
+      "rule": "Keep labels and cyan target feedback readable at the new eye-relative pose; retain camp behavior and tabletop reach. Desktop-only ApplyWorldPose changes preview pitch from 55 to 25 degrees with FOV 70; this setup/recenter branch never changes the XR camera. No new UI art or particle effects are introduced.",
+      "acceptance": "Inspect all rows and both eyes on Quest 3/PICO 4 while seated/standing; verify target alignment, occlusion and reach. Inspect desktop preview separately; the preview camera change cannot imply an XR viewpoint change or comfort acceptance.",
+      "status": "HISTORICAL_0.2.9; EyeDrop superseded by 0.2.10; retained rules require current regression",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [],
+          "PlayMode": [
+            "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+            "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "requirement_ids": [
+        "II-01 / GD-PLACE-01"
+      ],
+      "rule": "Raise the HUD/Shop pivot 8 cm by changing EmberdeepHudPose.EyeDrop from 0.12 m to 0.04 m. Forward distance remains 0.9 m. Retain yaw-only world anchoring, valid eye-height/heading checks, event-based placement and no XR camera movement.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Verify eye-relative drop 0.04 m at seated/standing heights, unchanged forward distance and event-only world anchoring. Inspect whether every row remains readable and slightly higher on Quest/PICO; no comfort acceptance is implied by pose math.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(0)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(1)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(2)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(3)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(4)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(5)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(6)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(85.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(89.9f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.1f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(95.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(-90.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.1f,0.0f,90.0f,70.0f,20.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.65f,0.0f,-45.0f,-70.0f,-25.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(3.1f,2.0f,145.0f,0.0f,30.0f)",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "requirement_ids": [
+        "II-02 / GD-WATER-06 / GD-HAND-03"
+      ],
+      "rule": "The creek remains available only when Run.Stage > 0, as designed. Its final Arena-local position is (-side * 4, 0.2, 3.5), mirrored opposite the starter station. At the current 0.08 Arena scale this is 0.32 m laterally from center and approximately 0.60 m forward of the player: 5.6 cm farther sideways and 24.8 cm farther forward than the previous released location. Keep the equipment rack and all four tools clear. Label it CREEK / OPTIONAL REFILL. It is an optional second supply source, not a newly mandatory pump.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillTutorial.cs"
+      ],
+      "acceptance": "Verify no creek in the first incident and creek from the second; assert final mirrored side/forward position and safe spacing from the rack and each of four equipment views on both handed layouts. Check the optional label, deliberate docking and seated/standing reach without obstruction or a dry-tank progression lock.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepRefillApproachPlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.SecondSectorOptionalCreekStaysOutsideBothNormalToolSides"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "requirement_ids": [
+        "II-03 / GD-WATER-02 / GD-HAND-01"
+      ],
+      "rule": "TryGuideHeldTool accepts only finite pinch distance >= 0.035 m (default argument 0.04 m) and an active station whose calculated docking Grip target is within 0.16 m of the sampled grip position. This replaces broad fixture proximity for guidance only. Actual docking still requires the real port within 0.08 m, alignment within 35 degrees and 0.25 s dwell. During unlocked Process, a tool-hand pinch below 0.035 m interrupts alignment with Release pinch before docking and cannot dock.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Closed/firing pinch near either source must not rotate-guide or accumulate a dock; opening deliberately near the docking grip may guide, then actual port/dwell must pass. Test boundary distances, nonfinite pinch, inactive creek, both hands, interrupted dwell and zero resource grants from guidance.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepRefillApproachPlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.FingertipAtUndockedValveCannotGrantAnyWater",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftCannonChargeCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftExtinguisherFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftFanFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftHandApproachesGuidedDockThenTurnsWithFingertip",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftPistolFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.MalformedFingertipInterruptsAcceptedFlowWithoutExtraTransfer",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightCannonChargeCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightExtinguisherFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightFanFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightHandApproachesGuidedDockThenTurnsWithFingertip",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightPistolFiringPinchCannotBeCapturedByCreek"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "requirement_ids": [
+        "II-04 / GD-HAND-01 / GD-HAND-02"
+      ],
+      "rule": "Fireground HUD/Shop targets must lie within 25 degrees of ViewCamera.forward through EmberdeepHandRayMenu.Eligible, in addition to existing viewport/button eligibility. The shared component default remains 180 degrees for camp. This is a head-direction attention gate, not eye tracking or a new gaze-click input system.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Aim a hand ray at an otherwise visible fireground button while looking outside/inside the 25-degree cone. Only the inside target becomes eligible. Check all rows, near-boundary behavior and that camp keeps its previous 180-degree policy.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "cases": [
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LookingAwayDropsToolHandUiOwnershipAndClosedReturnCannotClick",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.VisibleHudOutsideHeadIntentConeCannotHoverOrCancelChargeFromEitherHand"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "requirement_ids": [
+        "II-05 / GD-HAND-02 / GD-PAUSE-01"
+      ],
+      "rule": "A valid hand ray hitting an eligible fireground button inside the 25-degree head-direction cone reserves UI immediately, before station/rack proximity, dwell or first closed-pinch acquisition can trigger physical/weapon actions. The actual current refill operator remains exclusive. The UI hand stays physically reserved until release; existing pinch filtering still requires an observed open hand and fresh edge before clicking. With no actual refill operator, UI reservation blocks new guide/dock/pump and cancels pending stroke state. With another actual refill operator, hover reservation preserves that operator and its complete stroke while suppressing only the UI hand physical pinch; tracking remains real. Tracking loss/invalid data still interrupt and return equipment safely. A confirmed UI action retains normal deliberate modal/return cleanup. Camp acquisition, phase restrictions and resource conservation remain unchanged.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs"
+      ],
+      "acceptance": "Point at eligible menu buttons while the same hand is near a station, rack or idle lever, including before dwell and first entry with pinch already closed. Gameplay must be suppressed without a UI click until deliberate release/rearm. Verify an already operating refill hand remains exclusive, the free hand works, and phase-disabled/out-of-cone targets do not claim UI. Repeat held-tool and empty-hand cases; record remaining failures.",
+      "status": "IMPLEMENTED_CANDIDATE; mapped Editor regressions PASSED; current device acceptance PENDING",
+      "tests": {
+        "status": "PASSED in ReleaseAcceptance",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "new_cases": [
+          "LeftHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+          "RightHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+          "NearRackAndSourceUiIntentCanSettleThenClickWithoutPhysicalAcquisition",
+          "DockedUiIntentCancelsPendingHalfStrokeBeforeDwellAndCannotPump",
+          "UiDockOwnerKeepsTrackingWhileOtherHandOwnsLeverAndCompletesStroke",
+          "ReservedUiCannotHideDockOwnerTrackingLossOrContinueValveTransfer"
+        ],
+        "updated_existing_cases": [
+          "LeftChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+          "RightChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick"
+        ],
+        "count_note": "Six final priority cases and two revised charging-hand cases pass within the 115 total; all are included in the 19 net new PlayMode cases relative to 0.2.9."
+      },
+      "evidence": [
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json",
+        "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.10"
+    },
+    {
+      "requirement_ids": [
+        "DD-02",
+        "GD-WATER-10",
+        "GD-WATER-11"
+      ],
+      "status": "IMPLEMENTED_EDITOR_VERIFIED_DEVICE_PENDING",
+      "implementation": "3 eligible seconds then 0.25 units/s to one active owned tank. Explicit recovery transaction, raw dry-trigger blocking, separate RecoveredWater counter and checkpoint restoration. Manual sources and transitions cannot duplicate grants.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Recovery.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepWaterRecoveryTests.cs",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::SimulationTickAloneCannotCreditRecoveryWithoutExplicitEligibility"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepRecoveryGamePlayTests.cs"
+      ],
+      "evidence": [
+        "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
+        "Logs/EmberdeepRecoveryShop/VisualReview.json"
+      ],
+      "pending_acceptance": [
+        "Menu-to-game empty recovery without auto-fire",
+        "Quest 3 and PICO 4 recovery contribution and manual refill timing",
+        "Tracking/modal interruption and dual-hand UI priority"
+      ],
+      "historical_override": "The old blanket no-regeneration test described 0.2.10 and earlier. Its migrated successor verifies that Tick alone cannot grant water without explicit eligibility."
+    },
+    {
+      "requirement_ids": [
+        "GD-SHOP-01",
+        "GD-SHOP-02",
+        "AR-SHOP-01"
+      ],
+      "status": "IMPLEMENTED_EDITOR_VERIFIED_DEVICE_PENDING",
+      "implementation": "Equipment, numeric tuning and station-result catalogue pages bind item ID, price and one renderer-only preview. Separate Buy confirmation, current/result comparison, bounded same-key reuse and explicit missing-content fallback.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Shop.cs",
+        "Assets/FireRescue/Runtime/EmberdeepShopPreview.cs"
+      ],
+      "editmode_tests": [],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepShopPreviewPlayTests.cs"
+      ],
+      "evidence": [
+        "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
+        "Logs/EmberdeepRecoveryShop/VisualReview.json"
+      ],
+      "pending_acceptance": [
+        "Quest/PICO stereo readability, seated/standing access and performance"
+      ]
     }
   ],
   "decisions": [
@@ -554,8 +1179,46 @@
   ],
   "pages": [
     {
+      "title": "0 2 11 Recovery and Shop Candidate Register",
+      "intro": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Historical 0.2.10 / code 13 passed 184 EditMode and 115 PlayMode and built both APKs. Those reports, screenshots, installation and user feedback do not validate 0.2.11."
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-10/11: explicit TickRecovery after the accepted simulation step; 3 eligible seconds then 0.25 units/second, capacity-clamped with fractional carry. RecoveryWaiting and RecoveryActive control the gauge cue. RecoveredWater is separate from SuppliedWater and ConsumedWater and is restored with all tank amounts at retry."
+        },
+        {
+          "kind": "p",
+          "text": "The root supplies focused/settled/tracked fireground eligibility and raw trigger-held state. Shop, navigation, modal, loading, pause, tracking loss, manual refill and weapon operation restart the delay. Tool switches, successful purchases/upgrades, source disconnect and sector transitions grant no immediate water."
+        },
+        {
+          "kind": "p",
+          "text": "New recovery rule and root-interaction tests are authored. The old no-regeneration test now verifies that ordinary simulation Tick cannot guess recovery eligibility or double-credit the explicit transaction. FinalVerification passed 204 EditMode and 144 PlayMode with zero failed, skipped or inconclusive. This includes 20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases; restored coverage is not newly authored. All 12 final Editor captures were reviewed; APK audits passed and are recorded in ReleaseEvidence.json."
+        },
+        {
+          "kind": "p",
+          "text": "GD-SHOP-01/02 and AR-SHOP-01: Equipment, Tuning and Station pages implement tool/tune/station catalogue identities, same-model numeric comparisons, highlighted station control results, explicit fallback, separate purchase and current/result comparison. The preview copies renderer data only, with no physics/audio/particles/gameplay components and one same-key-cached active geometry object. Optional thumbnails, rotate/demo and render textures are not implemented. Catalogue and layout tests passed within FinalVerification; device stereo/performance acceptance is pending."
+        },
+        {
+          "kind": "p",
+          "text": "Intermediate verification is not release acceptance. InitialVerification passed 204 EditMode; PlayMode ran 132 with 62 passed and 70 failed because the new preview constructed MaterialPropertyBlock in a MonoBehaviour field initializer. Lazy creation in Show corrects that failure. Import audit also found invalid 33-character GUIDs on the new preview test group and two existing groups (outlet feedback and station shop), so those tests had not compiled. All three metadata IDs were normalized after checking references and force-reimported. The subsequent ReleaseVerification passed the complete compiled suite of 204 EditMode and 143 PlayMode; 3 restored existing cases must not be presented as newly written tests."
+        },
+        {
+          "kind": "p",
+          "text": "Twelve final Editor synthetic captures were reviewed after increasing preview size, shortening the numeric-tuning description, lowering the price row and correcting SPEED to actual world metres per second. They show waiting/active recovery, all four tools, numeric tuning before/after purchase, rotary result, current lever, button result and seated/standing shop placement. The second station comparison and purchase use public scene APIs to avoid same-frame UI debounce; these captures do not prove every flow was completed with live headset input. FinalVerification includes the additional text-layout regression and passed 204 EditMode and 144 PlayMode."
+        },
+        {
+          "kind": "p",
+          "text": "Quest and PICO APKs passed version 0.2.11/code 14, ARM64, signature/icon, exact Camp/Fireground scene whitelist and settings-restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings. Source integrity is recorded in Logs/EmberdeepRecoveryShop/ReleaseEvidence.json; these build checks do not establish headset operation or performance. Quest 3 replacement installation and app info verified 0.2.11/code 14. The device was Asleep and no app process was observed; physical hand tracking, comfort, stereo readability and performance remain pending. No PICO hardware acceptance is claimed."
+        }
+      ]
+    },
+    {
       "title": "Historical M1 Implementation Register (0.2.0)",
-      "intro": "Historical 0.2.0 / code 3 M1 implementation record. Its 119/17 results do not verify later changes. Read PinchRestore.json for current 0.2.7 behavior, mapping and pending acceptance.",
+      "intro": "Historical 0.2.0 / code 3 M1 implementation record. Its 119/17 results do not verify later changes. Read WaterRecoveryAndShopPreview.json and the current 0.2.11 register for the latest behavior, mapping and pending device acceptance.",
       "blocks": [
         {
           "kind": "table",
@@ -608,7 +1271,7 @@
     },
     {
       "title": "Historical M1 Decisions and Subsequent Overrides",
-      "intro": "Historical 0.2.0/0.2.1 decisions are retained below. The subsequent 0.2.3 system hand pointer remains; 0.2.5 replaces the initial hydrant with a lever well and removes rotary tap fallback. PinchRestore.json defines current behavior; M2/M3 remain proposed.",
+      "intro": "Historical 0.2.0/0.2.1 decisions are retained below. The subsequent 0.2.3 system hand pointer remains; 0.2.5 replaces the initial hydrant with a lever well and removes rotary tap fallback. InteractionIntentFix.json defines current placement and interaction work; M2/M3 remain proposed.",
       "blocks": [
         {
           "kind": "h2",
@@ -1039,7 +1702,1024 @@
       ],
       "historical_scope": "0.2.6 only; subsequent user feedback reports whole-hand lever unusable.",
       "subsequent_user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical."
+    },
+    {
+      "version": "0.2.7",
+      "android_version_code": 10,
+      "date": "2026-11-09",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
+      "source": "PinchRestore.json",
+      "evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json",
+      "tests": {
+        "EditMode": {
+          "status": "PASSED",
+          "total": 167,
+          "passed": 167,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json"
+        },
+        "PlayMode": {
+          "status": "PASSED",
+          "total": 87,
+          "passed": 87,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.7",
+          "signatureVerified": true,
+          "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+          "target": "Quest",
+          "bytes": 105508923,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 10,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 10,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7.manifest.json",
+          "audit": "Logs/EmberdeepPinchRestore/Quest-Audit.json",
+          "errors": 0,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepPinchRestore/Quest-SettingsRestoration.json"
+          }
+        },
+        "Pico": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.7",
+          "signatureVerified": true,
+          "sha256": "06bb290fed74218bcc5b7edd247bceace8d575281f6b30d1f6f9d8b85a27d2e2",
+          "target": "Pico",
+          "bytes": 87208527,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 10,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 10,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.manifest.json",
+          "audit": "Logs/EmberdeepPinchRestore/Pico-Audit.json",
+          "errors": 0,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepPinchRestore/Pico-SettingsRestoration.json"
+          }
+        }
+      },
+      "devices": {
+        "Quest3": "PENDING",
+        "PICO4": "PENDING performance baseline"
+      },
+      "user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
+      "known_limits": [
+        "Worn-headset operation, hand fit and performance remain pending.",
+        "Existing well and display-hand pose assets remain grayboxes; no physical finger collision.",
+        "M2/M3 and durable saves remain proposed.",
+        "Word content checks do not establish visual layout approval."
+      ],
+      "captures": {
+        "source": "Isolated Editor PlayMode with injected outlet event",
+        "paths": [
+          "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png",
+          "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png"
+        ],
+        "visual_review": "Outlet arc/drops visible in burst and absent in stopped capture; labels explicitly identify injected samples. This is presentation inspection, not physical hand acceptance.",
+        "waterTransferred": false,
+        "real_hand_tracking": false,
+        "engine_progression": {
+          "from_frame": 8782,
+          "from_time": 8.604,
+          "to_frame": 16381,
+          "to_time": 17.152,
+          "scope": "Editor engine progression observed by parent QA; no device performance inference."
+        }
+      },
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 93,
+        "snapshot": "Logs/EmberdeepPinchRestore/VerifiedSources.json"
+      },
+      "historical_scope": "0.2.7 only; original release status retained. Later installation and Shop failure recorded separately.",
+      "subsequent_installation": {
+        "recordedUtc": "2026-11-09T16:57:04.0566251Z",
+        "device": "Quest 3",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.7",
+        "versionCode": 10,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+        "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+        "installedVersionVerified": true,
+        "observedProcessId": 26987,
+        "evidence": "Logs/EmberdeepQuest027Install/Install.json",
+        "scope": "Historical Quest 0.2.7 installation/version/process evidence only; no 0.2.8 installation or positive interaction acceptance."
+      },
+      "subsequent_user_feedback": "The user reported on Quest 0.2.7 that Shop had no highlight and could not be clicked after extinguishing fires. This is a specific negative interaction observation, not acceptance of the rest of the game."
+    },
+    {
+      "version": "0.2.8",
+      "android_version_code": 11,
+      "date": "2026-11-09",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.8 / code 11; 167 EditMode and 92 PlayMode passed; Quest/PICO APKs built and audited; Quest Shop highlight/entry user-confirmed; remaining device checks PENDING.",
+      "source": "ShopAccessFix.json",
+      "evidence": "Logs/EmberdeepShopFix/ReleaseEvidence.json",
+      "tests": {
+        "EditMode": {
+          "status": "PASSED",
+          "total": 167,
+          "passed": 167,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json"
+        },
+        "PlayMode": {
+          "status": "PASSED",
+          "total": 92,
+          "passed": 92,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.8",
+          "signatureVerified": true,
+          "sha256": "6a80639bf4a0676461c77906e5acdbc68a62fedce8633a06324ddc0d69434767",
+          "target": "Quest",
+          "bytes": 105509143,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 11,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 11,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.8.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.8.manifest.json",
+          "audit": "Logs/EmberdeepShopFix/Quest-Audit.json",
+          "errors": 0,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepShopFix/Quest-SettingsRestoration.json"
+          }
+        },
+        "Pico": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.8",
+          "signatureVerified": true,
+          "sha256": "10cee6ec41499fe8214e2f6304890b4d13f1421106fb81cba9cb033ad45d2f7c",
+          "target": "Pico",
+          "bytes": 87207511,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 11,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 11,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.8-Pico.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.8-Pico.manifest.json",
+          "audit": "Logs/EmberdeepShopFix/Pico-Audit.json",
+          "errors": 0,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepShopFix/Pico-SettingsRestoration.json"
+          }
+        }
+      },
+      "devices": {
+        "Quest3": {
+          "recordedUtc": "2026-11-09T17:21:35.683983Z",
+          "status": "INSTALLED_VERSION_VERIFIED",
+          "device": "Quest 3",
+          "package": "com.metahackathon2026.emberdeep",
+          "version": "0.2.8",
+          "versionCode": 11,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.8.apk",
+          "sha256": "6a80639bf4a0676461c77906e5acdbc68a62fedce8633a06324ddc0d69434767",
+          "replaceInstall": true,
+          "installedVersionVerified": true,
+          "launchStatus": "PROCESS_RUNNING_CONFIRMED",
+          "observedPowerState": "Asleep",
+          "headsetInteractionAcceptance": "USER_CONFIRMED: after extinguishing, GEAR SHOP highlights and opens on Quest 3 in 0.2.8",
+          "observedProcessId": "31256",
+          "launchVerificationUtc": "2026-11-09T17:23:36.7972309Z",
+          "userFeedback": "现在能高亮并进入 Shop",
+          "acceptanceScope": "Shop highlight and entry only; does not accept purchasing, all hand actions, PICO or performance",
+          "evidence": "Logs/EmberdeepShopFix/Quest-Install.json",
+          "scope": "Scoped user acceptance: Shop highlight and entry after firefighting on Quest 3 0.2.8 only. No purchase, complete interaction matrix, PICO or performance acceptance."
+        },
+        "PICO4": "PENDING physical usability and performance baseline"
+      },
+      "user_feedback": "The user reported on Quest 0.2.7 that Shop had no highlight and could not be clicked after extinguishing fires. This is a specific negative interaction observation, not acceptance of the rest of the game.",
+      "known_limits": [
+        "Quest Shop highlight and entry accepted only; purchase and complete interaction/posture matrix pending.",
+        "PICO 4 physical hand-tracking and performance baseline remain pending.",
+        "Synthetic policy samples do not validate SDK ReadHand or IHand delivery.",
+        "Won label has code inspection and pending device coverage, no dedicated automated assertion.",
+        "M2/M3 and durable saves remain proposed.",
+        "Word is a draft without visual layout approval."
+      ],
+      "runtime_scope": "Remove the global held-tool NearStation gate that blocks both hands. Retain each hand own nearStation/nearLever exclusion and operating-hand priority. Permit docked Gear shop only in Run.InSupply and cleanly return/disconnect the tool. Won displays SHOP CLOSED; trading rules are unchanged.",
+      "sdk_boundary": "The real ReadHand wrapper calls private AllowHandInterface(int, Hand); Editor tests target that same policy with synthetic samples. They do not validate SDK ReadHand, IHand delivery or headset input.",
+      "captures": {
+        "source": "Editor PlayMode production scene; synthetic fire clear, dock and free-hand ray with shared hand policy",
+        "paths": [
+          "Logs/EmberdeepShopFix/Editor-Synthetic-Shop-Highlighted.png",
+          "Logs/EmberdeepShopFix/Editor-Synthetic-Shop-Opened.png"
+        ],
+        "capture_record": "Logs/EmberdeepShopFix/Capture.json",
+        "visual_review_record": "Logs/EmberdeepShopFix/VisualReview.json",
+        "visual_review": "Inspected both 1600x900 PNGs: GEAR SHOP cyan highlight is visible with tool docked and FIRE 0; fresh pinch opens readable FIREHOUSE / GEAR panel and returns tool. No idle ray remains on opened page. Images are scoped UI evidence, not hand fit or performance acceptance.",
+        "real_hand_tracking": false,
+        "headset_acceptance": false,
+        "shopOpened": true,
+        "supplyDisconnected": true,
+        "waterUnchanged": true,
+        "coinsUnchanged": true,
+        "engine_progression": {
+          "before": 4406,
+          "after": 4539,
+          "time_before": 10.39792,
+          "time_after": 10.7321148
+        }
+      },
+      "new_regression_cases": {
+        "file": "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs",
+        "names": [
+          "LeftFreeHandCanOpenShopWhileRightToolHandIsNearSource",
+          "RightFreeHandCanOpenShopWhileLeftToolHandIsNearSource",
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase",
+          "ActiveLeverOperatorCannotOpenShopEvenAfterPointingAwayFromSource",
+          "FightingShopRemainsUnavailableThroughPhysicalPolicyAndViewportGate"
+        ],
+        "counted_within_playmode_total": true,
+        "scope": "Synthetic samples execute the production hand eligibility policy; real ReadHand/IHand/headset sampling is not tested."
+      },
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 93,
+        "snapshot": "Logs/EmberdeepShopFix/VerifiedSources.json"
+      },
+      "current_user_acceptance": {
+        "device": "Quest 3",
+        "version": "0.2.8",
+        "accepted": "Shop highlights and opens after firefighting",
+        "not_established": [
+          "purchases",
+          "all hand/control/posture cases",
+          "PICO compatibility",
+          "performance"
+        ],
+        "evidence": "Logs/EmberdeepShopFix/Quest-Install.json"
+      },
+      "historical_scope": "0.2.8 only; tests, builds and scoped Shop access confirmation retained. Later HUD placement complaint does not revoke the access confirmation.",
+      "subsequent_user_feedback": "On Quest 3 0.2.8 the user confirmed Shop highlights and opens, then reported that the in-game and Shop panels appear near the legs/seat rather than in front. The positive confirmation covers access only; placement remains a negative observation."
+    },
+    {
+      "version": "0.2.9",
+      "android_version_code": 12,
+      "date": "2026-11-09",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.9 / code 12; 184 EditMode and 96 PlayMode passed; Quest/PICO APKs built and audited; Quest installation/version verified; current device placement acceptance PENDING.",
+      "source": "HudPlacementFix.json",
+      "evidence": "Logs/EmberdeepHudFix/ReleaseEvidence.json",
+      "tests": {
+        "EditMode": {
+          "status": "PASSED",
+          "total": 184,
+          "passed": 184,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json"
+        },
+        "PlayMode": {
+          "status": "PASSED",
+          "total": 96,
+          "passed": 96,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.9",
+          "signatureVerified": true,
+          "sha256": "0660bdd957c7df65546067671dbe9c9b64449f3cff4e0d092be2b1dab38b96a6",
+          "target": "Quest",
+          "bytes": 105514211,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 12,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 12,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.9.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.9.manifest.json",
+          "audit": "Logs/EmberdeepHudFix/Quest-Audit.json",
+          "errors": 0,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepHudFix/Quest-SettingsRestoration.json"
+          }
+        },
+        "Pico": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.9",
+          "signatureVerified": true,
+          "sha256": "d9150597e021fd63ac1619105ba09f2f86eb882b397fdd841a6200e28cbae265",
+          "target": "Pico",
+          "bytes": 87208075,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 12,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 12,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.9-Pico.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.9-Pico.manifest.json",
+          "audit": "Logs/EmberdeepHudFix/Pico-Audit.json",
+          "errors": 0,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepHudFix/Pico-SettingsRestoration.json"
+          }
+        }
+      },
+      "devices": {
+        "Quest3": {
+          "device": "Quest 3",
+          "version": "0.2.9",
+          "versionCode": 12,
+          "package": "com.metahackathon2026.emberdeep",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.9.apk",
+          "sha256": "0660bdd957c7df65546067671dbe9c9b64449f3cff4e0d092be2b1dab38b96a6",
+          "installed": true,
+          "replaceKeepsData": true,
+          "versionVerifiedBy": "metavr_app info",
+          "launchRequested": true,
+          "launchConfirmed": false,
+          "powerState": "Asleep",
+          "pidObserved": null,
+          "headsetInteractionAcceptance": "PENDING user placement/Shop retest; installation is not usability acceptance",
+          "recordedUtc": "2026-11-09T17:49:50.835213+00:00",
+          "evidence": "Logs/EmberdeepHudFix/Quest-Install.json",
+          "scope": "Current installation/launch facts only. No 0.2.9 device placement acceptance."
+        },
+        "PICO4": "PENDING physical usability and performance baseline"
+      },
+      "user_feedback": "On Quest 3 0.2.8 the user confirmed Shop highlights and opens, then reported that the in-game and Shop panels appear near the legs/seat rather than in front. The positive confirmation covers access only; placement remains a negative observation.",
+      "placement_contract": {
+        "status": "IMPLEMENTED_CANDIDATE; current Editor verification passed; physical placement acceptance pending",
+        "forward_metres": 0.9,
+        "pivot_below_eyes_metres": 0.12,
+        "orientation": "upright yaw-only",
+        "reference": "tracked eye pose, not fixed floor or Arena",
+        "world_anchored": true,
+        "follow_head_each_frame": false,
+        "move_camera": false,
+        "events": [
+          "stable initial placement",
+          "explicit recenter",
+          "open Shop",
+          "close Shop"
+        ],
+        "api": "EmberdeepHudPose.TryCalculate(Pose head, float floorHeight, Vector3 previousForward, out Pose panel)",
+        "minimum_eye_height_above_floor_metres": 0.45,
+        "head_quaternion": "Finite, nonzero and normalized before projecting heading",
+        "near_vertical_horizontal_squared_threshold": 0.01,
+        "heading_fallback": "Previously placed HUD forward; initial placement uses Arena forward. Reject when neither yields a valid horizontal heading.",
+        "input_on_replacement": "Reset hand-menu target/pinch state, clear interfaceHovered and synchronize colliders.",
+        "runtime_gate": "Player/hud/hand provider present, focused, not paused and HeadReady. Existing stable raw-head acquisition gates initial XR placement and explicit recenter.",
+        "desktop_only": "ApplyWorldPose sets preview camera pitch to 25 degrees (previously 55) and FOV 70 for initial setup/desktop recenter. XR camera is not repositioned or rotated. Shop transitions move neither camera nor Arena."
+      },
+      "known_limits": [
+        "Quest 0.2.9 installation/version verified; device placement and Shop retest remain pending.",
+        "PICO 4 physical hand tracking and performance remain pending.",
+        "Historical 0.2.8 Shop access confirmation does not verify current placement.",
+        "Synthetic Editor pose/policy samples do not establish hardware tracking or comfort.",
+        "M2/M3 and durable saves remain proposed.",
+        "Word remains a draft without visual layout approval."
+      ],
+      "captures": {
+        "source": "Editor PlayMode, production scene; synthetic seated/standing head poses with horizontal gaze and synthetic rays. No LookAt correction.",
+        "paths": [
+          "Logs/EmberdeepHudFix/Editor-Synthetic-Seated-Dashboard.png",
+          "Logs/EmberdeepHudFix/Editor-Synthetic-Seated-Shop.png",
+          "Logs/EmberdeepHudFix/Editor-Synthetic-Standing-Dashboard.png",
+          "Logs/EmberdeepHudFix/Editor-Synthetic-Standing-Shop.png"
+        ],
+        "record": "Logs/EmberdeepHudFix/Capture.json",
+        "visual_review_record": "Logs/EmberdeepHudFix/VisualReview.json",
+        "review": {
+          "status": "PASS scoped Editor geometry and visual review",
+          "reviewed_images": [
+            "Editor-Synthetic-Seated-Dashboard.png",
+            "Editor-Synthetic-Seated-Shop.png",
+            "Editor-Synthetic-Standing-Dashboard.png",
+            "Editor-Synthetic-Standing-Shop.png"
+          ],
+          "observations": [
+            "HUD and Shop fully visible under natural horizontal synthetic gaze at 1.1m and 1.7m eye heights.",
+            "Panel upright, above the forest; buttons and labels visible without overlap.",
+            "Actual ray hover and Shop open confirmed."
+          ],
+          "headset_usability": "PENDING",
+          "performance": "NOT_ASSESSED"
+        },
+        "frames": [
+          3774,
+          21172,
+          23764
+        ],
+        "poses": [
+          {
+            "posture": "Seated",
+            "eyeHeight": 1.1,
+            "headPosition": {
+              "x": 0.0,
+              "y": 1.1,
+              "z": 0.0,
+              "normalized": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0,
+                "magnitude": 1.0,
+                "sqrMagnitude": 1.0
+              },
+              "magnitude": 1.1,
+              "sqrMagnitude": 1.21
+            },
+            "panelPosition": {
+              "x": 0.0,
+              "y": 0.98,
+              "z": 0.9,
+              "normalized": {
+                "x": 0.0,
+                "y": 0.7365299,
+                "z": 0.676405,
+                "magnitude": 1.0,
+                "sqrMagnitude": 1.0
+              },
+              "magnitude": 1.33056378,
+              "sqrMagnitude": 1.7704
+            },
+            "shopViewport": {
+              "x": 0.5,
+              "y": 0.31156382,
+              "z": 0.9,
+              "normalized": {
+                "x": 0.4648254,
+                "y": 0.289645553,
+                "z": 0.836685658,
+                "magnitude": 1.0,
+                "sqrMagnitude": 1.00000012
+              },
+              "magnitude": 1.07567275,
+              "sqrMagnitude": 1.157072
+            },
+            "shopOpened": true,
+            "cameraAndArenaUnchanged": true
+          },
+          {
+            "posture": "Standing",
+            "eyeHeight": 1.7,
+            "headPosition": {
+              "x": 0.0,
+              "y": 1.7,
+              "z": 0.0,
+              "normalized": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0,
+                "magnitude": 1.0,
+                "sqrMagnitude": 1.0
+              },
+              "magnitude": 1.7,
+              "sqrMagnitude": 2.89
+            },
+            "panelPosition": {
+              "x": 0.0,
+              "y": 1.58,
+              "z": 0.9,
+              "normalized": {
+                "x": 0.0,
+                "y": 0.8689192,
+                "z": 0.49495396,
+                "magnitude": 1.0,
+                "sqrMagnitude": 1.0
+              },
+              "magnitude": 1.81835091,
+              "sqrMagnitude": 3.3064
+            },
+            "shopViewport": {
+              "x": 0.5,
+              "y": 0.311563879,
+              "z": 0.9,
+              "normalized": {
+                "x": 0.464825332,
+                "y": 0.289645582,
+                "z": 0.8366856,
+                "magnitude": 1.0,
+                "sqrMagnitude": 0.99999994
+              },
+              "magnitude": 1.07567286,
+              "sqrMagnitude": 1.15707207
+            },
+            "shopOpened": true,
+            "cameraAndArenaUnchanged": true
+          }
+        ],
+        "playerLoopAdvanced": true,
+        "real_hand_tracking": false,
+        "headset_acceptance": false,
+        "capture_note": "Postures captured in separate eval calls to respect real WorkshopButton debounce. Initial same-frame two-posture harness hit debounce on its second click; no runtime change was required."
+      },
+      "new_regression_cases": {
+        "editmode_file": "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+        "editmode_class": "EmberdeepHudPoseTests",
+        "editmode_cases": [
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(0)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(1)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(2)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(3)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(4)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(5)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(6)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(85.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(89.9f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.1f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(95.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(-90.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.1f,0.0f,90.0f,70.0f,20.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.65f,0.0f,-45.0f,-70.0f,-25.0f)",
+          "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(3.1f,2.0f,145.0f,0.0f,30.0f)"
+        ],
+        "playmode_file": "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs",
+        "playmode_cases": [
+          "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+          "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena",
+          "HudVerticalFallbackAndUnavailableHeadCannotMovePanelToFloor",
+          "HudRepositionClearsHoverAndRequiresReleaseBeforeShopClick"
+        ],
+        "included_in_totals": true,
+        "scope": "Synthetic Editor pose/policy tests; hardware tracking, binocular comfort and PICO performance remain unverified."
+      },
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 94,
+        "snapshot": "Logs/EmberdeepHudFix/VerifiedSources.json"
+      },
+      "historical_scope": "0.2.9 only; original test/build/install facts retained. EyeDrop 0.12 is superseded by 0.2.10 EyeDrop 0.04.",
+      "subsequent_user_feedback": "The user described Quest 0.2.9 panel position as acceptable but asked for a little more height and reported accidental interactions during play. They suspected the additional right-side pump appearing from the second incident. This is partial position-improvement feedback and a suspected cause, not full placement acceptance or a confirmed root cause for every accidental action."
+    },
+    {
+      "version": "0.2.10",
+      "android_version_code": 13,
+      "date": "2026-11-09",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.10 / code 13; 184 EditMode and 115 PlayMode passed; both APKs built/audited; Quest installed; launch not attempted; device testing deferred by user.",
+      "source": "InteractionIntentFix.json",
+      "evidence": "Logs/EmberdeepInteractionGuard/ReleaseEvidence.json",
+      "tests": {
+        "EditMode": {
+          "status": "PASSED",
+          "total": 184,
+          "passed": 184,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/EditMode-results.json"
+        },
+        "PlayMode": {
+          "status": "PASSED",
+          "total": 115,
+          "passed": 115,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepInteractionGuard/ReleaseAcceptance/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.10",
+          "signatureVerified": true,
+          "sha256": "f5c7fb4126b94b495643435fd2e70fdd07e5539859e3e9ad4784a5fc77afe3e0",
+          "target": "Quest",
+          "bytes": 105521287,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 13,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 13,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.10.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.10.manifest.json",
+          "audit": "Logs/EmberdeepInteractionGuard/Quest-Audit.json",
+          "errors": 0,
+          "warnings": 8,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepInteractionGuard/Quest-SettingsRestoration.json"
+          }
+        },
+        "Pico": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.10",
+          "signatureVerified": true,
+          "sha256": "4ae1616be095891013ed76490820e602afc5b33a24acb7dc32c37e3becf6ed5b",
+          "target": "Pico",
+          "bytes": 87214299,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 13,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "android_version_code": 13,
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.10-Pico.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.10-Pico.manifest.json",
+          "audit": "Logs/EmberdeepInteractionGuard/Pico-Audit.json",
+          "errors": 0,
+          "warnings": 12,
+          "settings_restoration": {
+            "changed": [],
+            "audited_count": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepInteractionGuard/Pico-SettingsRestoration.json"
+          }
+        }
+      },
+      "devices": {
+        "Quest3": {
+          "version": "0.2.10",
+          "versionCode": 13,
+          "device": "Quest 3",
+          "package": "com.metahackathon2026.emberdeep",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.10.apk",
+          "sha256": "f5c7fb4126b94b495643435fd2e70fdd07e5539859e3e9ad4784a5fc77afe3e0",
+          "status": "INSTALLED_AND_VERSION_VERIFIED",
+          "installMethod": "metavr_app install replace=true; app info verified 0.2.10 / 13",
+          "checkedUtc": "2026-11-09T18:49:43.4854928Z",
+          "power": "Asleep",
+          "processRunning": false,
+          "launch": "NOT_ATTEMPTED while headset asleep",
+          "headsetInteractionAcceptance": "PENDING: user will test later this round",
+          "userFeedback": "User deferred 0.2.10 testing: 这轮稍后再测. No new headset interaction acceptance.",
+          "evidence": "Logs/EmberdeepInteractionGuard/Quest-Install.json",
+          "scope": "Installation/version verified only; launch not attempted and physical testing deferred by user."
+        },
+        "PICO4": "PENDING physical usability and performance baseline"
+      },
+      "user_feedback": "The user partially approved Quest 0.2.9 panel height but requested slightly higher placement. They then clarified that when trying to click a menu, pump or gameplay interactions may trigger, and they are unsure of the exact cause. The primary report is menu intent losing priority to physical/weapon actions, not confirmed accidental UI activation while playing. The second-incident right creek was only a suspected factor.",
+      "known_limits": [
+        "Earlier camp stable-placement SetUp timeout remains unexplained; subsequent full 184/115 rerun passed.",
+        "Quest installed/version verified, launch not attempted; user deferred current device testing.",
+        "PICO physical reach/performance remains unverified.",
+        "Raw SDK/IHand acquisition is outside synthetic evidence.",
+        "No claim of eliminating every accidental action.",
+        "M2/M3 and durable saves remain proposed.",
+        "Word draft has no visual layout approval."
+      ],
+      "test_history": {
+        "intermediate": {
+          "EditMode": {
+            "status": "PASSED_INTERMEDIATE_SUPERSEDED_BY_LAYOUT_CHANGE",
+            "total": 184,
+            "passed": 184,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepInteractionGuard/FinalVerification/EditMode-results.json",
+            "scope": "Before the final creek/rack clearance revision; not verification of the current layout."
+          },
+          "PlayMode": {
+            "status": "PASSED_INTERMEDIATE_SUPERSEDED_BY_LAYOUT_CHANGE",
+            "total": 109,
+            "passed": 109,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepInteractionGuard/FinalVerification/PlayMode-results.json",
+            "scope": "Before the final creek/rack clearance revision; not verification of the current layout."
+          }
+        },
+        "reason": "FinalVerification preceded the last creek placement revision. ReleaseVerification 184/109 passed after that layout revision, before the subsequent menu-intent priority change. Neither verifies the final UI-priority implementation.",
+        "after_layout_before_ui_priority": {
+          "EditMode": {
+            "status": "PASSED_INTERMEDIATE_BEFORE_UI_PRIORITY_REVISION",
+            "total": 184,
+            "passed": 184,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepInteractionGuard/ReleaseVerification/EditMode-results.json",
+            "scope": "Final creek/rack geometry and existing behavior only; later UI-intent ownership change is unverified."
+          },
+          "PlayMode": {
+            "status": "PASSED_INTERMEDIATE_BEFORE_UI_PRIORITY_REVISION",
+            "total": 109,
+            "passed": 109,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepInteractionGuard/ReleaseVerification/PlayMode-results.json",
+            "scope": "Final creek/rack geometry and existing behavior only; later UI-intent ownership change is unverified."
+          }
+        },
+        "placement_timeout_attempt": {
+          "reports": {
+            "EditMode": {
+              "status": "completed",
+              "total": 184,
+              "passed": 184,
+              "failed": 0,
+              "skipped": 0,
+              "inconclusive": 0,
+              "path": "Logs/EmberdeepInteractionGuard/FinalAcceptance/EditMode-results.json"
+            },
+            "PlayMode": {
+              "status": "completed",
+              "total": 115,
+              "passed": 114,
+              "failed": 1,
+              "skipped": 0,
+              "inconclusive": 0,
+              "path": "Logs/EmberdeepInteractionGuard/FinalAcceptance/PlayMode-results.json"
+            }
+          },
+          "failed_case": {
+            "FullName": "FireRescue.Tests.EmberdeepMenuPlayTests.ConfirmQuitRequiresModalAndIsAnEditorNoOpAfterRequest",
+            "Status": "Failed",
+            "Duration": 10.3860853,
+            "Message": "SetUp :   Menu failed to acquire stable placement\r\n  Expected: True\r\n  But was:  False\r\n",
+            "StackTrace": "at FireRescue.Tests.EmberdeepMenuPlayTests+<WaitPlaced>d__27.MoveNext () [0x0006d] in E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Assets\\FireRescue\\Tests\\PlayMode\\EmberdeepMenuPlayTests.cs:242\r\nat UnityEngine.TestTools.EnumeratorHelper+<ProgressOnEnumerator>d__5.MoveNext () [0x00017] in .\\Library\\PackageCache\\com.unity.test-framework@bd7f943e9647\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\EnumeratorHelper.cs:35\r\nat UnityEngine.TestTools.BeforeAfterTestCommandBase`1+<ExecuteEnumerable>d__16[T].MoveNext () [0x00132] in .\\Library\\PackageCache\\com.unity.test-framework@bd7f943e9647\\UnityEngine.TestRunner\\NUnitExtensions\\Commands\\BeforeAfterTestCommandBase.cs:155\r\n"
+          },
+          "scope": "FinalAcceptance passed 184 EditMode and 114 of 115 PlayMode tests. One existing ConfirmQuitRequiresModalAndIsAnEditorNoOpAfterRequest case failed in SetUp while waiting up to 10 seconds for stable menu placement; the Quit behavior was not reached. Root cause is unconfirmed. WaitPlaced now reports frames/focus/pause/XR/eye/floor/dt for diagnosis; the 10-second threshold and runtime behavior are unchanged. A full ReleaseAcceptance rerun is pending.",
+          "priority_cases_passed": [
+            "LeftHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+            "RightHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+            "NearRackAndSourceUiIntentCanSettleThenClickWithoutPhysicalAcquisition",
+            "DockedUiIntentCancelsPendingHalfStrokeBeforeDwellAndCannotPump",
+            "UiDockOwnerKeepsTrackingWhileOtherHandOwnsLeverAndCompletesStroke",
+            "ReservedUiCannotHideDockOwnerTrackingLossOrContinueValveTransfer",
+            "LeftChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+            "RightChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick"
+          ],
+          "suite_passed": false,
+          "subsequent_result": "Full ReleaseAcceptance rerun passed 184/115. The original stable-placement SetUp timeout remains a recorded failure with unconfirmed root cause; only diagnostics were added, not a relaxed threshold."
+        }
+      },
+      "captures": {
+        "source": "Editor PlayMode, production scene; synthetic seated/standing head poses with horizontal gaze and synthetic rays. Stage two includes optional creek. Near-well physical hand plus ray use the shared production UI policy. No LookAt correction.",
+        "paths": [
+          "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-Dashboard.png",
+          "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-Shop.png",
+          "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Seated-StageTwo-Overview.png",
+          "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Standing-Dashboard.png",
+          "Logs/EmberdeepInteractionGuard/Editor-Synthetic-Standing-Shop.png"
+        ],
+        "record": "Logs/EmberdeepInteractionGuard/Capture.json",
+        "visual_review_record": "Logs/EmberdeepInteractionGuard/VisualReview.json",
+        "review": {
+          "status": "PASS scoped Editor HUD/Shop and source placement review",
+          "reviewed_images": [
+            "Editor-Synthetic-Seated-Dashboard.png",
+            "Editor-Synthetic-Seated-Shop.png",
+            "Editor-Synthetic-Seated-StageTwo-Overview.png",
+            "Editor-Synthetic-Standing-Dashboard.png",
+            "Editor-Synthetic-Standing-Shop.png"
+          ],
+          "observations": [
+            "HUD and Shop fully visible at synthetic eye heights 1.1m and 1.7m with horizontal gaze.",
+            "Physical hand at the well lever can highlight/open Shop through the shared production physical+ray policy.",
+            "Optional creek label visible; revised source and equipment rack have distinct interaction positions.",
+            "Overview retains blockout supply fixtures and temporary synthetic-clear reward feedback; it is not final art or a headset comfort assessment."
+          ],
+          "headset_usability": "PENDING",
+          "performance": "NOT_ASSESSED"
+        },
+        "frames": [
+          4443,
+          6784,
+          9613
+        ],
+        "poses": [
+          {
+            "posture": "Seated",
+            "eyeHeight": 1.1,
+            "headPosition": {
+              "x": 0.0,
+              "y": 1.1,
+              "z": 0.0
+            },
+            "panelPosition": {
+              "x": 0.0,
+              "y": 1.06000006,
+              "z": 0.9
+            },
+            "shopViewport": {
+              "x": 0.5,
+              "y": 0.375037134,
+              "z": 0.9
+            },
+            "shopOpened": true,
+            "cameraAndArenaUnchanged": true
+          },
+          {
+            "posture": "Standing",
+            "eyeHeight": 1.7,
+            "headPosition": {
+              "x": 0.0,
+              "y": 1.7,
+              "z": 0.0
+            },
+            "panelPosition": {
+              "x": 0.0,
+              "y": 1.66000009,
+              "z": 0.9
+            },
+            "shopViewport": {
+              "x": 0.5,
+              "y": 0.375037134,
+              "z": 0.9
+            },
+            "shopOpened": true,
+            "cameraAndArenaUnchanged": true
+          }
+        ],
+        "additional_view": "Seated StageTwo Overview uses a separate 25-degree downward head rotation with injected XR tutorial availability; desktop status may retain keyboard prompts. All scene and hand/ray inputs are synthetic Editor evidence.",
+        "playerLoopAdvanced": true,
+        "headset_acceptance": false,
+        "real_hand_tracking": false
+      },
+      "feedback_clarification": {
+        "original_user_quote": "我想要点菜单的时候，会触发水泵和游玩的互动，我也不确定",
+        "meaning": "Attempted menu action may be consumed by pump/gameplay; cause not confirmed",
+        "correction": "Do not describe the primary complaint as confirmed UI clicks caused by ordinary gameplay."
+      },
+      "input_contract": {
+        "api": "public bool ProcessHandInterfaceSamples(EmberdeepRefillInteraction.Hand leftHand, EmberdeepRefillInteraction.Hand rightHand, EmberdeepHandRay.Sample left, EmberdeepHandRay.Sample right, bool available, float dt)",
+        "production_path": "EmberdeepHandRayMenu.Process uses the game sampleAllowed callback AllowPointedInterface; it reads actual physical hand data and shares AllowHandInterface(hand, physical, ray) with the synthetic API. HasIntent reuses eligible target hit testing.",
+        "raw_pointer_acquisition": "Game-only ReadIntent uses valid provider ReadHand and ReadInteractionAim, including the first closed sample; this can reserve UI but cannot bypass the existing open/rearm/fresh-edge pinch filter. Camp keeps EmberdeepHandRay.Read and the default 180-degree eligibility limit.",
+        "physical_mask": "interfacePhysicalBlocked persists until release or invalid physical data. No actual refill operator: consume pending stroke and block acquisition. Other actual operator: keep actual tracking and replace only reserved UI hand pinch with open distance; do not invent tracked=true.",
+        "scope": "Synthetic samples test shared arbitration, not raw SDK/IHand acquisition or real headset usability."
+      },
+      "new_regression_cases": {
+        "baseline_version": "0.2.9",
+        "baseline_playmode": 96,
+        "current_playmode": 115,
+        "net_new_playmode": 19,
+        "new_case_names_vs_baseline": [
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.DockedUiIntentCancelsPendingHalfStrokeBeforeDwellAndCannotPump",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LeftChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LeftHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LookingAwayDropsToolHandUiOwnershipAndClosedReturnCannotClick",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.NearRackAndSourceUiIntentCanSettleThenClickWithoutPhysicalAcquisition",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.ReservedUiCannotHideDockOwnerTrackingLossOrContinueValveTransfer",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.RightChargingHandReservesUiImmediatelyButRequiresOpenBeforeClick",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.RightHandPointingAtMenuNearWellCannotLeakPinchIntoPump",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.UiDockOwnerKeepsTrackingWhileOtherHandOwnsLeverAndCompletesStroke",
+          "FireRescue.Tests.EmberdeepHandRayGamePlayTests.VisibleHudOutsideHeadIntentConeCannotHoverOrCancelChargeFromEitherHand",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftCannonChargeCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftExtinguisherFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftFanFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftPistolFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightCannonChargeCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightExtinguisherFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightFanFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightPistolFiringPinchCannotBeCapturedByCreek",
+          "FireRescue.Tests.EmberdeepRefillApproachPlayTests.SecondSectorOptionalCreekStaysOutsideBothNormalToolSides"
+        ],
+        "editmode_note": "184 total; the 17 existing HUD cases are updated, not newly added.",
+        "coverage_boundary": "Shared-policy synthetic samples do not execute or validate raw SDK/IHand acquisition or prove device comfort."
+      },
+      "device_test_deferral": {
+        "device": "Quest 3",
+        "version": "0.2.10",
+        "user_statement": "This round, I will test later.",
+        "scope": "Current physical acceptance deferred; no repeat test request this round.",
+        "evidence": "Logs/EmberdeepInteractionGuard/Quest-Install.json"
+      },
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 94,
+        "snapshot": "Logs/EmberdeepInteractionGuard/VerifiedSources.json"
+      }
     }
   ],
-  "historical_scope": "Top-level evidence covers 0.2.0; historical_iterations are version scoped. current_iteration is 0.2.7. The 0.2.6 full-grip attempt was reported unusable by the user; its passing Editor tests are not positive hardware acceptance."
+  "historical_scope": "Top-level evidence covers 0.2.0; historical_iterations retain prior releases. Current iteration is 0.2.10. Prior 0.2.8 Shop access and 0.2.9 partial position feedback do not validate current behavior.",
+  "design_revision": "0.13",
+  "planned_design_updates": {
+    "status": "SUPERSEDED_BY_0.13_IMPLEMENTATION_CANDIDATE",
+    "source": "WaterRecoveryAndShopPreview.json",
+    "prior_approval": "historical_design_updates retains 0.12 approved-only status",
+    "water_recovery": {
+      "status": "IMPLEMENTED_EDITOR_VERIFIED_DEVICE_ACCEPTANCE_PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Recovery.cs"
+      ],
+      "api": "FireRun.TickRecovery(dt, eligible, triggerActive), ResetRecovery(), RecoveredWater, RecoveryWaiting, RecoveryActive and RecoveryDelayRemaining. FireRescueGame.ProcessWaterRecovery applies the live scene gates.",
+      "clock": "Exactly one explicit transaction after the accepted simulation step. Accept finite positive dt up to 0.1 seconds per call; discard excess rather than banking it. Delay uses eligible active time only; crossing frames credit only the part after the delay. Preserve fractional water and sub-float rounding carry.",
+      "gates": "Fighting/Cleared, owned active loadout, focused settled fireground, valid tracking, positive timeScale, no Shop/modal/navigation/placement transition, no manual-source lock, pending dock, empty-outlet action, active cannon pump, raw held trigger, charge or firing. A racked equipped owned loadout may recover; a selected preview cannot.",
+      "transactions": "Successful equip/purchase/tuning/station upgrade, source connection/disconnection, stage/outcome transition, retry and external suspension reset the delay. Recovery changes only the active tank and RecoveredWater; the sector checkpoint restores tanks, supplied/recovered/consumed counters, equipment ownership/upgrades, station tier and economy together.",
+      "feedback": "Quiet droplet with RECOVERY Waiting or SLOW RECOVERY +0.25/s beside the gauge; hidden when ineligible or full. Empty active recovery offers the pump as the faster alternative. No recovery sound, haptic, hand ownership or world water emitter.",
+      "tests_authored": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepWaterRecoveryTests.cs",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::SimulationTickAloneCannotCreditRecoveryWithoutExplicitEligibility",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepRecoveryGamePlayTests.cs"
+      ],
+      "test_status": "PASSED in FinalVerification 204 EditMode / 144 PlayMode; no headset acceptance implied"
+    },
+    "shop_previews": {
+      "status": "IMPLEMENTED_EDITOR_VERIFIED_DEVICE_ACCEPTANCE_PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Shop.cs",
+        "Assets/FireRescue/Runtime/EmberdeepShopPreview.cs"
+      ],
+      "catalogue_ids": [
+        "tool:{EquipmentId}",
+        "tune:{EquipmentId}:{nextLevel}",
+        "station:{resultTier}"
+      ],
+      "api": "ShowShopPage(Equipment/Tuning/Station), ShowStationComparison(current), ShopItemId, ShopPrice, ShopCanBuy, ShopComparison and BuyShopSelection. EmberdeepShopPreview exposes ItemId, PreviewRoot, ModelBounds, IsFallback, ForceFallback and Generation.",
+      "interaction": "View Tuning and View Water choose a page; Buy is a separate fresh-pinch action. Previous/Next browse tool and tuning entries. Station comparison alternates current/result and disables purchase on the current view. Numeric tuning confirms the selected owned tool and restores the prior active loadout after purchase. Browsing itself never equips or credits water.",
+      "representation": "One stable three-quarter direct-geometry preview fitted inside a 0.79 x 0.61 x 0.38 metre panel-local frame. Equipment pages reuse the actual silhouette. Numeric tuning reuses the same model with Tank/Power/Range/Width/Speed before/after values, not a new mode. Station result highlights its wheel or button and shows the changed control.",
+      "isolation": "Existing builders create an inactive staging object; only transform, mesh, material and tint data are copied. The visible preview has no collider, rigidbody, gameplay script, interaction target, audio or particle emitter. Repeated same-key refresh reuses the preview. A changed key deactivates and disposes the old preview. Missing content has a neutral silhouette and PREVIEW UNAVAILABLE while name, price and separate purchase remain readable.",
+      "not_implemented": "No thumbnail tile grid, render texture, continuous spin, rotate control or demonstration is present. Those optional presentation variants are not claimed. Dedicated authored preview prefab/thumbnail replacement assets and Quest/PICO stereo and performance acceptance remain pending.",
+      "tests_authored": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepShopPreviewPlayTests.cs"
+      ],
+      "test_status": "PASSED in FinalVerification 204 EditMode / 144 PlayMode; no headset acceptance implied"
+    },
+    "evidence": "FinalVerification passed 204 EditMode and 144 PlayMode; all 12 current Editor captures reviewed. 0.2.10 reports remain historical."
+  },
+  "historical_design_updates": [
+    {
+      "status": "APPROVED_DIRECTION_NOT_IMPLEMENTED",
+      "source": "WaterRecoveryAndShopPreview.json",
+      "runtime_version_unchanged": "0.2.10 / Android code 13",
+      "water_recovery": {
+        "requirements": [
+          "DD-02",
+          "GD-WATER-10",
+          "GD-WATER-11"
+        ],
+        "current": "FireRun.Tick has no passive water credit. Existing DryTankNeverRegeneratesDuringFightOrClearOrNext verifies the shipped manual-only contract.",
+        "code": [
+          "Assets/FireRescue/Runtime/FireRun.cs",
+          "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+          "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+        ],
+        "gap": "Add eligible-time recovery, separate recoveredWater accounting, checkpoint symmetry and quiet gauge feedback; retain manual supply exclusivity and all no-grant transition protections.",
+        "acceptance": "GD-WATER-10/11 new rate, interruption, active-tank and accounting tests plus both-device usability. Explicitly migrate the old blanket no-regeneration test to the new contract when code changes; retain forbidden-phase and transition tests. No current test pass covers this proposal."
+      },
+      "shop_previews": {
+        "requirements": [
+          "GD-SHOP-01",
+          "GD-SHOP-02",
+          "AR-SHOP-01"
+        ],
+        "current": "FireRescueGame.BuildShop/RefreshShop provide text and actions; RefreshEquipment creates a selected-tool rack model. This is partial reusable presentation, not dedicated per-entry shop previews for station tiers and tuning.",
+        "code": [
+          "Assets/FireRescue/Runtime/FireRescueGame.cs",
+          "Assets/FireRescue/Runtime/FireEquipmentView.cs"
+        ],
+        "gap": "Bind display-only models/thumbnails to all buyable IDs, framing and upgrade comparison; preserve separate purchase confirmation and UI arbitration.",
+        "acceptance": "Catalogue coverage, correct ID/model/price, no inventory or input side effects, missing-model fallback, repeated browse/open/close and Quest/PICO stereo/readability/performance checks."
+      },
+      "evidence": "Design-source and generated Word content checks only. Existing 0.2.10 tests, captures, APKs and deferred device acceptance remain historical runtime evidence."
+    }
+  ]
 }

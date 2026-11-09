@@ -126,6 +126,8 @@ namespace FireRescue
                 if(!held || !tool){supply.Interrupt();return false;}
                 var h=holdingHand==0?left:right;
                 if(!h.Tracked){supply.Interrupt();return false;}
+                // A firing/charging pinch never becomes a source connection.
+                if(h.Pinch<.035f){supply.Interrupt("Release pinch before docking");return false;}
                 var view=hydrant;
                 if(creek && creek.gameObject.activeSelf && Vector3.Distance(tool.RefillPort.position,creek.Socket.position)<Vector3.Distance(tool.RefillPort.position,hydrant.Socket.position))view=creek;
                 float distance=Vector3.Distance(tool.RefillPort.position,view.Socket.position);
@@ -270,15 +272,22 @@ namespace FireRescue
         public static bool NearStation(Vector3 palm,EmberdeepWaterStationView station)=>station && station.gameObject.activeInHierarchy
             && Vector3.Distance(palm,station.Socket.position)<.32f;
 
-        // A close fixture guides orientation, keeping the physical grip exactly in
-        // the user's palm. It does not move the tool into the socket, dock it or fill it.
-        // Actual port distance and the existing .25s aligned hold still gate connection.
-        public static bool TryGuideHeldTool(FireEquipmentView tool,Pose palm,EmberdeepWaterStationView hydrant,EmberdeepWaterStationView creek)
+        // Guide only an open hand near the grip's intended dock position, not a
+        // large sphere around the fixture. The real port/dwell still owns docking.
+        public static bool TryGuideHeldTool(FireEquipmentView tool,Pose palm,EmberdeepWaterStationView hydrant,EmberdeepWaterStationView creek,float pinch=.04f)
         {
-            if(!tool || !Finite(palm.position.x) || !Finite(palm.position.y) || !Finite(palm.position.z))return false;
-            EmberdeepWaterStationView station=null;
-            if(NearStation(palm.position,hydrant))station=hydrant;
-            if(NearStation(palm.position,creek) && (!station || Vector3.Distance(palm.position,creek.Socket.position)<Vector3.Distance(palm.position,station.Socket.position)))station=creek;
+            if(!tool || !Finite(pinch) || pinch<.035f || !Finite(palm.position.x) || !Finite(palm.position.y) || !Finite(palm.position.z))return false;
+            EmberdeepWaterStationView station=null;float nearest=.16f;
+            for(int source=0;source<2;source++)
+            {
+                var candidate=source==0?hydrant:creek;
+                if(!candidate || !candidate.gameObject.activeInHierarchy)continue;
+                var aligned=candidate.Socket.rotation*Quaternion.Euler(0,180,0)*Quaternion.Inverse(tool.RefillPort.localRotation);
+                var dockingGrip=candidate.Socket.position+aligned*(tool.Grip.localPosition-tool.RefillPort.localPosition);
+                float distance=Vector3.Distance(palm.position,dockingGrip);
+                if(distance>nearest)continue;
+                station=candidate;nearest=distance;
+            }
             if(!station)return false;
             var rotation=station.Socket.rotation*Quaternion.Euler(0,180,0)*Quaternion.Inverse(tool.RefillPort.localRotation);
             tool.transform.SetPositionAndRotation(palm.position-rotation*tool.Grip.localPosition,rotation);

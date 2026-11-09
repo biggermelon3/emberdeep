@@ -1,0 +1,177 @@
+{
+  "revision": "0.13",
+  "candidate": "0.2.11",
+  "android_version_code": 14,
+  "date": "2026-11-09",
+  "status": "DRAFT_EDITOR_AND_APK_VERIFIED_DEVICE_ACCEPTANCE_PENDING",
+  "scope": "Run on Quest 3 and PICO 4; seated/standing and both hands. Editor tests and captures are separate evidence. Do not reuse 0.2.10 results.",
+  "devices": {
+    "Quest3": "INSTALLED_VERSION_VERIFIED; physical acceptance PENDING",
+    "PICO4": "APK_BUILT_AND_AUDITED; physical acceptance PENDING"
+  },
+  "checks": [
+    {
+      "id": "REC-01",
+      "requirement": "GD-WATER-10",
+      "steps": "Enter from Camp, consume the active tank, release input and keep tracking/focus valid. Observe Waiting for 3 eligible seconds and then slow fractional fill. Compare 20 seconds of active recovery against manual pumping.",
+      "expected": "About 5 units after the delay; no automatic shot, hand capture, recovery audio/haptics or requirement to wait before reaching free supply."
+    },
+    {
+      "id": "REC-02",
+      "requirement": "GD-WATER-10/11",
+      "steps": "Hold a dry trigger/cannon input; then pause, lose hand tracking, recenter, enter a modal/shop, return to Camp and resume.",
+      "expected": "No recovery while blocked and no catch-up; each eligible return restarts the 3-second delay. Regained water cannot release a stored charge or fire a held dry trigger."
+    },
+    {
+      "id": "REC-03",
+      "requirement": "GD-WATER-11",
+      "steps": "Recover in one owned loadout while racked, switch tools, perform manual supply, buy/tune equipment and upgrade a station, advance a sector and retry.",
+      "expected": "Only the active owned tank recovers; purchased tools start empty; no instant transition fill. Manual and recovered credits stay separate. Retry restores all tank and counter checkpoint values together."
+    },
+    {
+      "id": "SHOP-01",
+      "requirement": "GD-SHOP-01/02 AR-SHOP-01",
+      "steps": "Browse every tool, numeric tuning and offered station upgrade result using both hands. Confirm item name, model, price, operation description and action after rapid paging.",
+      "expected": "One correctly framed preview at a time; numeric tuning shows true before/after values and no invented new ability. Preview does not block price, Buy or Back and selecting it does not purchase/equip/refill."
+    },
+    {
+      "id": "SHOP-02",
+      "requirement": "AR-SHOP-01 GD-HAND-01",
+      "steps": "Open/close and page repeatedly, test insufficient funds and already owned entries, lose tracking near controls and inspect missing-model fallback in QA.",
+      "expected": "No duplicate objects or callbacks, no physics/gameplay/audio/world emitters on preview, safe fallback and fresh same-hand pinch ownership."
+    },
+    {
+      "id": "XR-01",
+      "requirement": "GD-PERF AR-SHOP-01",
+      "steps": "Inspect both eyes on Quest 3 and PICO 4 while seated and standing; record frame cost while browsing versus the same scene without a visible preview.",
+      "expected": "Readable comfortable placement without lean or camera motion; no stereo disparity defects. Record actual PICO 4 frame/memory/overdraw data before performance acceptance."
+    }
+  ],
+  "evidence": {
+    "root": "Logs/EmberdeepRecoveryShop",
+    "editor_tests": {
+      "EditMode": {
+        "status": "PASSED",
+        "total": 204,
+        "passed": 204,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
+        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+      },
+      "PlayMode": {
+        "status": "PASSED",
+        "total": 144,
+        "passed": 144,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
+        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+      }
+    },
+    "editor_captures": {
+      "status": "EDITOR_VISUAL_REVIEW_PASSED",
+      "reviewed_images": 12,
+      "capture": "Logs/EmberdeepRecoveryShop/Capture.json",
+      "review": "Logs/EmberdeepRecoveryShop/VisualReview.json",
+      "images": [
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Active.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Waiting.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-CurrentLever.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Extinguisher.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PressureCannon.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PulsePistol.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PushButton.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RainFan.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RotaryHydrant.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning-Purchased.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Standing-Shop-PushButton.png"
+      ],
+      "scope": "Editor synthetic eye positions, hand rays and domain time; station second comparison and purchase use public scene APIs to avoid same-frame UI debounce. Not headset or physical feel evidence.",
+      "checks": [
+        "All four tool models are visible and contained",
+        "Tuning text and price no longer overlap",
+        "Current and upgraded station models are distinct",
+        "Waiting and active recovery feedback are visible",
+        "Seated and standing synthetic eye heights keep shop forward"
+      ],
+      "limitations": [
+        "Existing blockout models reused",
+        "Synthetic Editor captures do not establish headset legibility, comfort or performance"
+      ],
+      "capture_helper_history": [
+        "Prior capture attempts hit same-frame WorkshopButton debounce, Vector3 JSON recursion and restart ordering; helper corrected and final run completed with 12 captures. These are capture-helper failures, distinct from runtime regression results."
+      ]
+    },
+    "apk_audits": {
+      "Quest": {
+        "status": "BUILT_AND_AUDITED",
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.11",
+        "signatureVerified": true,
+        "sha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363",
+        "target": "Quest",
+        "bytes": 105528715,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 14,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11.manifest.json",
+        "audit": "Logs/EmberdeepRecoveryShop/Quest-Audit.json",
+        "errors": 0,
+        "warnings": 8,
+        "settings_audited": 28
+      },
+      "PICO": {
+        "status": "BUILT_AND_AUDITED",
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.11",
+        "signatureVerified": true,
+        "sha256": "06fc81735916822c2a525218596255d18145170c7552d29d768b389576f1f203",
+        "target": "Pico",
+        "bytes": 87230967,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 14,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.manifest.json",
+        "audit": "Logs/EmberdeepRecoveryShop/Pico-Audit.json",
+        "errors": 0,
+        "warnings": 12,
+        "settings_audited": 28
+      }
+    },
+    "device_observations": {
+      "Quest3": {
+        "status": "INSTALLED_VERSION_VERIFIED",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.11",
+        "versionCode": 14,
+        "installedInfo": {
+          "package": "com.metahackathon2026.emberdeep",
+          "version_name": "0.2.11",
+          "version_code": "14",
+          "install_path": "/data/app/~~iNIbpQzmHNl-b8_XruGT4g==/com.metahackathon2026.emberdeep-J_LNuVyIc7P2i9QCQASYQg==",
+          "is_system": false,
+          "first_install_time": "2026-11-06 13:30:58",
+          "last_update_time": "2026-11-10 04:44:47",
+          "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+        },
+        "method": "metavr install --replace, followed by metavr app info",
+        "powerState": "Asleep",
+        "processRunning": false,
+        "physicalAcceptance": "PENDING; no physical hand tracking, comfort, stereo readability or performance result claimed",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+        "apkSha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363"
+      },
+      "PICO4": "Physical hand tracking, readability, comfort and performance acceptance pending"
+    }
+  }
+}

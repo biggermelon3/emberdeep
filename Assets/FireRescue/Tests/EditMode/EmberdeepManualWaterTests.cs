@@ -37,11 +37,15 @@ namespace FireRescue.Tests
             run.Restart();Assert.AreEqual(60,run.Water);Assert.Zero(run.SuppliedWater);
             Assert.IsFalse(run.Owns(FireEquipmentId.PulsePistol));
         }
-        [Test] public void DryTankNeverRegeneratesDuringFightOrClearOrNext()
+        [Test] public void SimulationTickAloneCannotCreditRecoveryWithoutExplicitEligibility()
         {
+            // GD-WATER-10 supersedes the blanket no-regeneration rule. Ordinary
+            // simulation still cannot guess focus/tracking/shop eligibility or
+            // double-credit the separate recovery transaction.
             var run=ActiveDry();for(int i=0;i<100;i++)run.Tick(.1f,false);
             Assert.Zero(run.Water);Clear(run);for(int i=0;i<100;i++)run.Tick(.1f,false);
             Assert.Zero(run.Water);Assert.IsTrue(run.StartStage());Assert.Zero(run.Water);
+            Assert.Zero(run.RecoveredWater);Assert.Zero(run.SuppliedWater);
         }
         [Test] public void UpgradeAddsCapacityWithoutWaterOrSupplyCredit()
         {

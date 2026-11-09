@@ -122,5 +122,109 @@ namespace FireRescue.Tests
             Assert.IsFalse(game.Run.Supply.ValveOpen);Assert.Zero(game.Run.Charge01);
             yield return null;
         }
+
+        [UnityTest] public IEnumerator LeftExtinguisherFiringPinchCannotBeCapturedByCreek()=>ClosedApproach(0,FireEquipmentId.Extinguisher);
+        [UnityTest] public IEnumerator RightExtinguisherFiringPinchCannotBeCapturedByCreek()=>ClosedApproach(1,FireEquipmentId.Extinguisher);
+        [UnityTest] public IEnumerator LeftPistolFiringPinchCannotBeCapturedByCreek()=>ClosedApproach(0,FireEquipmentId.PulsePistol);
+        [UnityTest] public IEnumerator RightPistolFiringPinchCannotBeCapturedByCreek()=>ClosedApproach(1,FireEquipmentId.PulsePistol);
+        [UnityTest] public IEnumerator LeftFanFiringPinchCannotBeCapturedByCreek()=>ClosedApproach(0,FireEquipmentId.RainFan);
+        [UnityTest] public IEnumerator RightFanFiringPinchCannotBeCapturedByCreek()=>ClosedApproach(1,FireEquipmentId.RainFan);
+        [UnityTest] public IEnumerator LeftCannonChargeCannotBeCapturedByCreek()=>ClosedApproach(0,FireEquipmentId.PressureCannon);
+        [UnityTest] public IEnumerator RightCannonChargeCannotBeCapturedByCreek()=>ClosedApproach(1,FireEquipmentId.PressureCannon);
+        IEnumerator ClosedApproach(int hand,FireEquipmentId id)
+        {
+            yield return Load(hand);
+            // Earn unlocks through the production run; buy only this fixture's tool.
+            for(int stage=0;stage<3;stage++)
+            {
+                foreach(var tree in game.Run.Trees)if(tree.State==TreeState.Burning)game.Run.ApplyWater(tree.Position,100,.1f);
+                Assert.AreEqual(FirePhase.Cleared,game.Run.Phase);
+                if(stage<2)game.StartNext();
+            }
+            if(id!=FireEquipmentId.Extinguisher)Assert.IsTrue(game.Run.BuyEquipment(id));
+            game.SelectEquipment((int)id);game.StartNext();Assert.IsTrue(game.TakeEquipment(hand));
+            // ReturnEquipment positions the real rack for the current hand. Its
+            // pickup must remain outside the new creek's orientation-guidance band.
+            game.ReturnEquipment();
+            var rackTools=game.transform.Find("Equipment rack").GetComponentsInChildren<FireEquipmentView>();
+            Assert.AreEqual(1,rackTools.Length);Assert.AreEqual(id,rackTools[0].Id);
+            var rackGrip=rackTools[0].Grip;var preview=game.HeldTool;var socket=game.CreekStation.Socket;
+            var dockingRotation=socket.rotation*Quaternion.Euler(0,180,0)*Quaternion.Inverse(preview.RefillPort.localRotation);
+            var dockingGrip=socket.position+dockingRotation*(preview.Grip.localPosition-preview.RefillPort.localPosition);
+            float pickupClearance=Vector3.Distance(rackGrip.position,dockingGrip);
+            Assert.Greater(pickupClearance,.18f,$"{id}, hand {hand}: rack pickup must clear the .16 m guide plus buffer");
+            var previewPosition=preview.transform.position;var previewRotation=preview.transform.rotation;
+            Assert.IsFalse(EmberdeepRefillInteraction.TryGuideHeldTool(preview,new Pose(rackGrip.position,rackGrip.rotation),
+                game.HydrantStation,game.CreekStation,.04f),"Opening at the actual rack grip cannot pull the tool toward either source");
+            Assert.AreEqual(previewPosition,preview.transform.position);Assert.AreEqual(previewRotation,preview.transform.rotation);
+            TestContext.WriteLine($"Synthetic layout: {id}, hand {hand}, rack-to-creek grip clearance {pickupClearance:F4} m");
+            Assert.IsTrue(game.TakeEquipment(hand));
+            var supply=game.Run.Supply;
+            for(int i=0;i<4;i++)supply.SampleDock(WaterSourceKind.Hydrant,hand,0,0,true,.1f);
+            Assert.IsTrue(supply.SetValveOpen(true));for(int i=0;i<100;i++)supply.Tick(.1f,true);
+            supply.Disconnect();game.Run.Tick(Dt,false);
+            if(id==FireEquipmentId.PressureCannon)Assert.IsTrue(game.Run.PrimeCannon(1));
+            else Assert.IsTrue(game.Run.Tick(.1f,true));
+            float charge=game.Run.Charge01,water=game.Run.Water,supplied=game.Run.SuppliedWater;
+            var tool=game.HeldTool;var station=game.CreekStation;
+            EmberdeepRefillInteraction.Snap(tool,station.Socket);
+            var dockingPalm=new Pose(tool.Grip.position,Quaternion.Euler(30,75,15));
+            // Even perfectly aligned ports must not connect under a firing pinch.
+            var beforePosition=tool.transform.position;var beforeRotation=tool.transform.rotation;
+            for(int i=0;i<20;i++)
+            {
+                Assert.IsFalse(EmberdeepRefillInteraction.TryGuideHeldTool(tool,dockingPalm,game.HydrantStation,station,.01f));
+                Sample(hand,dockingPalm,.01f,dockingPalm.position);
+            }
+            Assert.AreEqual(beforePosition,tool.transform.position);Assert.AreEqual(beforeRotation,tool.transform.rotation);
+            Assert.IsFalse(supply.Locked);Assert.Zero(supply.Alignment01);
+            Assert.AreEqual(charge,game.Run.Charge01);Assert.AreEqual(water,game.Run.Water);Assert.AreEqual(supplied,game.Run.SuppliedWater);
+            // Inside the former socket sphere but outside the intended grip band.
+            var passing=dockingPalm;passing.position+=station.transform.right*(hand==0?-.17f:.17f);
+            Assert.IsTrue(EmberdeepRefillInteraction.NearStation(passing.position,station));
+            Assert.IsFalse(EmberdeepRefillInteraction.TryGuideHeldTool(tool,passing,game.HydrantStation,station,.04f));
+            Assert.AreEqual(beforePosition,tool.transform.position);Assert.AreEqual(beforeRotation,tool.transform.rotation);
+            for(int i=0;i<5;i++)Sample(hand,dockingPalm,.04f,dockingPalm.position);
+            Assert.Greater(supply.Alignment01,0);Assert.IsFalse(supply.Locked);
+            Sample(hand,dockingPalm,.01f,dockingPalm.position);Assert.Zero(supply.Alignment01);
+            Assert.IsTrue(EmberdeepRefillInteraction.TryGuideHeldTool(tool,dockingPalm,game.HydrantStation,station,.04f));
+            for(int i=0;i<9;i++)Sample(hand,dockingPalm,.04f,dockingPalm.position);
+            Assert.IsFalse(supply.Locked,"A closed sample discards the previous partial dwell");
+            for(int i=0;i<3;i++)Sample(hand,dockingPalm,.04f,dockingPalm.position);
+            Assert.IsTrue(supply.Locked);Assert.AreEqual(WaterSourceKind.Creek,supply.Kind);Assert.AreEqual(hand,supply.OwnerHand);
+            Assert.AreEqual(water,game.Run.Water);Assert.AreEqual(supplied,game.Run.SuppliedWater,"Docking alone never transfers water");
+            yield return null;
+        }
+
+        [UnityTest] public IEnumerator SecondSectorOptionalCreekStaysOutsideBothNormalToolSides()
+        {
+            yield return Load(1);Assert.AreEqual(0,game.Run.Stage);Assert.IsFalse(game.CreekStation.gameObject.activeSelf);
+            foreach(var tree in game.Run.Trees)if(tree.State==TreeState.Burning)game.Run.ApplyWater(tree.Position,100,.1f);
+            game.StartNext();Assert.AreEqual(1,game.Run.Stage);Assert.IsTrue(game.CreekStation.gameObject.activeSelf);
+            for(int hand=0;hand<2;hand++)
+            {
+                Assert.IsTrue(game.TakeEquipment(hand));var creek=game.CreekStation;
+                var local=game.Arena.InverseTransformPoint(creek.transform.position);
+                Assert.That(local.x,Is.EqualTo(hand==0?-4f:4f).Within(.0001f));
+                Assert.That(local.z,Is.EqualTo(3.5f).Within(.0001f));
+                Assert.That(Mathf.Abs(Vector3.Dot(creek.transform.position-game.Arena.position,game.Arena.right)),Is.EqualTo(.32f).Within(.0001f));
+                // Geometric reach envelope only: synthetic head/anchors cannot
+                // establish comfort, hand tracking or usability on a headset.
+                foreach(var control in new[]{creek.Pump,creek.Lever,game.HydrantStation.Lever})
+                {
+                    float horizontal=Vector3.ProjectOnPlane(control.position-game.Player.ViewCamera.transform.position,Vector3.up).magnitude;
+                    Assert.LessOrEqual(horizontal,.75f,$"{control.name}, hand {hand}: layout reach envelope");
+                    TestContext.WriteLine($"Synthetic layout: {control.name}, hand {hand}, head horizontal distance {horizontal:F4} m; not a comfort verdict");
+                }
+                // Enable the production XR tutorial using synthetic availability;
+                // desktop status intentionally presents keyboard shortcuts instead.
+                creek.ShowTutorial(game.Run,game.HeldTool,true,null,true);
+                bool optional=false;foreach(var label in creek.GetComponentsInChildren<TextMesh>(true))
+                    optional|=label.gameObject.activeInHierarchy && label.text.Contains("OPTIONAL");
+                Assert.IsTrue(optional,"The extra source must advertise that it is optional");
+                Assert.IsTrue(game.HydrantStation.gameObject.activeInHierarchy,"The familiar free source remains reachable");
+            }
+            yield return null;
+        }
     }
 }

@@ -18,6 +18,8 @@ namespace FireRescue
         readonly WorkshopButton[] targets=new WorkshopButton[2];
         readonly bool[] visible=new bool[2];
         public Camera ViewCamera { get; set; }
+        // Fireground requires attention near the panel; camp keeps its own policy.
+        public float MaximumHeadAngle { get; set; }=180f;
         public bool RayVisible(int hand)=>hand>=0 && hand<2 && visible[hand];
         Material material;
         IReadOnlyList<WorkshopButton> currentButtons;
@@ -26,6 +28,9 @@ namespace FireRescue
         public int PointerHand { get; private set; }=1;
         public bool OwnsInput=>targets[0] || targets[1] || PressedButton;
         public bool HasPointer { get; private set; }
+        public bool HasTarget(int hand)=>hand>=0 && hand<2 && targets[hand];
+        public bool HasIntent(int hand,EmberdeepHandRay.Sample sample,IReadOnlyList<WorkshopButton> buttons,Predicate<WorkshopButton> allowed=null)
+            =>hand>=0 && hand<2 && EmberdeepHandRay.Valid(sample) && FindTarget(sample,buttons,targets[hand],allowed,out _);
         public bool IsHovered(WorkshopButton button)=>button && (targets[0]==button || targets[1]==button);
 
         public void Initialize(Transform parent,Material fallback)
@@ -49,18 +54,37 @@ namespace FireRescue
             }
         }
         public bool Process(MetaShadowPlayer provider,Camera camera,bool xr,IReadOnlyList<WorkshopButton> buttons,
-            bool available,float dt,Predicate<WorkshopButton> allowed=null,Func<int,bool> handAllowed=null)
+            bool available,float dt,Predicate<WorkshopButton> allowed=null,Func<int,bool> handAllowed=null,
+            Func<int,EmberdeepHandRay.Sample,bool> sampleAllowed=null)
         {
             ViewCamera=camera;
             EmberdeepHandRay.Sample left=default,right=default;
             if(available && xr)
             {
-                if(handAllowed==null || handAllowed(0))left=rays[0].Read(provider,true);else rays[0].Reset();
-                if(handAllowed==null || handAllowed(1))right=rays[1].Read(provider,false);else rays[1].Reset();
+                if(handAllowed==null || handAllowed(0))left=sampleAllowed==null?rays[0].Read(provider,true):ReadIntent(provider,true);else rays[0].Reset();
+                if(handAllowed==null || handAllowed(1))right=sampleAllowed==null?rays[1].Read(provider,false):ReadIntent(provider,false);else rays[1].Reset();
+                if(sampleAllowed!=null)
+                {
+                    if(!sampleAllowed(0,left))left=default;
+                    if(!sampleAllowed(1,right))right=default;
+                }
             }
             else if(available && camera && Mouse.current!=null)
                 right=new EmberdeepHandRay.Sample(true,camera.ScreenPointToRay(Mouse.current.position.ReadValue()),Mouse.current.leftButton.isPressed?.01f:.04f);
             return ProcessSamples(left,right,buttons,available,dt,allowed);
+        }
+        // Game-only arbitration needs valid pointing even on the first closed
+        // sample. Reserving a target does not click it: the existing pinch filter
+        // below still requires an observed open hand and a fresh edge. Camp keeps
+        // using EmberdeepHandRay.Read and its unchanged acquisition policy.
+        static EmberdeepHandRay.Sample ReadIntent(MetaShadowPlayer provider,bool left)
+        {
+            if(!provider || !provider.ReadHand(left,out var palm,out _,out var pinch)
+                || !provider.ReadInteractionAim(left,out var pointer))return default;
+            var q=pointer.rotation;float norm=q.x*q.x+q.y*q.y+q.z*q.z+q.w*q.w;
+            if(!(norm>=.5f && norm<=1.5f))return default;
+            var sample=new EmberdeepHandRay.Sample(true,new Ray(pointer.position,q*Vector3.forward),pinch){VisualOrigin=palm.position};
+            return EmberdeepHandRay.Valid(sample)?sample:default;
         }
         public bool ProcessSamples(EmberdeepHandRay.Sample left,EmberdeepHandRay.Sample right,
             IReadOnlyList<WorkshopButton> buttons,bool available,float dt,Predicate<WorkshopButton> allowed=null)
@@ -106,6 +130,7 @@ namespace FireRescue
         {
             if(!b || !b.gameObject.activeInHierarchy || !b.Interactable || (allowed!=null && !allowed(b)))return false;
             if(!ViewCamera)return true;
+            if(Vector3.Angle(ViewCamera.transform.forward,b.transform.position-ViewCamera.transform.position)>MaximumHeadAngle)return false;
             var p=ViewCamera.WorldToViewportPoint(b.transform.position);
             return p.z>0 && p.x>=-.05f && p.x<=1.05f && p.y>=-.05f && p.y<=1.05f;
         }

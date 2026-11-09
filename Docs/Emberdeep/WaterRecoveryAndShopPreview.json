@@ -1,0 +1,366 @@
+{
+  "revision": "0.13",
+  "date": "2026-11-09",
+  "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
+  "runtime_baseline": "Historical 0.2.10 / code 13 passed 184 EditMode and 115 PlayMode and built both APKs. Those reports, screenshots, installation and user feedback do not validate 0.2.11.",
+  "authority": "The user requested very slow automatic water recovery and a visible preview for every purchasable item. This supersedes DD-02's blanket prohibition on passive recovery. Numeric values and presentation budgets below are starting targets for implementation and playtesting.",
+  "pages": [
+    {
+      "title": "Slow water recovery",
+      "intro": "GD-WATER-10/11 are implemented in candidate 0.2.11 as an explicit active-time transaction with separate accounting. The 3-second delay and 0.25 units/second rate are initial tuning; final Editor tests passed; headset acceptance is pending. Manual sources remain the practical fast refill route.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Revision 0.13 implements the 0.12 approved direction. FireRun.TickRecovery is separate from the existing Tick simulation API. FireRescueGame.ProcessWaterRecovery supplies focus, tracking, world-placement, navigation, shop and physical-operation gates once per update. Excess dt above 0.1 seconds is discarded; no wall-clock or offline elapsed time is accepted. RecoveryWaiting, RecoveryActive and RecoveryDelayRemaining drive the quiet gauge cue. FinalVerification passed 204 EditMode and 144 PlayMode with zero failed, skipped or inconclusive. This includes 20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases; restored coverage is not newly authored."
+        },
+        {
+          "kind": "h2",
+          "text": "Rate and eligibility"
+        },
+        {
+          "kind": "p",
+          "text": "STARTING TARGET: wait 3 seconds after weapon operation or a manual supply operation ends, then recover 0.25 water units per eligible second into the currently equipped owned tank. Preserve fractional units and clamp to its current capacity. A dry 60-unit tank takes 243 eligible seconds including the initial delay to fill; 20 seconds after the delay restores 5 units. Rate is fixed in units per second, so capacity upgrades do not multiply recovery. There is no partial-capacity ceiling; slow recovery can eventually fill the tank."
+        },
+        {
+          "kind": "p",
+          "text": "Eligible time is active, focused fireground play in Fighting or Cleared, and SearchSafe once implemented. Recover only after the trigger is released, with no charge or manual supply lock, valid tracking and settled world placement. Equipped means the owned active loadout, even while resting on its rack; a shop selection or unowned preview is never the recovery target. Other stored tanks do not recover in parallel. A held dry trigger or held cannon charge prevents recovery and cannot produce automatic intermittent shots."
+        },
+        {
+          "kind": "p",
+          "text": "Shop, camp, Settings, confirmation dialogs, pause, focus loss, tracking suspension, repositioning, loading and Won/Lost stop recovery. No wall-clock, background or offline catch-up is allowed. On resume, tool switch, undock, purchase or upgrade, restart the 3-second eligibility delay without granting water. Manual filling and passive recovery never credit the same interval. UI pointing may cancel weapon activity under the existing arbitration policy; recovery itself acquires no hand and cannot activate a tool."
+        },
+        {
+          "kind": "h2",
+          "text": "Accounting and player feedback"
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-11 makes recovery an explicit domain transaction. Credit only the accepted amount and record it as recoveredWater, separate from manually suppliedWater. Within an attempt, total stored water equals starting water plus suppliedWater plus recoveredWater minus consumedWater. Switching, buying, upgrading and advancing sectors grant no instant water. New equipment starts empty; New Expedition retains its one-time starter fill. Retry restores tank amounts and both supply counters from the same entry checkpoint, then restarts the delay. Future durable saves store amounts and counters, never elapsed offline recovery or active input ownership."
+        },
+        {
+          "kind": "p",
+          "text": "Show a quiet droplet and SLOW RECOVERY beside the gauge while eligible recovery is active. Keep the gauge smooth even if the numeric water amount is rounded. At empty, say Slowly recovering or Refill at the pump; at capacity, stop the indicator. Use the same subtle droplet with Waiting when the delay applies. Do not add continuous sound, haptics, a world-space water stream or a new button. Water becoming affordable never fires or releases a shot: a new armed input is still required."
+        },
+        {
+          "kind": "h2",
+          "text": "Acceptance before implementation is marked complete"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Rule tests: exactly zero before the 3-second delay, 5 units over 20 eligible seconds, capacity clamp, fractional accumulation, frame-step equivalence and rejection of invalid or catch-up time. Use accepted simulation time rather than real elapsed time.",
+            "Regression tests: no recovery while firing, charging, docked, in shop/camp/modal, paused, untracked, loading or terminal. Only one owned active tank recovers. Repeated switch, upgrade, retry and resume cannot duplicate water or accelerate the timer.",
+            "PlayMode and device checks: recover from empty without auto-firing, manually pump without double credit, stop safely on tracking loss, and preserve both-hand menu priority. Free reachable sources remain available immediately; waiting for passive water must never be required to progress.",
+            "Measure recovery contribution and manual-refill time on Quest 3 and PICO 4. Tune the initial rate if waiting becomes the best strategy or the trickle is imperceptible; do not make speed or comfort claims from this design alone."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Shop item previews",
+      "intro": "GD-SHOP-01/02 and AR-SHOP-01 are implemented in candidate 0.2.11 as direct display geometry for tools, numeric tuning and station upgrade results. Final Editor catalogue and interaction tests are included in the 204 EditMode and 144 PlayMode passing suite after layout corrections. Headset verification is pending.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "IMPLEMENTED CANDIDATE: Equipment, Tuning and Station pages share one bounds-fitted three-quarter preview. Catalogue IDs are tool:{EquipmentId}, tune:{EquipmentId}:{nextLevel} and station:{resultTier}. View Tuning/View Water only browse; Buy confirms separately. Station Compare Current disables buying until Show Result. Numeric tuning uses the actual model and explicit Tank/Power/Range/Width/Speed values, then restores the prior active loadout after the selected tool purchase. There are no thumbnail tiles, rotation/demo controls or render texture in this candidate."
+        },
+        {
+          "kind": "p",
+          "text": "EmberdeepShopPreview copies only mesh/material/tint and transforms from the existing builders. Its display tree contains no physics, gameplay, audio, interaction or particle components. Same-key refresh keeps the existing object; page changes dispose the previous preview. Missing content renders a named neutral silhouette with PREVIEW UNAVAILABLE without hiding price or purchase controls. One active direct-geometry preview is a candidate rendering choice; Quest/PICO stereo readability and measured PICO 4 cost are still required."
+        },
+        {
+          "kind": "p",
+          "text": "Editor visual review: all 12 final captures passed after preview enlargement and text-layout corrections. The model frame is 0.79 by 0.61 by 0.60 metres in panel-local coordinates. Numeric tuning SPEED is the actual world projectile speed in metres per second; miniature range and width conversions do not scale that speed. Seated and standing synthetic eyes use 1.1 m and 1.7 m heights. FinalVerification passed 204 EditMode and 144 PlayMode; APK audits passed; this is not headset stereo, comfort or PICO performance acceptance."
+        },
+        {
+          "kind": "h2",
+          "text": "Browse understand and buy"
+        },
+        {
+          "kind": "p",
+          "text": "Keep the existing compact paged shop and its eye-relative placement. Each selected item has a clearly lit three-quarter model preview in the panel, alongside its name, price, ownership or unlock state, and one short explanation of how it works. Previous and Next update the preview and purchase target together. Any visible catalogue tile also uses the matching thumbnail. One large preview is sufficient; do not display all full-size equipment around the player."
+        },
+        {
+          "kind": "p",
+          "text": "GD-SHOP-02 covers the foam extinguisher, pulse pistol, rain fan and pressure cannon, plus every offered water-station tier and equipment upgrade. Station upgrades show the resulting rotary hydrant or button dispenser and identify the control that changes. A geometric modification highlights the affected part and offers a current/result comparison. A purely numeric tuning upgrade reuses the actual model with explicit before/after values; it must not imply a new mesh or ability. Future purchasable modifications inherit this contract when added to the catalogue."
+        },
+        {
+          "kind": "p",
+          "text": "Use a stable default view with no continuous spin. Optional turn or demonstration input uses the existing contextual hand ray and fresh pinch, supports either hand, and consumes that input exclusively. A short bounded demonstration may illustrate sweep, pulse, fan, cannon arc or station actuation only inside the preview area. Browsing alone never plays fire or full-screen effects. Purchase remains a separate deliberate action; selecting a preview cannot buy, equip, refill, fire or operate a station."
+        },
+        {
+          "kind": "h2",
+          "text": "Presentation and failure rules"
+        },
+        {
+          "kind": "p",
+          "text": "AR-SHOP-01 defines an optional display-only preview prefab, thumbnail, PreviewPivot and framing bounds for each catalogue ID. Reuse the authored equipment silhouette and materials at a display scale fitted to the preview area. Strip or disable physics, gameplay scripts, interaction targets, audio and world particle emitters. The preview never obscures the price or Buy and Back controls and cannot intercept their rays. Missing content shows a named neutral silhouette with Preview unavailable; the price and item description remain visible."
+        },
+        {
+          "kind": "p",
+          "text": "Budget one active preview at a time, with bounded thumbnail caching and no per-frame instantiation. Use the same URP mobile materials and existing equipment budgets. Choose direct display geometry or a bounded render texture after a stereo UI prototype; verify both eyes and PICO 4 cost before selecting the final rendering path. Keep the menu height, recenter rules, hand ownership and standalone routing from 0.2.10."
+        },
+        {
+          "kind": "h2",
+          "text": "Acceptance before implementation is marked complete"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Validate a preview or explicit fallback for every buyable entry, including station upgrades and tuning. Verify item ID, name, price, model, upgrade comparison and purchase action always refer to the same entry after rapid paging.",
+            "PlayMode tests must show that browse, rotate, demonstrate, cancel and reopen preserve coins, ownership, tank amounts, charges and source state. Insufficient funds and already-owned entries display the correct disabled action. Buying still debits once under the existing economy rules.",
+            "Check left/right rays, fresh pinch, input cancellation and preview controls near water sources. The same pinch cannot activate a preview and gameplay or purchase. Test missing models, tracking loss and repeated open/close without accumulating preview objects.",
+            "Headset acceptance: seated and standing players can inspect every offered item and upgrade, read cost and press Buy/Back without leaning or looking toward their lap. Record Quest 3 stereo readability and PICO 4 frame cost; Editor images alone do not pass these checks."
+          ]
+        }
+      ]
+    }
+  ],
+  "approval_history": [
+    {
+      "revision": "0.12",
+      "date": "2026-11-09",
+      "status": "APPROVED_DIRECTION_NOT_IMPLEMENTED",
+      "runtime_baseline": "0.2.10 / Android code 13 remains unchanged. Existing test and APK evidence does not validate these new requirements.",
+      "authority": "The user requested very slow automatic water recovery and a visible preview for every purchasable item. This supersedes DD-02's blanket prohibition on passive recovery. Numeric values and presentation budgets below are starting targets for implementation and playtesting."
+    }
+  ],
+  "candidate": {
+    "version": "0.2.11",
+    "android_version_code": 14,
+    "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending."
+  },
+  "implementation": {
+    "water_recovery": {
+      "status": "IMPLEMENTED_EDITOR_VERIFIED_DEVICE_ACCEPTANCE_PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Recovery.cs"
+      ],
+      "api": "FireRun.TickRecovery(dt, eligible, triggerActive), ResetRecovery(), RecoveredWater, RecoveryWaiting, RecoveryActive and RecoveryDelayRemaining. FireRescueGame.ProcessWaterRecovery applies the live scene gates.",
+      "clock": "Exactly one explicit transaction after the accepted simulation step. Accept finite positive dt up to 0.1 seconds per call; discard excess rather than banking it. Delay uses eligible active time only; crossing frames credit only the part after the delay. Preserve fractional water and sub-float rounding carry.",
+      "gates": "Fighting/Cleared, owned active loadout, focused settled fireground, valid tracking, positive timeScale, no Shop/modal/navigation/placement transition, no manual-source lock, pending dock, empty-outlet action, active cannon pump, raw held trigger, charge or firing. A racked equipped owned loadout may recover; a selected preview cannot.",
+      "transactions": "Successful equip/purchase/tuning/station upgrade, source connection/disconnection, stage/outcome transition, retry and external suspension reset the delay. Recovery changes only the active tank and RecoveredWater; the sector checkpoint restores tanks, supplied/recovered/consumed counters, equipment ownership/upgrades, station tier and economy together.",
+      "feedback": "Quiet droplet with RECOVERY Waiting or SLOW RECOVERY +0.25/s beside the gauge; hidden when ineligible or full. Empty active recovery offers the pump as the faster alternative. No recovery sound, haptic, hand ownership or world water emitter.",
+      "tests_authored": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepWaterRecoveryTests.cs",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::SimulationTickAloneCannotCreditRecoveryWithoutExplicitEligibility",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepRecoveryGamePlayTests.cs"
+      ],
+      "test_status": "PASSED in FinalVerification 204 EditMode / 144 PlayMode; no headset acceptance implied"
+    },
+    "shop_previews": {
+      "status": "IMPLEMENTED_EDITOR_VERIFIED_DEVICE_ACCEPTANCE_PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Shop.cs",
+        "Assets/FireRescue/Runtime/EmberdeepShopPreview.cs"
+      ],
+      "catalogue_ids": [
+        "tool:{EquipmentId}",
+        "tune:{EquipmentId}:{nextLevel}",
+        "station:{resultTier}"
+      ],
+      "api": "ShowShopPage(Equipment/Tuning/Station), ShowStationComparison(current), ShopItemId, ShopPrice, ShopCanBuy, ShopComparison and BuyShopSelection. EmberdeepShopPreview exposes ItemId, PreviewRoot, ModelBounds, IsFallback, ForceFallback and Generation.",
+      "interaction": "View Tuning and View Water choose a page; Buy is a separate fresh-pinch action. Previous/Next browse tool and tuning entries. Station comparison alternates current/result and disables purchase on the current view. Numeric tuning confirms the selected owned tool and restores the prior active loadout after purchase. Browsing itself never equips or credits water.",
+      "representation": "One stable three-quarter direct-geometry preview fitted inside a 0.79 x 0.61 x 0.60 metre panel-local frame. Equipment pages reuse the actual silhouette. Numeric tuning reuses the same model with Tank/Power/Range/Width/Speed before/after values, not a new mode. Station result highlights its wheel or button and shows the changed control.",
+      "isolation": "Existing builders create an inactive staging object; only transform, mesh, material and tint data are copied. The visible preview has no collider, rigidbody, gameplay script, interaction target, audio or particle emitter. Repeated same-key refresh reuses the preview. A changed key deactivates and disposes the old preview. Missing content has a neutral silhouette and PREVIEW UNAVAILABLE while name, price and separate purchase remain readable.",
+      "not_implemented": "No thumbnail tile grid, render texture, continuous spin, rotate control or demonstration is present. Those optional presentation variants are not claimed. Dedicated authored preview prefab/thumbnail replacement assets and Quest/PICO stereo and performance acceptance remain pending.",
+      "tests_authored": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepShopPreviewPlayTests.cs"
+      ],
+      "test_status": "PASSED in FinalVerification 204 EditMode / 144 PlayMode; no headset acceptance implied",
+      "layout_correction": "Preview enlargement, one-line tuning description, lower price row and actual world m/s speed units; the additional layout regression passed in FinalVerification."
+    }
+  },
+  "verification": {
+    "log_root": "Logs/EmberdeepRecoveryShop",
+    "tests": {
+      "EditMode": {
+        "status": "PASSED",
+        "total": 204,
+        "passed": 204,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
+        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+      },
+      "PlayMode": {
+        "status": "PASSED",
+        "total": 144,
+        "passed": 144,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
+        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+      }
+    },
+    "captures": {
+      "status": "EDITOR_VISUAL_REVIEW_PASSED",
+      "reviewed_images": 12,
+      "capture": "Logs/EmberdeepRecoveryShop/Capture.json",
+      "review": "Logs/EmberdeepRecoveryShop/VisualReview.json",
+      "images": [
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Active.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Waiting.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-CurrentLever.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Extinguisher.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PressureCannon.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PulsePistol.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PushButton.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RainFan.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RotaryHydrant.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning-Purchased.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning.png",
+        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Standing-Shop-PushButton.png"
+      ],
+      "scope": "Editor synthetic eye positions, hand rays and domain time; station second comparison and purchase use public scene APIs to avoid same-frame UI debounce. Not headset or physical feel evidence.",
+      "checks": [
+        "All four tool models are visible and contained",
+        "Tuning text and price no longer overlap",
+        "Current and upgraded station models are distinct",
+        "Waiting and active recovery feedback are visible",
+        "Seated and standing synthetic eye heights keep shop forward"
+      ],
+      "limitations": [
+        "Existing blockout models reused",
+        "Synthetic Editor captures do not establish headset legibility, comfort or performance"
+      ],
+      "capture_helper_history": [
+        "Prior capture attempts hit same-frame WorkshopButton debounce, Vector3 JSON recursion and restart ordering; helper corrected and final run completed with 12 captures. These are capture-helper failures, distinct from runtime regression results."
+      ]
+    },
+    "builds": {
+      "Quest": {
+        "status": "BUILT_AND_AUDITED",
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.11",
+        "signatureVerified": true,
+        "sha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363",
+        "target": "Quest",
+        "bytes": 105528715,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 14,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11.manifest.json",
+        "audit": "Logs/EmberdeepRecoveryShop/Quest-Audit.json",
+        "errors": 0,
+        "warnings": 8,
+        "settings_audited": 28
+      },
+      "PICO": {
+        "status": "BUILT_AND_AUDITED",
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.11",
+        "signatureVerified": true,
+        "sha256": "06fc81735916822c2a525218596255d18145170c7552d29d768b389576f1f203",
+        "target": "Pico",
+        "bytes": 87230967,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 14,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.manifest.json",
+        "audit": "Logs/EmberdeepRecoveryShop/Pico-Audit.json",
+        "errors": 0,
+        "warnings": 12,
+        "settings_audited": 28
+      }
+    },
+    "device_acceptance": "PENDING for 0.2.11; no inherited hardware/performance acceptance",
+    "device_checklist": "Docs/Emberdeep/RecoveryShopDeviceAcceptance.json",
+    "documents": {
+      "generation": "GENERATED final revision 0.13 from current JSON and final release evidence",
+      "structural_review": "PASSED exact ordered JSON source comparison for all three DOCX",
+      "structural_evidence": "Logs/EmberdeepRecoveryShop/Docs/qa.json",
+      "visual_review": "BLOCKED; all three packaged render attempts failed because LibreOffice soffice.exe is absent. Bounded hidden Word COM fallback failed before opening the task DOCX because Application.Hwnd returned null. No PDF or page images produced; no layout approval claimed.",
+      "render_logs": [
+        "Logs/EmberdeepRecoveryShop/Docs/render-design.log",
+        "Logs/EmberdeepRecoveryShop/Docs/render-art.log",
+        "Logs/EmberdeepRecoveryShop/Docs/render-v2.log"
+      ],
+      "delivery_status": "Generated drafts pending visual layout acceptance",
+      "fallback_log": "Logs/EmberdeepRecoveryShop/Docs/word-result.log"
+    },
+    "attempts": [
+      {
+        "scope": "0.2.11 intermediate attempt only; not release acceptance",
+        "path": "Logs/EmberdeepRecoveryShop/InitialVerification",
+        "compile_history": "Initial missing PhysicalAssembly namespace import in FireRescueGame.Shop.cs corrected before this test run.",
+        "EditMode": {
+          "passed": 204,
+          "failed": 0
+        },
+        "PlayMode": {
+          "total": 132,
+          "passed": 62,
+          "failed": 70
+        },
+        "cause": "New preview instantiated MaterialPropertyBlock in a MonoBehaviour field initializer; Unity CreateImpl rejected this construction path. Root moved creation into Show.",
+        "coverage_repair": "Three test scripts had 33-character GUIDs and were not compiled: EmberdeepShopPreviewPlayTests, EmberdeepOutletFeedbackPlayTests and EmberdeepStationShopPlayTests. Root verified no external asset references to those invalid GUIDs, normalized them to 32 characters and force-reimported. The latter two are restored existing test groups, not newly authored coverage.",
+        "status": "SUPERSEDED_BY_PASSING_RELEASEVERIFICATION_AFTER_FIXES"
+      },
+      {
+        "scope": "Intermediate passing suite before final preview layout corrections",
+        "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification",
+        "tests": {
+          "EditMode": {
+            "status": "PASSED",
+            "total": 204,
+            "passed": 204,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/EditMode-results.json",
+            "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
+          },
+          "PlayMode": {
+            "status": "PASSED",
+            "total": 143,
+            "passed": 143,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/PlayMode-results.json",
+            "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
+          }
+        },
+        "status": "PASSED_BEFORE_FINAL_LAYOUT_CHANGES",
+        "subsequent_changes": "Larger previews, one-line tuning description, lower price row and corrected world-space speed units; one layout regression added. FinalVerification supersedes this run when completed."
+      }
+    ],
+    "test_count_scope": "20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases relative to historical 184/115.",
+    "devices": {
+      "Quest3": {
+        "status": "INSTALLED_VERSION_VERIFIED",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.11",
+        "versionCode": 14,
+        "installedInfo": {
+          "package": "com.metahackathon2026.emberdeep",
+          "version_name": "0.2.11",
+          "version_code": "14",
+          "install_path": "/data/app/~~iNIbpQzmHNl-b8_XruGT4g==/com.metahackathon2026.emberdeep-J_LNuVyIc7P2i9QCQASYQg==",
+          "is_system": false,
+          "first_install_time": "2026-11-06 13:30:58",
+          "last_update_time": "2026-11-10 04:44:47",
+          "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+        },
+        "method": "metavr install --replace, followed by metavr app info",
+        "powerState": "Asleep",
+        "processRunning": false,
+        "physicalAcceptance": "PENDING; no physical hand tracking, comfort, stereo readability or performance result claimed",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+        "apkSha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363"
+      },
+      "PICO4": "Physical hand tracking, readability, comfort and performance acceptance pending"
+    },
+    "release_evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json"
+  }
+}

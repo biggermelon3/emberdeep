@@ -1,0 +1,600 @@
+{
+  "revision": "0.2.9",
+  "date": "2026-11-09",
+  "candidate": {
+    "version": "0.2.9",
+    "android_version_code": 12
+  },
+  "status": "IMPLEMENTED_CANDIDATE 0.2.9 / code 12; 184 EditMode and 96 PlayMode passed; Quest/PICO APKs built and audited; Quest installation/version verified; current device placement acceptance PENDING.",
+  "user_feedback": "On Quest 3 0.2.8 the user confirmed Shop highlights and opens, then reported that the in-game and Shop panels appear near the legs/seat rather than in front. The positive confirmation covers access only; placement remains a negative observation.",
+  "historical_028_user_acceptance": {
+    "device": "Quest 3",
+    "version": "0.2.8",
+    "accepted": "Shop highlights and opens after firefighting",
+    "not_established": [
+      "purchases",
+      "all hand/control/posture cases",
+      "PICO compatibility",
+      "performance"
+    ],
+    "evidence": "Logs/EmberdeepShopFix/Quest-Install.json"
+  },
+  "historical_028_release_evidence": "Logs/EmberdeepShopFix/ReleaseEvidence.json",
+  "authority": "Current HUD placement implementation overrides placement only. Preserve 0.2.8 Shop access, supply conservation and 0.2.7 pinch rules; current automated and physical verification remain pending.",
+  "placement_contract": {
+    "status": "IMPLEMENTED_CANDIDATE; current Editor verification passed; physical placement acceptance pending",
+    "forward_metres": 0.9,
+    "pivot_below_eyes_metres": 0.12,
+    "orientation": "upright yaw-only",
+    "reference": "tracked eye pose, not fixed floor or Arena",
+    "world_anchored": true,
+    "follow_head_each_frame": false,
+    "move_camera": false,
+    "events": [
+      "stable initial placement",
+      "explicit recenter",
+      "open Shop",
+      "close Shop"
+    ],
+    "api": "EmberdeepHudPose.TryCalculate(Pose head, float floorHeight, Vector3 previousForward, out Pose panel)",
+    "minimum_eye_height_above_floor_metres": 0.45,
+    "head_quaternion": "Finite, nonzero and normalized before projecting heading",
+    "near_vertical_horizontal_squared_threshold": 0.01,
+    "heading_fallback": "Previously placed HUD forward; initial placement uses Arena forward. Reject when neither yields a valid horizontal heading.",
+    "input_on_replacement": "Reset hand-menu target/pinch state, clear interfaceHovered and synchronize colliders.",
+    "runtime_gate": "Player/hud/hand provider present, focused, not paused and HeadReady. Existing stable raw-head acquisition gates initial XR placement and explicit recenter.",
+    "desktop_only": "ApplyWorldPose sets preview camera pitch to 25 degrees (previously 55) and FOV 70 for initial setup/desktop recenter. XR camera is not repositioned or rotated. Shop transitions move neither camera nor Arena."
+  },
+  "requirements": [
+    {
+      "id": "HP-01 / GD-PLACE-01",
+      "rule": "Fireground HUD/Shop pose is independent of miniature Arena coordinates: pivot 0.9 m along current horizontal head heading and 0.12 m below tracked eyes; yaw-only upright rotation, independent of floor height and Arena scale.",
+      "acceptance": "At seated and standing tracked eye heights, assert forward distance and eye-relative vertical offset, upright orientation, and independence from Arena transform/scale. Visually check that panel and all buttons are in front rather than near the legs.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regressions PASSED; device placement acceptance PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [
+            "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.1f,0.0f,90.0f,70.0f,20.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.65f,0.0f,-45.0f,-70.0f,-25.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(3.1f,2.0f,145.0f,0.0f,30.0f)"
+          ],
+          "PlayMode": [
+            "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+            "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "id": "HP-02 / GD-PLACE-01",
+      "rule": "EmberdeepHudPose.TryCalculate rejects nonfinite position/rotation/floor, zero or invalid quaternion norm, and eyes less than 0.45 m above floor. Normalize head rotation before projecting forward. If horizontal heading squared magnitude is below 0.01, use previous HUD heading (initially Arena heading); reject if fallback is invalid. Initial XR placement and explicit recenter retain stable head acquisition. Shop open/close use the current valid pose and focused/HeadReady gate.",
+      "acceptance": "Check nonfinite data, invalid quaternion norm, eye-height threshold, non-unit quaternion normalization, vertical/near-vertical heading fallback and no-valid-heading rejection. Verify initial stable acquisition, recenter and Shop transitions from changed yaw/eye height.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regressions PASSED; device placement acceptance PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(0)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(1)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(2)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(3)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(4)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(5)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(6)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(85.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(89.9f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.1f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(95.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(-90.0f)",
+            "FireRescue.Tests.EmberdeepHudPoseTests.NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback"
+          ],
+          "PlayMode": [
+            "HudVerticalFallbackAndUnavailableHeadCannotMovePanelToFloor"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "id": "HP-03 / GD-HAND-04",
+      "rule": "PlaceHud runs only on initial stable ApplyWorldPose, explicit recenter, or opening/closing Shop. The panel stays world anchored between these events and never follows the head. XR camera is never moved; Shop transitions leave Arena and camera unchanged.",
+      "acceptance": "After placement change head pose without a placement event: HUD remains fixed. Recenter repositions it. Shop open/close repositions HUD without changing camera or Arena. Verify upright rotation and scale independence.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regressions PASSED; device placement acceptance PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [],
+          "PlayMode": [
+            "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+            "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "id": "HP-04 / GD-HAND-02 / GD-PAUSE-01",
+      "rule": "A successful reposition resets hand-menu target/pinch state, clears interfaceHovered and synchronizes colliders. Retain contextual rays, same-hand fresh pinch, per-hand control exclusion and operation ownership. Keep Run.InSupply and safe dock-to-Shop cleanup with no resource grant.",
+      "acceptance": "After repositioning, use each hand to highlight/open/close Shop; repeat while tool is held/docked. Verify fresh-pinch rearming, charge/stroke cancellation and unchanged water/coin accounting; Fighting/Won purchase restrictions remain.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regressions PASSED; device placement acceptance PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [],
+          "PlayMode": [
+            "HudRepositionClearsHoverAndRequiresReleaseBeforeShopClick"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    },
+    {
+      "id": "HP-05 / GD-HAND-05",
+      "rule": "Keep labels and cyan target feedback readable at the new eye-relative pose; retain camp behavior and tabletop reach. Desktop-only ApplyWorldPose changes preview pitch from 55 to 25 degrees with FOV 70; this setup/recenter branch never changes the XR camera. No new UI art or particle effects are introduced.",
+      "acceptance": "Inspect all rows and both eyes on Quest 3/PICO 4 while seated/standing; verify target alignment, occlusion and reach. Inspect desktop preview separately; the preview camera change cannot imply an XR viewpoint change or comfort acceptance.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regressions PASSED; device placement acceptance PENDING",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHudPose.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "tests": {
+        "status": "PASSED for mapped Editor cases; device acceptance is separate",
+        "files": [
+          "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": {
+          "EditMode": [],
+          "PlayMode": [
+            "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+            "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena"
+          ]
+        }
+      },
+      "evidence": [
+        "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING for 0.2.9"
+    }
+  ],
+  "test_evidence": {
+    "EditMode": {
+      "status": "PASSED",
+      "total": 184,
+      "passed": 184,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepHudFix/FinalVerification/EditMode-results.json"
+    },
+    "PlayMode": {
+      "status": "PASSED",
+      "total": 96,
+      "passed": 96,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepHudFix/FinalVerification/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.9",
+      "signatureVerified": true,
+      "sha256": "0660bdd957c7df65546067671dbe9c9b64449f3cff4e0d092be2b1dab38b96a6",
+      "target": "Quest",
+      "bytes": 105514211,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 12,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 12,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.9.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.9.manifest.json",
+      "audit": "Logs/EmberdeepHudFix/Quest-Audit.json",
+      "errors": 0,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepHudFix/Quest-SettingsRestoration.json"
+      }
+    },
+    "Pico": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.9",
+      "signatureVerified": true,
+      "sha256": "d9150597e021fd63ac1619105ba09f2f86eb882b397fdd841a6200e28cbae265",
+      "target": "Pico",
+      "bytes": 87208075,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 12,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 12,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.9-Pico.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.9-Pico.manifest.json",
+      "audit": "Logs/EmberdeepHudFix/Pico-Audit.json",
+      "errors": 0,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepHudFix/Pico-SettingsRestoration.json"
+      }
+    }
+  },
+  "devices": {
+    "Quest3": {
+      "device": "Quest 3",
+      "version": "0.2.9",
+      "versionCode": 12,
+      "package": "com.metahackathon2026.emberdeep",
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.9.apk",
+      "sha256": "0660bdd957c7df65546067671dbe9c9b64449f3cff4e0d092be2b1dab38b96a6",
+      "installed": true,
+      "replaceKeepsData": true,
+      "versionVerifiedBy": "metavr_app info",
+      "launchRequested": true,
+      "launchConfirmed": false,
+      "powerState": "Asleep",
+      "pidObserved": null,
+      "headsetInteractionAcceptance": "PENDING user placement/Shop retest; installation is not usability acceptance",
+      "recordedUtc": "2026-11-09T17:49:50.835213+00:00",
+      "evidence": "Logs/EmberdeepHudFix/Quest-Install.json",
+      "scope": "Current installation/launch facts only. No 0.2.9 device placement acceptance."
+    },
+    "PICO4": "PENDING physical usability and performance baseline"
+  },
+  "release_evidence": "Logs/EmberdeepHudFix/ReleaseEvidence.json",
+  "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.9-Device-Checks.txt",
+  "documents": {
+    "generation": "Three final 0.2.9 Word drafts regenerated from authoritative JSON; no rendered-page approval.",
+    "structural_review": "PASS: all three Word drafts match exact ordered source content. Records and hashes: Logs/EmberdeepHudFix/Docs/qa.json.",
+    "visual_review": "NOT_ASSESSED; known missing soffice.exe limitation remains; no page-layout approval"
+  },
+  "pages": [
+    {
+      "title": "Historical 0 2 9 Front Facing HUD and Shop Placement",
+      "intro": "HISTORICAL 0.2.9. Its 0.12 m eye drop is superseded; see InteractionIntentFix.json. Prior 0.2.9 candidate implements eye-relative front placement after Quest 0.2.8 position feedback. Current 0.2.9 FinalVerification passed 184 EditMode and 96 PlayMode tests, zero failed, skipped or inconclusive. The 17 new HUD pose cases and four new PlayMode cases are included in those totals. Both APKs passed version 0.2.9/code 12, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation preserves data and installed version 0.2.9/code 12 is verified. Launch was requested but is not confirmed: no app PID was observed and the recorded power state is Asleep. Device placement/Shop acceptance remains pending. No PICO 4 physical usability or performance acceptance. Prior 0.2.8 Shop highlight/entry confirmation is historical and does not validate this placement change.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "On Quest 3 0.2.8 the user confirmed Shop highlights and opens, then reported that the in-game and Shop panels appear near the legs/seat rather than in front. The positive confirmation covers access only; placement remains a negative observation."
+        },
+        {
+          "kind": "p",
+          "text": "Fireground HUD/Shop pose is independent of miniature Arena coordinates: pivot 0.9 m along current horizontal head heading and 0.12 m below tracked eyes; yaw-only upright rotation, independent of floor height and Arena scale."
+        },
+        {
+          "kind": "p",
+          "text": "EmberdeepHudPose.TryCalculate rejects nonfinite position/rotation/floor, zero or invalid quaternion norm, and eyes less than 0.45 m above floor. Normalize head rotation before projecting forward. If horizontal heading squared magnitude is below 0.01, use previous HUD heading (initially Arena heading); reject if fallback is invalid. Initial XR placement and explicit recenter retain stable head acquisition. Shop open/close use the current valid pose and focused/HeadReady gate."
+        },
+        {
+          "kind": "p",
+          "text": "PlaceHud runs only on initial stable ApplyWorldPose, explicit recenter, or opening/closing Shop. The panel stays world anchored between these events and never follows the head. XR camera is never moved; Shop transitions leave Arena and camera unchanged."
+        },
+        {
+          "kind": "p",
+          "text": "Historical 0.2.8 passed 167 EditMode and 92 PlayMode tests and both APK audits; its Quest user confirmation covers Shop highlight and entry only. None of those results validate the 0.2.9 placement change."
+        }
+      ]
+    },
+    {
+      "title": "Historical 0 2 9 Placement Verification and Acceptance",
+      "intro": "HISTORICAL 0.2.9. Its 0.12 m eye drop is superseded; see InteractionIntentFix.json. Check pose math, world anchoring, real seated/standing visibility and retained input ownership separately.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Requirement",
+            "Acceptance focus"
+          ],
+          "rows": [
+            [
+              "HP-01 / GD-PLACE-01",
+              "At seated and standing tracked eye heights, assert forward distance and eye-relative vertical offset, upright orientation, and independence from Arena transform/scale. Visually check that panel and all buttons are in front rather than near the legs."
+            ],
+            [
+              "HP-02 / GD-PLACE-01",
+              "Check nonfinite data, invalid quaternion norm, eye-height threshold, non-unit quaternion normalization, vertical/near-vertical heading fallback and no-valid-heading rejection. Verify initial stable acquisition, recenter and Shop transitions from changed yaw/eye height."
+            ],
+            [
+              "HP-03 / GD-HAND-04",
+              "After placement change head pose without a placement event: HUD remains fixed. Recenter repositions it. Shop open/close repositions HUD without changing camera or Arena. Verify upright rotation and scale independence."
+            ],
+            [
+              "HP-04 / GD-HAND-02 / GD-PAUSE-01",
+              "After repositioning, use each hand to highlight/open/close Shop; repeat while tool is held/docked. Verify fresh-pinch rearming, charge/stroke cancellation and unchanged water/coin accounting; Fighting/Won purchase restrictions remain."
+            ],
+            [
+              "HP-05 / GD-HAND-05",
+              "Inspect all rows and both eyes on Quest 3/PICO 4 while seated/standing; verify target alignment, occlusion and reach. Inspect desktop preview separately; the preview camera change cannot imply an XR viewpoint change or comfort acceptance."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "A successful reposition resets hand-menu target/pinch state, clears interfaceHovered and synchronizes colliders. Retain contextual rays, same-hand fresh pinch, per-hand control exclusion and operation ownership. Keep Run.InSupply and safe dock-to-Shop cleanup with no resource grant."
+        },
+        {
+          "kind": "p",
+          "text": "Keep labels and cyan target feedback readable at the new eye-relative pose; retain camp behavior and tabletop reach. Desktop-only ApplyWorldPose changes preview pitch from 55 to 25 degrees with FOV 70; this setup/recenter branch never changes the XR camera. No new UI art or particle effects are introduced."
+        },
+        {
+          "kind": "p",
+          "text": "Current 0.2.9 FinalVerification passed 184 EditMode and 96 PlayMode tests, zero failed, skipped or inconclusive. The 17 new HUD pose cases and four new PlayMode cases are included in those totals. Both APKs passed version 0.2.9/code 12, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation preserves data and installed version 0.2.9/code 12 is verified. Launch was requested but is not confirmed: no app PID was observed and the recorded power state is Asleep. Device placement/Shop acceptance remains pending. No PICO 4 physical usability or performance acceptance. Prior 0.2.8 Shop highlight/entry confirmation is historical and does not validate this placement change. Evidence: Logs/EmberdeepHudFix/FinalVerification, Quest-Audit.json, Pico-Audit.json, Quest-Install.json and ReleaseEvidence.json. Both builds restored all 28 audited settings hashes; 94 verified source/scene files remained unchanged after testing."
+        },
+        {
+          "kind": "p",
+          "text": "Current runtime placement has passed synthetic Editor regression. Real headset comfort, reach, tracking and performance remain pending. M2/M3 searching, animals, settlement and durable expedition saves remain proposed. Word remains a draft; structural matching is separate from rendered-page approval."
+        },
+        {
+          "kind": "p",
+          "text": "Current Editor placement captures: Logs/EmberdeepHudFix/Editor-Synthetic-Seated-Dashboard.png, Editor-Synthetic-Seated-Shop.png, Editor-Synthetic-Standing-Dashboard.png and Editor-Synthetic-Standing-Shop.png. Production Fireground uses synthetic 1.1 m / 1.7 m eye heights, horizontal gaze and rays with no LookAt correction. HUD/Shop are fully visible above the forest; hover and Shop entry work without camera/Arena changes. Frames 3774, 21172 and 23764 show player-loop progression, not performance. Postures were captured in separate eval calls to honor real button debounce after the initial same-frame two-posture harness blocked its second click; no runtime change was made. These are Editor views, not worn-headset acceptance."
+        }
+      ]
+    }
+  ],
+  "captures": {
+    "source": "Editor PlayMode, production scene; synthetic seated/standing head poses with horizontal gaze and synthetic rays. No LookAt correction.",
+    "paths": [
+      "Logs/EmberdeepHudFix/Editor-Synthetic-Seated-Dashboard.png",
+      "Logs/EmberdeepHudFix/Editor-Synthetic-Seated-Shop.png",
+      "Logs/EmberdeepHudFix/Editor-Synthetic-Standing-Dashboard.png",
+      "Logs/EmberdeepHudFix/Editor-Synthetic-Standing-Shop.png"
+    ],
+    "record": "Logs/EmberdeepHudFix/Capture.json",
+    "visual_review_record": "Logs/EmberdeepHudFix/VisualReview.json",
+    "review": {
+      "status": "PASS scoped Editor geometry and visual review",
+      "reviewed_images": [
+        "Editor-Synthetic-Seated-Dashboard.png",
+        "Editor-Synthetic-Seated-Shop.png",
+        "Editor-Synthetic-Standing-Dashboard.png",
+        "Editor-Synthetic-Standing-Shop.png"
+      ],
+      "observations": [
+        "HUD and Shop fully visible under natural horizontal synthetic gaze at 1.1m and 1.7m eye heights.",
+        "Panel upright, above the forest; buttons and labels visible without overlap.",
+        "Actual ray hover and Shop open confirmed."
+      ],
+      "headset_usability": "PENDING",
+      "performance": "NOT_ASSESSED"
+    },
+    "frames": [
+      3774,
+      21172,
+      23764
+    ],
+    "poses": [
+      {
+        "posture": "Seated",
+        "eyeHeight": 1.1,
+        "headPosition": {
+          "x": 0.0,
+          "y": 1.1,
+          "z": 0.0,
+          "normalized": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 1.1,
+          "sqrMagnitude": 1.21
+        },
+        "panelPosition": {
+          "x": 0.0,
+          "y": 0.98,
+          "z": 0.9,
+          "normalized": {
+            "x": 0.0,
+            "y": 0.7365299,
+            "z": 0.676405,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 1.33056378,
+          "sqrMagnitude": 1.7704
+        },
+        "shopViewport": {
+          "x": 0.5,
+          "y": 0.31156382,
+          "z": 0.9,
+          "normalized": {
+            "x": 0.4648254,
+            "y": 0.289645553,
+            "z": 0.836685658,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 1.07567275,
+          "sqrMagnitude": 1.157072
+        },
+        "shopOpened": true,
+        "cameraAndArenaUnchanged": true
+      },
+      {
+        "posture": "Standing",
+        "eyeHeight": 1.7,
+        "headPosition": {
+          "x": 0.0,
+          "y": 1.7,
+          "z": 0.0,
+          "normalized": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 1.7,
+          "sqrMagnitude": 2.89
+        },
+        "panelPosition": {
+          "x": 0.0,
+          "y": 1.58,
+          "z": 0.9,
+          "normalized": {
+            "x": 0.0,
+            "y": 0.8689192,
+            "z": 0.49495396,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 1.81835091,
+          "sqrMagnitude": 3.3064
+        },
+        "shopViewport": {
+          "x": 0.5,
+          "y": 0.311563879,
+          "z": 0.9,
+          "normalized": {
+            "x": 0.464825332,
+            "y": 0.289645582,
+            "z": 0.8366856,
+            "magnitude": 1.0,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 1.07567286,
+          "sqrMagnitude": 1.15707207
+        },
+        "shopOpened": true,
+        "cameraAndArenaUnchanged": true
+      }
+    ],
+    "playerLoopAdvanced": true,
+    "real_hand_tracking": false,
+    "headset_acceptance": false,
+    "capture_note": "Postures captured in separate eval calls to respect real WorkshopButton debounce. Initial same-frame two-posture harness hit debounce on its second click; no runtime change was required."
+  },
+  "new_regression_cases": {
+    "editmode_file": "Assets/FireRescue/Tests/EditMode/EmberdeepMenuPoseTests.cs",
+    "editmode_class": "EmberdeepHudPoseTests",
+    "editmode_cases": [
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(0)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(1)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(2)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(3)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(4)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(5)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(6)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(85.0f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(89.9f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.0f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(90.1f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(95.0f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(-90.0f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback",
+      "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.1f,0.0f,90.0f,70.0f,20.0f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(1.65f,0.0f,-45.0f,-70.0f,-25.0f)",
+      "FireRescue.Tests.EmberdeepHudPoseTests.SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(3.1f,2.0f,145.0f,0.0f,30.0f)"
+    ],
+    "playmode_file": "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs",
+    "playmode_cases": [
+      "HudStartsComfortablyInFrontAndRemainsWorldFixedUntilRecenter",
+      "ShopOpenAndCloseUseCurrentHeadWithoutMovingCameraOrArena",
+      "HudVerticalFallbackAndUnavailableHeadCannotMovePanelToFloor",
+      "HudRepositionClearsHoverAndRequiresReleaseBeforeShopClick"
+    ],
+    "included_in_totals": true,
+    "scope": "Synthetic Editor pose/policy tests; hardware tracking, binocular comfort and PICO performance remain unverified."
+  },
+  "source_integrity": {
+    "unchanged_after_verification": true,
+    "file_count": 94,
+    "snapshot": "Logs/EmberdeepHudFix/VerifiedSources.json"
+  },
+  "record_scope": "HISTORICAL 0.2.9 release; EyeDrop 0.12 m superseded by 0.2.10 EyeDrop 0.04 m. Original rules and evidence retained. Read InteractionIntentFix.json for current candidate.",
+  "superseded_placement": {
+    "source": "InteractionIntentFix.json",
+    "old_eye_drop_metres": 0.12,
+    "new_eye_drop_metres": 0.04,
+    "forward_distance_metres": 0.9
+  },
+  "subsequent_user_feedback": "The user partially approved Quest 0.2.9 panel height but requested slightly higher placement. They then clarified that when trying to click a menu, pump or gameplay interactions may trigger, and they are unsure of the exact cause. The primary report is menu intent losing priority to physical/weapon actions, not confirmed accidental UI activation while playing. The second-incident right creek was only a suspected factor.",
+  "subsequent_user_acceptance": {
+    "device": "Quest 3",
+    "version": "0.2.9",
+    "accepted_scope": "Partial panel position improvement only; user still requested more height",
+    "remaining_issue": "Menu intent may trigger pump/gameplay instead; user unsure of cause. Right-side creek only a hypothesis.",
+    "not_established": [
+      "all interactions",
+      "purchases",
+      "full placement comfort",
+      "PICO compatibility",
+      "performance"
+    ]
+  },
+  "original_page_introductions": [
+    "CURRENT 0.2.9 candidate implements eye-relative front placement after Quest 0.2.8 position feedback. Current 0.2.9 FinalVerification passed 184 EditMode and 96 PlayMode tests, zero failed, skipped or inconclusive. The 17 new HUD pose cases and four new PlayMode cases are included in those totals. Both APKs passed version 0.2.9/code 12, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation preserves data and installed version 0.2.9/code 12 is verified. Launch was requested but is not confirmed: no app PID was observed and the recorded power state is Asleep. Device placement/Shop acceptance remains pending. No PICO 4 physical usability or performance acceptance. Prior 0.2.8 Shop highlight/entry confirmation is historical and does not validate this placement change.",
+    "Check pose math, world anchoring, real seated/standing visibility and retained input ownership separately."
+  ],
+  "feedback_clarification": {
+    "original_user_quote": "我想要点菜单的时候，会触发水泵和游玩的互动，我也不确定",
+    "meaning": "Attempted menu action may be consumed by pump/gameplay; cause not confirmed",
+    "correction": "Do not describe the primary complaint as confirmed UI clicks caused by ordinary gameplay."
+  }
+}

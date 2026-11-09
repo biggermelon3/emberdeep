@@ -1,0 +1,9 @@
+{
+  "file": "E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Deliverables\\Emberdeep\\Emberdeep-0.2.8-Verification.zip",
+  "version": "0.2.8",
+  "android_version_code": 11,
+  "bytes": 690085,
+  "sha256": "4979ff6c81547acc99cbc6669d96413b13e7f99208a2d1238c7fa41c1bacd64e",
+  "entries": 60,
+  "scope": "Authoritative JSON, current Editor test/render evidence, two APK manifests, build reproduction scripts and device checklist. APKs separate; Word drafts excluded because layout rendering unavailable. Includes scoped user confirmation of Quest Shop highlight and entry; no headset image or performance acceptance."
+}

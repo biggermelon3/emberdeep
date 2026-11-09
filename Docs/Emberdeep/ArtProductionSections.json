@@ -633,6 +633,28 @@
           "text": "For every external texture, model, sound or font, include creator, source URL, licence, permitted modification/redistribution and purchase record where applicable. Do not copy another game's identifiable assets or branding. Record generated-asset provenance and manual edits. Acceptance checks include missing references, correct scale, valid pivots, both-eye rendering, tracking interruption, scene return, pooled reset, readable colour-independent states and no duplicate reward cues. Archive superseded exports without silently replacing approved source files."
         }
       ]
+    },
+    {
+      "title": "Shop preview assets and slow recovery feedback",
+      "intro": "Revision 0.13 implements the approved 0.12 direction as candidate 0.2.11. The quiet recovery cue and renderer-only shop catalogue previews are implemented; FinalVerification passed 204 EditMode and 144 PlayMode and all 12 Editor captures were reviewed; headset stereo and performance verification is pending. See WaterRecoveryAndShopPreview.json for source APIs, scope and AR-SHOP-01.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "AR-SHOP-01: supply a catalogue-ID mapping to a display-only model, matching thumbnail, PreviewPivot and framing bounds for all offered tools, station tiers and upgrades. Reuse existing authored assets. Show actual changed geometry for modifications; numeric tuning uses the same model plus before/after values. A named neutral silhouette is the explicit missing-asset fallback."
+        },
+        {
+          "kind": "p",
+          "text": "Fit one stable three-quarter model inside the front-facing shop without obscuring cost or actions. Preview copies have no physics, gameplay components or interaction blockers. Disable world audio and particle emitters; optional demonstrations stay inside the preview frame and obey existing UI input ownership. One active preview and bounded thumbnails must remain inside measured PICO 4 budgets. Validate both eyes and both hand layouts before accepting the rendering path."
+        },
+        {
+          "kind": "p",
+          "text": "Candidate slow recovery uses a small droplet, fractional gauge movement and SLOW RECOVERY text. Waiting, manual filling, empty and full remain distinguishable. No continuous vibration, sound, new world stream or full-screen effect is added. Record fresh Editor screenshots and device evidence separately; the implemented cue and catalogue previews have not yet passed the 0.2.11 acceptance gates."
+        },
+        {
+          "kind": "p",
+          "text": "Current preview production path: copy only transforms, shared meshes/materials and tint from the existing authored/procedural tool and station builders into one three-quarter display. No thumbnail grid or render texture is used. Numeric tuning explicitly keeps the same mesh. Missing content displays a neutral silhouette with PREVIEW UNAVAILABLE. Dedicated preview prefab/thumbnail assets remain optional replacement work; the chosen direct-geometry path still requires Quest and PICO stereo/cost acceptance."
+        }
+      ]
     }
   ]
 }

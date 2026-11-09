@@ -27,6 +27,7 @@ namespace FireRescue
         public const float ReservoirDuration = 4;
         public const float ReservoirRadius = 2.4f;
         public const int CabinReward = 50;
+        public const float RecoveryDelaySeconds=3,RecoveryUnitsPerSecond=.25f;
         static readonly float[] ParTimes = { 25, 50, 70, 90, 110 };
         static readonly string[] Objectives = {
             "Put out three fires. Dock at the free water station to refill.",
@@ -72,7 +73,7 @@ namespace FireRescue
         public bool BuyStationUpgrade()
         {
             if(!CanUpgradeStation)return false;
-            Coins-=StationUpgradeCost;StationTier=(WaterStationTier)((int)StationTier+1);return true;
+            Coins-=StationUpgradeCost;StationTier=(WaterStationTier)((int)StationTier+1);ResetRecovery();return true;
         }
         readonly bool[] owned={true,false,false,false};
         readonly int[] upgrades=new int[4];
@@ -80,6 +81,11 @@ namespace FireRescue
         public EmberdeepWaterSupply Supply { get; }
         public float SuppliedWater { get; private set; }
         public float ConsumedWater { get; private set; }
+        double recoveredWater,recoveryElapsed,recoveryRemainder;
+        public float RecoveredWater=>(float)recoveredWater;
+        public bool RecoveryWaiting { get; private set; }
+        public bool RecoveryActive { get; private set; }
+        public float RecoveryDelayRemaining=>(float)Math.Max(0,RecoveryDelaySeconds-recoveryElapsed);
         public int AssistedRefills { get; internal set; }
         bool triggerNeedsOpen;
         EntryCheckpoint entryCheckpoint;
@@ -91,6 +97,7 @@ namespace FireRescue
             public WaterStationTier StationTier;
             public FireEquipmentId Equipped;
             public float Supplied, Consumed;
+            public double Recovered;
             public int Coins, Score, Rescued, BestCombo, Assisted;
         }
         public FireRun(){Supply=new EmberdeepWaterSupply(this);}
@@ -109,12 +116,13 @@ namespace FireRescue
         public bool Owns(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && owned[(int)id];
         public bool CanBuy(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && !Supply.Locked && InSupply && !Owns(id) && ClearedIncidents>=FireEquipment.Get(id).Unlock && Coins>=FireEquipment.Get(id).Price;
         public bool BuyEquipment(FireEquipmentId id)
-        {if(!CanBuy(id))return false;Coins-=FireEquipment.Get(id).Price;owned[(int)id]=true;return true;}
+        {if(!CanBuy(id))return false;Coins-=FireEquipment.Get(id).Price;owned[(int)id]=true;ResetRecovery();return true;}
         public bool Equip(FireEquipmentId id)
-        {if(!Owns(id) || Supply.Locked)return false;CancelTrigger();Equipped=id;return true;}
+        {if(!Owns(id) || Supply.Locked)return false;CancelTrigger();Equipped=id;ResetRecovery();return true;}
         public void CancelTrigger(){Charge01=0;wasTrigger=false;SprayAmount=0;triggerChargeSeconds=0;chargeReady=false;}
         public bool PrimeCannon(float charge)
         {
+            if(PositiveFinite(charge))ResetRecovery();
             if(Supply.Locked || triggerNeedsOpen || Phase!=FirePhase.Fighting || Equipment.Delivery!=FireDelivery.Charge || cooldown>0 || Water<8 || !PositiveFinite(charge))return false;
             Charge01=Mathf.Max(Charge01,Mathf.Min(AffordableCharge01,Mathf.Clamp01(charge)));chargeReady|=charge>.1f;wasTrigger=true;return true;
         }
@@ -125,15 +133,46 @@ namespace FireRescue
         public int Rescued { get; private set; }
         public float Water { get=>tanks[(int)Equipped]; private set {ConsumedWater+=Mathf.Max(0,tanks[(int)Equipped]-value);tanks[(int)Equipped]=value;} }
         public float AffordableCharge01=>Mathf.Clamp01((Water-8)/20);
-        // The station is the only grant authority. Direct hits and visual effects cannot fill a tank.
+        // Manual supply and slow recovery are the only grant transactions.
+        // Direct hits and visual effects cannot fill a tank.
         internal float TransferWater(EmberdeepWaterSupply authority,float requested)
         {
             if(!ReferenceEquals(authority,Supply) || !Supply.Locked || Supply.Tool!=Equipped || !PositiveFinite(requested) || Phase==FirePhase.Lost)return 0;
             float actual=Mathf.Min(requested,Mathf.Max(0,Capacity-Water));
+            ResetRecovery();
             tanks[(int)Equipped]+=actual;SuppliedWater+=actual;
             return actual;
         }
-        internal void CancelSupplyInput(){CancelTrigger();triggerNeedsOpen=true;}
+        internal void CancelSupplyInput(){CancelTrigger();triggerNeedsOpen=true;ResetRecovery();}
+        public void ResetRecovery()
+        {recoveryElapsed=recoveryRemainder=0;RecoveryWaiting=RecoveryActive=false;}
+        // GD-WATER-10/11: the caller supplies live fireground eligibility and
+        // raw held input, including a dry trigger. Call once after Tick; no clock
+        // or coroutine may accumulate missed/background intervals for this API.
+        public float TickRecovery(float dt,bool eligible,bool triggerActive)
+        {
+            if(!PositiveFinite(dt) || !eligible || triggerActive || !Owns(Equipped)
+                || (Phase!=FirePhase.Fighting && Phase!=FirePhase.Cleared)
+                || Supply.Locked || wasTrigger || Charge01>0 || SprayAmount>0)
+            {ResetRecovery();return 0;}
+            if(Water>=Capacity){ResetRecovery();return 0;}
+            double accepted=Math.Min(dt,.1f),remaining=Math.Max(0,RecoveryDelaySeconds-recoveryElapsed);
+            double delayed=Math.Min(accepted,remaining);
+            recoveryElapsed=Math.Min(RecoveryDelaySeconds,recoveryElapsed+delayed);
+            // Exact nominal boundaries (30 x .1, 180 x 1/60) must not leak a
+            // float-rounding-sized grant before the three-second wait is over.
+            double active=accepted-delayed;
+            if(remaining>0 && active<.000001)active=0;
+            if(RecoveryDelaySeconds-recoveryElapsed<.000001)recoveryElapsed=RecoveryDelaySeconds;
+            RecoveryWaiting=recoveryElapsed<RecoveryDelaySeconds;RecoveryActive=!RecoveryWaiting;
+            if(active<=0)return 0;
+            double exact=Math.Min(Capacity,(double)Water+recoveryRemainder+active*RecoveryUnitsPerSecond);
+            float after=(float)exact,actual=after-Water;
+            recoveryRemainder=exact-after; // Carry sub-float rounding across frames.
+            tanks[(int)Equipped]=after;recoveredWater+=actual;
+            if(after>=Capacity){RecoveryWaiting=RecoveryActive=false;recoveryRemainder=0;}
+            return actual;
+        }
         public float Capacity => Equipment.Capacity + Upgrade * 25;
         public float Range => Equipment.Range + Upgrade * 2.5f;
         public float Power => Equipment.Power + Upgrade * 27;
@@ -152,8 +191,9 @@ namespace FireRescue
         {
             if(Phase!=FirePhase.Ready && Phase!=FirePhase.Cleared) return false;
             Supply.Interrupt("Sector changed");
+            ResetRecovery();
             if(Phase==FirePhase.Cleared) Stage++;
-            entryCheckpoint=new EntryCheckpoint{Tanks=(float[])tanks.Clone(),Owned=(bool[])owned.Clone(),Upgrades=(int[])upgrades.Clone(),StationTier=StationTier,Equipped=Equipped,Supplied=SuppliedWater,Consumed=ConsumedWater,
+            entryCheckpoint=new EntryCheckpoint{Tanks=(float[])tanks.Clone(),Owned=(bool[])owned.Clone(),Upgrades=(int[])upgrades.Clone(),StationTier=StationTier,Equipped=Equipped,Supplied=SuppliedWater,Consumed=ConsumedWater,Recovered=recoveredWater,
                 Coins=Coins,Score=Score,Rescued=Rescued,BestCombo=BestCombo,Assisted=AssistedRefills};
             int count=Counts[Stage], columns=Stage==0?3:Stage==1?3:Stage==4?7:6;
             Trees=new Tree[count];
@@ -183,6 +223,7 @@ namespace FireRescue
             StationTier=entryCheckpoint.StationTier;
             Equipped=entryCheckpoint.Equipped;
             SuppliedWater=entryCheckpoint.Supplied;ConsumedWater=entryCheckpoint.Consumed;
+            recoveredWater=entryCheckpoint.Recovered;
             Coins=entryCheckpoint.Coins;Score=entryCheckpoint.Score;Rescued=entryCheckpoint.Rescued;
             BestCombo=entryCheckpoint.BestCombo;AssistedRefills=entryCheckpoint.Assisted;
             Phase=FirePhase.Ready;
@@ -202,11 +243,11 @@ namespace FireRescue
         public bool BuyUpgrade()
         {
             if(!CanUpgrade)return false;
-            Coins-=UpgradeCost; upgrades[(int)Equipped]++; return true;
+            Coins-=UpgradeCost; upgrades[(int)Equipped]++;ResetRecovery();return true;
         }
         public void Restart()
         {
-            Supply.Interrupt("New expedition");entryCheckpoint=null;SuppliedWater=ConsumedWater=0;AssistedRefills=0;triggerNeedsOpen=false;
+            Supply.Interrupt("New expedition");entryCheckpoint=null;SuppliedWater=ConsumedWater=0;recoveredWater=0;ResetRecovery();AssistedRefills=0;triggerNeedsOpen=false;
             Stage=Coins=Rescued=0;Equipped=FireEquipmentId.Extinguisher;StationTier=WaterStationTier.LeverWell;
             for(int i=0;i<4;i++){owned[i]=i==0;upgrades[i]=0;tanks[i]=i==0?60:0;}
             Trees=Array.Empty<Tree>();Phase=FirePhase.Ready;spreadTime=cooldown=0;CancelTrigger();
@@ -216,6 +257,7 @@ namespace FireRescue
         public bool Tick(float dt, bool spraying, bool manualCharge=false)
         {
             SprayAmount=0;
+            if(spraying || manualCharge || Supply.Locked)ResetRecovery();
             if(float.IsNaN(dt) || float.IsInfinity(dt) || dt<=0)return false;
             dt=Mathf.Min(dt,.1f); // No catch-up burst after a pause or lost focus.
             if(Phase!=FirePhase.Fighting)return false;
@@ -276,7 +318,7 @@ namespace FireRescue
                 Phase=Stage==Names.Length-1?FirePhase.Won:FirePhase.Cleared;
                 CancelTrigger();
             }
-            if(Phase!=FirePhase.Fighting)foreach(var prop in Props)prop.ActiveRemaining=0;
+            if(Phase!=FirePhase.Fighting){ResetRecovery();foreach(var prop in Props)prop.ActiveRemaining=0;}
         }
         public void ApplyWater(Vector3 point,float amount,float radius=-1,float wetness=1)
         {

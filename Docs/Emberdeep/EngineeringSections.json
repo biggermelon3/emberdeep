@@ -55,7 +55,7 @@
         },
         {
           "kind": "p",
-          "text": "Author immutable sectorId, entityId, toolId, sourceId, lootId and animalId values; never persist array indices, instance IDs or scene object references. Save schemaVersion, contentVersion, expeditionId, seed, revision, equipment levels/tank units, suppliedWater counters, sector/entity states, entry checkpoint, pending earnings and committed transaction IDs. Generate a sector manifest once; retry preserves its seed."
+          "text": "Author immutable sectorId, entityId, toolId, sourceId, lootId and animalId values; never persist array indices, instance IDs or scene object references. Save schemaVersion, contentVersion, expeditionId, seed, revision, equipment levels/tank units, suppliedWater and recoveredWater counters plus consumedWater, sector/entity states, entry checkpoint, pending earnings and committed transaction IDs. Generate a sector manifest once; retry preserves its seed."
         },
         {
           "kind": "p",
@@ -65,7 +65,7 @@
     },
     {
       "title": "Migration Plan: Water, Interaction and Content",
-      "intro": "M1 now centralizes water transfer, rejects weapon use while docked, and removes passive refill paths. The original migration table below records the historical defects and intended replacements. Inspect ImplementationStatus.json for current evidence; physical comfort and dual-device acceptance are pending.",
+      "intro": "Historical M1 centralized water transfer, rejected weapon use while docked, and removed passive refill paths. The original migration table below records historical v0.1 defects and M1 replacements, not the latest recovery design. Revision 0.13 implements the explicit accounted recovery path approved in 0.12 under GD-WATER-10/11; the old ban remains descriptive of 0.2.10 only. Inspect ImplementationStatus.json for current evidence; physical comfort and dual-device acceptance are pending.",
       "blocks": [
         {
           "kind": "h2",
@@ -84,7 +84,7 @@
             ],
             [
               "FireRun.Tick while released",
-              "Remove idle regeneration; an empty tool stays empty."
+              "Historical M1 fix: remove idle regeneration. Revision 0.12 supersedes the blanket ban with GD-WATER-10/11; do not restore the old unbounded grant."
             ],
             [
               "FireRun.StartStage",
@@ -106,7 +106,7 @@
         },
         {
           "kind": "p",
-          "text": "Introduce one transfer command requiring a valid connection, tank free capacity and accepted interaction ownership. Main hydrant and creek supplies are renewable and free in v0.2: credit the tank and increment suppliedWater atomically; never debit a finite source inventory. Return actual transfer, clamped to capacity. Purchased tools start empty. New Expedition initializes the starter extinguisher to 60 units once; retry restores checkpoint amounts, never fresh full tanks. Add migration tests for every current water assignment."
+          "text": "Manual-source transfers require a valid connection, tank free capacity and accepted interaction ownership. The 0.2.11 candidate recovery transaction shares the capacity-clamped accounting boundary but has its own active-time eligibility and RecoveredWater counter; it never simulates a dock connection. Main hydrant and creek supplies are renewable and free in v0.2: credit the tank and increment suppliedWater atomically; never debit a finite source inventory. Return actual transfer, clamped to capacity. Purchased tools start empty. New Expedition initializes the starter extinguisher to 60 units once; retry restores checkpoint amounts, never fresh full tanks. Add migration tests for every current water assignment."
         },
         {
           "kind": "h2",

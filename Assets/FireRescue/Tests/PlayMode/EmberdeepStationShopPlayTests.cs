@@ -108,6 +108,16 @@ namespace FireRescue.Tests
                 for(int i=0;i<8;i++)game.ProcessHandMenuInput(default,sample,true,Dt);
                 Assert.AreSame(button,game.MenuInput.HoveredButton);
                 sample.Pinch=ClosedPinch;Assert.IsTrue(game.ProcessHandMenuInput(default,sample,true,Dt));
+                Assert.AreEqual(EmberdeepShopPage.Station,game.ShopPage,"Water entry opens the result preview before purchase");
+                Assert.AreEqual(priorTier,game.Run.StationTier);Assert.AreEqual(coins,game.Run.Coins);
+                Assert.AreEqual((WaterStationTier)((int)priorTier+1),game.ShopPreview.DisplayedStationTier);
+                var buy=game.GetComponentsInChildren<WorkshopButton>(true).Single(b=>b.Command=="Buy gear");
+                target=buy.GetComponent<Collider>().bounds.center;
+                camera.transform.rotation=Quaternion.LookRotation(target-camera.transform.position);
+                sample=new EmberdeepHandRay.Sample(true,new Ray(camera.transform.position,target-camera.transform.position),OpenPinch);
+                for(int i=0;i<8;i++)Assert.IsFalse(game.ProcessHandMenuInput(default,sample,true,Dt));
+                Assert.AreSame(buy,game.MenuInput.HoveredButton);
+                sample.Pinch=ClosedPinch;Assert.IsTrue(game.ProcessHandMenuInput(default,sample,true,Dt));
                 Assert.AreEqual((WaterStationTier)((int)priorTier+1),game.Run.StationTier);
                 Assert.AreEqual(game.Run.StationTier,game.HydrantStation.Tier);
                 Assert.AreEqual(coins-cost,game.Run.Coins);Assert.AreEqual(water,game.Run.Water,"A station purchase supplies no water");

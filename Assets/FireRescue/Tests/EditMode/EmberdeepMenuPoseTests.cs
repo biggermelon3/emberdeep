@@ -113,4 +113,59 @@ namespace FireRescue.Tests
             Place(policy, Head(), .1f);
         }
     }
+
+    public sealed class EmberdeepHudPoseTests
+    {
+        [TestCase(1.1f,0f,90f,70f,20f)]
+        [TestCase(1.65f,0f,-45f,-70f,-25f)]
+        [TestCase(3.1f,2f,145f,0f,30f)]
+        public void SeatedStandingAndOffsetOriginPlaceHudAtComfortableHorizontalDistance(float eye,float floor,float yaw,float pitch,float roll)
+        {
+            var head=new Pose(new Vector3(2,eye,-3),Quaternion.Euler(pitch,yaw,roll));
+            Assert.IsTrue(EmberdeepHudPose.TryCalculate(head,floor,Vector3.zero,out var panel));
+            var heading=Quaternion.Euler(0,yaw,0)*Vector3.forward;
+            var horizontal=Vector3.ProjectOnPlane(panel.position-head.position,Vector3.up);
+            Assert.That(horizontal.magnitude,Is.EqualTo(.9f).Within(.00001f));
+            Assert.Less(Vector3.Angle(horizontal,heading),.02f);
+            Assert.That(panel.position.y,Is.EqualTo(head.position.y-.04f).Within(.00001f));
+            Assert.Less(Vector3.Angle(panel.rotation*Vector3.up,Vector3.up),.02f);
+            Assert.Less(Vector3.Angle(panel.rotation*Vector3.forward,heading),.02f);
+        }
+
+        [TestCase(85f)] [TestCase(89.9f)] [TestCase(90f)] [TestCase(90.1f)] [TestCase(95f)] [TestCase(-90f)]
+        public void NearVerticalHeadKeepsPreviousHorizontalHeadingAcrossThePole(float pitch)
+        {
+            var head=new Pose(new Vector3(-2,1.2f,4),Quaternion.Euler(pitch,-120,25));
+            var previous=new Vector3(3,2,0);
+            Assert.IsTrue(EmberdeepHudPose.TryCalculate(head,0,previous,out var panel));
+            Assert.Less(Vector3.Distance(panel.position,head.position+Vector3.right*.9f-Vector3.up*.04f),.00001f);
+            Assert.Less(Vector3.Angle(panel.rotation*Vector3.forward,Vector3.right),.02f);
+            Assert.Less(Vector3.Angle(panel.rotation*Vector3.up,Vector3.up),.02f);
+        }
+
+        [TestCase(0)] [TestCase(1)] [TestCase(2)] [TestCase(3)] [TestCase(4)] [TestCase(5)] [TestCase(6)]
+        public void InvalidHeadOrMissingVerticalFallbackDoesNotProducePlacement(int invalid)
+        {
+            var head=new Pose(new Vector3(2,1.2f,-1),Quaternion.identity);float floor=0;var previous=Vector3.forward;
+            if(invalid==0)head.position.x=float.NaN;
+            if(invalid==1)head.rotation=new Quaternion(0,float.PositiveInfinity,0,1);
+            if(invalid==2)head.rotation=new Quaternion(0,0,0,0);
+            if(invalid==3)floor=float.NaN;
+            if(invalid==4)head.position.y=.44f;
+            if(invalid==5){head.rotation=Quaternion.Euler(90,50,0);previous=Vector3.up;}
+            if(invalid==6){head.rotation=Quaternion.Euler(-90,50,0);previous=new Vector3(float.NaN,0,1);}
+            Assert.IsFalse(EmberdeepHudPose.TryCalculate(head,floor,previous,out var panel));
+            Assert.AreEqual(default(Pose),panel);
+        }
+
+        [Test] public void NonUnitQuaternionIsNormalizedAndValidHeadingDoesNotNeedFallback()
+        {
+            var rotation=Quaternion.Euler(35,60,12);var head=new Pose(new Vector3(0,.45f,0),rotation);
+            Assert.IsTrue(EmberdeepHudPose.TryCalculate(head,0,Vector3.zero,out var unit));
+            head.rotation=new Quaternion(rotation.x*4,rotation.y*4,rotation.z*4,rotation.w*4);
+            Assert.IsTrue(EmberdeepHudPose.TryCalculate(head,0,new Vector3(float.NaN,0,0),out var scaled));
+            Assert.Less(Vector3.Distance(unit.position,scaled.position),.00001f);
+            Assert.Less(Quaternion.Angle(unit.rotation,scaled.rotation),.08f);
+        }
+    }
 }

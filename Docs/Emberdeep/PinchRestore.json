@@ -170,8 +170,8 @@
   },
   "pages": [
     {
-      "title": "0 2 7 Restore Pinch for the Well Lever",
-      "intro": "CURRENT candidate restores thumb-index pinch after the user reported that 0.2.6 whole-hand acquisition could not operate the well. Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending.",
+      "title": "Historical 0 2 7 Restore Pinch for the Well Lever",
+      "intro": "HISTORICAL 0.2.7 release record; current Shop access status is in ShopAccessFix.json. Prior candidate restores thumb-index pinch after the user reported that 0.2.6 whole-hand acquisition could not operate the well. Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending.",
       "blocks": [
         {
           "kind": "p",
@@ -196,8 +196,8 @@
       ]
     },
     {
-      "title": "0 2 7 Presentation and Acceptance",
-      "intro": "A closed display hand communicates contact with the handle. It no longer implies that full-finger recognition is required to operate the well.",
+      "title": "Historical 0 2 7 Presentation and Acceptance",
+      "intro": "HISTORICAL 0.2.7 release record; current Shop access status is in ShopAccessFix.json. A closed display hand communicates contact with the handle. It no longer implies that full-finger recognition is required to operate the well.",
       "blocks": [
         {
           "kind": "p",
@@ -288,5 +288,24 @@
     "unchanged_after_verification": true,
     "file_count": 93,
     "snapshot": "Logs/EmberdeepPinchRestore/VerifiedSources.json"
-  }
+  },
+  "record_scope": "HISTORICAL 0.2.7 release source retained. Its pinch rules remain; ShopAccessFix.json supplies the current 0.2.8 override and verification. Original delivery status and evidence below are historical snapshots.",
+  "subsequent_installation": {
+    "recordedUtc": "2026-11-09T16:57:04.0566251Z",
+    "device": "Quest 3",
+    "package": "com.metahackathon2026.emberdeep",
+    "version": "0.2.7",
+    "versionCode": 10,
+    "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+    "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+    "installedVersionVerified": true,
+    "observedProcessId": 26987,
+    "evidence": "Logs/EmberdeepQuest027Install/Install.json",
+    "scope": "Historical Quest 0.2.7 installation/version/process evidence only; no 0.2.8 installation or positive interaction acceptance."
+  },
+  "subsequent_user_feedback": "The user reported on Quest 0.2.7 that Shop had no highlight and could not be clicked after extinguishing fires. This is a specific negative interaction observation, not acceptance of the rest of the game.",
+  "original_page_introductions": [
+    "CURRENT candidate restores thumb-index pinch after the user reported that 0.2.6 whole-hand acquisition could not operate the well. Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending.",
+    "A closed display hand communicates contact with the handle. It no longer implies that full-finger recognition is required to operate the well."
+  ]
 }

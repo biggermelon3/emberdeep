@@ -28,9 +28,9 @@ namespace FireRescue
                         :new Cue(Step.LowerLever,Target.Lever,"LOWER THE HANDLE 8 cm\nKeep pinching, then raise\nDock a tool to collect the water");
                 if(!creek && run.StationTier==WaterStationTier.LeverWell && !held)
                     return new Cue(Step.TryPump,Target.Lever,"TRY THE PUMP\nPinch handle; hold, lower + return\nDock a tool to collect the water");
-                if(!held)return new Cue(Step.TakeTool,Target.Pickup,"1  TAKE YOUR TOOL\nOpen hand, then pinch its grip");
+                if(!held)return new Cue(Step.TakeTool,Target.Pickup,creek?"OPTIONAL CREEK REFILL\nPick up a tool to try it":"1  TAKE YOUR TOOL\nOpen hand, then pinch its grip");
                 if(supply.Alignment01>0)return new Cue(Step.HoldStill,Target.Socket,"1  HOLD STILL\nKeep the blue rings together");
-                return new Cue(Step.BringTool,Target.Socket,"1  BRING THE TOOL HERE\nMatch its blue ring to this ring");
+                return new Cue(Step.BringTool,Target.Socket,creek?"OPTIONAL CREEK REFILL\nRelease pinch; match the blue rings":"1  RELEASE PINCH TO DOCK\nBring the two blue rings together");
             }
             if(run.Water>=run.Capacity-.001f)
                 return new Cue(Step.Full,Target.Grip,"3  FULL - TAKE YOUR TOOL\nOpen hand, then pinch its grip");

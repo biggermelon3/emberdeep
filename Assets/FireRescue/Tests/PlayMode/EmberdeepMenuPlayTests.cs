@@ -237,9 +237,10 @@ namespace FireRescue.Tests
         }
         IEnumerator WaitPlaced()
         {
-            float deadline=Time.realtimeSinceStartup+10;
+            float deadline=Time.realtimeSinceStartup+10;int startFrame=Time.frameCount;
             while(!camp.IsPlaced && Time.realtimeSinceStartup<deadline)yield return null;
-            Assert.IsTrue(camp.IsPlaced,"Menu failed to acquire stable placement");
+            object Flag(string name)=>typeof(EmberdeepCamp).GetField(name,System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).GetValue(camp);
+            Assert.IsTrue(camp.IsPlaced,$"Menu failed to acquire stable placement: frames={Time.frameCount-startFrame}, focused={Flag("focused")}, paused={Flag("paused")}, enabled={camp.enabled}, xr={camp.Player.IsXR}, eye={camp.Player.ViewCamera.transform.position}, floor={camp.Player.FloorHeight}, dt={Time.unscaledDeltaTime}");
             yield return null;
         }
         void Capture(string path)

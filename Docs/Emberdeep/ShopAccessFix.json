@@ -1,0 +1,406 @@
+{
+  "revision": "0.2.8",
+  "date": "2026-11-09",
+  "candidate": {
+    "version": "0.2.8",
+    "android_version_code": 11
+  },
+  "status": "IMPLEMENTED_CANDIDATE 0.2.8 / code 11; 167 EditMode and 92 PlayMode passed; Quest/PICO APKs built and audited; Quest Shop highlight/entry user-confirmed; remaining device checks PENDING.",
+  "user_feedback": "The user reported on Quest 0.2.7 that Shop had no highlight and could not be clicked after extinguishing fires. This is a specific negative interaction observation, not acceptance of the rest of the game.",
+  "historical_027_installation": {
+    "recordedUtc": "2026-11-09T16:57:04.0566251Z",
+    "device": "Quest 3",
+    "package": "com.metahackathon2026.emberdeep",
+    "version": "0.2.7",
+    "versionCode": 10,
+    "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+    "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+    "installedVersionVerified": true,
+    "observedProcessId": 26987,
+    "evidence": "Logs/EmberdeepQuest027Install/Install.json",
+    "scope": "Historical Quest 0.2.7 installation/version/process evidence only; no 0.2.8 installation or positive interaction acceptance."
+  },
+  "confirmed_causes": [
+    "AllowHandInterface blocks both hands when the held tool is near a water source, preventing free-hand UI access.",
+    "AllowInterfaceButton rejects Gear shop while a supply lock exists, even after the run has entered a tradable phase."
+  ],
+  "authority": "Latest Shop repair overrides only the affected input/transition gates. Preserve the 0.2.7 pinch lever, contact display, empty outlet and existing trading rules.",
+  "requirements": [
+    {
+      "id": "SA-01 / GD-HAND-01",
+      "rule": "Remove the global held-tool NearStation gate that blocks both hands. Evaluate each hand independently: keep its own nearStation/nearLever exclusions and operating-hand priority. An eligible free hand away from those reserved controls may highlight and activate visible UI with its own fresh pinch.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "acceptance": "Repeat with a tool held left/right near supply and the free hand outside control reach. Free-hand hover/click works; moving that same free hand into its own reserved control region still suppresses UI. The operating hand cannot click simultaneously.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "LeftFreeHandCanOpenShopWhileRightToolHandIsNearSource",
+          "RightFreeHandCanOpenShopWhileLeftToolHandIsNearSource"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "Scoped Quest 3 0.2.8 user confirmation: Shop highlight and entry after firefighting. The specific left/right, near-source, docked cleanup and resource boundaries remain independently unconfirmed on hardware."
+    },
+    {
+      "id": "SA-02 / GD-LOOP-01 / GD-PAUSE-01",
+      "rule": "When Run.InSupply allows trading, a docked tool must not hide or block the Gear shop entry from the eligible free hand. OpenShop returns the tool and disconnects supply through existing cleanup, cancels unfinished strokes/charge and enters the shop without granting water.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "acceptance": "Clear an incident, leave the tool docked, hover/click Gear shop with the free hand and confirm ShopOpen, no supply lock, no incomplete action or projectile and no increase in water.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "Scoped Quest 3 0.2.8 user confirmation: Shop highlight and entry after firefighting. The specific left/right, near-source, docked cleanup and resource boundaries remain independently unconfirmed on hardware."
+    },
+    {
+      "id": "SA-03 / GD-ECON-01 / GD-WATER-05",
+      "rule": "Retain Run.InSupply as the purchase gate. The fix does not enable shopping during Fighting, change item prices, grant water, or settle unearned rewards. Closing the shop and re-equipping require normal input rearming.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "acceptance": "Attempt entry/purchase during Fighting, then repeat after Cleared. Only the valid phase permits trade; water, supplied-water and coin accounting follow accepted purchases only.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase",
+          "FightingShopRemainsUnavailableThroughPhysicalPolicyAndViewportGate"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING"
+    },
+    {
+      "id": "SA-04 / GD-HAND-02 / GD-PAUSE-01",
+      "rule": "Keep the existing contextual system hand ray and same-hand fresh pinch. One gesture cannot activate Shop and operate supply/fire. Tracking loss, focus/pause and ownership changes discard pending selection and partial actions.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs"
+      ],
+      "acceptance": "Test held pinch, other-hand pinch, half lever/pump stroke, valve flow, interruption and resume. No click-through, refill grant or release shot.",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "tests": {
+        "status": "PASSED",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": [
+          "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase",
+          "ActiveLeverOperatorCannotOpenShopEvenAfterPointingAwayFromSource"
+        ]
+      },
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING"
+    },
+    {
+      "id": "SA-05 / GD-LOOP-01",
+      "rule": "Won displays SHOP CLOSED instead of the misleading SHOP AFTER ROUND label. Do not expand Run.InSupply or permit purchases in Won or Fighting.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.cs",
+        "Assets/FireRescue/Runtime/FireRun.cs"
+      ],
+      "acceptance": "Verify Ready/Cleared eligible, Fighting deferred and Won closed text with matching button interactability; the label change never enables an invalid purchase.",
+      "evidence": [
+        "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING",
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "tests": {
+        "status": "No dedicated Won-label assertion; code review and device checklist remain distinct from automated coverage",
+        "files": [
+          "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+        ],
+        "case_names": []
+      }
+    }
+  ],
+  "test_evidence": {
+    "EditMode": {
+      "status": "PASSED",
+      "total": 167,
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepShopFix/FinalVerification/EditMode-results.json"
+    },
+    "PlayMode": {
+      "status": "PASSED",
+      "total": 92,
+      "passed": 92,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepShopFix/FinalVerification/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.8",
+      "signatureVerified": true,
+      "sha256": "6a80639bf4a0676461c77906e5acdbc68a62fedce8633a06324ddc0d69434767",
+      "target": "Quest",
+      "bytes": 105509143,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 11,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 11,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.8.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.8.manifest.json",
+      "audit": "Logs/EmberdeepShopFix/Quest-Audit.json",
+      "errors": 0,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepShopFix/Quest-SettingsRestoration.json"
+      }
+    },
+    "Pico": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.8",
+      "signatureVerified": true,
+      "sha256": "10cee6ec41499fe8214e2f6304890b4d13f1421106fb81cba9cb033ad45d2f7c",
+      "target": "Pico",
+      "bytes": 87207511,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 11,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 11,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.8-Pico.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.8-Pico.manifest.json",
+      "audit": "Logs/EmberdeepShopFix/Pico-Audit.json",
+      "errors": 0,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepShopFix/Pico-SettingsRestoration.json"
+      }
+    }
+  },
+  "devices": {
+    "Quest3": {
+      "recordedUtc": "2026-11-09T17:21:35.683983Z",
+      "status": "INSTALLED_VERSION_VERIFIED",
+      "device": "Quest 3",
+      "package": "com.metahackathon2026.emberdeep",
+      "version": "0.2.8",
+      "versionCode": 11,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.8.apk",
+      "sha256": "6a80639bf4a0676461c77906e5acdbc68a62fedce8633a06324ddc0d69434767",
+      "replaceInstall": true,
+      "installedVersionVerified": true,
+      "launchStatus": "PROCESS_RUNNING_CONFIRMED",
+      "observedPowerState": "Asleep",
+      "headsetInteractionAcceptance": "USER_CONFIRMED: after extinguishing, GEAR SHOP highlights and opens on Quest 3 in 0.2.8",
+      "observedProcessId": "31256",
+      "launchVerificationUtc": "2026-11-09T17:23:36.7972309Z",
+      "userFeedback": "现在能高亮并进入 Shop",
+      "acceptanceScope": "Shop highlight and entry only; does not accept purchasing, all hand actions, PICO or performance",
+      "evidence": "Logs/EmberdeepShopFix/Quest-Install.json",
+      "scope": "Scoped user acceptance: Shop highlight and entry after firefighting on Quest 3 0.2.8 only. No purchase, complete interaction matrix, PICO or performance acceptance."
+    },
+    "PICO4": "PENDING physical usability and performance baseline"
+  },
+  "release_evidence": "Logs/EmberdeepShopFix/ReleaseEvidence.json",
+  "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.8-Device-Checks.txt",
+  "documents": {
+    "generation": "Three final 0.2.8 Word drafts regenerated from authoritative JSON; no visual layout approval.",
+    "structural_review": "PASS: exact ordered source content matches all three generated Word drafts. Counts and hashes: Logs/EmberdeepShopFix/Docs/qa.json.",
+    "visual_review": "NOT_ASSESSED; known render blocker is missing soffice.exe. No layout approval."
+  },
+  "pages": [
+    {
+      "title": "Historical 0 2 8 Restore Free Hand Shop Access",
+      "intro": "HISTORICAL 0.2.8; current position correction is HudPlacementFix.json. Prior 0.2.8 candidate addresses the user-reported Quest 0.2.7 Shop interaction failure. Current 0.2.8 FinalVerification passed 167 EditMode and 92 PlayMode tests, zero failed, skipped or inconclusive. The five new Shop cases are included in 92. Both APKs passed version 0.2.8/code 11, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation, installed version 0.2.8/code 11 and subsequent running app process are verified. The user confirmed that Shop now highlights and opens after firefighting on Quest 3 0.2.8. This accepts only that reported interaction; purchases, all hand/control boundaries, PICO compatibility and performance remain unverified. The earlier Asleep reading is historical.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "The user reported on Quest 0.2.7 that Shop had no highlight and could not be clicked after extinguishing fires. This is a specific negative interaction observation, not acceptance of the rest of the game."
+        },
+        {
+          "kind": "p",
+          "text": "Quest 0.2.7 / code 10 was installed and its running process observed; see Logs/EmberdeepQuest027Install/Install.json. The later user report specifically identifies a failed Shop interaction. Do not reuse the prior installation or 167/87 Editor results as acceptance of this revision."
+        },
+        {
+          "kind": "p",
+          "text": "Two input gates cause the obstruction: proximity of a held tool to supply blocks both hands, and an existing dock lock rejects Gear shop even in a tradable phase. Correct per-hand eligibility and permit the valid Shop transition through existing cleanup."
+        },
+        {
+          "kind": "p",
+          "text": "Remove the global held-tool NearStation gate that blocks both hands. Evaluate each hand independently: keep its own nearStation/nearLever exclusions and operating-hand priority. An eligible free hand away from those reserved controls may highlight and activate visible UI with its own fresh pinch."
+        },
+        {
+          "kind": "p",
+          "text": "When Run.InSupply allows trading, a docked tool must not hide or block the Gear shop entry from the eligible free hand. OpenShop returns the tool and disconnects supply through existing cleanup, cancels unfinished strokes/charge and enters the shop without granting water."
+        },
+        {
+          "kind": "p",
+          "text": "Retain Run.InSupply as the purchase gate. The fix does not enable shopping during Fighting, change item prices, grant water, or settle unearned rewards. Closing the shop and re-equipping require normal input rearming."
+        }
+      ]
+    },
+    {
+      "title": "Historical 0 2 8 Shop Interaction Verification",
+      "intro": "HISTORICAL 0.2.8; current position correction is HudPlacementFix.json. Highlight and access must match real hand ownership and the run phase. Preserve supply conservation, cancellation and standalone navigation.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Keep the existing contextual system hand ray and same-hand fresh pinch. One gesture cannot activate Shop and operate supply/fire. Tracking loss, focus/pause and ownership changes discard pending selection and partial actions."
+        },
+        {
+          "kind": "p",
+          "text": "Won displays SHOP CLOSED instead of the misleading SHOP AFTER ROUND label. Do not expand Run.InSupply or permit purchases in Won or Fighting."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Requirement",
+            "Acceptance focus"
+          ],
+          "rows": [
+            [
+              "SA-01 / GD-HAND-01",
+              "Repeat with a tool held left/right near supply and the free hand outside control reach. Free-hand hover/click works; moving that same free hand into its own reserved control region still suppresses UI. The operating hand cannot click simultaneously."
+            ],
+            [
+              "SA-02 / GD-LOOP-01 / GD-PAUSE-01",
+              "Clear an incident, leave the tool docked, hover/click Gear shop with the free hand and confirm ShopOpen, no supply lock, no incomplete action or projectile and no increase in water."
+            ],
+            [
+              "SA-03 / GD-ECON-01 / GD-WATER-05",
+              "Attempt entry/purchase during Fighting, then repeat after Cleared. Only the valid phase permits trade; water, supplied-water and coin accounting follow accepted purchases only."
+            ],
+            [
+              "SA-04 / GD-HAND-02 / GD-PAUSE-01",
+              "Test held pinch, other-hand pinch, half lever/pump stroke, valve flow, interruption and resume. No click-through, refill grant or release shot."
+            ],
+            [
+              "SA-05 / GD-LOOP-01",
+              "Verify Ready/Cleared eligible, Fighting deferred and Won closed text with matching button interactability; the label change never enables an invalid purchase."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Current 0.2.8 FinalVerification passed 167 EditMode and 92 PlayMode tests, zero failed, skipped or inconclusive. The five new Shop cases are included in 92. Both APKs passed version 0.2.8/code 11, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation, installed version 0.2.8/code 11 and subsequent running app process are verified. The user confirmed that Shop now highlights and opens after firefighting on Quest 3 0.2.8. This accepts only that reported interaction; purchases, all hand/control boundaries, PICO compatibility and performance remain unverified. The earlier Asleep reading is historical. Evidence: Logs/EmberdeepShopFix/FinalVerification, Quest-Audit.json, Pico-Audit.json, Quest-Install.json and ReleaseEvidence.json. Both builds restored all 28 audited settings hashes. 93 verified source/scene files remained unchanged after testing."
+        },
+        {
+          "kind": "p",
+          "text": "Worn-headset checks must reproduce the reported sequence: clear fires, hold or dock the tool near a source, use the other hand to highlight Shop, pinch, buy only in the tradable phase, close and resume. Repeat left/right, seated/standing, interrupted flow and incomplete pump travel. The user has confirmed only Shop highlight and entry after firefighting on Quest 3 0.2.8; detailed control, cleanup, purchase and posture checks remain pending."
+        },
+        {
+          "kind": "p",
+          "text": "Preserve the current tool/contact art and cyan target feedback; no new visual resource or alternate input stack is required. Existing pinch lever, rotary/button upgrades, creek, ballistic water and cannon behavior remain regression obligations. M2/M3 and durable expedition saves remain proposed."
+        },
+        {
+          "kind": "p",
+          "text": "The real ReadHand wrapper calls private AllowHandInterface(int, Hand); Editor tests target that same policy with synthetic samples. They do not validate SDK ReadHand, IHand delivery or headset input."
+        },
+        {
+          "kind": "p",
+          "text": "Current Editor Shop captures: Logs/EmberdeepShopFix/Editor-Synthetic-Shop-Highlighted.png and Logs/EmberdeepShopFix/Editor-Synthetic-Shop-Opened.png. Production Fireground uses synthetic fire clearance, docking and free-hand ray/policy samples; highlighted Shop opens, disconnects supply and preserves water/coins. Frames 4406 to 4539, times 10.39792 to 10.7321148, demonstrate engine progression only. The images and Capture.json/VisualReview.json do not establish real IHand delivery, headset comfort or performance."
+        }
+      ]
+    }
+  ],
+  "runtime_scope": "Remove the global held-tool NearStation gate that blocks both hands. Retain each hand own nearStation/nearLever exclusion and operating-hand priority. Permit docked Gear shop only in Run.InSupply and cleanly return/disconnect the tool. Won displays SHOP CLOSED; trading rules are unchanged.",
+  "sdk_boundary": "The real ReadHand wrapper calls private AllowHandInterface(int, Hand); Editor tests target that same policy with synthetic samples. They do not validate SDK ReadHand, IHand delivery or headset input.",
+  "captures": {
+    "source": "Editor PlayMode production scene; synthetic fire clear, dock and free-hand ray with shared hand policy",
+    "paths": [
+      "Logs/EmberdeepShopFix/Editor-Synthetic-Shop-Highlighted.png",
+      "Logs/EmberdeepShopFix/Editor-Synthetic-Shop-Opened.png"
+    ],
+    "capture_record": "Logs/EmberdeepShopFix/Capture.json",
+    "visual_review_record": "Logs/EmberdeepShopFix/VisualReview.json",
+    "visual_review": "Inspected both 1600x900 PNGs: GEAR SHOP cyan highlight is visible with tool docked and FIRE 0; fresh pinch opens readable FIREHOUSE / GEAR panel and returns tool. No idle ray remains on opened page. Images are scoped UI evidence, not hand fit or performance acceptance.",
+    "real_hand_tracking": false,
+    "headset_acceptance": false,
+    "shopOpened": true,
+    "supplyDisconnected": true,
+    "waterUnchanged": true,
+    "coinsUnchanged": true,
+    "engine_progression": {
+      "before": 4406,
+      "after": 4539,
+      "time_before": 10.39792,
+      "time_after": 10.7321148
+    }
+  },
+  "new_regression_cases": {
+    "file": "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs",
+    "names": [
+      "LeftFreeHandCanOpenShopWhileRightToolHandIsNearSource",
+      "RightFreeHandCanOpenShopWhileLeftToolHandIsNearSource",
+      "ClearedDockedShopCancelsHalfStrokeAndCannotReusePinchOnPurchase",
+      "ActiveLeverOperatorCannotOpenShopEvenAfterPointingAwayFromSource",
+      "FightingShopRemainsUnavailableThroughPhysicalPolicyAndViewportGate"
+    ],
+    "counted_within_playmode_total": true,
+    "scope": "Synthetic samples execute the production hand eligibility policy; real ReadHand/IHand/headset sampling is not tested."
+  },
+  "source_integrity": {
+    "unchanged_after_verification": true,
+    "file_count": 93,
+    "snapshot": "Logs/EmberdeepShopFix/VerifiedSources.json"
+  },
+  "current_user_acceptance": {
+    "device": "Quest 3",
+    "version": "0.2.8",
+    "accepted": "Shop highlights and opens after firefighting",
+    "not_established": [
+      "purchases",
+      "all hand/control/posture cases",
+      "PICO compatibility",
+      "performance"
+    ],
+    "evidence": "Logs/EmberdeepShopFix/Quest-Install.json"
+  },
+  "record_scope": "HISTORICAL 0.2.8 release. Shop access rules and scoped Quest user confirmation remain; HudPlacementFix.json describes the current 0.2.9 position correction. Original evidence is retained.",
+  "subsequent_user_feedback": "On Quest 3 0.2.8 the user confirmed Shop highlights and opens, then reported that the in-game and Shop panels appear near the legs/seat rather than in front. The positive confirmation covers access only; placement remains a negative observation.",
+  "original_page_introductions": [
+    "CURRENT 0.2.8 candidate addresses the user-reported Quest 0.2.7 Shop interaction failure. Current 0.2.8 FinalVerification passed 167 EditMode and 92 PlayMode tests, zero failed, skipped or inconclusive. The five new Shop cases are included in 92. Both APKs passed version 0.2.8/code 11, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation, installed version 0.2.8/code 11 and subsequent running app process are verified. The user confirmed that Shop now highlights and opens after firefighting on Quest 3 0.2.8. This accepts only that reported interaction; purchases, all hand/control boundaries, PICO compatibility and performance remain unverified. The earlier Asleep reading is historical.",
+    "Highlight and access must match real hand ownership and the run phase. Preserve supply conservation, cancellation and standalone navigation."
+  ]
+}

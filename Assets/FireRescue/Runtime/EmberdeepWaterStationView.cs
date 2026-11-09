@@ -136,7 +136,7 @@ namespace FireRescue
                 Vector3.one * .018f, Charcoal, bodyMaterial).GetComponent<Renderer>();
             quantityLabel = Label("Tank status", transform, new Vector3(.088f, .047f, -.026f), "EMPTY", .008f, Cream);
             stateLabel = Label("Supply status", transform, new Vector3(0, .34f, .055f),
-                creek ? "CREEK / DOCK TOOL" : "HYDRANT / DOCK TOOL", .009f, Cream);
+                creek ? "CREEK / OPTIONAL REFILL" : "HYDRANT / DOCK TOOL", .009f, Cream);
             instructionPlate=Part("Instruction plate", PrimitiveType.Cube, transform, new Vector3(0, .34f, .064f),
                 new Vector3(.30f, .044f, .012f), Charcoal, darkMaterial).transform;
             tutorialLabel=Label("Refill step",transform,new Vector3(0,.34f,.055f),"1  BRING THE TOOL HERE\nMatch the two blue rings",.009f,Cream);

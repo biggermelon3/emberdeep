@@ -210,7 +210,7 @@
         },
         {
           "kind": "p",
-          "text": "Lifting the intake out of its socket, losing tracking, undocking, or entering a menu moves to Interrupted, with no transfer for an unfinished stroke. Retain previously transferred water. Reconnecting restores Primed with a fresh stroke; there is no automatic refill while idle. Full stops transfer and signals completion without requiring a final physical stroke. Sector changes and upgrades preserve stored water; new expeditions start full. Upgrades increase capacity without providing water."
+          "text": "Lifting the intake out of its socket, losing tracking, undocking, or entering a menu moves to Interrupted, with no transfer for an unfinished stroke. Retain previously transferred water. Reconnecting restores Primed with a fresh stroke; the station itself transfers nothing while idle. Revision 0.13 implements the 0.12 slow, accounted tank recovery direction under GD-WATER-10/11 in candidate 0.2.11; final Editor verification passed 204 EditMode and 144 PlayMode; APK audits passed; device gates remain pending. Full stops transfer and signals completion without requiring a final physical stroke. Sector changes and upgrades preserve stored water; New Expedition fills only the starter extinguisher to 60 units once and leaves other equipment empty. Upgrades increase capacity without providing water."
         },
         {
           "kind": "p",
@@ -343,7 +343,7 @@
         },
         {
           "kind": "p",
-          "text": "CURRENT extinguishes award 25 coins; completion adds 25 multiplied by the one based incident index, and each surviving cabin adds 50. CURRENT tuning refills its tool. v0.2 changes this: upgrades increase capacity but preserve the amount already stored. Switching tools, previewing gear, closing the shop, or changing sectors also provides no water."
+          "text": "CURRENT extinguishes award 25 coins; completion adds 25 multiplied by the one based incident index, and each surviving cabin adds 50. The historical v0.1 tuning path refilled its tool. Implemented M1 upgrades preserve stored water while increasing capacity; revision 0.12 retains that behavior. Switching tools, previewing gear, closing the shop, or changing sectors grants no immediate water. Candidate 0.2.11 slow recovery uses only eligible active-play time and restarts its delay after these interruptions."
         },
         {
           "kind": "h2",

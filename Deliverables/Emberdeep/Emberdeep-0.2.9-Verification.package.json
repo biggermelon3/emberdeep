@@ -1,0 +1,9 @@
+{
+  "file": "E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Deliverables\\Emberdeep\\Emberdeep-0.2.9-Verification.zip",
+  "version": "0.2.9",
+  "android_version_code": 12,
+  "bytes": 637868,
+  "sha256": "5d2fb584411b3ffeae6cc165fb19876ea72aaea80bec2d04432060e76d9ed61d",
+  "entries": 66,
+  "scope": "Authoritative JSON, current Editor test/render evidence, two APK manifests, build reproduction scripts and device checklist. APKs separate; Word drafts excluded because layout rendering unavailable. HUD position uses synthetic seated/standing Editor evidence; headset comfort and performance require user testing. Historical 0.2.8 Shop click confirmation does not accept 0.2.9 placement."
+}

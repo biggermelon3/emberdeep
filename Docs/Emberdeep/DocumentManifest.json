@@ -1,8 +1,8 @@
 {
-  "revision": "0.8",
+  "revision": "0.13",
   "date": "2026-11-09",
   "language": "English",
-  "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
+  "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
   "authoritative_sources": "The ordered JSON sections below are authoritative. Edit the source, regenerate DOCX, render and inspect all pages before delivery. Do not hand-edit generated DOCX without reconciling the source.",
   "generator": "Tools/BuildEmberdeepDesignDocs.py",
   "documents": [
@@ -20,7 +20,11 @@
         "HandVisualFix.json",
         "InteractionStages.json",
         "ContactGripIteration.json",
-        "PinchRestore.json"
+        "PinchRestore.json",
+        "ShopAccessFix.json",
+        "HudPlacementFix.json",
+        "InteractionIntentFix.json",
+        "WaterRecoveryAndShopPreview.json"
       ]
     },
     {
@@ -42,7 +46,11 @@
         "HandVisualFix.json",
         "InteractionStages.json",
         "ContactGripIteration.json",
-        "PinchRestore.json"
+        "PinchRestore.json",
+        "ShopAccessFix.json",
+        "HudPlacementFix.json",
+        "InteractionIntentFix.json",
+        "WaterRecoveryAndShopPreview.json"
       ]
     }
   ],
@@ -102,13 +110,53 @@
       "decision": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
       "implementation_status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
       "verification": "Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending. See Logs/EmberdeepPinchRestore/ReleaseEvidence.json. Word structural QA is separate from blocked visual rendering."
+    },
+    {
+      "revision": "0.9",
+      "date": "2026-11-09",
+      "decision": "The user reported on Quest 0.2.7 that Shop had no highlight and could not be clicked after extinguishing fires. This is a specific negative interaction observation, not acceptance of the rest of the game. Correct per-hand near-source ownership and allow a safe dock-to-Shop transition only in Run.InSupply.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE 0.2.8 / code 11; 167 EditMode and 92 PlayMode passed; Quest/PICO APKs built and audited; Quest Shop highlight/entry user-confirmed; remaining device checks PENDING.",
+      "verification": "Current 0.2.8 FinalVerification passed 167 EditMode and 92 PlayMode tests, zero failed, skipped or inconclusive. The five new Shop cases are included in 92. Both APKs passed version 0.2.8/code 11, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation, installed version 0.2.8/code 11 and subsequent running app process are verified. The user confirmed that Shop now highlights and opens after firefighting on Quest 3 0.2.8. This accepts only that reported interaction; purchases, all hand/control boundaries, PICO compatibility and performance remain unverified. The earlier Asleep reading is historical. See Logs/EmberdeepShopFix/ReleaseEvidence.json. Current Editor captures use synthetic policy/ray samples. Word structural QA does not establish rendered layout approval."
+    },
+    {
+      "revision": "0.10",
+      "date": "2026-11-09",
+      "decision": "On Quest 3 0.2.8 the user confirmed Shop highlights and opens, then reported that the in-game and Shop panels appear near the legs/seat rather than in front. The positive confirmation covers access only; placement remains a negative observation. Separate HUD from Arena and use stable eye-relative front placement; final implementation specification pending.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE 0.2.9 / code 12; 184 EditMode and 96 PlayMode passed; Quest/PICO APKs built and audited; Quest installation/version verified; current device placement acceptance PENDING.",
+      "verification": "Current 0.2.9 FinalVerification passed 184 EditMode and 96 PlayMode tests, zero failed, skipped or inconclusive. The 17 new HUD pose cases and four new PlayMode cases are included in those totals. Both APKs passed version 0.2.9/code 12, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Quest 3 replacement installation preserves data and installed version 0.2.9/code 12 is verified. Launch was requested but is not confirmed: no app PID was observed and the recorded power state is Asleep. Device placement/Shop acceptance remains pending. No PICO 4 physical usability or performance acceptance. Prior 0.2.8 Shop highlight/entry confirmation is historical and does not validate this placement change. See Logs/EmberdeepHudFix/ReleaseEvidence.json. Four Editor synthetic images establish scoped geometry/presentation only. Word content QA does not establish page-layout approval."
+    },
+    {
+      "revision": "0.11",
+      "date": "2026-11-09",
+      "decision": "The user partially approved Quest 0.2.9 panel height but requested slightly higher placement. They then clarified that when trying to click a menu, pump or gameplay interactions may trigger, and they are unsure of the exact cause. The primary report is menu intent losing priority to physical/weapon actions, not confirmed accidental UI activation while playing. The second-incident right creek was only a suspected factor. Keep higher HUD/optional creek layout; prioritize explicit UI intent over new physical/weapon acquisition, while preserving an already operating refill hand.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE 0.2.10 / code 13; 184 EditMode and 115 PlayMode passed; both APKs built/audited; Quest installed; launch not attempted; device testing deferred by user.",
+      "verification": "Current ReleaseAcceptance passed 184 EditMode and 115 PlayMode, zero failed, skipped or inconclusive. The 19 additional PlayMode cases are included in 115; the 17 HUD EditMode cases already existed. Both Quest and PICO APKs passed version 0.2.10/code 13, ARM64, signature/icon, camp/fireground scene-whitelist and 28-setting restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings; they are not warning-free builds. Quest 3 replacement installation and app info verified 0.2.10/code 13. The headset was Asleep, no app process was observed, and launch was not attempted. The user explicitly deferred testing until later this round; current placement/menu interaction acceptance remains pending. Do not infer acceptance from old feedback or ask again this round. No PICO 4 physical usability or performance acceptance. Original FinalAcceptance stable-placement SetUp failure remains recorded with unknown root cause; final passing suite did not relax the 10-second threshold."
+    },
+    {
+      "revision": "0.12",
+      "date": "2026-11-09",
+      "decision": "User requests very slow automatic water recovery and a visible preview for every purchasable item. Supersede the blanket no-passive-water rule while preserving manual supply and prevention of transition-based water grants. Define shop preview coverage for tools, tuning and station tiers.",
+      "implementation_status": "Documentation only. Runtime and installed APK remain 0.2.10 / Android code 13. GD-WATER-10/11, GD-SHOP-01/02 and AR-SHOP-01 are approved direction, not implemented or device accepted. The 0.25 units/second and 3-second delay are starting targets.",
+      "verification": "Regenerate Word and compare exact source content in Logs/EmberdeepDesign012/Docs/qa.json. Page rendering is a separate check. Prior 184/115 tests validate 0.2.10 only; no new runtime tests or APK build are claimed."
+    },
+    {
+      "revision": "0.13",
+      "date": "2026-11-09",
+      "decision": "Implement the approved 0.12 recovery and shop-preview direction as candidate 0.2.11 / Android code 14. Keep the prior approved design and all version-scoped evidence historical.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
+      "verification": "FinalVerification passed 204 EditMode and 144 PlayMode with zero failed, skipped or inconclusive. This includes 20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases; restored coverage is not newly authored. All 12 Editor captures passed visual review. APK audits passed; device checks remain pending; Word and render QA are recorded separately. Quest and PICO APKs passed version 0.2.11/code 14, ARM64, signature/icon, exact Camp/Fireground scene whitelist and settings-restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings. Source integrity is recorded in Logs/EmberdeepRecoveryShop/ReleaseEvidence.json; these build checks do not establish headset operation or performance. Quest 3 replacement installation and app info verified 0.2.11/code 14. The device was Asleep and no app process was observed; physical hand tracking, comfort, stereo readability and performance remain pending. No PICO hardware acceptance is claimed."
     }
   ],
   "implementation_status_source": "ImplementationStatus.json",
   "device_acceptance_source": "M1DeviceAcceptance.json",
   "art_iteration_source": "ArtV2Iteration.json",
   "interaction_polish_source": "InteractionPolish.json",
-  "current_release_evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json",
-  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.7-Device-Checks.txt",
-  "pinch_restore_source": "PinchRestore.json"
+  "current_release_evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
+  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.11-Device-Checks.txt",
+  "pinch_restore_source": "PinchRestore.json",
+  "shop_access_fix_source": "ShopAccessFix.json",
+  "hud_placement_fix_source": "HudPlacementFix.json",
+  "interaction_intent_fix_source": "InteractionIntentFix.json",
+  "water_recovery_and_shop_preview_source": "WaterRecoveryAndShopPreview.json",
+  "current_device_acceptance_source": "RecoveryShopDeviceAcceptance.json"
 }
