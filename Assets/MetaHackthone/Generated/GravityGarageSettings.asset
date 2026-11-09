@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7823f27fedd9e14a886c45d42fa80a0, type: 3}
+  m_Name: GravityGarageSettings
+  m_EditorClassIdentifier: PhysicalAssembly.Runtime::PhysicalAssembly.DownhillSettings
+  SandboxDrillCourse: 0
+  UseGravityGarage: 1
+  Campaign: 0
+  DesignerBuilder: 1
+  RaySocketAngle: 3
+  Level25D: {fileID: 11400000, guid: 4a781524f28b86c4eb2cf522524a63df, type: 2}
+  Level3D: {fileID: 11400000, guid: 6ff4386638bc9f848a2f3bc056e13df9, type: 2}
+  Garage:
+    FirstDrop: 2.35
+    RockRadius: 0.1
+    RockX: 5.75
+    SecondStart: 6.15
+    SecondDrop: 0.7
+    SecondRock: 0
+    Rock2Radius: 0.14
+    Rock2X: 10.95
+    Gap: 0.8
+    LandingDrop: 0.8
+    LipRise: 0
+    ReleaseX: 1.68
+  WorkbenchScale: 0.5
+  PresentationScale: 1.2
+  SnapRadius: 0.09
+  BuildSpring:
+    Frequency: 6
+    DampingRatio: 0.85
+    MaximumDisplacement: 0.15
+    MaximumAngularDisplacement: 45
+    MaximumSpeed: 1.5
+    MaximumAngularSpeed: 540
+    PositionTolerance: 0.001
+    AngularTolerance: 1
+  StartBuildOffset: {x: -0.7, y: 0.3, z: -0.1}
+  StartButtonSize: {x: 0.22, y: 0.24}
+  TransitionDuration: 1.2
+  TransitionEasing:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  WorkbenchApproach: 0.45
+  WorkbenchLevelOffset: {x: 0, y: 0, z: 0}
+  PhysicsSpeed: 0.8
+  CountdownStep: 1
+  GoDuration: 0.3
+  ReturnDelay: 10
+  AttemptDuration: 30
+  StallDuration: 3
+  SmallWheelResistance: 0.005
+  LargeWheelResistance: 0.5
+  BarrierHeight: 0.018
+  GapWidth: 0.04
+  SurfaceHeight: 0.7
+  PlayerDistance: 0.65
+  SandboxGap: 0.08
+  WorkbenchSize: {x: 1.4, y: 0.06, z: 1}
+  GridSize: {x: 0.49, y: 0.47}
+  CoreSize: {x: 0.18, y: 0.08, z: 0.18}
+  CorePosition: {x: 0, y: 0.9, z: 0}
+  LargeTrayOffset: {x: -0.49, y: 0.15}
+  SmallTrayOffset: {x: 0.49, y: 0.15}
+  FrontTrayZ: -0.36
+  FrontTraySpacing: 0.21
+  StartPosition: {x: -1.16, y: 1.19, z: 0.65}

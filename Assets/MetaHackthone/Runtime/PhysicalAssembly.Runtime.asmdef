@@ -1,0 +1,5 @@
+{
+  "name": "PhysicalAssembly.Runtime",
+  "rootNamespace": "PhysicalAssembly",
+  "references": ["Unity.InputSystem", "Unity.ugui", "Unity.Splines", "Unity.Mathematics", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"]
+}

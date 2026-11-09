@@ -1,0 +1,65 @@
+{
+  "revision": "0.2.4",
+  "date": "2026-11-08",
+  "candidate": {
+    "version": "0.2.4",
+    "android_version_code": 7
+  },
+  "status": "IMPLEMENTED_CANDIDATE; 142 EditMode and 43 PlayMode passed; Quest/PICO APKs built and audited; Quest 0.2.4/code 7 installed; Quest hand-following confirmed by user; other device acceptance pending",
+  "user_feedback": "After New Game, the hand mesh stays frozen while rays and equipment still respond. This is a confirmed 0.2.3 visual regression, not a claim that tracking input has stopped.",
+  "root_cause": "The production Meta prefab contains four manual-update distance-grab reticle HandVisual objects before two live HandVisual objects. The old first-valid-per-hand selection revealed preview hands and suppressed the live models. Disabling the independent pinch visual writer also left its skinned indicator visible.",
+  "requirement_ids": [
+    "GD-HAND-01",
+    "GD-HAND-02",
+    "GD-PAUSE-01",
+    "IP-03"
+  ],
+  "implementation": [
+    "Assets/FireRescue/Runtime/EmberdeepHandVisuals.cs"
+  ],
+  "tests": [
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepHandFreezePlayTests.cs",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+  ],
+  "evidence": "Logs/EmberdeepHandFreeze/ReleaseEvidence.json",
+  "pages": [
+    {
+      "title": "0.2.4 Live Hand Visual Regression Fix",
+      "intro": "Historical 0.2.4 correction for GD-HAND-01, GD-HAND-02, GD-PAUSE-01 and IP-03. User confirmed normal hand following after New Game on Quest 3 0.2.4. The live-hand selection fix is retained; InteractionStages.json defines current 0.2.5 presentation and separate pending acceptance.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "User device feedback confirmed that hand models froze after starting the game while rays and equipment continued responding. The production player prefab has six HandVisual instances: four distance-grab preview hands followed by two live player hands. Preview SyntheticHands update manually and can retain valid but old poses; they must never be selected as player hands. The live hands also use SyntheticHand, so filtering all synthetic sources would be incorrect."
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Exclude ReticleGhostDrawer descendants from live-hand material binding and independently mask their renderers. Preserve their SDK-owned ForceOffVisibility and original materials.",
+            "Bind the two live HandVisual meshes, preserving SDK data sources, bone transforms and WhenHandUpdated subscriptions. Apply only an independent forceRenderingOff mask for focus/tracking availability; never overwrite SDK renderer.enabled or ForceOffVisibility.",
+            "Hide the independent RayInteractorPinchVisual skinned indicator as well as stopping its visual updater. Keep interactors active. Restore all saved renderer masks, materials and visual component states on disable."
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Current Editor verification: 142 EditMode and 43 PlayMode passes, zero failures, in Logs/EmberdeepHandFreeze/Verification. Three new regressions use the production prefab and SDK HandVisual: two live/four preview separation, deterministic root/finger motion through SDK update events with visibility ownership retained, and independent pinch indicator masking/restoration. The scene-wiring tests cover both hands through camp and fireground. These are Editor/synthetic tests, not physical tracking acceptance."
+        },
+        {
+          "kind": "p",
+          "text": "Device check: enter New Game with each hand visible; translate and rotate the wrist, open and curl all fingers, hold equipment, pause/resume, briefly lose tracking, then return to camp and enter again. Both model and equipment must continue following; no frozen duplicate or automatic firing on recovery. Repeat seated/standing on Quest 3 and PICO 4. M2/M3 remain PROPOSED."
+        },
+        {
+          "kind": "p",
+          "text": "Device confirmation: after installing 0.2.4/code 7, the user answered that the hand models now follow normally after New Game on Quest 3. This closes the reported frozen-model symptom on that device. It does not establish all-button usability, physical collision/comfort, PICO compatibility or measured performance."
+        }
+      ]
+    }
+  ],
+  "device_confirmation": {
+    "device": "Quest 3",
+    "version": "0.2.4",
+    "date": "2026-11-08",
+    "response": "已正常跟随",
+    "scope": "Normal hand-model following after New Game; no blanket acceptance of all interactions/devices/performance."
+  },
+  "subsequent_revision": "InteractionStages.json defines 0.2.5 last-pose continuity and contextual hand posing; this 0.2.4 record remains historical."
+}

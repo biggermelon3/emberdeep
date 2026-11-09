@@ -1,0 +1,94 @@
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Bb]uilds/
+/[Uu]ser[Ss]ettings/
+/.vs/
+*.csproj
+*.sln
+*.slnx
+*.pidb
+*.user
+
+# Unity Version Control metadata (this workspace uses Plastic SCM).
+/.plastic/
+
+# Local caches, build output, IDE state and diagnostics.
+/[Bb]uild/
+/[Mm]emoryCaptures/
+/[Ee]xportedObj/
+/.vscode/
+/.idea/
+/.gradle/
+/.utmp/
+*.unityproj
+*.suo
+*.userprefs
+*.tmp
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+*.apk
+*.aab
+*.app
+*.unitypackage
+sysinfo.txt
+crashlytics-build.properties
+~UnityDirMonSyncFile~*
+.DS_Store*
+Thumbs.db
+Desktop.ini
+
+# Local Python environment, MCP configuration and credentials.
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.env
+.env.local
+.env.*
+!.env.example
+!.env.template
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.pem
+*.key
+.mcp.json
+.codex/
+
+# Unity-generated captures and build diagnostics, including paired metas.
+/Assets/Recordings/
+/Assets/Recordings.meta
+/Assets/ScreenShots/
+/Assets/ScreenShots.meta
+*_BurstDebugInformation_DoNotShip/
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+
+# Temporary Unity test and crash-recovery scenes.
+/Assets/InitTestScene*.unity
+/Assets/InitTestScene*.unity.meta
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+
+# Meta XR regenerates these bindings for Play Mode and builds.
+/RuntimeActionBindings.json
+/Assets/StreamingAssets/RuntimeActionBindings.json
+/Assets/StreamingAssets/RuntimeActionBindings.json.meta
+
+# Local recovery copies from Level 2 track migration and editor validation.
+/Backups/
+
+# Keep game assets even when generated: prefabs, meshes, materials, Resources,
+# source artwork, and every associated .meta file are needed by collaborators.

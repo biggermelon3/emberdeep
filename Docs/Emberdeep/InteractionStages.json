@@ -1,0 +1,141 @@
+{
+  "revision": "0.2.5",
+  "date": "2026-11-08",
+  "candidate": {
+    "version": "0.2.5",
+    "android_version_code": 8
+  },
+  "status": "IMPLEMENTED_CANDIDATE; 156 EditMode and 64 PlayMode passed; Quest/PICO APKs built and audited; Quest 0.2.5/code 8 installed; user confirmed system-menu hand hold/recovery and starter well refill on Quest 3; other device acceptance pending",
+  "user_request": "Freeze the last hand model when Quest palm system controls suppress app tracking. Show contextual full-hand action poses while retaining pinch input. Replace the initial hydrant with a hand-operated well lever; upgrades unlock a rotary hydrant and then one-press automatic filling.",
+  "authority": "Explicit user revision supersedes the initial hydrant-first sequence and 0.2.3 tap-valve fallback. M2 safe search/reward ledger and M3 authored progression remain PROPOSED; this is an M1 interaction revision.",
+  "decisions": {
+    "starter": "LeverWell",
+    "upgrade_prices": [
+      100,
+      200
+    ],
+    "purchase_window": "Existing shop between incidents; no active supply connection",
+    "lever": "8 cm downward travel and return to <=2 cm from upper rest; complete cycle transfers 12 units capped by tank capacity",
+    "rotary": "Signed 45 degree wrist turn opens valve; reverse turn closes. Tap does not open. Rate 30 units/s.",
+    "button": "Fresh nearby pinch press toggles timed flow on/off; first press fills automatically until full. Held pinch never repeats. Rate 30 units/s.",
+    "water": "No water is granted by upgrade, idle time, gear changes or retry. All accepted transfer passes through existing supply authority.",
+    "progress": "Station tier retained across in-process camp/sector transitions. New expedition resets it. Retry restores tier, gear ownership, tuning, tanks and coins from the same sector-entry checkpoint. Existing no-durable-save semantics remain explicit."
+  },
+  "requirements": [
+    {
+      "id": "IP-06 / GD-HAND-01 / GD-PAUSE-01",
+      "implementation": "EmberdeepHandVisuals; EmberdeepHandPresentation; FireEquipmentGrab; FireRescueGame",
+      "acceptance": "After a valid frame, SDK/system-gesture or focus loss keeps the last rendered hand stationary in world space. No invented input; firing, charging and refill stop. Reacquisition shows live hand without a duplicate and requires fresh open/pinch for gameplay. Before first tracking, no hand appears at world origin."
+    },
+    {
+      "id": "IP-07 / GD-HAND-02",
+      "implementation": "EmberdeepHandPose; EmberdeepHandPresentation; FireRescueGame.Hands",
+      "acceptance": "Distinct extinguisher squeeze, gun trigger, cannon support/pump, lever wrap, valve grasp, intake carry and button point/press silhouettes. Blend into/out of poses; visual-only geometry follows grip anchors, never feeds pose back to input or moves the camera. Both hands supported."
+    },
+    {
+      "id": "WS-04 / GD-WATER-01 / GD-WATER-05 / GD-WATER-09",
+      "implementation": "FireRun; EmberdeepWaterSupply; EmberdeepRefillInteraction; EmberdeepWaterStationView; EmberdeepRefillTutorial; FireRescueGame.Water",
+      "acceptance": "A reachable free starter lever works at zero water with one hand via dock-release-operate. Partial/jitter/interrupted cycles give no water. Upgrade changes geometry/control and preserves water. Rotary rejects tap; button toggles only on fresh press; full/interrupt/retry rules conserve water and economy."
+    }
+  ],
+  "resources": "Lever well and button pump are procedural interaction grayboxes using existing material palette and positive-scale handedness. Existing hydrant art reused at tier 1. Hand pose data is procedural runtime pose animation, not a new licensed animation pack.",
+  "references": [
+    "https://developers.meta.com/vr/documentation/unity/unity-handtracking-interactions/",
+    "https://developers.meta.com/vr/documentation/unity/unity-isdk-hand-grab-interaction/"
+  ],
+  "pages": [
+    {
+      "title": "0.2.5 Hand Continuity and Contextual Action Poses",
+      "intro": "Historical 0.2.5 candidate and scoped device confirmation. ContactGripIteration.json defines the current 0.2.6 anchored poses, natural grasp and empty outlet behavior.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Quest reserves its palm-facing system gesture for system controls. Existing MetaShadowPlayer.ReadHand rejects system-gesture input. Emberdeep must not treat the frozen visual as a tracked hand: retain only the last app-valid rendered pose while input is unavailable, cancel gameplay operations, then require normal rearming on return. The operating system may suspend or replace app rendering; the app cannot force visibility over a system compositor."
+        },
+        {
+          "kind": "p",
+          "text": "Keep SDK HandVisual skeleton updates and visibility ownership intact. Use transform-only render copies of the two real tracked hands, excluding distance-grab previews. Apply contextual pose animation only to display bones. On valid-to-unavailable transition, bake the last app-valid display skeleton into a reusable static mesh; hold it at the saved world pose. No per-frame mesh bake, no input from frozen hands, no object pickup or water transfer from animation events."
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Extinguisher: palm wraps the upper grip, thumb opposes the fingers, squeeze animation follows accepted spraying.",
+            "Pistol/fan: wrapped supporting fingers with a distinct animated index trigger; cannon uses a wider support grip and separate off-hand pull-pump grip.",
+            "Well: wrapped lever grip follows the moving handle down and back. Hydrant: valve grasp follows the rotating wheel. Creek: strainer carry and pump grasp remain separate.",
+            "Button: other fingers curl while the index points/presses at the depressed button. Interaction input remains the same fresh pinch; visual pose adoption does not silently add a second selector."
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Pose fitting is a bounded visual approximation: blend over roughly 0.1 seconds, limit wrist correction, preserve positive scale for both hands and retain explicit solid-interior clipping. It is not full finger collision or physically simulated hand wrapping. Verify actual grip fit and comfort on each headset."
+        },
+        {
+          "kind": "p",
+          "text": "Current 0.2.5 verification: 156 EditMode and 64 PlayMode tests passed with zero failures. Both Quest and PICO APKs were built and audited; Quest installation reports 0.2.5 / code 8. The user confirmed that system-menu hand hold/recovery and a complete starter well refill cycle both work on Quest 3. Rotary/button upgrades, detailed grip fit, all postures and PICO performance remain pending. Editor action images use injected samples, not hardware tracking. See Logs/EmberdeepInteractionStages/ReleaseEvidence.json and M1DeviceAcceptance.json."
+        }
+      ]
+    },
+    {
+      "title": "0.2.5 Three-Stage Free Water Station",
+      "intro": "WS-04 overrides the previous initial-hydrant lesson. One reachable source evolves through shop upgrades; the creek remains a separate later source.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Tier",
+            "Player action",
+            "Accepted water and upgrade"
+          ],
+          "rows": [
+            [
+              "0 Lever well",
+              "Dock tool, release, pinch-grab broad lever; move down 8 cm then return within 2 cm.",
+              "12 units per full cycle, capped at capacity. First station upgrade costs 100 coins."
+            ],
+            [
+              "1 Rotary hydrant",
+              "Dock, grip wheel and turn 45 degrees. Reverse turn or disconnect stops flow.",
+              "30 units/s while connected and app-valid; tap gives nothing. Second upgrade costs 200 coins."
+            ],
+            [
+              "2 Button station",
+              "Dock, fresh press at the button. Press again to stop early.",
+              "30 units/s until full, interruption or stop. Holding the same pinch never retriggers."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Buying upgrades is allowed only in the safe existing shop and without a connected tool. It grants no water and cannot skip levels. Preserve the selected tier during the in-memory expedition. Retry atomically restores station tier, owned tools, tuning, tanks and coins from the entry checkpoint. New Game starts a new expedition at the well. Closing the app still has no durable expedition save; M2 persistence is not implied."
+        },
+        {
+          "kind": "p",
+          "text": "Replacement art contract: keep Socket outward +Z and tool RefillPort opposing it. Lever is a neutral grip frame, LeverVisual is the moving grip under its pivot. Valve is a stable measurement frame, ValveVisual rotates around local Z. Button is a stable frame, ButtonVisual depresses local +Z by 1 cm. Keep Pump/PumpVisual and Intake/IntakeSocket/IntakeVisual for the creek. Decorative colliders never author resource transfers."
+        },
+        {
+          "kind": "p",
+          "text": "Acceptance requires both left/right complete cycles, empty/full/partial tanks, release midstroke, invalid time/pose, tracking/system-menu suppression, ownership changes, button hold/rearm, rotary partial turn, upgrades with insufficient cash and active connection, camp return, retry and New Game. Editor/synthetic evidence does not establish physical reach or PICO performance."
+        }
+      ]
+    }
+  ],
+  "test_evidence": {
+    "EditMode": {
+      "total": 156,
+      "passed": 156,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepInteractionStages/FinalVerification/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 64,
+      "passed": 64,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepInteractionStages/FinalVerification/PlayMode-results.json"
+    }
+  },
+  "historical_scope": "Historical0.2.5; its pinch lever and bounded hand correction are superseded by ContactGripIteration.json. User confirmation remains scoped to0.2.5."
+}

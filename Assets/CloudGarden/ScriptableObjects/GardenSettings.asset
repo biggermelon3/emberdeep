@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7664dcd52bdda642b43c8439153858b, type: 3}
+  m_Name: GardenSettings
+  m_EditorClassIdentifier: CloudGarden::CloudGarden.GardenSettings
+  surfaceShader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  glowShader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+  particleShader: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
+  rainCost: 0.07
+  rainGain: 0.22
+  growthRate: 0.09
+  transpirationRate: 0.025
+  springRate: 0.018
+  seedCost: 0.35
+  stormCost: 0.4
+  trackingGrace: 0.3
+  maxClouds: 4
+  fistHoldSeconds: 0.6
+  kneadTravel: 0.06
+  patTravel: 0.022
+  gestureCooldown: 0.35
+  cloudContactGap: 0.06
+  proximityChargeRate: 0.018
+  frictionChargePerMeter: 0.65
+  contactChargeRateLimit: 0.25

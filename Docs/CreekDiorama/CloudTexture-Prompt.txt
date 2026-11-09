@@ -1,0 +1,4 @@
+Tool: built-in image_gen. Transparent background: true.
+Output: Assets/CreekDiorama/Textures/Clouds/RealisticCumulus.png
+
+Create a production game VFX texture: one isolated wide photorealistic cumulus cloud bank on a genuinely transparent background, aspect ratio 2:1. Realistic natural fine turbulent billows and soft wispy semi-transparent edges, beautiful volumetric sunlight from upper left, luminous ivory tops and pale lavender blue self shadows underneath. Large irregular asymmetric cumulus masses with intricate small vapor detail, wisps taper at left and right, no flat base. Entire cloud fits with generous transparent padding all sides, no cropping. This is a cloud SPRITE for layering billboard planes in a blue sky fantasy diorama; depth and photographic realism are essential. No ground, no sky backdrop, no icons, no outline, no cartoon, no text, no checkerboard painted into pixels. Save the generated image to disk for use as a Unity texture.

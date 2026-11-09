@@ -1,0 +1,4 @@
+{
+  "name": "CloudGarden.Integration",
+  "references": ["CloudGarden", "PhysicalAssembly.Runtime", "PhysicalAssembly.MetaXR", "Oculus.Interaction", "Oculus.Interaction.OVR", "Oculus.VR", "Unity.InputSystem"]
+}

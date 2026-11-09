@@ -1,0 +1,504 @@
+{
+  "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts",
+  "meshes": [
+    {
+      "name": "CarParts_Antenna_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Antenna_sm",
+      "file": "CarParts_Antenna_sm.fbx",
+      "min": [
+        -3.7242298126220703,
+        -1.2134647369384766,
+        0.0
+      ],
+      "max": [
+        3.7144768238067627,
+        7.822505950927734,
+        13.545465469360352
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Body_Extension_1x1_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Body_Extension_1x1_sm",
+      "file": "CarParts_Body_Extension_1x1_sm.fbx",
+      "min": [
+        1.2799975872039795,
+        -3.6946768760681152,
+        -1.9008874893188477
+      ],
+      "max": [
+        8.319998741149902,
+        3.6946754455566406,
+        1.9008874893188477
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Body_Extension_Large_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Body_Extension_Large_sm",
+      "file": "CarParts_Body_Extension_Large_sm.fbx",
+      "min": [
+        -19.920886993408203,
+        -7.0208892822265625,
+        -1.9008874893188477
+      ],
+      "max": [
+        19.920886993408203,
+        7.020887851715088,
+        2.084779739379883
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Body_Extension_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Body_Extension_sm",
+      "file": "CarParts_Body_Extension_sm.fbx",
+      "min": [
+        -11.820886611938477,
+        -7.020895004272461,
+        -1.9008874893188477
+      ],
+      "max": [
+        11.82088851928711,
+        7.020895004272461,
+        1.9008874893188477
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_Body_mi.RCCar_Body_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Body_Extension_Thin_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Body_Extension_Thin_sm",
+      "file": "CarParts_Body_Extension_Thin_sm.fbx",
+      "min": [
+        -3.8208889961242676,
+        -3.6946768760681152,
+        -1.9008874893188477
+      ],
+      "max": [
+        18.5408878326416,
+        3.694676160812378,
+        1.9008874893188477
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Camera1",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Camera1",
+      "file": "CarParts_Camera1.fbx",
+      "min": [
+        -2.2626357078552246,
+        -16.17152214050293,
+        -1.1641532182693481e-08
+      ],
+      "max": [
+        2.2626357078552246,
+        2.2626354694366455,
+        20.596311569213867
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Camera2",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Camera2",
+      "file": "CarParts_Camera2.fbx",
+      "min": [
+        -2.2626357078552246,
+        -2.262631416320801,
+        -1.1641532182693481e-08
+      ],
+      "max": [
+        2.2626357078552246,
+        2.2626354694366455,
+        8.10159683227539
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Camera3",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Camera3",
+      "file": "CarParts_Camera3.fbx",
+      "min": [
+        -2.379209280014038,
+        -8.513537406921387,
+        0.0
+      ],
+      "max": [
+        4.359326362609863,
+        6.588803291320801,
+        13.597027778625488
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_Camera_mi.RCCar_Camera_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Case_bottom_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Case_bottom_sm",
+      "file": "CarParts_Case_bottom_sm.fbx",
+      "min": [
+        0.0,
+        -54.72737503051758,
+        -12.373847007751465
+      ],
+      "max": [
+        71.11556243896484,
+        54.72737503051758,
+        1.9953231811523438
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Case_top_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Case_top_sm",
+      "file": "CarParts_Case_top_sm.fbx",
+      "min": [
+        -8.384404281969182e-13,
+        -54.72737503051758,
+        -1.9953296184539795
+      ],
+      "max": [
+        65.06018829345703,
+        54.72737503051758,
+        7.1232781410217285
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_MainBody_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_MainBody_sm",
+      "file": "CarParts_MainBody_sm.fbx",
+      "min": [
+        -4.778587818145752,
+        -7.020887851715088,
+        -2.521775007247925
+      ],
+      "max": [
+        13.42088794708252,
+        7.020888328552246,
+        2.8400707244873047
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Propeller_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Propeller_sm",
+      "file": "CarParts_Propeller_sm.fbx",
+      "min": [
+        -1.8402416706085205,
+        -14.174389839172363,
+        -4.7733067276567454e-08
+      ],
+      "max": [
+        1.8402421474456787,
+        14.174389839172363,
+        5.331136226654053
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Spring_Base_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Spring_Base_sm",
+      "file": "CarParts_Spring_Base_sm.fbx",
+      "min": [
+        -0.6633338332176208,
+        -2.5,
+        -2.500000476837158
+      ],
+      "max": [
+        0.8268513679504395,
+        2.5000011920928955,
+        2.500000476837158
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Spring_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Spring_sm",
+      "file": "CarParts_Spring_sm.fbx",
+      "min": [
+        0.19702030718326569,
+        -2.358654499053955,
+        -2.3586552143096924
+      ],
+      "max": [
+        9.831929206848145,
+        2.3586573600769043,
+        2.3586552143096924
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_mi.RCCar_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Wheel_Axle_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Wheel_Axle_sm",
+      "file": "CarParts_Wheel_Axle_sm.fbx",
+      "min": [
+        -2.6435248851776123,
+        -0.8852835893630981,
+        -0.8852832913398743
+      ],
+      "max": [
+        2.6435248851776123,
+        0.8852834105491638,
+        0.8852835893630981
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_Wheel_mi.RCCar_Wheel_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Wheel_Full_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Wheel_Full_sm",
+      "file": "CarParts_Wheel_Full_sm.fbx",
+      "min": [
+        -2.6453700065612793,
+        -4.27802038192749,
+        -4.27802038192749
+      ],
+      "max": [
+        2.6453700065612793,
+        4.278020858764648,
+        4.27802038192749
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_Wheel_mi.RCCar_Wheel_mi"
+      ]
+    },
+    {
+      "name": "CarParts_Wheel_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/CarParts_Wheel_sm",
+      "file": "CarParts_Wheel_sm.fbx",
+      "min": [
+        -2.6453700065612793,
+        -4.27802038192749,
+        -4.27802038192749
+      ],
+      "max": [
+        2.6453700065612793,
+        4.278020858764648,
+        4.27802038192749
+      ],
+      "materials": [
+        "/Game/LevelBind/Level2/CarDemoSet/CarParts/RCCar_Wheel_mi.RCCar_Wheel_mi"
+      ]
+    },
+    {
+      "name": "Dart_sm",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/Dart_sm",
+      "file": "Dart_sm.fbx",
+      "min": [
+        -1.711440086364746,
+        -11.615785598754883,
+        -1.0959112644195557
+      ],
+      "max": [
+        1.711437702178955,
+        5.088483810424805,
+        1.8683885335922241
+      ],
+      "materials": [
+        "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "name": "RCCar_Body_ARM",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Body_ARM",
+      "file": "RCCar_Body_ARM.tga"
+    },
+    {
+      "name": "RCCar_Body_Basecolor",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Body_Basecolor",
+      "file": "RCCar_Body_Basecolor.tga"
+    },
+    {
+      "name": "RCCar_Body_Normal",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Body_Normal",
+      "file": "RCCar_Body_Normal.tga"
+    },
+    {
+      "name": "RCCar_Camera_ARM",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Camera_ARM",
+      "file": "RCCar_Camera_ARM.tga"
+    },
+    {
+      "name": "RCCar_Camera_Basecolor",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Camera_Basecolor",
+      "file": "RCCar_Camera_Basecolor.tga"
+    },
+    {
+      "name": "RCCar_Camera_Emissive",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Camera_Emissive",
+      "file": "RCCar_Camera_Emissive.tga"
+    },
+    {
+      "name": "RCCar_Camera_Normal",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Camera_Normal",
+      "file": "RCCar_Camera_Normal.tga"
+    },
+    {
+      "name": "RCCar_Wheel_ARM",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Wheel_ARM",
+      "file": "RCCar_Wheel_ARM.tga"
+    },
+    {
+      "name": "RCCar_Wheel_Basecolor",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Wheel_Basecolor",
+      "file": "RCCar_Wheel_Basecolor.tga"
+    },
+    {
+      "name": "RCCar_Wheel_Normal",
+      "source": "/Game/LevelBind/Level2/CarDemoSet/CarParts/textures/RCCar_Wheel_Normal",
+      "file": "RCCar_Wheel_Normal.tga"
+    }
+  ],
+  "blueprints": [
+    {
+      "name": "BP_CarBase",
+      "components": [
+        {
+          "name": "CarBase",
+          "mesh": "CarParts_Body_Extension_sm",
+          "location": [
+            0.0,
+            0.0,
+            3000.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDFD32998) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BP_CarWheel",
+      "components": [
+        {
+          "name": "StaticMesh",
+          "mesh": "CarParts_Wheel_sm",
+          "location": [
+            0.0,
+            0.0,
+            3000.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDA5A5B98) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            1.0,
+            1.0000000149011612,
+            1.0000000149011612
+          ]
+        },
+        {
+          "name": "Cube1",
+          "mesh": "CarParts_Wheel_Axle_sm",
+          "location": [
+            0.0,
+            5.9808353398693725e-06,
+            0.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDA5A6598) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "Cube2",
+          "mesh": "Cube",
+          "location": [
+            0.0,
+            6.000000212225132e-06,
+            0.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDA5A6F98) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            0.06105715127374456,
+            0.02,
+            0.020000000596046452
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BP_CarSpring",
+      "components": [
+        {
+          "name": "Cube",
+          "mesh": "Cube",
+          "location": [
+            0.0,
+            0.0,
+            3000.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDA5AB598) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            0.05,
+            0.05000000074505806,
+            0.05
+          ]
+        },
+        {
+          "name": "SplineMesh",
+          "mesh": "SM_Spring",
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDA5ABF98) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "name": "Cube1",
+          "mesh": "Cube",
+          "location": [
+            300.0,
+            0.0,
+            0.0
+          ],
+          "rotation": "<Struct 'Rotator' (0x0000026FDA5AC998) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

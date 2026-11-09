@@ -1,0 +1,1 @@
+{"name":"FireRescue.PlayTests","references":["FireRescue.Runtime","CloudGarden.Integration","ShadowWorkshop.Integration","ShadowWorkshop.Runtime","PhysicalAssembly.Runtime","PhysicalAssembly.MetaXR","Oculus.Interaction","Unity.InputSystem"],"optionalUnityReferences":["TestAssemblies"]}

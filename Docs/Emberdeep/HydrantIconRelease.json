@@ -1,0 +1,18 @@
+{
+  "version": "0.2.2",
+  "androidVersionCode": 5,
+  "request": "Use the existing hydrant for the application icon and install the latest build on the connected Quest 3.",
+  "implementation": {
+    "icon": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+    "sourceModel": "ArtSource/EmberdeepV2/Emberdeep-ArtV2.blend / EDV2_Hydrant",
+    "reproduction": "Blender --background --python Tools/RenderEmberdeepHydrantIcon.py",
+    "androidSlots": ["Legacy", "Round", "Adaptive"],
+    "builder": "Assets/FireRescue/Editor/FireRescueBuilder.cs",
+    "questApk": "Deliverables/Emberdeep/Emberdeep-0.2.2.apk",
+    "gameplay": "Unchanged from 0.2.1; 27 runtime and shader source hashes match its tested snapshot. No new runtime test run is claimed for this icon-only release.",
+    "pico": "Builder updated to 0.2.2; PICO APK not built by this Quest installation task."
+  },
+  "verification": "Logs/EmberdeepInstall/ReleaseEvidence.json",
+  "deviceAcceptance": "Installation and launch are separate from physical hand interaction, comfort and performance acceptance.",
+  "designSpecification": "No gameplay or art production standard changes; prior English Word specifications remain version-scoped historical documents."
+}

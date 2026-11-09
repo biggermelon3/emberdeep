@@ -1,0 +1,5 @@
+18 modular botanical props; no colliders or runtime scripts
+Library triangles: 21360
+Active beautiful corner triangles: 544834
+Active renderers: 66
+Editable nested prefab placements retained inactive beside render batches

@@ -1,0 +1,1 @@
+{"name":"FireRescue.Tests","references":["FireRescue.Runtime","PhysicalAssembly.Runtime"],"includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"]}

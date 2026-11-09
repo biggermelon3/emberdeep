@@ -1,0 +1,4 @@
+{
+  "name": "FireRescue.Runtime",
+  "references": ["CloudGarden.Integration", "ShadowWorkshop.Integration", "ShadowWorkshop.Runtime", "PhysicalAssembly.Runtime", "PhysicalAssembly.MetaXR", "Oculus.Interaction", "Oculus.VR", "Unity.InputSystem"]
+}

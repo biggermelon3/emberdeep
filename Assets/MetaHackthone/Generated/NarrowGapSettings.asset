@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d04f1037fa064c408048b6dd453333c, type: 3}
+  m_Name: NarrowGapSettings
+  m_EditorClassIdentifier: PhysicalAssembly.Runtime::PhysicalAssembly.NarrowGapSettings
+  CoursePrefab: {fileID: 7310831584883968655, guid: fb2afe5459c08694d949bca0ec0cdbc7, type: 3}
+  PadHeight: 0.68
+  BuildLift: 0.35
+  BuildDamping: 20
+  PadSize: {x: 0.08728046, y: 0.06, z: 0.08728046}
+  LoadingHeight: 0.55
+  GapWidth: 0.29
+  GateDistance: 0.9
+  GateHeight: 1.3
+  GateThickness: 0.16
+  TargetDistance: 1.8
+  TargetWidth: 0.9
+  TargetLength: 1.25
+  FlightTime: 0.8
+  AttemptDuration: 8
+  SettleSpeed: 0.15
+  SettleDuration: 0.5

@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-08",
+  "root": "E:\\GameDevelopment\\MetaHackson\\Emberdeep",
+  "repository": "https://github.com/biggermelon3/emberdeep",
+  "visibility": "private",
+  "branch": "main",
+  "baseline": "Current Emberdeep 0.2.6 / Android versionCode 9, including existing uncommitted project work",
+  "directory_action": "Destination already contained the active independent Unity project. Initialized Git in place; no destructive move or overwriting of sibling Project.",
+  "package": {
+    "name": "com.unity.xr.openxr.picoxr",
+    "version": "1.4.1",
+    "source": "Official Git repository pinned to commit",
+    "commit": "3aa3e62bff41df618529eeb60ff02c29a515dafe",
+    "non_meta_migration_files_compared": 695,
+    "content_mismatches": [],
+    "comparison": "Binary files byte-identical; text compared after line-ending normalization. Two existing native importer .meta serialization differences validated semantically through Unity PluginImporter API.",
+    "plugin_audit": "GitMigrationEvidence/ResolvedPackageAudit.json"
+  },
+  "tests": {
+    "EditMode": {
+      "total": 167,
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "PlayMode": {
+      "total": 84,
+      "passed": 84,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    }
+  },
+  "test_evidence": {
+    "EditMode": "GitMigrationEvidence/EditMode-results.json",
+    "PlayMode": "GitMigrationEvidence/PlayMode-results.json"
+  },
+  "original_scene_list_restored": true,
+  "source_control": "Git main is the new repository branch; original local Plastic workspace metadata and external SDK checkout retained unchanged. No Plastic checkin.",
+  "large_assets": "Git LFS via .gitattributes",
+  "excluded_local_data": [
+    "Unity caches and temporary files",
+    "raw logs",
+    "Plastic metadata",
+    "user preferences",
+    "APKs and generated build products",
+    "credential files"
+  ],
+  "build_scope": "No new APK build for this repository-only migration. The existing verified 0.2.6 APKs remain local; current test results here are fresh after package resolution changed.",
+  "device_scope": "No new device testing claimed."
+}

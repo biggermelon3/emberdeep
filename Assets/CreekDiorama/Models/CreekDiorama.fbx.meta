@@ -1,0 +1,301 @@
+fileFormatVersion: 2
+guid: fdc9665ffb7602245a8f28656362ca3b
+ModelImporter:
+  serializedVersion: 24300
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Amber lamps
+    second: {fileID: 2100000, guid: 8cd32336e2afb564a8feb37f5311fa9a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Basalt enamel
+    second: {fileID: 2100000, guid: ade9ea3255167a148b41d451db15513c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Blue steel edge
+    second: {fileID: 2100000, guid: 5730ecde2bb91d344aa0a0b0f8018065, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Buttercup gold
+    second: {fileID: 2100000, guid: 16e372e32be8ab6409e9a1f668169f50, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cream petals
+    second: {fileID: 2100000, guid: 3586e3024eed585418aac943db078262, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Deep shadow
+    second: {fileID: 2100000, guid: dbc10fca2dd9214488ff1b78457a05cf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Goal vermilion
+    second: {fileID: 2100000, guid: b4e7f62050982ac41a28708fad96930f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Honey timber 00
+    second: {fileID: 2100000, guid: 6a09f6c941f378d46a668d8c7204bc7c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Honey timber 01
+    second: {fileID: 2100000, guid: 83e5ce60e01891f4fb0cacbc8ed123be, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Honey timber 02
+    second: {fileID: 2100000, guid: 0725a5022e492434a90c3d43aa78cd0c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Honey timber 03
+    second: {fileID: 2100000, guid: 7e58d212e519b0f488414e9ce9740eb2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Honey timber 04
+    second: {fileID: 2100000, guid: 3122e1b65276c4c40847d36a6c3e9387, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Moss 00
+    second: {fileID: 2100000, guid: 0b5c64e94a621544aaf6c550bf658cab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Moss 01
+    second: {fileID: 2100000, guid: 07349c3fb9dc3f042a1d0a087b0be199, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Moss 02
+    second: {fileID: 2100000, guid: 3d7263740265a4a4daa4b5d5159c9b7f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Moss 03
+    second: {fileID: 2100000, guid: 8d349c6203cdc2f4682b7ee499a58120, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Natural hemp
+    second: {fileID: 2100000, guid: f5ac2be120e881447b4a1f9e49fcac62, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pine needles 00
+    second: {fileID: 2100000, guid: 27b557e86aa796e41baf077632929d70, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pine needles 01
+    second: {fileID: 2100000, guid: 0d1b10470c7127a4a99aa062489897a3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pine needles 02
+    second: {fileID: 2100000, guid: c0cf02238599cd84299f412c34f56fed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pine needles 03
+    second: {fileID: 2100000, guid: e5bb086581a2fd348a699ba784af2c21, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: River turquoise 00
+    second: {fileID: 2100000, guid: c06df2d7f5b33da4ea36a19412d3e823, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: River turquoise 01
+    second: {fileID: 2100000, guid: dac7f156a236a86469f545551f27a643, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: River turquoise 02
+    second: {fileID: 2100000, guid: 833ea56247ed63849955f77fd6d6804b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: River turquoise 03
+    second: {fileID: 2100000, guid: a6bb90d965ea35948b2c80ce7a742a24, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: River turquoise 04
+    second: {fileID: 2100000, guid: 4766c332ee382e946af35d96630e3f2a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Satin copper
+    second: {fileID: 2100000, guid: 5783edbae423a024390ee28e6cec3bc5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Slate rock 00
+    second: {fileID: 2100000, guid: 4939ef27b0c319048be9c70c88819219, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Slate rock 01
+    second: {fileID: 2100000, guid: b0a2739ff5448a74ca2cc7d0734de1d7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Slate rock 02
+    second: {fileID: 2100000, guid: f9cde98efc476784bb448c7a86159d68, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Slate rock 03
+    second: {fileID: 2100000, guid: e9b646f5bd61d1146bb111e7b44d3f7c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Slate rock 04
+    second: {fileID: 2100000, guid: 900af3314f40f6046a658a36fc1cc5ee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Slate rock 05
+    second: {fileID: 2100000, guid: 08da74d0c06ba6740a342f4858492e90, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Start cobalt
+    second: {fileID: 2100000, guid: 51683d8b463f40a4799a5073656b7b1e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Timber end grain
+    second: {fileID: 2100000, guid: 2a40685ae212dcc4e99baf1cdf6eacb0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tree bark
+    second: {fileID: 2100000, guid: bbc0291456ae4194fa8e20f69a6ae154, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Warm lettering
+    second: {fileID: 2100000, guid: f45d8e6edf7d01e4d9e670c30b4ab247, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Whitewater
+    second: {fileID: 2100000, guid: 43e08b56840212c41a9ec49f2ebc7669, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+    searchTexturesGlobally: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

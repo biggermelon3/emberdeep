@@ -1,0 +1,14 @@
+{
+  "title": "Emberdeep hydrant launcher icon",
+  "source": "ArtSource\\EmberdeepV2\\Emberdeep-ArtV2.blend",
+  "model": "EDV2_Hydrant",
+  "generator": "Tools/RenderEmberdeepHydrantIcon.py / Blender 4.3",
+  "pixels": [
+    1024,
+    1024
+  ],
+  "output": "Assets\\FireRescue\\Art\\AppIcon\\Emberdeep-Hydrant-Icon.png",
+  "sha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+  "provenance": "Rendered from the original project-owned Art V2 hydrant; no downloaded assets.",
+  "masking": "Central safe area for Android round and adaptive masks; opaque forest green background."
+}

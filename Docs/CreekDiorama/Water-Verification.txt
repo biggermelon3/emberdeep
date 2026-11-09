@@ -1,0 +1,7 @@
+Shader errors: 0
+Play frames: 13642 -> 30017
+Play time: 0.8000112 -> 2.243508
+Active art renderers: 55
+Changed animation samples on 8-pixel grid: 1647
+Environment: isolated Unity 6000.3.21f1 / URP 17.3 preview using the original art assets and render settings. Orthographic and perspective captures verified.
+Main project compile blocker: Assets/FireRescue/Runtime/FireRescueGame.cs:63 calls missing GardenNavigation.InitializeStandaloneFire. Unrelated gameplay sources preserved.

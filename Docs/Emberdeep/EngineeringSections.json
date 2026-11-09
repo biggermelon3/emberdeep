@@ -1,0 +1,280 @@
+{
+  "pages": [
+    {
+      "title": "Engineering Architecture and Contracts",
+      "intro": "Historical baseline: Unity 6000.3.21f1 and the standalone camp/fireground route. The M1 candidate adds EmberdeepWaterSupply, EmberdeepRefillInteraction and a partial FireRescueGame water adapter. Search, animals, settlement and durable persistence remain proposed. See the implementation register for source and evidence.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Existing source",
+            "Responsibility to retain"
+          ],
+          "rows": [
+            [
+              "FireRun.cs",
+              "Scene-independent fire, tank, equipment, currency, combo and incident rules."
+            ],
+            [
+              "FireRescueGame.cs / EmberdeepCamp.cs",
+              "Current scene orchestration, hand input, menus, spawning and presentation wiring."
+            ],
+            [
+              "WaterJet.cs / FireMiniature.cs",
+              "Ballistic packets, first-hit collision, prediction, grip aiming and miniature coordinates."
+            ],
+            [
+              "FireRescueVfx.cs / FireFeedback.cs / FireDiorama.cs",
+              "Pooled particles, sound feedback and miniature world presentation."
+            ],
+            [
+              "FireEquipmentGrab.cs / FirePumpGesture.cs",
+              "Existing pickup and optional physical cannon-pump gesture rules."
+            ],
+            [
+              "EmberdeepSession.cs / FireRescueBuilder.cs",
+              "In-memory expedition continuity and isolated showcase builds."
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED module boundaries"
+        },
+        {
+          "kind": "p",
+          "text": "Extract services incrementally from FireRescueGame rather than duplicating its state. WaterSupply owns every quantity transfer and tank mutation. InteractionArbiter grants exclusive interaction ownership per hand, tool and source. SearchLoot owns reveal, carry and deposit; AnimalRescue owns safe discovery, transport and refuge delivery. SectorProgress coordinates deployment, containment, search and settlement. SaveService serializes domain snapshots, while scene adapters translate gestures and collisions into commands. Retain MetaPlayerRig, portable UnityXR support, existing menu ray/poke interaction, ballistic water and pooled effects."
+        },
+        {
+          "kind": "p",
+          "text": "SectorProgress uses CampReady → Deploying → Active → Contained → SearchSafe → Settled → CampReady or ExpeditionComplete. TrackingPaused and Repositioning are suspension overlays. Failed permits Retreat to the sector-entry checkpoint. Animals use Sheltered → Available (SearchSafe) → Carried → Rescued; AutoEvacuated safely resolves stuck animals without bonus. Loot uses Hidden → Revealed → Held → Claimed. Gameplay state definitions remain shared with the interaction specification."
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED identity and event contract"
+        },
+        {
+          "kind": "p",
+          "text": "Author immutable sectorId, entityId, toolId, sourceId, lootId and animalId values; never persist array indices, instance IDs or scene object references. Save schemaVersion, contentVersion, expeditionId, seed, revision, equipment levels/tank units, suppliedWater counters, sector/entity states, entry checkpoint, pending earnings and committed transaction IDs. Generate a sector manifest once; retry preserves its seed."
+        },
+        {
+          "kind": "p",
+          "text": "Commands carry attemptId, actor/hand ID, target stable ID and sequence. Emit accepted events after validation: WaterTransferred, ToolEquipped, LootDeposited, AnimalDelivered and SectorSettled. Payloads include affected IDs, amounts, resulting revision and transactionId. Derive reward transactions from expeditionId/sectorId/entityId/rewardKind, excluding attemptId. Reject stale attempts and duplicate transactions. Deposit confirms the entity and records pending earnings; settlement atomically commits currency and the ledger. Proposed rescue reward: 25 coins per animal; none in sectors 1/2, maximum one in 3/4 and two in 5. Effects subscribe to accepted events and cannot award currency."
+        }
+      ]
+    },
+    {
+      "title": "Migration Plan: Water, Interaction and Content",
+      "intro": "M1 now centralizes water transfer, rejects weapon use while docked, and removes passive refill paths. The original migration table below records the historical defects and intended replacements. Inspect ImplementationStatus.json for current evidence; physical comfort and dual-device acceptance are pending.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Remove every hidden water grant"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Verified current path",
+            "PROPOSED replacement"
+          ],
+          "rows": [
+            [
+              "FireRun.Tick outside Fighting",
+              "Stop adding 30 units/second; pause must preserve quantities."
+            ],
+            [
+              "FireRun.Tick while released",
+              "Remove idle regeneration; an empty tool stays empty."
+            ],
+            [
+              "FireRun.StartStage",
+              "Preserve each owned tank instead of assigning Capacity."
+            ],
+            [
+              "FireRun.BuyUpgrade",
+              "Increase capacity without granting the added water."
+            ],
+            [
+              "Tank initializers / Restart",
+              "Initialize only New Expedition; retry restores checkpoint tank amounts."
+            ],
+            [
+              "Equipment switching / camp reload",
+              "Restore the same tank record; never instantiate fresh water."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Introduce one transfer command requiring a valid connection, tank free capacity and accepted interaction ownership. Main hydrant and creek supplies are renewable and free in v0.2: credit the tank and increment suppliedWater atomically; never debit a finite source inventory. Return actual transfer, clamped to capacity. Purchased tools start empty. New Expedition initializes the starter extinguisher to 60 units once; retry restores checkpoint amounts, never fresh full tanks. Add migration tests for every current water assignment."
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED physical supply slice"
+        },
+        {
+          "kind": "p",
+          "text": "Build the hydrant before the creek. Hydrant states are Idle, Aligning, DockedClosed, Filling, DockedFull and Disconnecting; filling requires a valid connection and deliberate valve operation. Releasing the valve hand retains its accepted detent. Creek states are Idle, IntakePlaced, Primed, Pumping, Full or Interrupted; incomplete strokes transfer nothing. Closing flow, full tank, tracking loss or ownership loss stops transfer. Interaction priority is suspension, modal UI, locked refill/carry, near grab, weapon operation, then hover. Reuse gesture hysteresis and fresh-open arming; one pinch cannot dock and fire."
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED content configuration"
+        },
+        {
+          "kind": "p",
+          "text": "Introduce validated ToolDefinition, WaterSourceDefinition, SectorDefinition and RewardDefinition ScriptableObjects. Define stable IDs, capacities, flow units/second, charge cost, spread, range, socket tolerances, refuge anchors, supply availability, unlock requirements and rewards. Finite sources are future-only, excluded from v0.2. Keep rules independent of asset loading: construct immutable configuration before simulation starts. Missing references, duplicate IDs and negative rates must fail content validation."
+        },
+        {
+          "kind": "p",
+          "text": "Retain world-space metres for hands, equipment, gravity and water trajectories. Forest coordinates remain logical units converted once through FireMiniature.Scale = 0.08; name configuration fields with their units. Prototype factories may continue generating visuals, but introduce prefab slots with matching grip, muzzle, refill, carry and safe-return anchors. Authored prefabs must register the same stable entities and collision targets. Replacing art must not silently change reach, inventory or collision behaviour."
+        }
+      ]
+    },
+    {
+      "title": "Persistence, Tracking and Verification Boundaries",
+      "intro": "The M1 candidate still uses EmberdeepSession in-memory continuity. Sector retry restores an in-memory entry snapshot; it is not a disk save. Closing or terminating the application loses the expedition. Durable snapshots and recovery below remain M2 requirements.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "PROPOSED save lifecycle"
+        },
+        {
+          "kind": "p",
+          "text": "Save a versioned snapshot after settlement, camp purchases and checkpoint creation; use a debounced periodic snapshot for active progress. Write a temporary file, validate it, then atomically replace the primary save while retaining the last valid backup. A pause callback is an additional opportunity, not the only save trigger. Unknown future schemas open a recovery screen without overwriting data. Migrations operate on a copy and preserve the original until validation succeeds."
+        },
+        {
+          "kind": "p",
+          "text": "Store domain state and diorama-local anchors, never tracked camera transforms or transient hand ownership. Resume with no active trigger, pump, transfer or carried-object lock. Reconcile pending transactions before rebuilding entities. Retreat restores the sector-entry checkpoint and removes that attempt's pending earnings while retaining historical committed IDs. Dropped or interrupted held items return to validated safe anchors. Loot deposit and refuge delivery cannot be replayed for duplicate ownership or money."
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED calibration and shared placement"
+        },
+        {
+          "kind": "p",
+          "text": "Keep headset tracking authoritative. Recenter derives a stable horizontal forward direction from valid head tracking and places one common camp/world/menu anchor; it must not rotate the camera to a fixed 90-degree heading. Validate floor height, seated reach and standing reach. Tracking loss, focus loss and repositioning suspend simulation and transfers, cancel charges, release locks and require a fresh intentional gesture. Warm resume revalidates tracking before restoring interaction."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Required test family",
+            "Pass condition"
+          ],
+          "rows": [
+            [
+              "Tracking/focus/recenter",
+              "No water grant, surprise discharge, time catch-up or menu drift."
+            ],
+            [
+              "Empty tank / source interruption",
+              "Tank gain equals logged supply; no grant without an accepted supply transaction."
+            ],
+            [
+              "Pickup / carry / modal UI",
+              "One owner per hand and object; safe return on interruption."
+            ],
+            [
+              "Settlement / retry / crash",
+              "Exactly-once rewards; committed ledger survives replay."
+            ],
+            [
+              "Missing/duplicate content IDs",
+              "Actionable validation failure; existing save remains intact."
+            ],
+            [
+              "Camp ↔ sector ↔ restart",
+              "Correct tool amounts, anchors and checkpoint state survive transitions."
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Evidence scope"
+        },
+        {
+          "kind": "p",
+          "text": "The 2026-11-04 Editor reports show Quest-configured 42 EditMode plus one PlayMode pass, and PICO-configured 48 plus one. They validate the existing build, not proposed mechanics. Packages currently declare Meta XR 207.0.0, OpenXR 1.17.0 and local PICO OpenXR 1.4.1. Record new test evidence by build hash. Real Quest 3 and PICO 4 sessions must separately verify hand tracking, passthrough, placement, performance and comfort; Editor captures are not headset acceptance."
+        }
+      ]
+    },
+    {
+      "title": "Delivery Gates, Ownership and Design Governance",
+      "intro": "PROPOSED milestones are ordered implementation gates. Compilation alone does not establish completion.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Milestone",
+            "Owner / dependency",
+            "Required exit evidence"
+          ],
+          "rows": [
+            [
+              "M0 — Placement repair",
+              "XR engineer + QA; first",
+              "Shared anchor; stable camp/world alignment; seated/standing recenter verified on both headsets."
+            ],
+            [
+              "M1 — Manual-water slice",
+              "Gameplay engineer + interaction designer; M0",
+              "Hydrant refill and empty-tank loop; no hidden grants or interaction conflicts; transfer-accounting tests."
+            ],
+            [
+              "M2 — Search, animals, economy",
+              "Gameplay + systems + QA; M1",
+              "Safe search, deposits, refuge delivery, pending earnings, settlement and crash-safe save/retry."
+            ],
+            [
+              "M3 — Exploration, equipment, feel",
+              "Level/technical artist + designer; M2",
+              "Distinct sector routes, meaningful tool choices, readable feedback and accessible authored anchors."
+            ],
+            [
+              "M4 — Dual-platform release",
+              "Build engineer + QA + project lead; M0–M3",
+              "Signed Quest/PICO artifacts, device evidence, release manifest and explicit acceptance."
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED Definition of Done"
+        },
+        {
+          "kind": "p",
+          "text": "Each feature needs an owner, acceptance scenario, defaults, failure handling and regression coverage. Review actual hand interaction and visible outcomes, not only rules calls. No progression blocker, duplicate currency, water exploit or data loss may pass. Assign remaining cosmetic issues a severity and owner. The project lead reconciles observations and automated evidence before accepting a milestone."
+        },
+        {
+          "kind": "h2",
+          "text": "PROPOSED initial playtest targets"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "At least 80% of five first-time testers complete placement and pickup within 30 seconds without spoken coaching.",
+            "At least 90% of ten deliberate refills per device succeed; twenty menu/refill transitions produce zero unintended shots.",
+            "At least 80% understand the empty tank and find a source within 30 seconds.",
+            "At least 90% of animal deliveries succeed; interruption cannot kill animals or block completion.",
+            "A ten-minute session has no crash or progression lock. At proposed 72 Hz, 95% of sampled frames meet 13.9 ms; record CPU/GPU results separately."
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "These are initial targets, not measured results. Log assistance, hand loss, discomfort and failures. Change thresholds through a recorded design decision, never to conceal a regression."
+        },
+        {
+          "kind": "h2",
+          "text": "Release and document authority"
+        },
+        {
+          "kind": "p",
+          "text": "Retain the builder's exact Camp/Fireground whitelist and per-artifact scene audit. PICO uses the portable UnityXR player and API 29; verify Quest settings are restored after either outcome. Record signing identity, version, APK hash, test report paths and device/OS versions without storing secrets. Keep platform artifacts distinct."
+        },
+        {
+          "kind": "p",
+          "text": "For every accepted change, update the affected specification, status label, migration notes and acceptance tests in the same review. Maintain a dated decision log with owner, rationale, alternatives, affected IDs/schema, evidence and superseded decision. Proposed becomes implemented only with code review; verified additionally requires the stated test tier. Resolve conflicting requirements explicitly before implementation."
+        }
+      ]
+    }
+  ]
+}

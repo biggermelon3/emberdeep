@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ca8f15115d0404696a1ceebdc2e9e0, type: 3}
+  m_Name: Library
+  m_EditorClassIdentifier: FireRescue.Runtime::FireRescue.EmberdeepArtLibrary
+  Models:
+  - Id: Broadleaf
+    Prefab: {fileID: 7368643124273641525, guid: 0819080656e745a44a9744e1207e0b81, type: 3}
+  - Id: Cabin
+    Prefab: {fileID: 6071887619007803911, guid: 51f0434694a1cc44e8ea341edbe451da, type: 3}
+  - Id: Cedar
+    Prefab: {fileID: 440335464401964102, guid: 2054d33570f3f2e4cb66e59909de7652, type: 3}
+  - Id: CreekPump
+    Prefab: {fileID: 598282095183982674, guid: 93686ee20653f2e4eaefb4d27d7db523, type: 3}
+  - Id: Fern
+    Prefab: {fileID: 5986670585778567177, guid: 43fc472ab3fce9f49861f2b48a31cd03, type: 3}
+  - Id: Hydrant
+    Prefab: {fileID: 5202125440886995096, guid: faa761e44faa2b647b4bddb39b7c00f5, type: 3}
+  - Id: Log
+    Prefab: {fileID: 2007431597249168505, guid: 20d9b1389fd70df4fa18231a01767183, type: 3}
+  - Id: Rock
+    Prefab: {fileID: 3998449403677467475, guid: 49426f5f3944c0e49998dab9bfc5251e, type: 3}
+  - Id: Terrain
+    Prefab: {fileID: 8604933238951439724, guid: 2b8dc6b45c5a860419d6d784a369cf84, type: 3}
+  Surface: {fileID: 2100000, guid: ade6739d75d9c794ca8dde1f2fc4818f, type: 2}
+  Creek: {fileID: 2100000, guid: c876d6a1bfba6ce43b30aed34c6eae6d, type: 2}
+  Panel: {fileID: 2100000, guid: aac6bd30f6ee19f448a52224e3e42a52, type: 2}
+  Accent: {fileID: 2100000, guid: 60d91c925ce57484182e70b9e9fe8031, type: 2}
+  Wood: {fileID: 2100000, guid: 6e79538d55bb07f46ad678e398c472bd, type: 2}
+  Foliage: {fileID: 2100000, guid: 1f0c35ad72314b84887af181065f0d09, type: 2}
+  Ground: {fileID: 2100000, guid: 8053f611d7fecfc4f822115eeccef755, type: 2}
+  Pipeline: {fileID: 11400000, guid: 7f7fe6dc5efcdba48a4cd4cfdd2e6703, type: 2}

@@ -1,0 +1,212 @@
+{
+  "wheel": [
+    {
+      "name": "StaticMesh",
+      "mesh": "/Game/PhysicalAssemblySystem/PhysicsItem/Wheel/Asset/StaticMesh/SM_Wheel.SM_Wheel",
+      "location": [
+        0.0,
+        0.0,
+        3000.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation": "<Struct 'Rotator' (0x000002BCDC8A1E10) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+      "bounds_min": [
+        -34.33747863769531,
+        -57.039581298828125,
+        -56.989139556884766
+      ],
+      "bounds_max": [
+        35.691734313964844,
+        57.039581298828125,
+        57.007808685302734
+      ],
+      "mass": 0.0,
+      "linear_damping": 0.009999999776482582,
+      "angular_damping": 1.0,
+      "body": "<Struct 'BodyInstance' (0x000002BCDFA07C18) {simulate_physics: True, enable_gravity: True, update_kinematic_from_simulation: False, gyroscopic_torque_enabled: False, auto_weld: True, start_awake: True, generate_wake_events: False, update_mass_when_scale_changes: True, position_solver_iteration_count: 8, velocity_solver_iteration_count: 2, projection_solver_iteration_count: 1, sleep_family: Normal, use_ccd: False, ignore_analytic_collisions: False, notify_rigid_body_collision: False, smooth_edge_collisions: False, inertia_conditioning: True, one_way_interaction: False, override_solver_async_delta_time: False, solver_async_delta_time: 0.016667, max_depenetration_velocity: 0.000000, mass_in_kg_override: 10.000000, linear_damping: 0.010000, angular_damping: 1.000000, com_nudge: {x: 0.000000, y: 0.000000, z: 0.000000}, mass_scale: 1.000000, gravity_group_index: 0, inertia_tensor_scale: {x: 1.000000, y: 1.000000, z: 1.000000}, walkable_slope_override: {walkable_slope_behavior: WalkableSlope_Default, walkable_slope_angle: 0.000000}, phys_material_override: \"/Script/PhysicsCore.PhysicalMaterial'/Engine/EngineMaterials/PhysMat_Rubber.PhysMat_Rubber'\", max_angular_velocity: 3600.000000, custom_sleep_threshold_multiplier: 1.000000, stabilization_threshold_multiplier: 1.000000}>"
+    },
+    {
+      "name": "Cube1",
+      "mesh": "/Engine/BasicShapes/Cube.Cube",
+      "location": [
+        0.0,
+        5.9808353398693725e-06,
+        0.0
+      ],
+      "scale": [
+        0.8058550953865051,
+        0.20000000298023224,
+        0.20000000298023224
+      ],
+      "rotation": "<Struct 'Rotator' (0x000002BCDC8A1DC0) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+      "bounds_min": [
+        -50.0,
+        -50.0,
+        -50.0
+      ],
+      "bounds_max": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "mass": 0.0,
+      "linear_damping": 0.009999999776482582,
+      "angular_damping": 0.0,
+      "body": "<Struct 'BodyInstance' (0x000002BCDFA08618) {simulate_physics: True, enable_gravity: True, update_kinematic_from_simulation: False, gyroscopic_torque_enabled: False, auto_weld: True, start_awake: True, generate_wake_events: False, update_mass_when_scale_changes: True, position_solver_iteration_count: 8, velocity_solver_iteration_count: 2, projection_solver_iteration_count: 1, sleep_family: Normal, use_ccd: False, ignore_analytic_collisions: False, notify_rigid_body_collision: False, smooth_edge_collisions: False, inertia_conditioning: True, one_way_interaction: False, override_solver_async_delta_time: False, solver_async_delta_time: 0.016667, max_depenetration_velocity: 0.000000, mass_in_kg_override: 5.000000, linear_damping: 0.010000, angular_damping: 0.000000, com_nudge: {x: 0.000000, y: 0.000000, z: 0.000000}, mass_scale: 1.000000, gravity_group_index: 0, inertia_tensor_scale: {x: 1.000000, y: 1.000000, z: 1.000000}, walkable_slope_override: {walkable_slope_behavior: WalkableSlope_Default, walkable_slope_angle: 0.000000}, phys_material_override: None, max_angular_velocity: 3600.000000, custom_sleep_threshold_multiplier: 1.000000, stabilization_threshold_multiplier: 1.000000}>"
+    },
+    {
+      "name": "Cube2",
+      "mesh": "/Engine/BasicShapes/Cube.Cube",
+      "location": [
+        0.0,
+        6.000000212225132e-06,
+        0.0
+      ],
+      "scale": [
+        0.6105715036392212,
+        0.20000000298023224,
+        0.20000000298023224
+      ],
+      "rotation": "<Struct 'Rotator' (0x000002BCDC8A1E10) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+      "bounds_min": [
+        -50.0,
+        -50.0,
+        -50.0
+      ],
+      "bounds_max": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "mass": 0.0,
+      "linear_damping": 0.009999999776482582,
+      "angular_damping": 0.0,
+      "body": "<Struct 'BodyInstance' (0x000002BCDFA09018) {simulate_physics: True, enable_gravity: True, update_kinematic_from_simulation: False, gyroscopic_torque_enabled: False, auto_weld: True, start_awake: True, generate_wake_events: False, update_mass_when_scale_changes: True, position_solver_iteration_count: 8, velocity_solver_iteration_count: 2, projection_solver_iteration_count: 1, sleep_family: Normal, use_ccd: False, ignore_analytic_collisions: False, notify_rigid_body_collision: False, smooth_edge_collisions: False, inertia_conditioning: True, one_way_interaction: False, override_solver_async_delta_time: False, solver_async_delta_time: 0.016667, max_depenetration_velocity: 0.000000, mass_in_kg_override: 5.000000, linear_damping: 0.010000, angular_damping: 0.000000, com_nudge: {x: 0.000000, y: 0.000000, z: 0.000000}, mass_scale: 1.000000, gravity_group_index: 0, inertia_tensor_scale: {x: 1.000000, y: 1.000000, z: 1.000000}, walkable_slope_override: {walkable_slope_behavior: WalkableSlope_Default, walkable_slope_angle: 0.000000}, phys_material_override: None, max_angular_velocity: 3600.000000, custom_sleep_threshold_multiplier: 1.000000, stabilization_threshold_multiplier: 1.000000}>"
+    }
+  ],
+  "wood": [
+    {
+      "name": "Cube",
+      "mesh": "/Game/PhysicalAssemblySystem/PhysicsItem/Wood/Asset/Mesh/SM_Wood.SM_Wood",
+      "location": [
+        0.0,
+        0.0,
+        3000.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation": "<Struct 'Rotator' (0x000002BCDC8A1EB0) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+      "bounds_min": [
+        -130.9207000732422,
+        -63.86333465576172,
+        -2.741405963897705
+      ],
+      "bounds_max": [
+        130.92066955566406,
+        63.863441467285156,
+        6.1130290031433105
+      ],
+      "mass": 0.0,
+      "linear_damping": 0.009999999776482582,
+      "angular_damping": 2.0,
+      "body": "<Struct 'BodyInstance' (0x000002BCDFA0A418) {simulate_physics: True, enable_gravity: True, update_kinematic_from_simulation: False, gyroscopic_torque_enabled: False, auto_weld: True, start_awake: True, generate_wake_events: False, update_mass_when_scale_changes: True, position_solver_iteration_count: 8, velocity_solver_iteration_count: 2, projection_solver_iteration_count: 1, sleep_family: Normal, use_ccd: False, ignore_analytic_collisions: False, notify_rigid_body_collision: False, smooth_edge_collisions: False, inertia_conditioning: True, one_way_interaction: False, override_solver_async_delta_time: False, solver_async_delta_time: 0.016667, max_depenetration_velocity: 0.000000, mass_in_kg_override: 20.000000, linear_damping: 0.010000, angular_damping: 2.000000, com_nudge: {x: 0.000000, y: 0.000000, z: 0.000000}, mass_scale: 1.000000, gravity_group_index: 0, inertia_tensor_scale: {x: 1.000000, y: 1.000000, z: 1.000000}, walkable_slope_override: {walkable_slope_behavior: WalkableSlope_Default, walkable_slope_angle: 0.000000}, phys_material_override: None, max_angular_velocity: 3600.000000, custom_sleep_threshold_multiplier: 1.000000, stabilization_threshold_multiplier: 1.000000}>"
+    }
+  ],
+  "cube": [
+    {
+      "name": "Cube",
+      "mesh": "/Engine/BasicShapes/Cube.Cube",
+      "location": [
+        0.0,
+        0.0,
+        3000.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rotation": "<Struct 'Rotator' (0x000002BCDC8A1E10) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+      "bounds_min": [
+        -50.0,
+        -50.0,
+        -50.0
+      ],
+      "bounds_max": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "mass": 0.0,
+      "linear_damping": 0.009999999776482582,
+      "angular_damping": 0.0,
+      "body": "<Struct 'BodyInstance' (0x000002BCDFA0CC18) {simulate_physics: True, enable_gravity: True, update_kinematic_from_simulation: False, gyroscopic_torque_enabled: False, auto_weld: True, start_awake: True, generate_wake_events: False, update_mass_when_scale_changes: True, position_solver_iteration_count: 8, velocity_solver_iteration_count: 2, projection_solver_iteration_count: 1, sleep_family: Normal, use_ccd: False, ignore_analytic_collisions: False, notify_rigid_body_collision: False, smooth_edge_collisions: False, inertia_conditioning: True, one_way_interaction: False, override_solver_async_delta_time: False, solver_async_delta_time: 0.016667, max_depenetration_velocity: 0.000000, mass_in_kg_override: 100.000000, linear_damping: 0.010000, angular_damping: 0.000000, com_nudge: {x: 0.000000, y: 0.000000, z: 0.000000}, mass_scale: 1.000000, gravity_group_index: 0, inertia_tensor_scale: {x: 1.000000, y: 1.000000, z: 1.000000}, walkable_slope_override: {walkable_slope_behavior: WalkableSlope_Default, walkable_slope_angle: 0.000000}, phys_material_override: None, max_angular_velocity: 3600.000000, custom_sleep_threshold_multiplier: 1.000000, stabilization_threshold_multiplier: 1.000000}>"
+    }
+  ],
+  "stick": [
+    {
+      "name": "Cube",
+      "mesh": "/Engine/BasicShapes/Cube.Cube",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.10000000149011612,
+        2.8958210945129395,
+        0.10000000149011612
+      ],
+      "rotation": "<Struct 'Rotator' (0x000002BCDC8A1EB0) {pitch: 0.000000, yaw: 0.000000, roll: 0.000000}>",
+      "bounds_min": [
+        -50.0,
+        -50.0,
+        -50.0
+      ],
+      "bounds_max": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "mass": 0.0,
+      "linear_damping": 0.009999999776482582,
+      "angular_damping": 0.0,
+      "body": "<Struct 'BodyInstance' (0x000002BCDFA0E018) {simulate_physics: True, enable_gravity: True, update_kinematic_from_simulation: False, gyroscopic_torque_enabled: False, auto_weld: True, start_awake: True, generate_wake_events: False, update_mass_when_scale_changes: True, position_solver_iteration_count: 8, velocity_solver_iteration_count: 2, projection_solver_iteration_count: 1, sleep_family: Normal, use_ccd: False, ignore_analytic_collisions: False, notify_rigid_body_collision: False, smooth_edge_collisions: False, inertia_conditioning: True, one_way_interaction: False, override_solver_async_delta_time: False, solver_async_delta_time: 0.016667, max_depenetration_velocity: 0.000000, mass_in_kg_override: 100.000000, linear_damping: 0.010000, angular_damping: 0.000000, com_nudge: {x: 0.000000, y: 0.000000, z: 0.000000}, mass_scale: 1.000000, gravity_group_index: 0, inertia_tensor_scale: {x: 1.000000, y: 1.000000, z: 1.000000}, walkable_slope_override: {walkable_slope_behavior: WalkableSlope_Default, walkable_slope_angle: 0.000000}, phys_material_override: None, max_angular_velocity: 3600.000000, custom_sleep_threshold_multiplier: 1.000000, stabilization_threshold_multiplier: 1.000000}>"
+    }
+  ],
+  "material_Rubber": {
+    "friction": "10.0",
+    "static_friction": "10.0",
+    "restitution": "0.009999999776482582",
+    "density": "1.0",
+    "friction_combine_mode": "<FrictionCombineMode.AVERAGE: 0>"
+  },
+  "material_Ball": {
+    "friction": "0.0",
+    "static_friction": "0.0",
+    "restitution": "1.0",
+    "density": "1.0",
+    "friction_combine_mode": "<FrictionCombineMode.AVERAGE: 0>"
+  },
+  "material_Hook": {
+    "friction": "0.0",
+    "static_friction": "0.0",
+    "restitution": "0.5285710096359253",
+    "density": "1.0",
+    "friction_combine_mode": "<FrictionCombineMode.AVERAGE: 0>"
+  },
+  "material_EngineRubber": {
+    "friction": "0.699999988079071",
+    "static_friction": "0.0",
+    "restitution": "1.0",
+    "density": "1.0",
+    "friction_combine_mode": "<FrictionCombineMode.AVERAGE: 0>"
+  }
+}

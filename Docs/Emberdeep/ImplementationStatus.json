@@ -1,0 +1,847 @@
+{
+  "revision": "0.2.6",
+  "date": "2026-11-08",
+  "candidate": {
+    "version": "0.2.6",
+    "android_version_code": 9,
+    "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending."
+  },
+  "historical_delivery": {
+    "version": "0.1.1",
+    "android_version_code": 2,
+    "menu_user_confirmation": "Front position only"
+  },
+  "milestones": {
+    "M0": "Stable placement retained. Current system hand aim/contextual UI is covered by the passing FinalVerification Editor suite; physical button usability remains pending.",
+    "M1": "0.2.6 implements natural whole-hand starter lever, empty-outlet pumping and anchored display contact. Fresh 167 EditMode and 84 PlayMode passes. Device acceptance pending.",
+    "M2": "PROPOSED: safe search, loot, optional animals, pending ledger, durable saves",
+    "M3": "PROPOSED: authored teaching progression, sidegrades and measured feedback",
+    "M4": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending."
+  },
+  "evidence": {
+    "version_scope": "Historical 0.2.0 / code 3 only; current evidence is in current_iteration.",
+    "editmode": {
+      "status": "passed",
+      "passed": 119,
+      "failed": 0,
+      "path": "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+      "scope": "Clean release-verification Editor run; synthetic interactions do not establish headset tracking, comfort or performance."
+    },
+    "playmode": {
+      "status": "passed",
+      "passed": 17,
+      "failed": 0,
+      "path": "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json",
+      "scope": "Clean release-verification Editor run; synthetic interactions do not establish headset tracking, comfort or performance."
+    },
+    "builds": {
+      "status": "Both QA APKs built successfully; Android Debug signed, not a store release",
+      "quest_apk": "Deliverables/Emberdeep/Emberdeep-0.2.0.apk",
+      "pico_apk": "Deliverables/Emberdeep/Emberdeep-0.2.0-Pico.apk",
+      "scene_generation": "Builder preserves existing scene assets; no scene regeneration during build",
+      "release_evidence": "Logs/EmberdeepM1/ReleaseEvidence.json",
+      "scene_whitelist": "Both BuildReports contain only EmberdeepCamp and EmberdeepFireground; no missing or unexpected scenes",
+      "settings_restoration": "Both builds restored all five audited configuration files. The original shared nine-scene list was subsequently restored byte-for-byte."
+    },
+    "devices": {
+      "PICO4": "Not connected; acceptance pending",
+      "Quest3": "APK installed and version 0.2.0 / code 3 verified. Launch requested, but STANDBY caused a system window-placement timeout and no running game process was observed. No worn-headset acceptance.",
+      "user_availability": "The user is unavailable for worn-headset checks in this round and requested APKs plus the device checklist. No physical acceptance is claimed."
+    },
+    "documents": {
+      "generation": "Both DOCX regenerated from authoritative sources",
+      "visual_review": "BLOCKED: no bundled LibreOffice in Windows runtime. Native Word reports Unlicensed Product; PDF export and SaveAs2 PDF stall after repagination. Only task-created Word processes were stopped. Prior PDFs were not used as evidence.",
+      "structural_review": "Source-to-DOCX content verified: all generated page headings, introductions, block paragraphs, bullet items and table cells match authoritative JSON; visual QA remains blocked.",
+      "qa_path": "Logs/EmberdeepM1/Docs/qa.json"
+    },
+    "test_history": {
+      "superseded": "Logs/EmberdeepM1/FinalVerification",
+      "reason": "One earlier PlayMode failure was caused by LogAssert.NoUnexpectedReceived treating a normal OVRManager destruction information log as unexpected. The assertion was removed; the framework still fails unexpected errors/exceptions. The subsequent clean ReleaseVerification results supersede that run."
+    },
+    "device_checklist": "Docs/Emberdeep/M1DeviceAcceptance.json"
+  },
+  "current_iteration": {
+    "version": "0.2.6",
+    "android_version_code": 9,
+    "date": "2026-11-08",
+    "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
+    "source": "ContactGripIteration.json",
+    "evidence": "Logs/EmberdeepContactGrip/ReleaseEvidence.json",
+    "tests": {
+      "EditMode": {
+        "total": 167,
+        "passed": 167,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "PlayMode": {
+        "total": 84,
+        "passed": 84,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      }
+    },
+    "builds": {
+      "Quest": {
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.6",
+        "signatureVerified": true,
+        "sha256": "e5c7d8910823ebc08046f35dbeb643152827a0d8ebfa0a7ae0db98a8336b1a3d",
+        "target": "Quest",
+        "bytes": 105507663,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 9,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png"
+      },
+      "Pico": {
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.6",
+        "signatureVerified": true,
+        "sha256": "410cace421f208615ed3722f05a096c6ab7baac4f842a748f3ef8e9d8db8b24b",
+        "target": "Pico",
+        "bytes": 87212435,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 9,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png"
+      }
+    },
+    "devices": "User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 not connected.",
+    "known_limits": [
+      "Existing well geometry and procedural grip poses remain interaction grayboxes; no full-body IK or per-finger collision simulation.",
+      "Display palm is constrained relative to the grip; weapon aiming still follows the tracked hand.",
+      "Natural grasp thresholds, comfort, hand-size contact fit and PICO performance require hardware checks.",
+      "M2/M3 and durable expedition saves remain proposed.",
+      "Word source/content checks do not establish visual layout acceptance."
+    ]
+  },
+  "requirements": [
+    {
+      "requirement_ids": [
+        "GD-WATER-01",
+        "GD-WATER-02",
+        "GD-WATER-03",
+        "GD-WATER-05"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Aligned dock, closed/open/full states, partial transfer and safe disconnect.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::DockNeedsContinuousAlignedDwellAndDoesNotGrantWater",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::SignedValveDetentsAndReleaseDiscardPartialTurn",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::HydrantTransferClampsToCapacityAndCountersAgree"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Real left/right hands: align, turn, partially fill, close and disconnect",
+        "Near-full and full visual readability"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::LeftHandHydrantDockValveFullAndDisconnect",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::RightHandHydrantDockValveFullAndDisconnect"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "GD-WATER-04",
+        "GD-WATER-08",
+        "GD-HAND-01",
+        "GD-HAND-02",
+        "GD-PAUSE-01"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Exclusive supply lock, weapon cancellation, fresh-open rearm and no automatic resume.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::DockBlocksWeaponsAndRequiresReleaseAfterUnlock",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::DisconnectAndTrackingLossRetainPartialWaterButNeverResumeFlow",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::AlternatingHandsCannotCombineDwellOrStealDock"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Tracking/focus/pause during valve, intake, pump and cannon",
+        "No same-pinch UI/refill/fire action on either headset"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::TrackingAndPauseInterruptFlowWithoutResumeGrant",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::NonfiniteTrackedSamplesInterruptHydrantWithoutAnotherTransfer",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::AssistanceConsumesPinchWithoutOperatingValveOrLosingCreekPrime"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "GD-WATER-06",
+        "GD-WATER-07"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Valid intake plus complete 8 cm outward and 2 cm return stroke credits at most 12 units.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::SourceKindsAreExclusiveAndUnprimedCreekCannotPay",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::CreekNeedsHomeOutAndReturnAndJitterCannotDuplicate",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::InterruptedStrokeCannotBeBankedOnReconnect",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::CreekLastStrokeCreditsOnlyMissingWater"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Sequential one-hand operation and intake placement",
+        "Occlusion recovery without a partial-stroke credit"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::LeftHandCreekIntakeAndCompleteStrokes",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::RightHandCreekIntakeAndCompleteStrokes",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::InterruptedCreekStrokeReturnsIntakeAndRequiresFreshPriming"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "DD-02",
+        "GD-ECON-01",
+        "GD-ECON-04",
+        "GD-LOOP-03"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Only New Expedition fills starter tank; purchases start empty; upgrades, selection and stage transitions preserve quantities; retry restores entry tanks and earnings.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::NewExpeditionSuppliesOnlyStarterTank",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::DryTankNeverRegeneratesDuringFightOrClearOrNext",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::UpgradeAddsCapacityWithoutWaterOrSupplyCredit",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::RetryRestoresEntryWaterAndRemovesAttemptIncomeAndSupply",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::RetryCannotReplaySettledSectorForAnotherReward"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Menu-to-fireground-to-retry workflow",
+        "Active camp exit and reentry quantities; full disk recovery remains M2"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::CampRoundTripRetainsPartialTankAndRefillCallbacksHaveOneLiveOwner"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "GD-WATER-09",
+        "GD-HAND-03",
+        "GD-HAND-04"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Free sources at near edge, mirrored controls, explicit assisted mode pauses hazards while supply duration/accounting remain unchanged.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::AssistedModeRecordsOnceAndCannotOverrideTrackingLoss",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::AssistedSupplyPausesAllHazardClocksButNormalSupplyDoesNot"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Seated/standing reach on PICO 4 and Quest 3",
+        "Empty-tank first-time discovery and refill time ratio"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::AssistanceConsumesPinchWithoutOperatingValveOrLosingCreekPrime"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "GD-TOOL-05",
+        "GD-TOOL-06"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Existing ballistic water and cannon pump retained; affordable cannon charge cap and cancellation.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRun.cs",
+        "Assets/FireRescue/Runtime/FirePumpGesture.cs",
+        "Assets/FireRescue/Runtime/WaterJet.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.cs"
+      ],
+      "editmode_tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepManualWaterTests.cs::CannonCapsChargeToAvailableWaterWithoutSpendingOnCancellation"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Charge cancellation during interaction transfer",
+        "Both-eye cannon visibility and target response"
+      ],
+      "playmode_tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepWaterPlayTests.cs::CreekPumpCannotChargeOrLaunchCannonAndWeaponPumpStillWorksAfterward"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "GD-PLACE-01"
+      ],
+      "status": "IMPLEMENTED_M1_CANDIDATE",
+      "implementation": "Fireground first placement and explicit recenter reuse 0.35-second stable acquisition and raw-head validation; no four-second timeout fallback.",
+      "code": [
+        "Assets/FireRescue/Runtime/FireRescueGame.cs",
+        "Assets/FireRescue/Runtime/EmberdeepMenuPose.cs"
+      ],
+      "evidence": [
+        "Logs/EmberdeepM1/ReleaseVerification/EditMode-results.json",
+        "Logs/EmberdeepM1/ReleaseVerification/PlayMode-results.json"
+      ],
+      "pending_acceptance": [
+        "Cold-start seated and standing fireground placement",
+        "Headset reset/recenter and tracking recovery on PICO 4 and Quest 3"
+      ],
+      "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "M1-DD-01",
+      "affected": [
+        "GD-WATER-05"
+      ],
+      "decision": "A fresh pinch and release on the broad valve with at most five degrees of wrist rotation toggles the accepted detent. Larger incomplete rotations return to the previous detent. The normal 45-degree turn remains available.",
+      "reason": "Sequential one-hand accessibility without a second resource path; same 30 units/second and interruption rules.",
+      "current_override": "0.2.3 permits at most 12 degrees for the fresh pinch/release valve tap; historical five-degree decision retained here for traceability."
+    },
+    {
+      "id": "M1-DD-02",
+      "affected": [
+        "GD-LOOP-03",
+        "GD-ECON-04"
+      ],
+      "decision": "Retry restores the current sector entry snapshot, including tanks, supply counters and attempt income. It does not start a new expedition or replay a cleared sector.",
+      "reason": "Prevent hidden tank and retry currency grants; durable recovery remains M2."
+    },
+    {
+      "id": "M1-DD-03",
+      "affected": [
+        "GD-HAND-01",
+        "GD-HAND-02"
+      ],
+      "decision": "Fireground UI uses the existing Emberdeep gaze-and-fresh-pinch recognizer as its sole button activation route. Native SDK button callbacks are not attached in this scene. Shared tracked joint and pinch providers are retained.",
+      "reason": "One pinch must not independently fire, operate supply and press UI.",
+      "current_override": "0.2.3 uses system hand aim and contextual rays with same-hand fresh pinch; no head-gaze selection. One dispatcher and shared pinch ownership remain."
+    },
+    {
+      "id": "M1-DD-04",
+      "affected": [
+        "GD-PLACE-01"
+      ],
+      "decision": "Reuse the repaired 0.35-second stable-pose acquisition and raw-head validation for fireground first placement and explicit recenter. Remove the historical four-second timeout fallback.",
+      "reason": "One stable acquisition convention across the standalone flow; device acceptance remains separate."
+    }
+  ],
+  "placeholder_assets": [
+    {
+      "ids": [
+        "WS-01",
+        "WS-02",
+        "WS-03"
+      ],
+      "status": "Blockout",
+      "source": "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs",
+      "interfaces": [
+        "Socket",
+        "Valve",
+        "Pump",
+        "Intake",
+        "IntakeSocket",
+        "IntakeVisual",
+        "PumpVisual"
+      ],
+      "missing": [
+        "Authored model and animation package",
+        "Recorded tactile/audio usability evidence",
+        "Device budget capture"
+      ]
+    },
+    {
+      "ids": [
+        "EQ-01",
+        "EQ-02",
+        "EQ-03",
+        "EQ-04"
+      ],
+      "status": "Blockout refill coupling",
+      "source": "Assets/FireRescue/Runtime/FireEquipmentView.cs",
+      "interfaces": [
+        "RefillPort"
+      ],
+      "missing": [
+        "Authored production art and anchor approval"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "title": "Historical M1 Implementation Register (0.2.0)",
+      "intro": "Historical 0.2.0 / code 3 M1 implementation record. Its 119/17 results do not verify later changes. Read InteractionStages.json for current 0.2.5 behavior, mapping and pending acceptance.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Requirements",
+            "Candidate implementation",
+            "Outstanding evidence"
+          ],
+          "rows": [
+            [
+              "GD-WATER-01 to 05",
+              "Hydrant alignment, valve detents, bounded filling and disconnect.",
+              "Real hand docking, partial/full feedback."
+            ],
+            [
+              "GD-WATER-06 to 08",
+              "Creek intake, complete pump strokes and exclusive supply ownership.",
+              "One-hand use and occlusion recovery."
+            ],
+            [
+              "GD-WATER-09; GD-HAND-03/04",
+              "Reachable free supply, mirrored handles and explicit hazard-pause assistance.",
+              "Seated/standing reach and refill cadence."
+            ],
+            [
+              "GD-LOOP-03; GD-ECON-01/04",
+              "No passive grants; empty purchases; preserved amounts; entry-checkpoint retry.",
+              "Full menu/game/shop/retry regression."
+            ],
+            [
+              "GD-HAND-01/02; GD-PAUSE-01",
+              "Shared gesture provider, one UI activation route, cancellation and fresh rearm.",
+              "No duplicate actions across transitions."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Historical 0.2.0 release verification passed 119 EditMode and 17 PlayMode tests, zero failed, under Logs/EmberdeepM1/ReleaseVerification. These synthetic Editor results do not establish current candidate correctness, headset tracking, comfort or performance."
+        },
+        {
+          "kind": "h2",
+          "text": "Remaining development"
+        },
+        {
+          "kind": "p",
+          "text": "M2 safe search, physical finds, optional animals, pending reward settlement and durable saves remain PROPOSED. M3 authored sector teaching, salvage sidegrades and measured tuning remain PROPOSED. Existing coins, upgrades and five incident layouts remain the historical gameplay framework. M1 application termination still loses the expedition; retry is an in-memory checkpoint."
+        }
+      ]
+    },
+    {
+      "title": "Historical M1 Decisions and Subsequent Overrides",
+      "intro": "Historical 0.2.0/0.2.1 decisions are retained below. The subsequent 0.2.3 system hand pointer remains; 0.2.5 replaces the initial hydrant with a lever well and removes rotary tap fallback. InteractionStages.json defines current behavior; M2/M3 remain proposed.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Accessible valve"
+        },
+        {
+          "kind": "p",
+          "text": "Historical 0.2.0 M1-DD-01 implemented a fresh broad-valve pinch and release with at most five degrees of rotation as an accessible detent toggle. A normal 45-degree turn also works. Larger incomplete turns retain the previous detent. Both paths use the same flow duration, tank clamp and interruption rules."
+        },
+        {
+          "kind": "h2",
+          "text": "Retry and UI ownership"
+        },
+        {
+          "kind": "p",
+          "text": "M1-DD-02 restores the current sector entry tanks, supply counters and attempt earnings on Retry. New Expedition is a separate camp operation. M1-DD-03 routes fireground buttons through the existing gaze-and-fresh-pinch recognizer; parallel native SDK callbacks are removed from these buttons. Existing hand data and pinch filtering remain shared. M1-DD-04 also reuses the repaired 0.35-second stable acquisition and raw-head validation for fireground first placement and explicit recenter, with no timeout fallback; headset placement acceptance remains pending."
+        },
+        {
+          "kind": "h2",
+          "text": "Replaceable blockout assets"
+        },
+        {
+          "kind": "p",
+          "text": "WS-01 hydrant, WS-02 creek intake and WS-03 refill pump are scale-one procedural blockouts. Public Socket, Valve, Pump, Intake and IntakeSocket anchors define the interaction interface. Equipment exposes RefillPort. Gauges, flow lamps, source hoses and broad cyan handles provide state feedback. Decorative colliders are disabled. Production meshes, animation, material/shader completion, budgets and both-eye approval remain outstanding."
+        },
+        {
+          "kind": "h2",
+          "text": "Acceptance boundary"
+        },
+        {
+          "kind": "p",
+          "text": "Historical 0.2.0 acceptance: the user confirmed front placement of the repaired menu only, not all buttons, devices or hand tracking. No device performance or comfort claim was made. The newer interaction failure and candidate below supersede the earlier availability statement."
+        },
+        {
+          "kind": "h2",
+          "text": "Historical 0.2.1 index-ray implementation"
+        },
+        {
+          "kind": "p",
+          "text": "On 2026-11-08, user feedback reported hand-tracked buttons unusable and explicitly required index-finger ray pointing with same-hand pinch. This replaces the head-gaze selection part of M1-DD-03 across camp, settings, quit confirmation, fireground HUD and shop. Stable head-pose menu placement remains. EmberdeepHandRay derives the ray from existing tracked index joints and preserves its open origin and direction in palm space during pinch curl. EmberdeepHandRayMenu displays a thin cyan ray/cursor and permits only the pointing hand's fresh pinch. It reuses the shared tracked-hand provider and pinch filter."
+        },
+        {
+          "kind": "p",
+          "text": "Both hands, different simultaneous targets, wrong-hand pinch, tracking recovery, nonfinite samples, page ownership, pause/focus, actual shop purchase and HUD cannon cancellation have synthetic rule or PlayMode regressions. Historical 0.2.1/code 4 passed 129 EditMode and 30 PlayMode tests with zero failures under Logs/EmberdeepV2/ReleaseVerification. The historical 119/17 results validate only 0.2.0. ArtV2Iteration.json records the separate new model and rendering delivery. APK audits are tracked in Logs/EmberdeepV2/ReleaseEvidence.json. No headset was connected in that historical iteration; repeat M1DeviceAcceptance.json on PICO 4 and Quest 3. All three English DOCX are regenerated with structural content QA; that iteration's visual rendering remained unavailable and is not claimed."
+        }
+      ]
+    }
+  ],
+  "historical_iterations": [
+    {
+      "date": "2026-11-08",
+      "status": "IMPLEMENTED_CANDIDATE; 129 EditMode and 30 PlayMode passed; APK audits tracked separately",
+      "user_feedback": "Hand-tracked buttons reported unusable. User requires index-finger ray plus same-hand pinch. Earlier front menu placement remains the only positive physical confirmation.",
+      "scope": "Shared hand-ray menu adapter for camp, settings, quit confirmation, fireground HUD and equipment shop; stable head placement retained. The index ray uses existing tracked joints and pinch filtering, retains origin and direction during curl, shows a cyan ray/cursor, and clears on interruption or ownership change.",
+      "requirement_ids": [
+        "GD-HAND-01",
+        "GD-HAND-02",
+        "GD-PAUSE-01"
+      ],
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRay.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/EmberdeepCamp.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepHandRayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepMenuPlayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+      ],
+      "acceptance": "Current 0.2.1 / code 4 Editor verification passed 129 EditMode and 30 PlayMode tests with zero failures. APK scene, settings-restoration and hash audits are recorded separately in Logs/EmberdeepV2/ReleaseEvidence.json. Physical left/right same-hand pointing/pinch, seated/standing reach and measured PICO 4 performance remain pending.",
+      "design_override": "User-requested index-ray pointing supersedes the historical M1-DD-03 head-gaze UI selection decision. Single UI dispatch and shared pinch filtering remain required. M2 and M3 remain proposed.",
+      "test_evidence": {
+        "EditMode": {
+          "status": "passed",
+          "passed": 129,
+          "failed": 0,
+          "path": "Logs/EmberdeepV2/ReleaseVerification/EditMode-results.json",
+          "scope": "Current 0.2.1 candidate Editor verification. Synthetic interactions do not establish headset usability, comfort or performance."
+        },
+        "PlayMode": {
+          "status": "passed",
+          "passed": 30,
+          "failed": 0,
+          "path": "Logs/EmberdeepV2/ReleaseVerification/PlayMode-results.json",
+          "scope": "Current 0.2.1 candidate Editor verification. Synthetic interactions do not establish headset usability, comfort or performance."
+        }
+      },
+      "art_iteration_source": "ArtV2Iteration.json",
+      "build_evidence": "Logs/EmberdeepV2/ReleaseEvidence.json",
+      "devices": "No headset connected in this iteration; device listing empty. No worn-headset acceptance, comfort or performance conclusion.",
+      "document_qa": {
+        "status": "Regenerated all three DOCX; source-content and hash QA recorded separately",
+        "path": "Logs/EmberdeepV2/Docs/qa.json",
+        "visual_review": "UNAVAILABLE: no bundled LibreOffice; historical unlicensed Word exports stalled. No Word retry or old rendered output used as current evidence."
+      },
+      "historical_scope": "0.2.1 / code 4 ONLY. Every current/this-iteration statement inside this preserved record refers to that historical iteration; not 0.2.3 evidence."
+    },
+    {
+      "date": "2026-11-08",
+      "version": "0.2.3",
+      "android_version_code": 6,
+      "status": "IMPLEMENTED_CANDIDATE; 142 EditMode and 40 PlayMode passed; Quest and PICO APKs built; worn-headset acceptance pending",
+      "source": "InteractionPolish.json",
+      "scope": "System hand aim, contextual UI rays, manual refill guidance and 12-degree tap tolerance, pinch-midpoint grip, interior-only hand visual clipping, original soft flame contour.",
+      "requirement_ids": [
+        "GD-HAND-01",
+        "GD-HAND-02",
+        "GD-HAND-03",
+        "GD-WATER-01",
+        "GD-WATER-03",
+        "GD-WATER-05",
+        "GD-PAUSE-01"
+      ],
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRay.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandVisuals.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs",
+        "Assets/FireRescue/Resources/EmberdeepTrackedHand.shader",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillTutorial.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+        "Assets/FireRescue/Runtime/FireRescueVfx.cs",
+        "Assets/FireRescue/Resources/EmberdeepV2Particles.shader"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepHandRayTests.cs",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepHandOcclusionTests.cs",
+        "Assets/FireRescue/Tests/EditMode/EmberdeepRefillTutorialTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepHandVisualPlayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepRefillApproachPlayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepFlameBaselineTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+      ],
+      "test_evidence": {
+        "EditMode": {
+          "status": "passed",
+          "passed": 142,
+          "failed": 0,
+          "skipped": 0,
+          "path": "Logs/EmberdeepPolish/FinalVerification/EditMode-results.json",
+          "scope": "Current 0.2.3 complete-suite verification. The two left/right scene-wiring cases are included in the 40 PlayMode passes; do not count them twice. Editor results do not establish headset usability or performance."
+        },
+        "PlayMode": {
+          "status": "passed",
+          "passed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "path": "Logs/EmberdeepPolish/FinalVerification/PlayMode-results.json",
+          "scope": "Current 0.2.3 complete-suite verification. The two left/right scene-wiring cases are included in the 40 PlayMode passes; do not count them twice. Editor results do not establish headset usability or performance."
+        }
+      },
+      "build_evidence": "Logs/EmberdeepPolish/ReleaseEvidence.json",
+      "acceptance": "Current 0.2.3 verification passed 142 EditMode and 40 PlayMode tests with zero failures under Logs/EmberdeepPolish/FinalVerification. Both complete left/right scene-wiring cases are included in the 40 passes. Quest and PICO APKs were built with version 0.2.3/code 6, zero errors and exactly the camp/fireground scene whitelist. Both builds restored all 28 audited configuration hashes; 77 verified source and scene files also remained unchanged. Quest 3 installation/version is verified, but STANDBY persisted and no app process was observed after wake/launch requests. Worn-headset acceptance remains pending.",
+      "devices": {
+        "Quest3": "Quest 3 installation and installed version 0.2.3/code 6 verified. Wake and launch were requested, but the headset remained STANDBY and adb pidof returned no running app process. This proves installation only, not game launch, hand tracking, reach, comfort or performance.",
+        "PICO4": "APK built; device acceptance pending"
+      },
+      "document_qa": {
+        "generation": "Regenerated from final authoritative JSON",
+        "structural_review": "passed; exact source-to-DOCX content check",
+        "visual_review": "NOT ACCEPTED: current renderer failed because LibreOffice soffice.exe is absent. Draft DOCX have no visual layout approval.",
+        "render_log": "Logs/EmberdeepPolish/DocRender.log",
+        "packaging": "Unreviewed Word drafts are excluded from the Art V2 source package.",
+        "qa_path": "Logs/EmberdeepPolish/Docs/qa.json"
+      },
+      "additional_scene_tests": {
+        "status": "passed",
+        "source": "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs",
+        "count": 2,
+        "included_in_playmode_total": 40,
+        "path": "Logs/EmberdeepPolish/FinalVerification/PlayMode-results.json",
+        "cases": [
+          "LeftHandCampToFiregroundManualRefillWiring",
+          "RightHandCampToFiregroundManualRefillWiring"
+        ],
+        "scope": "Full left/right camp-to-fireground manual-refill scene wiring; included in the suite, not an extra total."
+      },
+      "sceneWiringTests": "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs",
+      "captures": {
+        "status": "captured",
+        "source": "Editor synthetic interaction captures; not headset evidence",
+        "paths": [
+          "Logs/EmberdeepPolish/Editor-detail-synthetic-Hydrant-docked.png",
+          "Logs/EmberdeepPolish/Editor-detail-synthetic-Hydrant-full.png",
+          "Logs/EmberdeepPolish/Editor-synthetic-Camp-hover.png",
+          "Logs/EmberdeepPolish/Editor-synthetic-Fireground-overview.png",
+          "Logs/EmberdeepPolish/Editor-synthetic-XR-refill-cue.png",
+          "Logs/Emberdeep-FirstResponse.png"
+        ],
+        "flame_comparison": [
+          "Logs/EmberdeepFlameFeedback/Editor-Flame-OriginalBaseline.png",
+          "Logs/EmberdeepFlameFeedback/Editor-Flame-Refined.png"
+        ],
+        "required_label": "Editor; not a real hand-tracking or headset performance capture"
+      },
+      "builds": {
+        "status": "Quest and PICO APKs built; both manifests and APK SHA256 values verified",
+        "quest_apk": "Deliverables/Emberdeep/Emberdeep-0.2.3.apk",
+        "pico_apk": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.apk",
+        "release_evidence": "Logs/EmberdeepPolish/ReleaseEvidence.json",
+        "release_evidence_status": "Assembled at the referenced path",
+        "platforms": {
+          "Quest": {
+            "status": "built",
+            "version": "0.2.3",
+            "android_version_code": 6,
+            "apk": "Deliverables/Emberdeep/Emberdeep-0.2.3.apk",
+            "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.3.manifest.json",
+            "sha256": "74d63cf7508f9f218bc3c5e7b910740b746a74e4f76921b60fc51bc1ff3bd389",
+            "errors": 0,
+            "warnings": 41,
+            "scene_whitelist_passed": true,
+            "reported_scenes": [
+              "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
+              "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
+            ]
+          },
+          "PICO": {
+            "status": "built",
+            "version": "0.2.3",
+            "android_version_code": 6,
+            "apk": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.apk",
+            "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.manifest.json",
+            "sha256": "66b73a5df8abf2a3320ba61f3dce7171277bf29cf9af08e9c20a77552ba44f40",
+            "errors": 0,
+            "warnings": 45,
+            "scene_whitelist_passed": true,
+            "reported_scenes": [
+              "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
+              "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
+            ]
+          }
+        },
+        "scene_whitelist": "Both manifests report only EmberdeepCamp and EmberdeepFireground; sceneWhitelistPassed=true; errors=0.",
+        "settings_restoration": {
+          "Quest": {
+            "status": "verified",
+            "files": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepPolish/QuestSettings-restoration.json"
+          },
+          "PICO": {
+            "status": "verified",
+            "path": "Logs/EmberdeepPolish/PicoSettings-restoration.json",
+            "files": 28,
+            "unchanged": true
+          }
+        }
+      },
+      "install_evidence": "Logs/EmberdeepPolish/Quest-install.json",
+      "device_checklist_zh": "Deliverables/Emberdeep/Emberdeep-0.2.3-Device-Checks.txt",
+      "source_package": {
+        "path": "Deliverables/Emberdeep/Emberdeep-ArtV2-0.2.3.zip",
+        "status": "Generated; SHA256 and file count are in the adjacent package manifest",
+        "version": "0.2.3",
+        "contents": "Separate Art V2 source assets, current shaders including flame and tracked-hand clipping, matching integration code, and AppIcon assets.",
+        "excludes": "Word drafts without visual layout acceptance."
+      },
+      "historical_scope": "0.2.3 / code 6 ONLY; user subsequently reported frozen hand meshes with functioning input."
+    },
+    {
+      "date": "2026-11-08",
+      "version": "0.2.4",
+      "android_version_code": 7,
+      "status": "IMPLEMENTED_CANDIDATE; 142 EditMode and 43 PlayMode passed; Quest/PICO APKs built and audited; Quest 0.2.4/code 7 installed; Quest hand-following confirmed by user; other device acceptance pending",
+      "source": "HandVisualFix.json",
+      "scope": "The production Meta prefab contains four manual-update distance-grab reticle HandVisual objects before two live HandVisual objects. The old first-valid-per-hand selection revealed preview hands and suppressed the live models. Disabling the independent pinch visual writer also left its skinned indicator visible.",
+      "requirement_ids": [
+        "GD-HAND-01",
+        "GD-HAND-02",
+        "GD-PAUSE-01",
+        "IP-03"
+      ],
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandVisuals.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepHandFreezePlayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+      ],
+      "test_evidence": {
+        "EditMode": {
+          "passed": 142,
+          "failed": 0,
+          "path": "Logs/EmberdeepHandFreeze/Verification/EditMode-results.json"
+        },
+        "PlayMode": {
+          "passed": 43,
+          "failed": 0,
+          "path": "Logs/EmberdeepHandFreeze/Verification/PlayMode-results.json"
+        }
+      },
+      "build_evidence": "Logs/EmberdeepHandFreeze/ReleaseEvidence.json",
+      "devices": "Quest 3 installation/version verified as 0.2.4/code 7. Launch requested but no app PID was observed in the immediate shell check. User confirmed normal hand-model following after New Game on Quest 3. PICO not connected.",
+      "builds": {
+        "Quest": {
+          "version": "0.2.4",
+          "settingsRestored": true,
+          "signatureVerified": true,
+          "sceneWhitelistPassed": true,
+          "versionCode": 7,
+          "target": "Quest",
+          "bytes": 105472607,
+          "sha256": "d2c56223fadec6f045a1058eb215cb93486f5ad87eddeb4bdb731afe83183bb3"
+        },
+        "Pico": {
+          "version": "0.2.4",
+          "settingsRestored": true,
+          "signatureVerified": true,
+          "sceneWhitelistPassed": true,
+          "versionCode": 7,
+          "target": "Pico",
+          "bytes": 87178895,
+          "sha256": "d472c5c0a5b2dfa5750ab706bf80556d7675bd15f5305d0083e7bfae64872f71"
+        }
+      },
+      "historical_scope": "0.2.4 only; user confirmed normal model following after New Game on Quest 3."
+    },
+    {
+      "version": "0.2.5",
+      "android_version_code": 8,
+      "date": "2026-11-08",
+      "status": "IMPLEMENTED_CANDIDATE; 156 EditMode and 64 PlayMode passed; Quest/PICO APKs built and audited; Quest 0.2.5/code 8 installed; user confirmed system-menu hand hold/recovery and starter well refill on Quest 3; other device acceptance pending",
+      "source": "InteractionStages.json",
+      "scope": "Freeze the last hand model when Quest palm system controls suppress app tracking. Show contextual full-hand action poses while retaining pinch input. Replace the initial hydrant with a hand-operated well lever; upgrades unlock a rotary hydrant and then one-press automatic filling.",
+      "evidence": "Logs/EmberdeepInteractionStages/ReleaseEvidence.json",
+      "builds": {
+        "Quest": {
+          "version": "0.2.5",
+          "settingsRestored": true,
+          "signatureVerified": true,
+          "sceneWhitelistPassed": true,
+          "versionCode": 8,
+          "target": "Quest",
+          "bytes": 105498995,
+          "sha256": "246618d86844a1682db187fb2f995d50a1b098592b7c03ea76e0dbd2d67902b2"
+        },
+        "Pico": {
+          "version": "0.2.5",
+          "settingsRestored": true,
+          "signatureVerified": true,
+          "sceneWhitelistPassed": true,
+          "versionCode": 8,
+          "target": "Pico",
+          "bytes": 87195875,
+          "sha256": "2ed08c8a3da6feed90f12c4badfa10c7f8c2193ede643e8c3cb21d0bdc297eb3"
+        }
+      },
+      "tests": {
+        "EditMode": {
+          "total": 156,
+          "passed": 156,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0
+        },
+        "PlayMode": {
+          "total": 64,
+          "passed": 64,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0
+        }
+      },
+      "devices": "Quest 3 installation/version verified as 0.2.5/code 8. User confirmed system-menu hand hold/recovery and complete starter well refill cycle. Other controls, detailed pose fit/postures and performance pending. PICO not connected.",
+      "historical_scope": "0.2.5 only: user confirmed system-menu hand hold/recovery and starter lever refill. Later feedback requests firmer pose contact, full-hand lever and empty pumping."
+    }
+  ],
+  "historical_scope": "Top-level evidence covers 0.2.0 only; historical_iterations are version scoped. current_iteration is 0.2.6. User confirmed 0.2.5 system-menu hand hold/recovery and starter well refill, not the new natural grasp/contact changes."
+}

@@ -1,0 +1,258 @@
+[
+  {
+    "map": "/Game/LevelBind/Level2/Environments/Level2GamePlay",
+    "name": "BP_MovingDesk",
+    "class": "/Game/LevelBind/Level2/CarDemoSet/BP_MovingDesk.BP_MovingDesk_C",
+    "scale": "<Struct 'Vector' (0x0000014A96FDF670) {x: 1.000000, y: 1.000000, z: 1.000000}>",
+    "components": [
+      {
+        "name": "Desk",
+        "dimensions_cm": [
+          124.52429962158203,
+          269.65919494628906,
+          208.90095138549805
+        ]
+      },
+      {
+        "name": "VRButtonComponentUp",
+        "dimensions_cm": [
+          9.671638488769531,
+          16.297633171081543,
+          5.822209450386481
+        ]
+      },
+      {
+        "name": "VRButtonComponentDown",
+        "dimensions_cm": [
+          9.671638488769531,
+          16.297633171081543,
+          5.822209450386481
+        ]
+      }
+    ]
+  },
+  {
+    "map": "/Game/LevelBind/Level2/Environments/Level2GamePlay",
+    "name": "FoldingTV_sm2",
+    "class": "/Game/LevelBind/Level2/CarDemoSet/BP_Screen.BP_Screen_C",
+    "scale": "<Struct 'Vector' (0x0000014AAB86D780) {x: 1.000000, y: 1.000000, z: 1.000000}>",
+    "components": [
+      {
+        "name": "FoldingTV_base_sm",
+        "dimensions_cm": [
+          20.591001510620117,
+          12.732739686965942,
+          55.04217338562012
+        ]
+      },
+      {
+        "name": "ScreenFrame_sm",
+        "dimensions_cm": [
+          245.65501403808594,
+          24.390899658203125,
+          127.77310562133789
+        ]
+      },
+      {
+        "name": "ScreenPlane_sm",
+        "dimensions_cm": [
+          191.4054572582245,
+          115.55047761648893,
+          3.2162454259099596e-14
+        ]
+      },
+      {
+        "name": "VRSlotComponent",
+        "dimensions_cm": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "Collision",
+        "dimensions_cm": [
+          17.858299892395735,
+          17.858299892395735,
+          20.36632541567087
+        ]
+      }
+    ]
+  },
+  {
+    "map": "/Game/LevelBind/Level2/Environments/Level2GamePlay",
+    "name": "BP_RemoteControler",
+    "class": "/Game/LevelBind/Level2/CarDemoSet/BP_RemoteControler.BP_RemoteControler_C",
+    "scale": "<Struct 'Vector' (0x0000014AAB859FA0) {x: 1.000000, y: 1.000000, z: 1.000000}>",
+    "components": [
+      {
+        "name": "ControllerMesh",
+        "dimensions_cm": [
+          11.371776580810547,
+          5.665912866592407,
+          30.663119316101074
+        ]
+      },
+      {
+        "name": "DestroyButton",
+        "dimensions_cm": [
+          3.171442985534668,
+          3.1714433431625366,
+          0.8703157603740692
+        ]
+      },
+      {
+        "name": "Thumb",
+        "dimensions_cm": [
+          1.7928982437588274,
+          2.4768102169036865,
+          2.4768118858337402
+        ]
+      },
+      {
+        "name": "Antenna1",
+        "dimensions_cm": [
+          0.3,
+          0.3,
+          12.0
+        ]
+      },
+      {
+        "name": "Sphere1",
+        "dimensions_cm": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "name": "TriggerMesh",
+        "dimensions_cm": [
+          3.5303709506988525,
+          1.4206362068653107,
+          3.8395028114318848
+        ]
+      }
+    ]
+  },
+  {
+    "map": "/Game/LevelBind/Level2/Environments/Level2GamePlay",
+    "name": "BP_AssetPrinter",
+    "class": "/Game/LevelBind/Level2/CarDemoSet/BP_AssetPrinter.BP_AssetPrinter_C",
+    "scale": "<Struct 'Vector' (0x0000014AAB86CE20) {x: 1.000000, y: 1.000000, z: 1.000000}>",
+    "components": [
+      {
+        "name": "StaticMesh",
+        "dimensions_cm": [
+          26.446659088134766,
+          26.76869487762451,
+          20.63668692111969
+        ]
+      },
+      {
+        "name": "VRKnobComponent",
+        "dimensions_cm": [
+          3.478402554988861,
+          11.992185473442078,
+          11.992184042930603
+        ]
+      },
+      {
+        "name": "UIPrint",
+        "dimensions_cm": [
+          8.20146894454956,
+          9.148752689361572,
+          2.304999828338623
+        ]
+      },
+      {
+        "name": "NewFile_sm",
+        "dimensions_cm": [
+          10.393749713897705,
+          2.6558709144592285,
+          2.7659995079040525
+        ]
+      },
+      {
+        "name": "Scope_sm",
+        "dimensions_cm": [
+          10.393749713897705,
+          2.647510051727295,
+          2.7659995079040525
+        ]
+      },
+      {
+        "name": "Wheel_sm",
+        "dimensions_cm": [
+          10.393749713897705,
+          2.647510051727295,
+          2.7659995079040525
+        ]
+      },
+      {
+        "name": "CarBase_sm",
+        "dimensions_cm": [
+          10.393749713897705,
+          2.664555549621582,
+          2.7659995079040525
+        ]
+      },
+      {
+        "name": "Frame",
+        "dimensions_cm": [
+          10.0,
+          2.5,
+          1.6081227369178756e-15
+        ]
+      }
+    ]
+  },
+  {
+    "map": "/Game/LevelBind/Level2/Environments/Level2GamePlay",
+    "name": "BP_Scanner",
+    "class": "/Game/LevelBind/Level2/CarDemoSet/BP_Scanner.BP_Scanner_C",
+    "scale": "<Struct 'Vector' (0x0000014AAB86D320) {x: 1.000000, y: 1.000000, z: 1.000000}>",
+    "components": [
+      {
+        "name": "3dScannerMesh",
+        "dimensions_cm": [
+          59.349220275878906,
+          49.787492752075195,
+          5.765829563140869
+        ]
+      },
+      {
+        "name": "CoverMesh",
+        "dimensions_cm": [
+          56.56285095214844,
+          45.027618408203125,
+          22.718512058258057
+        ]
+      },
+      {
+        "name": "SendButton",
+        "dimensions_cm": [
+          6.5665751695632935,
+          2.6266300678253174,
+          1.3133150339126587
+        ]
+      }
+    ]
+  },
+  {
+    "map": "/Game/LevelBind/Level2/Environments/Level2GamePlay",
+    "name": "TeleportTarget",
+    "class": "/Game/LevelBind/Level2/CarDemoSet/BP_Receiver.BP_Receiver_C",
+    "scale": "<Struct 'Vector' (0x0000014AAB86D320) {x: 1.297738, y: 1.297738, z: 1.000000}>",
+    "components": [
+      {
+        "name": "BaseMesh",
+        "dimensions_cm": [
+          77.01973842237854,
+          64.61112126909256,
+          5.765829563140869
+        ]
+      }
+    ]
+  }
+]

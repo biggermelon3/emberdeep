@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca33e030689a34a44aedbbf2c402ff06, type: 3}
+  m_Name: HustleVisualLibrary
+  m_EditorClassIdentifier: PhysicalAssembly.Runtime::PhysicalAssembly.HustleVisualLibrary
+  entries:
+  - kind: 0
+    body: chassis
+    mesh: {fileID: 4300000, guid: cce061c2c96942f4d8dc0e18e6e2606c, type: 2}
+    material: {fileID: 2100000, guid: ce82fed21ca199246994e03d134f872d, type: 2}
+  - kind: 1
+    body: wheel
+    mesh: {fileID: 4300000, guid: 69ea00b63304ba74d9a58188f7d37428, type: 2}
+    material: {fileID: 2100000, guid: 7c1664a7dafab314ea8da0851e0501e2, type: 2}
+  - kind: 1
+    body: mount
+    mesh: {fileID: 4300000, guid: 9a1cbab44908f0f42979ad1050680fec, type: 2}
+    material: {fileID: 2100000, guid: 7c1664a7dafab314ea8da0851e0501e2, type: 2}
+  - kind: 1
+    body: hub
+    mesh: {fileID: 4300000, guid: aebf4f58559d7e441af0b5dbfeb08772, type: 2}
+    material: {fileID: 2100000, guid: 381865ed44da5604c9cd1cf2e5842e70, type: 2}
+  - kind: 4
+    body: weapon
+    mesh: {fileID: 4300000, guid: a383c285e1a936c439eda69444742cd9, type: 2}
+    material: {fileID: 2100000, guid: 381865ed44da5604c9cd1cf2e5842e70, type: 2}
+  - kind: 2
+    body: body
+    mesh: {fileID: 4300000, guid: 2e41daf0a97f5af46a9618e427c6b081, type: 2}
+    material: {fileID: 2100000, guid: 381865ed44da5604c9cd1cf2e5842e70, type: 2}
+  - kind: 3
+    body: body
+    mesh: {fileID: 4300000, guid: d208a43eeb91d37478dd12a9dd41d174, type: 2}
+    material: {fileID: 2100000, guid: 381865ed44da5604c9cd1cf2e5842e70, type: 2}

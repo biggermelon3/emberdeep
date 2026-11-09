@@ -1,0 +1,21 @@
+{
+  "branch": "/main/emberdeep",
+  "baseChangeset": 69,
+  "release": "0.2.2 / Android versionCode 5",
+  "scope": "Emberdeep M1 manual refill, index-finger UI rays, Art V2 assets and effects, hydrant launcher icon, documentation and tests.",
+  "sharedCodeDependencies": {
+    "GardenNavigation.cs": "FireRescue enum, standalone initialization and navigation classification.",
+    "MetaShadowPlayer.cs": "Shared PICO aim freshness and tracking-loss handling, with InteractionAimTests.",
+    "PicoBuild.cs": "Emberdeep portable player binding and reversible build preparation safeguards.",
+    "MainMenuBuilder.cs": "Standalone Emberdeep two-scene whitelist exception."
+  },
+  "editorToolingDependency": "com.unity.pipeline 0.10.0-exp.1 is included only to reproduce Tools/Test-EmberdeepM1.ps1 and live Editor CLI verification.",
+  "sdkPrerequisite": "The inherited PICO package is a local file dependency at ../../../Tools/PICO-Unity-OpenXR-SDK relative to Packages. This machine already has it; other developers must provision the same SDK location before Unity resolves the project.",
+  "verificationArchive": "Deliverables/Emberdeep/Emberdeep-Verification-0.2.2.zip",
+  "verificationArchiveUsage": "Unzip at the repository root to restore the Logs paths referenced by design sources and the art packaging tool. Reports originate from the original development workspace, not a new test run in this Plastic workspace.",
+  "verification": "129 EditMode and 30 PlayMode passed for 0.2.1. The 0.2.2 icon-only update retained 27 runtime/shader hashes, built successfully, passed the two-scene and APK signature audits, and was installed on Quest 3. Physical hand usability and performance remain unaccepted.",
+  "excluded": ["Other games' uncommitted work", "Local access-token configuration", "ProjectSettings and shared XR/render settings", "Dynamic font cache reimports", "APK binaries, Unity caches, raw logs and Blender backup files"],
+  "apk": "BuildShowcaseQuest reproduces Deliverables/Emberdeep/Emberdeep-0.2.2.apk. The installed APK remains in the original development workspace; *.apk is excluded by the repository ignore policy.",
+  "workspaceHandling": "Created a separate Plastic workspace for submission. The original shared workspace remains on /main with all pre-existing files and pending changes preserved.",
+  "remainingScope": "M2 search, rescue, reward settlement and durable saves, plus full M3 progression remain future work."
+}

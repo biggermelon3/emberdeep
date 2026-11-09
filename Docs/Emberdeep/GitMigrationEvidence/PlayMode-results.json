@@ -1,0 +1,601 @@
+{
+    "status":  "completed",
+    "duration":  31.57,
+    "summary":  {
+                    "total":  84,
+                    "passed":  84,
+                    "failed":  0,
+                    "skipped":  0,
+                    "inconclusive":  0
+                },
+    "results":  [
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepArtLightingTests.StandaloneLightingRestoresSharedPipelineOnCampReturn",
+                        "Status":  "Passed",
+                        "Duration":  1.4873249,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepEmptyPumpGameTests.LeftEmptyGraspDrivesOutletWithoutWaterOrSameHandUI",
+                        "Status":  "Passed",
+                        "Duration":  0.5089706,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepEmptyPumpGameTests.RightEmptyGraspDrivesOutletWithoutWaterOrSameHandUI",
+                        "Status":  "Passed",
+                        "Duration":  0.5036631,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFlameBaselineTests.FlameCardsStayBroadAndContractAfterAnAcceptedWaterHit",
+                        "Status":  "Passed",
+                        "Duration":  0.0081118,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFlameBaselineTests.RefinedFlameRetainsTheOriginalSoftAlphaContourInsteadOfAnOpaqueTriangle",
+                        "Status":  "Passed",
+                        "Duration":  0.0223517,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.ConsumeInputDropsEmptyStrokeAndRequiresFreshOpenHand",
+                        "Status":  "Passed",
+                        "Duration":  0.0156826,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.DockingAfterEmptyHalfStrokeCannotCreditTheNewTank",
+                        "Status":  "Passed",
+                        "Duration":  0.0140721,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.EmptyLeverDoesNotRequireAnyToolObject",
+                        "Status":  "Passed",
+                        "Duration":  0.0132321,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.InvalidTimeOrChangedOwnershipCancelsEmptyHalfStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0156752,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.LeftFistPumpsEmptyOutletWithoutPinchingOrChangingEconomy",
+                        "Status":  "Passed",
+                        "Duration":  0.0139326,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.OtherHandCanPumpWhileToolHandCannotStealTheLever",
+                        "Status":  "Passed",
+                        "Duration":  0.0142297,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.PartialJitterReleaseAndTrackingLossNeverEmitEmptyStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0134563,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.PinchOnlySamplesNeverImplyFullHandGrip",
+                        "Status":  "Passed",
+                        "Duration":  0.0140935,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.ResetAlsoDiscardsConnectedHalfStrokeWithoutReleasingTheDock",
+                        "Status":  "Passed",
+                        "Duration":  0.0138842,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepFreeLeverGripTests.RightFistPumpsEmptyOutletWithoutPinchingOrChangingEconomy",
+                        "Status":  "Passed",
+                        "Duration":  0.0132421,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandFreezePlayTests.IndependentPinchSkinnedIndicatorIsHiddenAndRestoredWithoutStoppingInteractor",
+                        "Status":  "Passed",
+                        "Duration":  0.0075927,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandFreezePlayTests.ProductionHandSkeletonContinuesFollowingEventsWhileSdkOwnsVisibility",
+                        "Status":  "Passed",
+                        "Duration":  0.0346146,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandFreezePlayTests.ProductionPrefabBindsLiveHandsAndMasksGhostsWithoutChangingTheirMaterials",
+                        "Status":  "Passed",
+                        "Duration":  0.0322666,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandGraspReadTests.MissingLowConfidenceOrNonfiniteFingerCannotAcquireControl",
+                        "Status":  "Passed",
+                        "Duration":  0.0001467,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandGraspReadTests.PinchingIndexAndThumbDoesNotPretendOtherFingersAreWrapped",
+                        "Status":  "Passed",
+                        "Duration":  0.0000414,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandGraspReadTests.WholeHandMeasureUsesTrackedJointsAtAnyScaleOrOrientation(0.5f,False)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000939,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandGraspReadTests.WholeHandMeasureUsesTrackedJointsAtAnyScaleOrOrientation(1.0f,True)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000345,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandGraspReadTests.WholeHandMeasureUsesTrackedJointsAtAnyScaleOrOrientation(1.5f,False)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000282,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.AnchoredContactCancelsTrackedWristRotationAndFollowsMovingObjectForBothHands",
+                        "Status":  "Passed",
+                        "Duration":  0.0449474,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.BothProductionHandsPoseCopiesWithoutChangingSdkBonesOrInput",
+                        "Status":  "Passed",
+                        "Duration":  0.0324175,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.ButtonPressAlignsOnlyDisplayTipAndCapsDistantRayTargetOffset",
+                        "Status":  "Passed",
+                        "Duration":  0.0305572,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.ContactReleaseBlendsToRealPoseAndUnreachableAnchorCannotDragHand",
+                        "Status":  "Passed",
+                        "Duration":  0.0338683,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.EveryInteractionHasDistinctFingerShapeAndTriggerPressAnimatesIndex",
+                        "Status":  "Passed",
+                        "Duration":  0.0001867,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.GripAnchorChangesOnlyDisplayAndDisposalRemovesEveryOwnedRenderer",
+                        "Status":  "Passed",
+                        "Duration":  0.0342195,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.GripClosureIsProgressiveMonotonicAndContactOffsetsMirror",
+                        "Status":  "Passed",
+                        "Duration":  0.0005141,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.InvalidTrackingSnapshotsLastAppPoseOnceAndNeverCreatesOriginHands",
+                        "Status":  "Passed",
+                        "Duration":  0.0332247,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandPresentationPlayTests.JointFlexionFollowsSdkPalmarAxesForBothHandsWithoutMovingWristOrTips",
+                        "Status":  "Passed",
+                        "Duration":  0.0001267,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayGamePlayTests.FocusAndPauseRejectUiAndRequireFreshOpenAfterRecovery",
+                        "Status":  "Passed",
+                        "Duration":  0.4784126,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayGamePlayTests.LeftHandCompletesRealShopWithoutClickingThroughModal",
+                        "Status":  "Passed",
+                        "Duration":  0.4872719,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayGamePlayTests.PointingAtHudCancelsChargedCannonBeforeAnyClickOrRelease",
+                        "Status":  "Passed",
+                        "Duration":  0.4844378,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayGamePlayTests.RightHandCompletesRealShopWithoutClickingThroughModal",
+                        "Status":  "Passed",
+                        "Duration":  0.4893598,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayGamePlayTests.SupplyOwnershipAllowsOnlyAssistanceAndNeverReusesItsPinch",
+                        "Status":  "Passed",
+                        "Duration":  0.4969493,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandVisualPlayTests.InteriorPixelsAreClippedWithoutHidingTheWholeHand",
+                        "Status":  "Passed",
+                        "Duration":  0.0130245,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandVisualPlayTests.ReusesRigHandMeshAndSuppressesOnlyRayVisualsThenRestoresSharedState",
+                        "Status":  "Passed",
+                        "Duration":  0.009412,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.ARealButtonRequiresAHandRayInsteadOfHeadGaze",
+                        "Status":  "Passed",
+                        "Duration":  1.034689,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.ConfirmQuitRequiresModalAndIsAnEditorNoOpAfterRequest",
+                        "Status":  "Passed",
+                        "Duration":  0.8966989,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.LeftHandNavigatesSettingsAndQuitWithoutHeldPinchClickThrough",
+                        "Status":  "Passed",
+                        "Duration":  0.9651287,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.LeftSystemPointerClicksVisibleButtonAwayFromHeadCenter",
+                        "Status":  "Passed",
+                        "Duration":  0.8106333,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.LostPointingHandCannotBeReplacedByOtherPinchAndRecoveryMustReopen",
+                        "Status":  "Passed",
+                        "Duration":  0.8368302,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.RecenterUsesFreshEyeHeightAndHeadingThenRemainsAnchored",
+                        "Status":  "Passed",
+                        "Duration":  1.7663279,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.RightHandNavigatesSettingsAndQuitWithoutHeldPinchClickThrough",
+                        "Status":  "Passed",
+                        "Duration":  0.9151993,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.RightSystemPointerClicksVisibleButtonAwayFromHeadCenter",
+                        "Status":  "Passed",
+                        "Duration":  0.8381818,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPlayTests.SoundToggleUsesPointingHandPinchAndHeldInputDoesNotToggleAgain",
+                        "Status":  "Passed",
+                        "Duration":  1.3255967,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillApproachPlayTests.FingertipAtUndockedValveCannotGrantAnyWater",
+                        "Status":  "Passed",
+                        "Duration":  0.5077363,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillApproachPlayTests.LeftHandApproachesGuidedDockThenTurnsWithFingertip",
+                        "Status":  "Passed",
+                        "Duration":  0.4525235,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillApproachPlayTests.MalformedFingertipInterruptsAcceptedFlowWithoutExtraTransfer",
+                        "Status":  "Passed",
+                        "Duration":  0.4829381,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillApproachPlayTests.RightHandApproachesGuidedDockThenTurnsWithFingertip",
+                        "Status":  "Passed",
+                        "Duration":  0.486388,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepSceneWiringPlayTests.LeftHandCampToFiregroundManualRefillWiring",
+                        "Status":  "Passed",
+                        "Duration":  1.3681038,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepSceneWiringPlayTests.RightHandCampToFiregroundManualRefillWiring",
+                        "Status":  "Passed",
+                        "Duration":  1.4391979,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepShowcaseTests.IsolatedCampCampaignAndResumePreserveProgress",
+                        "Status":  "Passed",
+                        "Duration":  4.8702835,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.ButtonEachFreshNearPressTogglesAndHoldingDoesNotRepeat",
+                        "Status":  "Passed",
+                        "Duration":  0.0126687,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.FarButtonPinchCannotOpenFlow",
+                        "Status":  "Passed",
+                        "Duration":  0.0137879,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.InfiniteFrameCannotCompleteLeverStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0143149,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.LeavingButtonKeepsAcceptedFlowButCannotReuseHeldPinch",
+                        "Status":  "Passed",
+                        "Duration":  0.013107,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.LeavingLeverCancelsCreditAndHeldFistCannotReacquire",
+                        "Status":  "Passed",
+                        "Duration":  0.0128008,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.LeavingWheelBeforeTurningCannotOperateItRemotely",
+                        "Status":  "Passed",
+                        "Duration":  0.013041,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.LeftLeverCompletesPhysicalCyclesAndPublishesControlOwnership",
+                        "Status":  "Passed",
+                        "Duration":  0.0153403,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.LeverReleaseAndTrackingLossCancelPendingStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0121133,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.NaNFrameCannotCompleteLeverStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0131385,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.NegativeFrameCannotCompleteLeverStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0126466,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.RightLeverCompletesPhysicalCyclesAndPublishesControlOwnership",
+                        "Status":  "Passed",
+                        "Duration":  0.0130786,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.RotaryTapDoesNothingButSignedRotationOpensAndVisualNeverDoubleAddsDetent",
+                        "Status":  "Passed",
+                        "Duration":  0.0131863,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierInteractionTests.ZeroFrameCannotCompleteLeverStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0149155,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierViewTests.CreekRetainsItsOwnPullHandleAndIntakeAcrossStationUpgrades",
+                        "Status":  "Passed",
+                        "Duration":  0.0111462,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierViewTests.TierChangesKeepOneControlAndDockStableWhileShowingDistinctMotion",
+                        "Status":  "Passed",
+                        "Duration":  0.0118278,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepV2VfxTests.ContinuousWaterMeshActuallyDrawsCyanPixelsWithoutDropletRenderers",
+                        "Status":  "Passed",
+                        "Duration":  0.0159874,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepV2VfxTests.PresentationNeverMutatesWaterPacketsOrAppliesAnAdditionalHit",
+                        "Status":  "Passed",
+                        "Duration":  0.0104553,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepV2VfxTests.ReusesOriginalParticleBudgetsAndOneBoundedStrandRenderer",
+                        "Status":  "Passed",
+                        "Duration":  0.02657,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepV2VfxTests.ShortReleaseSplitsStreamsAndPulseOrCannonNeverBecomeContinuousLines",
+                        "Status":  "Passed",
+                        "Duration":  0.0096597,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.AssistanceConsumesPinchWithoutOperatingValveOrLosingCreekPrime",
+                        "Status":  "Passed",
+                        "Duration":  0.4937421,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.CampRoundTripRetainsPartialTankAndRefillCallbacksHaveOneLiveOwner",
+                        "Status":  "Passed",
+                        "Duration":  1.4144489,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.CreekPumpCannotChargeOrLaunchCannonAndWeaponPumpStillWorksAfterward",
+                        "Status":  "Passed",
+                        "Duration":  0.478658,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.InterruptedCreekStrokeReturnsIntakeAndRequiresFreshPriming",
+                        "Status":  "Passed",
+                        "Duration":  0.459278,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.LeftHandCreekIntakeAndCompleteStrokes",
+                        "Status":  "Passed",
+                        "Duration":  0.4526964,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.LeftHandHydrantDockValveFullAndDisconnect",
+                        "Status":  "Passed",
+                        "Duration":  0.4629571,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.NonfiniteTrackedSamplesInterruptHydrantWithoutAnotherTransfer",
+                        "Status":  "Passed",
+                        "Duration":  1.4995728,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.RightHandCreekIntakeAndCompleteStrokes",
+                        "Status":  "Passed",
+                        "Duration":  0.5350685,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.RightHandHydrantDockValveFullAndDisconnect",
+                        "Status":  "Passed",
+                        "Duration":  0.5274095,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepWaterPlayTests.TrackingAndPauseInterruptFlowWithoutResumeGrant",
+                        "Status":  "Passed",
+                        "Duration":  0.4800301,
+                        "Message":  null,
+                        "StackTrace":  null
+                    }
+                ]
+}

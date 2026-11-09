@@ -1,0 +1,6 @@
+{
+  "name": "PhysicalAssembly.EditTests",
+  "references": ["PhysicalAssembly.Runtime", "PhysicalAssembly.Editor", "Unity.Splines", "Unity.Mathematics"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

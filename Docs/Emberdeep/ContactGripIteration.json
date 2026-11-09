@@ -1,0 +1,114 @@
+{
+  "revision": "0.2.6",
+  "date": "2026-11-08",
+  "candidate": {
+    "version": "0.2.6",
+    "android_version_code": 9
+  },
+  "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
+  "authority": "Explicit user feedback supersedes 0.2.5 bounded wrist correction, pinch-operated starter lever and tool-required pump interaction. Other station tiers, creek and equipment firing input remain unchanged.",
+  "requirements": [
+    {
+      "id": "IP-08 / GD-HAND-02",
+      "implementation": [
+        "EmberdeepHandPose",
+        "EmberdeepHandPresentation",
+        "FireRescueGame.Hands"
+      ],
+      "acceptance": "Both hands maintain calibrated anchor-relative palm position and rotation while tracked wrist twists; moving controls drive display pose; smooth acquisition/release and reach cutoff; provider and camera untouched."
+    },
+    {
+      "id": "WS-05 / GD-HAND-01 / GD-WATER-01",
+      "implementation": [
+        "EmberdeepHandGrasp",
+        "EmberdeepGripGesture",
+        "EmberdeepRefillInteraction",
+        "FireRescueGame.Water"
+      ],
+      "acceptance": "Whole-hand grasp at lever, independent of index pinch. Open/rearm and closure dwell, missing joint/confidence, left/right, UI exclusivity, tracking loss and no same-hand tool/control double ownership."
+    },
+    {
+      "id": "WS-06 / GD-WATER-05 / GD-ECON-01",
+      "implementation": [
+        "EmberdeepLeverStroke",
+        "EmberdeepWaterSupply",
+        "EmberdeepWaterStationView",
+        "EmberdeepRefillTutorial"
+      ],
+      "acceptance": "Unconnected lever works with no tool or a tool in the other hand. Complete cycle emits bounded water at outlet; no tank credit, damage or coins. Connected cycle credits 12 units through existing supply only. Partial/reset/reconnect cannot carry a pending stroke."
+    }
+  ],
+  "resources": "Existing production hand meshes and procedural pose data. Existing graybox well, hydrant shell, button station and water shader. No full-body IK rig, new hand tracking provider or physical per-finger collision claim.",
+  "pages": [
+    {
+      "title": "0 2 6 Anchored Hand Contact and Natural Lever Grasp",
+      "intro": "CURRENT candidate responding to user feedback that held hands still rotated and lever pinch felt misleading. Use an analytic display wrist constraint, staged finger closure and natural whole-hand lever input.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "The prior 65-degree correction limit left residual tracked wrist rotation. At full contact the display palm now solves exactly to a calibrated grip frame, with mirrored offsets for both hands. Tool aim and physical input remain tracked; the visible hand is constrained relative to the actual tool/control rather than forcing the tool to stay fixed in world space. Moving lever and valve anchors move the contact pose."
+        },
+        {
+          "kind": "p",
+          "text": "Acquire contact over roughly 0.16 seconds and release over 0.12 seconds, with staggered finger closure and a short squeeze transition. A contact beyond 0.18 metres fades back to tracked pose. This is a hand/wrist contact solve, not a full arm IK or finger collision simulation. Frozen last-app-valid hands and fresh-input recovery from 0.2.5 are retained."
+        },
+        {
+          "kind": "p",
+          "text": "The starter lever now reads the same SDK joints and normalized finger curl/whole-grip calculation as the car game. All required joints and finger confidence must be valid. Observe an open hand at strength<=0.55 for 60 ms, then closed strength>=0.8 for 60 ms near the lever. Maintain grasp above release threshold; pinch alone cannot operate the lever. Loss, cancellation or ownership changes require opening again. Existing pinch input remains for tool pickup/fire, UI, rotary valve, button and creek."
+        },
+        {
+          "kind": "p",
+          "text": "Direct lever contact reserves its hand before UI and tool pickup. The other hand may hold equipment. One hand cannot both hold a tool and acquire the unconnected lever. Render-only animated bones never feed the grasp classifier. No change to the shared car or other game input code is required."
+        }
+      ]
+    },
+    {
+      "title": "0 2 6 Empty Outlet Pumping and Verification",
+      "intro": "The pump responds even without a docked tool. Its visible outlet communicates where water comes out and why a tool should be connected.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Grip, lower 8 cm and return within 2 cm of the upper detent. Both connected and empty pumping use one mechanical cycle rule. Connected strokes transfer 12 water units capped by capacity. Empty strokes only trigger a short 0.34-second arc and droplets from Socket.forward. They cannot refill any tank, extinguish fires, award coins or create a pending grant."
+        },
+        {
+          "kind": "p",
+          "text": "No tool object is required for empty pumping. A held tool in the other hand does not prevent it; auto-docking pauses during empty lever ownership. Discard incomplete travel on release, tracking loss, focus loss, invalid samples, reset, tier change or connection change. A stroke started empty must never complete into a newly connected tank."
+        },
+        {
+          "kind": "p",
+          "text": "Reuse one 12-point water arc, a 16-point short ripple and at most 12 particles per station. Repeated events replace the burst rather than grow the pool. Stop on interruption/disable/tier change. Water effects are presentation only and never call WaterJet hit or supply transfer APIs."
+        },
+        {
+          "kind": "p",
+          "text": "Tutorial: open hand and wrap fingers around the broad lever; lower and return. Before docking, explain that players can try the pump and should connect a tool to collect water. Keyboard R also previews the unconnected pump; H docks, R lowers/releases, X disconnects. Later rotary and button controls retain their separate instructions."
+        },
+        {
+          "kind": "p",
+          "text": "Verification includes same-hand UI suppression, joint confidence and scale, empty/connected accounting, partial-cycle interruption, both hands and anchor-relative rotation invariance. Capture actual contact with the tool/lever in Editor; distinguish injected samples from headset acceptance. Physical comfort, precise contact fit and PICO performance remain device checks."
+        },
+        {
+          "kind": "p",
+          "text": "Current 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance."
+        }
+      ]
+    }
+  ],
+  "test_evidence": {
+    "EditMode": {
+      "total": 167,
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepContactGrip/FinalCalibration/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 84,
+      "passed": 84,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepContactGrip/FinalCalibration/PlayMode-results.json"
+    }
+  }
+}

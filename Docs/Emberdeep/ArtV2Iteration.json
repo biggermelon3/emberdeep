@@ -1,0 +1,127 @@
+{
+  "revision": "0.3",
+  "date": "2026-11-08",
+  "candidate": "0.2.1 / Android code 4",
+  "status": "Historical 0.2.1 implementation: 129 EditMode and 30 PlayMode passed. Not current 0.2.3 verification.",
+  "source": "ArtSource/EmberdeepV2",
+  "evidence": "Logs/EmberdeepV2/ReleaseEvidence.json",
+  "pages": [
+    {
+      "title": "Emberdeep Art V2 — Separate Production Delivery",
+      "intro": "Historical 0.2.1 delivery scope. A new editable Blender kit and Unity rendering pass follow the generated concept. The original blockout remains available as a fallback. This delivery does not establish headset performance, hand comfort or feature completion beyond M1.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Concept first, then implemented assets"
+        },
+        {
+          "kind": "p",
+          "text": "Concepts/Emberdeep-ArtV2-Concept.png was generated with the built-in image model; its full prompt and provenance are recorded in Generation.json. The concept sets the sculpted forest, moss/slate terrain, warm timber and terracotta, enamel hydrant and cyan interaction accents. It is not a screenshot of the game."
+        },
+        {
+          "kind": "p",
+          "text": "A separate Blender agent authored the modular meshes from that reference, saved Emberdeep-ArtV2.blend and exported nine FBX assets. Unity integration converts the imported semantic palette to mobile URP materials, instantiates dynamic target trees and cabins, and binds fire/wet state to existing simulation data."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Asset",
+            "Integration",
+            "Scope"
+          ],
+          "rows": [
+            [
+              "Terrain",
+              "Layered ground, slate, moss, path, creek and border plants",
+              "Front working edge and target lanes remain clear."
+            ],
+            [
+              "Cedar / Broadleaf",
+              "Instanced dynamic gameplay trees",
+              "Separate canopy/trunk; shader heat, wetness and scorch."
+            ],
+            [
+              "Cabin / Rock / Fern / Log",
+              "Modular reusable props",
+              "Cabin state stays driven by existing gameplay; decorative meshes have no interaction colliders."
+            ],
+            [
+              "Hydrant / CreekPump",
+              "Cosmetic shells around existing anchors",
+              "Duplicate cosmetic controls hidden; accepted socket, valve, pump and intake rules retained."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "The kit contains 31,588 unique triangles. Terrain has nine material slots; each tree has three. These are asset budgets, not measured scene totals or headset timings. FBX ground pivots and scale one were checked; a mirrored Z export and two ground triangulation defects were corrected during import review."
+        }
+      ]
+    },
+    {
+      "title": "Unity Rendering and Interaction Contracts",
+      "intro": "Historical 0.2.1 delivery scope. The rendering changes consume existing gameplay state. They never transfer water, apply damage or award rewards.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "System",
+            "Implemented behavior",
+            "Bound"
+          ],
+          "rows": [
+            [
+              "Sculpted surface",
+              "Pigment shading, restrained heat, scorch and wet glints",
+              "No per-tree lights; small visual-only canopy movement."
+            ],
+            [
+              "Shallow creek",
+              "Animated directional ripples and crests",
+              "Opaque surface; no scene-depth copy or refraction dependency."
+            ],
+            [
+              "Flame / smoke",
+              "Layered cores and tongues; lower smoke and ember emission",
+              "Original seven particle systems and 3,060 total particle capacity."
+            ],
+            [
+              "Water",
+              "Ballistic droplets plus continuous foam/fan strand mesh",
+              "One additional renderer; at most 192 links / 3,072 triangles; pulse and cannon remain discrete."
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Index-ray UI correction"
+        },
+        {
+          "kind": "p",
+          "text": "The user reported that hand-tracked buttons were unusable and requested index-finger rays. In 0.2.1, camp, settings, quit confirmation, gameplay HUD and shop shared visible cyan index rays with same-hand fresh-pinch confirmation. The open index origin and direction are retained relative to the palm during finger curl to prevent pinch motion moving the target; the visible ray starts at the actual fingertip. Head tracking still governs stable menu placement, not button selection."
+        },
+        {
+          "kind": "p",
+          "text": "UI ownership cancels weapon charge before activation. Refill locks permit only explicit assistance. Tracking/focus/pause loss and page changes clear pending gestures and require an open hand before another pinch. Existing joint providers, pinch hysteresis, grab handling and physical refill anchors are reused."
+        },
+        {
+          "kind": "h2",
+          "text": "Verification and remaining acceptance"
+        },
+        {
+          "kind": "p",
+          "text": "The historical 0.2.1 Editor run passed 129 EditMode and 30 PlayMode tests with zero failures. It covers same-hand rays, stable pinch targeting, shop transitions, interruption, retained refill rules, shader/model import, bounded water strands and restoring the shared rendering pipeline on camp return. Reports are under Logs/EmberdeepV2/ReleaseVerification. Both-headset checks remain pending; no headset was connected in that iteration."
+        },
+        {
+          "kind": "p",
+          "text": "A separate Emberdeep mobile lighting asset uses one 1024-pixel directional shadow map, one cascade, a three-metre shadow distance, 4x MSAA, no HDR and no added renderer features. It restores the previous quality pipeline when leaving the fireground and after standalone builds. Hand-held equipment and station controls do not cast oversized shadows across the miniature. Four decorative healthy trees, border ferns and logs frame the open gameplay lanes; they are scenery, not additional fire targets."
+        },
+        {
+          "kind": "p",
+          "text": "Artifact hashes, build scene reports and settings restoration are recorded in Logs/EmberdeepV2/ReleaseEvidence.json. Blender renders, generated concepts and Editor captures are labelled by source. None is evidence of real headset stereo, frame timing, reach or button usability. M2 search, animals, settlement and durable saves remain unimplemented; this iteration improves M1 input and art."
+        }
+      ]
+    }
+  ],
+  "historical_scope": "Historical 0.2.1/code 4 art delivery. Its pass counts, build evidence and current wording belong to that iteration; current 0.2.3 hand/flame overrides are in InteractionPolish.json."
+}

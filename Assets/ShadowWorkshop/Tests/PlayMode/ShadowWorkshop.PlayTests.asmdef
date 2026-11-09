@@ -1,0 +1,15 @@
+{
+  "name": "ShadowWorkshop.PlayTests",
+  "references": [
+    "ShadowWorkshop.Runtime",
+    "ShadowWorkshop.Integration",
+    "CloudGarden.Integration",
+    "PhysicalAssembly.Runtime",
+    "PhysicalAssembly.MetaXR",
+    "Oculus.Interaction",
+    "Unity.InputSystem"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

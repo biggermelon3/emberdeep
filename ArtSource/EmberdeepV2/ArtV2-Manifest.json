@@ -1,0 +1,814 @@
+{
+  "kit": "Emberdeep V2 modular environment",
+  "revision": 1,
+  "generator": "Tools/BuildEmberdeepArtV2.py",
+  "seed": 29031,
+  "source": "ArtSource/EmberdeepV2/Emberdeep-ArtV2.blend",
+  "concept": "ArtSource/EmberdeepV2/Concepts/Emberdeep-ArtV2-Concept.png",
+  "provenance": "Original procedural meshes authored for this project from its generated concept; no downloaded mesh or texture assets.",
+  "coordinates": "Authored Unity X/Y/Z in metres; Blender stores X/-Z/Y, FBX exported -Z forward and Y up. Unity-imported bounds must match bounds_unity_metres.",
+  "terrain_contract": "Front z<1.6 has only flat ground/path; dynamic tree lanes z3..10 are free of baked trees. CreekSurface is independently named at z approximately 10.9.",
+  "performance": "Geometry budget only; not a measured headset performance result. No textures, alpha foliage or skinned meshes.",
+  "total_unique_triangles": 31588,
+  "assets": [
+    {
+      "asset": "EDV2_Terrain",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Terrain.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -5.44682,
+          -0.64,
+          -0.43647
+        ],
+        "max": [
+          5.4161,
+          0.26419,
+          12.42683
+        ]
+      },
+      "triangles": 22474,
+      "meshes": [
+        {
+          "name": "Soil",
+          "triangles": 252,
+          "material_slots": [
+            "Soil"
+          ]
+        },
+        {
+          "name": "Slate",
+          "triangles": 3580,
+          "material_slots": [
+            "Slate"
+          ]
+        },
+        {
+          "name": "Moss",
+          "triangles": 62,
+          "material_slots": [
+            "Moss"
+          ]
+        },
+        {
+          "name": "RimGrowth",
+          "triangles": 16392,
+          "material_slots": [
+            "MossLight",
+            "Fern"
+          ]
+        },
+        {
+          "name": "Path",
+          "triangles": 884,
+          "material_slots": [
+            "Path"
+          ]
+        },
+        {
+          "name": "BorderRocks",
+          "triangles": 1144,
+          "material_slots": [
+            "Stone"
+          ]
+        },
+        {
+          "name": "CreekSurface",
+          "triangles": 40,
+          "material_slots": [
+            "CreekWater"
+          ]
+        },
+        {
+          "name": "CreekFoam",
+          "triangles": 120,
+          "material_slots": [
+            "Foam"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Cedar",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Cedar.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.43,
+          0.0,
+          -0.43
+        ],
+        "max": [
+          0.43,
+          1.88092,
+          0.43
+        ]
+      },
+      "triangles": 1576,
+      "meshes": [
+        {
+          "name": "Trunk",
+          "triangles": 148,
+          "material_slots": [
+            "Bark"
+          ]
+        },
+        {
+          "name": "Canopy",
+          "triangles": 1428,
+          "material_slots": [
+            "Cedar",
+            "CedarLight"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Broadleaf",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Broadleaf.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.41658,
+          0.0,
+          -0.42497
+        ],
+        "max": [
+          0.41763,
+          1.77179,
+          0.40983
+        ]
+      },
+      "triangles": 1356,
+      "meshes": [
+        {
+          "name": "Trunk",
+          "triangles": 332,
+          "material_slots": [
+            "Bark"
+          ]
+        },
+        {
+          "name": "Canopy",
+          "triangles": 1024,
+          "material_slots": [
+            "Leaf",
+            "LeafLight"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Cabin",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Cabin.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.56415,
+          0.0,
+          -0.7
+        ],
+        "max": [
+          0.56749,
+          1.2675,
+          0.63234
+        ]
+      },
+      "triangles": 2546,
+      "meshes": [
+        {
+          "name": "Foundation",
+          "triangles": 532,
+          "material_slots": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Walls",
+          "triangles": 362,
+          "material_slots": [
+            "WoodLight",
+            "Wood"
+          ]
+        },
+        {
+          "name": "Timber",
+          "triangles": 424,
+          "material_slots": [
+            "BarkLight",
+            "WoodLight",
+            "Wood"
+          ]
+        },
+        {
+          "name": "Door",
+          "triangles": 12,
+          "material_slots": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware",
+          "triangles": 28,
+          "material_slots": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Window",
+          "triangles": 24,
+          "material_slots": [
+            "WindowGlow"
+          ]
+        },
+        {
+          "name": "Roof",
+          "triangles": 736,
+          "material_slots": [
+            "TerracottaLight",
+            "Terracotta"
+          ]
+        },
+        {
+          "name": "Chimney",
+          "triangles": 428,
+          "material_slots": [
+            "Stone",
+            "Slate"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Rock",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Rock.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.25759,
+          0.0,
+          -0.21859
+        ],
+        "max": [
+          0.29112,
+          0.39,
+          0.20794
+        ]
+      },
+      "triangles": 104,
+      "meshes": [
+        {
+          "name": "Stone",
+          "triangles": 52,
+          "material_slots": [
+            "Slate"
+          ]
+        },
+        {
+          "name": "Moss",
+          "triangles": 52,
+          "material_slots": [
+            "Moss"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Fern",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Fern.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.23756,
+          0.0,
+          -0.23993
+        ],
+        "max": [
+          0.22703,
+          0.23108,
+          0.24878
+        ]
+      },
+      "triangles": 972,
+      "meshes": [
+        {
+          "name": "Fern",
+          "triangles": 972,
+          "material_slots": [
+            "Fern"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Log",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Log.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.406,
+          0.0,
+          -0.115
+        ],
+        "max": [
+          0.406,
+          0.2988,
+          0.124
+        ]
+      },
+      "triangles": 1104,
+      "meshes": [
+        {
+          "name": "Bark",
+          "triangles": 152,
+          "material_slots": [
+            "Bark",
+            "BarkLight"
+          ]
+        },
+        {
+          "name": "Endgrain",
+          "triangles": 952,
+          "material_slots": [
+            "WoodLight",
+            "BarkLight"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Hydrant",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Hydrant.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.061,
+          0.0,
+          -0.094
+        ],
+        "max": [
+          0.078,
+          0.229,
+          0.061
+        ]
+      },
+      "triangles": 924,
+      "meshes": [
+        {
+          "name": "Body",
+          "triangles": 224,
+          "material_slots": [
+            "EnamelRed"
+          ]
+        },
+        {
+          "name": "Hardware",
+          "triangles": 208,
+          "material_slots": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Coupling",
+          "triangles": 204,
+          "material_slots": [
+            "Brass",
+            "Cyan",
+            "Rubber"
+          ]
+        },
+        {
+          "name": "Valve",
+          "triangles": 288,
+          "material_slots": [
+            "Brass"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_CreekPump",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_CreekPump.fbx",
+      "pivot_unity": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "bounds_unity_metres": {
+        "min": [
+          -0.08849,
+          0.0,
+          -0.1248
+        ],
+        "max": [
+          0.0904,
+          0.227,
+          0.08011
+        ]
+      },
+      "triangles": 532,
+      "meshes": [
+        {
+          "name": "Base",
+          "triangles": 52,
+          "material_slots": [
+            "Stone"
+          ]
+        },
+        {
+          "name": "Body",
+          "triangles": 56,
+          "material_slots": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware",
+          "triangles": 28,
+          "material_slots": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Handle",
+          "triangles": 92,
+          "material_slots": [
+            "Teal",
+            "Cyan"
+          ]
+        },
+        {
+          "name": "Pipe",
+          "triangles": 72,
+          "material_slots": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Strainer",
+          "triangles": 232,
+          "material_slots": [
+            "Rubber",
+            "Brass"
+          ]
+        }
+      ]
+    }
+  ],
+  "material_color_encoding": "Palette values are authored linear RGB in Blender diffuse_color and Principled Base Color. FBX importer color-space conversion may change displayed inspector values.",
+  "materials": [
+    {
+      "name": "Moss",
+      "base_color_linear": [
+        0.255,
+        0.405,
+        0.105,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "MossLight",
+      "base_color_linear": [
+        0.42,
+        0.54,
+        0.15,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Soil",
+      "base_color_linear": [
+        0.36,
+        0.2,
+        0.095,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Slate",
+      "base_color_linear": [
+        0.23,
+        0.285,
+        0.29,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Stone",
+      "base_color_linear": [
+        0.4,
+        0.43,
+        0.38,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Path",
+      "base_color_linear": [
+        0.58,
+        0.39,
+        0.2,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Bark",
+      "base_color_linear": [
+        0.28,
+        0.135,
+        0.052,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "BarkLight",
+      "base_color_linear": [
+        0.4,
+        0.225,
+        0.09,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Cedar",
+      "base_color_linear": [
+        0.115,
+        0.29,
+        0.12,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "CedarLight",
+      "base_color_linear": [
+        0.29,
+        0.43,
+        0.14,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Leaf",
+      "base_color_linear": [
+        0.31,
+        0.46,
+        0.13,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "LeafLight",
+      "base_color_linear": [
+        0.52,
+        0.61,
+        0.2,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Fern",
+      "base_color_linear": [
+        0.34,
+        0.5,
+        0.11,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Wood",
+      "base_color_linear": [
+        0.54,
+        0.28,
+        0.095,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "WoodLight",
+      "base_color_linear": [
+        0.72,
+        0.43,
+        0.18,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Terracotta",
+      "base_color_linear": [
+        0.6,
+        0.2,
+        0.075,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "TerracottaLight",
+      "base_color_linear": [
+        0.78,
+        0.32,
+        0.12,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "Brass",
+      "base_color_linear": [
+        0.64,
+        0.4,
+        0.11,
+        1
+      ],
+      "roughness": 0.3199999928474426,
+      "metallic": 0.3799999952316284
+    },
+    {
+      "name": "EnamelRed",
+      "base_color_linear": [
+        0.7,
+        0.065,
+        0.028,
+        1
+      ],
+      "roughness": 0.3199999928474426,
+      "metallic": 0.12999999523162842
+    },
+    {
+      "name": "Teal",
+      "base_color_linear": [
+        0.025,
+        0.34,
+        0.32,
+        1
+      ],
+      "roughness": 0.3199999928474426,
+      "metallic": 0.12999999523162842
+    },
+    {
+      "name": "Cyan",
+      "base_color_linear": [
+        0.055,
+        0.64,
+        0.69,
+        1
+      ],
+      "roughness": 0.3199999928474426,
+      "metallic": 0.12999999523162842
+    },
+    {
+      "name": "Rubber",
+      "base_color_linear": [
+        0.025,
+        0.055,
+        0.06,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "WindowGlow",
+      "base_color_linear": [
+        1,
+        0.65,
+        0.15,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    },
+    {
+      "name": "CreekWater",
+      "base_color_linear": [
+        0.035,
+        0.4,
+        0.45,
+        1
+      ],
+      "roughness": 0.20000000298023224,
+      "metallic": 0.1599999964237213
+    },
+    {
+      "name": "Foam",
+      "base_color_linear": [
+        0.5,
+        0.79,
+        0.7,
+        1
+      ],
+      "roughness": 0.6200000047683716,
+      "metallic": 0.0
+    }
+  ]
+}

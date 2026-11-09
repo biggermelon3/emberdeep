@@ -1,0 +1,8 @@
+{
+  "name": "CloudGarden",
+  "references": [
+    "Unity.InputSystem",
+    "Unity.TextMeshPro",
+    "Unity.ugui"
+  ]
+}

@@ -1,0 +1,436 @@
+{
+  "pages": [
+    {
+      "title": "Product intent and implementation boundary",
+      "intro": "Emberdeep targets stationary hand tracking on Quest 3 and PICO 4. Historical CURRENT v0.1 descriptions below remain migration references. The M1 candidate now implements manual supply; its code, evidence and outstanding headset gates are listed in ImplementationStatus.json. M2 exploration and persistence remain proposed.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Design pillars"
+        },
+        {
+          "kind": "p",
+          "text": "GD-SCOPE-01 requires readable cause and effect: a player can identify the target, see water arrive, and recognize cooling or completion without consulting a menu. GD-SCOPE-02 requires meaningful equipment choices: precision, coverage, protection, and preparation should solve different problems. GD-SCOPE-03 connects suppression to discovery: a cleared patch reveals an optional reward or rescue opportunity, creating a reason to inspect the environment before choosing the next sector."
+        },
+        {
+          "kind": "h2",
+          "text": "Current inventory"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "System",
+            "CURRENT v0.1",
+            "v0.2 planned change"
+          ],
+          "rows": [
+            [
+              "Presentation",
+              "Miniature forest and standalone camp route",
+              "Reliable placement and explicit sector transitions"
+            ],
+            [
+              "Equipment",
+              "Foam extinguisher, pulse pistol, rain fan, pressure cannon",
+              "Distinct refill attachments and optional salvage modifications"
+            ],
+            [
+              "Water",
+              "Historical v0.1: automatic release refill",
+              "M1 candidate: hydrant docking and creek pumping"
+            ],
+            [
+              "Incidents",
+              "Five escalating incidents, water towers and cabins",
+              "Clear Patch search and optional animal rescue"
+            ],
+            [
+              "Progression",
+              "Coins, shop, tuning, combos and stars",
+              "Pending rewards, stable claims and sector checkpoints"
+            ],
+            [
+              "Persistence",
+              "Expedition retained in memory across camp visits",
+              "Versioned save and recovery contract"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Scope and acceptance"
+        },
+        {
+          "kind": "p",
+          "text": "GD-SCOPE-04 limits development to one active tabletop sector. The M1 candidate supplies a reusable hydrant in every sector and exposes creek supply from sector two. Existing scenery, fire tactics and four equipment modes remain. Loot, animal handling, safe search, settlement and durable saves are still proposed M2 work. The weapon cannon pump and creek refill pump are distinct operations."
+        },
+        {
+          "kind": "p",
+          "text": "Acceptance requires the delivered build and its feature list to agree. A disabled or unfinished system must not advertise a usable interaction. Procedural worlds, multiplayer, destructive terrain, complex crafting trees, and monetization are outside this slice. If a proposed mechanic cannot meet tracking or reachability requirements, retain a simple accessible interaction and record the limitation rather than expanding the level or forcing repeated physical gestures."
+        }
+      ]
+    },
+    {
+      "title": "Core loop and sector lifecycle",
+      "intro": "GD-LOOP-01 defines the target loop as prepare equipment, enter a sector, suppress hazards, establish a safe search area, recover optional finds, settle rewards, and choose whether to continue. CURRENT v0.1 moves directly from Fighting to Cleared or Won; the search and settlement stages below are proposed v0.2 behavior.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Authoritative states"
+        },
+        {
+          "kind": "p",
+          "text": "CampReady permits purchases and selection of owned equipment. Deploying restores the sector entry checkpoint, places the miniature, and waits for explicit readiness. Active advances fire, water and protection rules. Contained is entered only when GD-FIRE-03 has validated suppression; it cancels firing and pending charge. SearchSafe reveals the fixed loot manifest and available animals while freezing local fire progression. Settled atomically commits pending earnings and completion. The player then chooses CampReady or Next; after the final sector the destination is ExpeditionComplete."
+        },
+        {
+          "kind": "p",
+          "text": "GD-LOOP-02 permits only one transition request at a time. Next first settles the current sector, then loads the next authored content into the same tabletop anchor. Unclaimed optional finds are listed before departure and forfeited if the player proceeds. Required equipment unlocks are granted through progression or the shop, never hidden in missable loot. Other sectors are previews, not independently advancing simulations."
+        },
+        {
+          "kind": "h2",
+          "text": "Pause and recovery"
+        },
+        {
+          "kind": "p",
+          "text": "GD-PAUSE-01 treats TrackingPaused and Repositioning as overlays, preserving the underlying state. Head tracking loss, application pause, focus loss, or scene transition stops fire damage, spread, water consumption, charge, combo and scoring clocks. It also clears pending physical input and cancels firing without interpreting cancellation as trigger release. Recovery requires valid tracking and an open hand before a new action. No elapsed wall time is applied as catch up damage."
+        },
+        {
+          "kind": "p",
+          "text": "GD-LOOP-03 enters Failed when the authored burn limit is reached. Retreat restores the entry checkpoint and removes this attempt's pending earnings; prior committed purchases and cleared sectors remain intact. A new attempt reuses the original manifest seed. New Expedition is a separate deliberate reset, not the only way out of failure. Returning to camp from Active follows the same retreat rule so leaving cannot duplicate rewards or reset danger while retaining new income."
+        },
+        {
+          "kind": "h2",
+          "text": "Acceptance"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "GD-LOOP-04: repeated Next, pause and camp callbacks produce one settlement and one scene transition.",
+            "During SearchSafe, waiting indefinitely causes no spread, cabin damage, animal failure, or score clock penalty.",
+            "Resume after tracking loss neither releases a cannon shot nor consumes water; a failed reload restores the last valid checkpoint."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Hand interaction and world placement",
+      "intro": "GD-HAND-01 gives each hand one interaction owner and each operated tool or station one exclusive owner. Reuse the project hand data, pinch filtering, ray and poke controls, and snap conventions. A desktop path supports testing, but mouse success does not establish hand tracking acceptance.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Arbitration and cancellation"
+        },
+        {
+          "kind": "p",
+          "text": "Resolve input in this order: global suspension, modal interface, an existing refill or carry transaction, nearby pickup, held tool operation, then hover. The winning interaction consumes the pinch edge; lower priorities cannot respond in the same frame. Opening a menu cancels weapon charge before its controls become active. A visible ownership cue distinguishes holding equipment from operating its trigger."
+        },
+        {
+          "kind": "p",
+          "text": "GD-HAND-02 keeps the existing latched tool pickup. The pinch used to take a grip cannot fire it. The player first opens the hand, then starts a fresh pinch to spray or charge. Release fires a charged cannon only when the weapon owns that input and tracking remains valid. Pickup cancellation, docking, UI activation, nonfinite input, and tracking loss cancel charge without a shot. Returning a tool uses its marked rack zone; opening the hand in free space does not accidentally discard it."
+        },
+        {
+          "kind": "p",
+          "text": "GD-HAND-03 mirrors the equipment rack, pump anchor, valve access and instructional cues for left handed use. Animal or salvage pickup requires a free hand or a holstered tool. A dock may hold equipment so the same hand can operate a valve or refill pump. Two handed operation is the default demonstration, but the critical path must remain possible through sequential one handed actions."
+        },
+        {
+          "kind": "h2",
+          "text": "Placement and comfort"
+        },
+        {
+          "kind": "p",
+          "text": "GD-PLACE-01 addresses reported right-side menu placement. First-pose capture or an origin reset is suspected, not confirmed. Wait for valid, stable head position and horizontal heading rather than accepting the first tracked frame. STARTING TARGET: require 0.5 seconds within 5 cm and 5 degrees, show a two second placement countdown, then anchor the board and miniature to the final stable heading. Movement restarts the countdown. Recenter repeats this process; it never applies a fixed ninety degree correction."
+        },
+        {
+          "kind": "p",
+          "text": "GD-HAND-04 keeps primary targets between comfortable waist and chest height with seated adjustment. Do not move the camera for recoil or force overhead reach. GD-HAND-05 acceptance covers both hands, seated and standing play, menu entry while charging, occlusion during a pump stroke, and placement while looking sideways. Every interrupted operation must recover without spending resources, transferring ownership twice, or requiring an application restart."
+        }
+      ]
+    },
+    {
+      "title": "Hydrant refill state machine",
+      "intro": "GD-WATER-01 introduces free renewable supply with a visible Socket, valve and pressure feedback. Historical v0.1 release-based refill is removed in the M1 candidate; FireRun and EmberdeepWaterSupply now own water accounting. The following thresholds remain starting tuning targets, with implementation evidence in the register.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Dock and operate"
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-02 uses Idle, Aligning, DockedClosed, Filling, DockedFull and Disconnecting states. Idle highlights a compatible owned tool. Aligning begins when its RefillPort enters the socket guide. STARTING TARGET: an 8 cm capture region and 35 degree orientation tolerance provide a visible ghost alignment. STARTING TARGET: a 0.25 second aligned hold confirms the snap without another pinch, latches the tool, cancels firing and charge, and enters DockedClosed. Failed alignment leaves the tool held and consumes no water or money."
+        },
+        {
+          "kind": "p",
+          "text": "In DockedClosed the main hand may steady the tool while the other pinches the valve. STARTING TARGET: a 45 degree turn from the closed detent opens it. Accumulate rotation in the valve's own plane, ignoring small tracking jitter; release holds the accepted valve position. Partial turns return to the last detent. The filling sound, gauge movement and flow indicator start together. STARTING TARGET: transfer 30 water units per second, bounded by remaining capacity. Water enters only the docked tank. Record transferred units as suppliedWater without debiting supply inventory; conservation measures this counter. Finite sources are outside the first slice."
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-03 enters DockedFull at capacity and automatically closes flow. Turning back to the closed detent from Filling produces DockedClosed while retaining the partial fill. A fresh grip pinch requests Disconnecting; flow must stop and the socket must unlock before normal tool control resumes. A stable open hand is required before the next firing pinch. For sequential one handed use, the snap supports the tool while the same hand releases its grip and operates the valve."
+        },
+        {
+          "kind": "h2",
+          "text": "Interruption and acceptance"
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-04 closes the valve on tracking loss, menu entry, repositioning, forced disconnect, or sector change. Keep water already transferred, discard unintegrated flow, and release the station ownership safely. Restoring tracking never silently reopens the valve. Only one tool may dock; a competing hand receives a busy cue rather than stealing ownership."
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "GD-WATER-05: partial and full refill, early disconnect, and repeated close callbacks never exceed tank capacity or duplicate water.",
+            "A closed valve transfers nothing. A docked weapon cannot spray, charge, or accept creek pumping.",
+            "Failure to complete the turn offers the same valve action through an accessible broad control, preserving the state machine and resource rules."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Creek pumping and empty tank recovery",
+      "intro": "GD-WATER-06 has an M1 candidate implementation of a free Creek Intake and separate Refill Pump. The cannon pump still charges a shot and cannot supply water. Both manual sources credit suppliedWater through the same tank transfer; no finite inventory is debited.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Intake and pump sequence"
+        },
+        {
+          "kind": "p",
+          "text": "The proposed states are Idle, IntakePlaced, Primed, Pumping, Full and Interrupted. The player docks the tool to the creek station, then snaps the intake into the marked shallow water socket. IntakePlaced confirms physical contact with a valid source; Primed requires the attachment to be connected and the tool to be owned. A readable hose path links source, pump and tank. Decorative water outside that socket cannot provide an invisible refill."
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-07 assigns the Refill Pump to supply mode only after docking and priming succeed. Pinch the broad pump handle, pull along its rail, and return to the start detent. STARTING TARGET: 8 cm outward travel followed by a return within 2 cm of the starting detent transfers 12 water units, clamped to remaining capacity. Partial travel creates feedback but no partial reward. Track the complete stroke as one operation; threshold jitter and repeated callbacks cannot count extra strokes. A supported dock permits the same sequence with one hand."
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-08 gives the refill system an exclusive tool lock. Entering supply mode cancels weapon charge. Pump motion cannot call PrimeCannon, and releasing the refill handle cannot launch a water bomb. Exiting supply mode clears stroke progress and requires open hand rearming before firing. The cannon pump remains visually and logically distinct, even if both use rail motion."
+        },
+        {
+          "kind": "h2",
+          "text": "Failure and recovery"
+        },
+        {
+          "kind": "p",
+          "text": "Lifting the intake out of its socket, losing tracking, undocking, or entering a menu moves to Interrupted, with no transfer for an unfinished stroke. Retain previously transferred water. Reconnecting restores Primed with a fresh stroke; there is no automatic refill while idle. Full stops transfer and signals completion without requiring a final physical stroke. Sector changes and upgrades preserve stored water; new expeditions start full. Upgrades increase capacity without providing water."
+        },
+        {
+          "kind": "p",
+          "text": "GD-WATER-09 forbids a dry tank soft lock. Every active sector has a reachable free supply. Assisted refill uses the same transaction and duration, pausing hazard clocks only; it never overrides TrackingPaused, focus loss or Repositioning, which forbid all transfers. Require valid tracking and a deliberate confirmation. Record assisted use without a progression penalty. Test empty tools, interrupted strokes, nearly full tanks and both pump types together."
+        }
+      ]
+    },
+    {
+      "title": "Fire simulation and safe search windows",
+      "intro": "GD-FIRE-01 preserves a readable lightweight simulation instead of claiming full fluid or combustion physics. CURRENT v0.1 stores heat, wetness and fuel per tree, uses ballistic water packets, and records Safe, Burning, Saved or Burnt. Saved trees currently never reignite. Reignition and Clear Patch search below are proposed v0.2 rules.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Heat wetness and propagation"
+        },
+        {
+          "kind": "p",
+          "text": "Use Healthy, Burning, Extinguished and Charred as proposed fire states, with Wetness remaining an independent value. A water packet affects the first target or ground it physically reaches; visual splashes must not apply damage again. Continuous foam protects nearby fuel through wetness, pulse shots reward precise arrivals, a fan distributes coverage, and cannon impacts apply a bounded area pulse. Tool switching preserves water already in flight and its original damage, radius and delivery snapshot."
+        },
+        {
+          "kind": "p",
+          "text": "CURRENT v0.1 burns fuel at 0.8 plus 0.15 times the zero based stage per second. Wetness decays at 0.7 per second. Each spread interval is 10 minus stage seconds, igniting at most one eligible neighbor within 1.7 forest units and below 0.2 wetness. These are baseline values, not validated v0.2 balance. GD-FIRE-02 keeps deterministic propagation and excludes Charred targets. A proposed Extinguished target may reignite only during Active when still fueled, dry and exposed to a burning neighbor; reignition never resets its reward eligibility. Extinguish at zero heat; exhausted fuel becomes Charred. STARTING TARGET: reignition restores 100 heat but never fuel."
+        },
+        {
+          "kind": "h2",
+          "text": "Containment contract"
+        },
+        {
+          "kind": "p",
+          "text": "GD-FIRE-03 requires no burning targets, no pending ignition event, and a stable verification window before Contained. STARTING TARGET: use a two second window with no new ignition. Counting only the visible flame particles is insufficient. Transition cancels firing, charge and damaging projectiles, stops water tower activity, and marks the local Clear Patch safe before exposing pickups."
+        },
+        {
+          "kind": "p",
+          "text": "GD-FIRE-04 makes SearchSafe an unlimited search window for the active tabletop sector. Heat, fuel loss, wetness decay, propagation and cabin damage stop together. Clearing a sector cannot be undone by a delayed callback or an unseen adjacent sector. Only an explicit Next starts a new fire simulation, with visible preparation time."
+        },
+        {
+          "kind": "h2",
+          "text": "Acceptance and failure"
+        },
+        {
+          "kind": "p",
+          "text": "GD-FIRE-05 checks last flame extinction by direct water and by a tower, simultaneous burn limit failure, and a delayed projectile crossing the transition. Failure takes precedence if the burn limit was already reached. Multiple extinguishes in one splash pay each eligible tree once. A reignited tree can contribute to suppression feedback but not another coin reward. Tracking suspension cannot advance containment verification or secretly consume the safe window."
+        }
+      ]
+    },
+    {
+      "title": "Search rewards and animal rescue",
+      "intro": "GD-LOOT-01 makes a safe patch an optional inspection task. CURRENT v0.1 has no physical drops, animal carrying or refuge system. Proposed v0.2 finds are deterministic; searching and rescue must never gate essential progression.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Reveal claim and recover"
+        },
+        {
+          "kind": "p",
+          "text": "Create a sector loot manifest on first entry with stable entity IDs and a retained seed. Each find follows Hidden, Revealed, Held and Claimed. SearchSafe highlights search sites; items stay Hidden until inspected. Coins, Parts and optional modification blueprints are distinct rewards. A free hand pinches a revealed find and places it in the collection pouch. Accepted deposit marks Claimed and registers pending value; holding pays nothing."
+        },
+        {
+          "kind": "p",
+          "text": "GD-SEARCH-01 offers two inspection actions. Lift a marked loose branch into its nearby rest socket, or pinch a crate lid and rotate it open. STARTING TARGET: 5 cm branch travel or a 45 degree lid opening confirms inspection and emits LootRevealed once. Tracking loss restores the prop safely; a confirmed reveal persists. Closing and reopening cannot reroll or respawn loot. Use broad grip proxies and an accessible Inspect action with the same state checks."
+        },
+        {
+          "kind": "p",
+          "text": "GD-LOOT-02 uses transactionId formed from expeditionId, sectorId, entityId and rewardKind. Record the claim and pending reward atomically; duplicate deposit events become no operations. Attempt IDs reject stale events but do not create fresh reward identities. Retreat restores the entry checkpoint and clears this attempt's pending claims; committed history remains. A dropped or occluded held item returns to its safe anchor, while a missing anchor routes it to the visible recovery tray."
+        },
+        {
+          "kind": "h2",
+          "text": "Rescue behavior"
+        },
+        {
+          "kind": "p",
+          "text": "GD-RESCUE-01 uses Sheltered, Available, Carried, Rescued and AutoEvacuated states. During Active, animals remain sheltered and signal their location without injury animation. SearchSafe makes them Available. A free hand offers a broad pickup target; a soft carrier cue replaces squeezing. Carry the animal to the marked Refuge and release inside its acceptance volume. Accepted deposit records Rescued and pending cash under the same transaction contract. STARTING TARGET: award 25 coins per delivered animal, with at most one animal in sectors three and four, and two in sector five; none in the first two."
+        },
+        {
+          "kind": "p",
+          "text": "GD-RESCUE-02 returns interrupted or misplaced animals to the nearest valid safe anchor. Never simulate a lethal fall, fire damage, or repeated distressed cries. If recovery cannot produce a reachable anchor, automatically evacuate the animal without a player rescue bonus. Leaving a sector also auto evacuates remaining animals. Animal collection is optional, never a gate for containment, Next, or essential equipment."
+        },
+        {
+          "kind": "h2",
+          "text": "Acceptance"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "GD-LOOT-03: repeated deposits, save reload, retreat retry, and two hands touching one object produce at most one committed reward.",
+            "GD-RESCUE-03: one hand play, tracking loss while carrying, invalid refuge placement and missing navigation data all recover without restarting.",
+            "Unclaimed finds remain identifiable during SearchSafe; departure reports their count. Optional rescue cash cannot gate essential equipment."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Economy and equipment progression",
+      "intro": "GD-ECON-01 keeps core tools affordable through normal suppression. CURRENT prices come from v0.1. Proposed figures are STARTING TARGET values; rescue cash uses the shared pending ledger.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Item",
+            "CURRENT price",
+            "CURRENT unlock"
+          ],
+          "rows": [
+            [
+              "Foam extinguisher",
+              "Free",
+              "Expedition start"
+            ],
+            [
+              "Pulse pistol",
+              "100 coins",
+              "Clear incident 1"
+            ],
+            [
+              "Rain fan",
+              "175 coins",
+              "Clear incident 2"
+            ],
+            [
+              "Pressure cannon",
+              "250 coins",
+              "Clear incident 3"
+            ],
+            [
+              "Per tool tuning levels",
+              "75 then 200 then 400 then 700 coins",
+              "Owned tool and supply phase"
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "CURRENT extinguishes award 25 coins; completion adds 25 multiplied by the one based incident index, and each surviving cabin adds 50. CURRENT tuning refills its tool. v0.2 changes this: upgrades increase capacity but preserve the amount already stored. Switching tools, previewing gear, closing the shop, or changing sectors also provides no water."
+        },
+        {
+          "kind": "h2",
+          "text": "Pending earnings and optional salvage"
+        },
+        {
+          "kind": "p",
+          "text": "GD-ECON-02 proposes pending fire and search earnings during an attempt, atomically committed at settlement. CURRENT earnings are immediate, so migration requires an explicit ledger change. STARTING TARGET: optional coin salvage contributes at most 10 coins per sector through two five coin pickups. Parts and blueprints cannot be sold. Proposed animal delivery awards 25 coins, capped by the authored animal count. STARTING TARGET: duplicate blueprints become one Part, recorded once. No repeat conversion, rerolled manifest or reignition can create additional cash."
+        },
+        {
+          "kind": "h2",
+          "text": "One sector budget example"
+        },
+        {
+          "kind": "p",
+          "text": "STARTING TARGET example: sector one yields 100 base coins plus 10 optional salvage; buying the 100 coin pistol leaves 10. Sector two's five initial fires earn 125, completion adds 50, and both salvage pickups add 10. Settlement yields 195; buying the 175 coin rain fan leaves 20. Skipping sector two salvage still leaves 185 before purchase, so searching never gates the next tool. Extra spread fires may increase income; include them in telemetry."
+        },
+        {
+          "kind": "p",
+          "text": "GD-ECON-03 makes purchases atomic: verify ownership, unlock and balance before debiting once. Exiting an unowned preview restores an owned selection. GD-ECON-04 acceptance checks budget arithmetic, insufficient funds, repeated purchases, duplicate claims and retry restoration. Expensive tuning is optional, not required during the first expedition."
+        }
+      ]
+    },
+    {
+      "title": "Sector teaching plan and first vertical slice",
+      "intro": "GD-SECTOR-01 gives five authored stages distinct lessons. These proposed v0.2 sectors are design targets, not shipped content. All retain one tabletop footprint and an explicit Next transition under GD-LOOP-02.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Sector",
+            "Primary lesson",
+            "Visible completion evidence"
+          ],
+          "rows": [
+            [
+              "1 Trailhead",
+              "Take foam tool, suppress, use hydrant, inspect a safe patch",
+              "Dry tool refilled and first coin deposited"
+            ],
+            [
+              "2 Creek Grove",
+              "Dock intake and complete refill pump strokes; choose pulse precision",
+              "Creek supply used without charging a weapon"
+            ],
+            [
+              "3 Ranger Shelter",
+              "Prioritize cabin threats, then carry an animal to Refuge",
+              "Cabin result and optional rescue credit"
+            ],
+            [
+              "4 Split Front",
+              "Activate a tower, use wide spray, collect a modification find",
+              "Different equipment choices solve separate fire pockets"
+            ],
+            [
+              "5 Deep Canopy",
+              "Combine cannon bursts, supply planning and optional search",
+              "Forest contained and expedition rewards settled once"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Smallest complete implementation"
+        },
+        {
+          "kind": "p",
+          "text": "GD-SLICE-01 builds Trailhead first: stable placement, one fire cluster, foam tool, fixed hydrant, SearchSafe, coin find, collection pouch, settlement and next sector preview. Retain the existing camp and hand interactions. Random loot, animals, creek supply, branching maps and crafting follow only after the complete loop works without developer assistance."
+        },
+        {
+          "kind": "p",
+          "text": "GD-SECTOR-02 teaches creek pumping during Deploying, before fire clocks start. Practice uses actual tank accounting and earns no currency; Ready starts Active. GD-SECTOR-03 adds animals after loot recovery works. GD-SECTOR-04 demonstrates tool advantages in later sectors. GD-SECTOR-05 permits skipping search while preserving a viable shop route."
+        },
+        {
+          "kind": "h2",
+          "text": "Playtest hypotheses and gates"
+        },
+        {
+          "kind": "p",
+          "text": "GD-TEST-01 asks whether players recognize a refill opportunity before exhausting patience, understand why the fire is safe to search, and voluntarily inspect the cleared patch. STARTING TARGET: four of five first time testers complete Trailhead within ten minutes without verbal instruction. Record refill retries, unintended shots, unclaimed finds, hand rest breaks and requests for help rather than relying on a fun rating alone."
+        },
+        {
+          "kind": "p",
+          "text": "Acceptance blocks expansion if any tester encounters an unrecoverable dry tank, offscreen menu, lost carried object, duplicate reward, or progress requiring an animal rescue. Repeat the failed scenario after correction. A successful slice supports continuing development; it does not establish long term progression balance or final Quest performance."
+        }
+      ]
+    }
+  ]
+}

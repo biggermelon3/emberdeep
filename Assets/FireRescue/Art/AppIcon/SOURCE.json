@@ -1,0 +1,19 @@
+{
+  "title": "Emberdeep launcher icon",
+  "createdDate": "2026-11-05",
+  "generator": "OpenAI built-in image_gen tool",
+  "mode": "New original image; no reference images",
+  "sourceFile": "Emberdeep-Icon-Source.png",
+  "sourcePixels": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "4384b3e790944a5fba43adf493971c08dbece39b3810dd35fc50e32ecbafb7cb",
+  "originalGeneratedFile": "C:/Users/ruizh/.codex/generated_images/01a180a5-e286-7930-acd3-3b93b3cf7d15/exec-e6c23db7-7786-44e1-8b74-48e549160d23.png",
+  "prompt": "Use case: logo-brand. Asset type: original Emberdeep Android VR game launcher icon, square 1024 by 1024 pixels. Primary request: a bold, premium stylized emblem for a miniature forest firefighting game. A sculpted bright cyan water curl wraps around and quenches one warm orange flame; a simple forest pine silhouette is integrated in the central negative space. Deep dark forest green background fills the full square. Clean chunky shapes, slight polished toy-like dimensional shading, crisp silhouette, strong orange/cyan contrast. All essential artwork stays inside the central 60 percent of the image, with generous dark background around it for Android circular and rounded-square adaptive masking. The emblem must read at 48 pixels. No words, letters, numbers, small decorative objects, border, watermark, weapons, existing brand marks, or busy forest scenery. No transparent background. Exactly one finished icon, not a sheet of variants.",
+  "import": "Original output is preserved unchanged at 1254 square. FireRescueBuilder imports it at maxTextureSize 1024, NPOT ToNearest, uncompressed sRGB, no mipmaps, bilinear/clamp. Unity generates its metadata and required Android icon sizes.",
+  "adaptive": "Foreground is the full opaque illustration with central safe composition. A plain dark-green RGB backing layer is generated with Unity Texture2D/EncodeToPNG at build preparation; there is no alpha-cutout/parallax claim.",
+  "buildScope": "Only BuildShowcaseQuest and BuildShowcasePico temporarily apply legacy, round, and adaptive Android slots. All supported Android icon kinds and their layer arrays are captured and restored in finally. Shared global default icons are not changed.",
+  "provenance": "Generated for this project without third-party reference imagery or requested brand imitation. No third-party asset license is asserted. Retain this source and prompt for handoff.",
+  "verification": "Visual source inspected. Unity import, APK resource inspection, launcher-mask review on Quest 3 and PICO 4 remain build/device validation tasks."
+}

@@ -1,0 +1,1182 @@
+{
+    "status":  "completed",
+    "duration":  2.2,
+    "summary":  {
+                    "total":  167,
+                    "passed":  167,
+                    "failed":  0,
+                    "skipped":  0,
+                    "inconclusive":  0
+                },
+    "results":  [
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepArtV2Tests.AuthoredKitHasRequiredAssetsAndBoundedUniqueGeometry",
+                        "Status":  "Passed",
+                        "Duration":  0.0035121,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepArtV2Tests.TerrainImportKeepsFrontAndCreekOnCorrectSidesOfPlayArea",
+                        "Status":  "Passed",
+                        "Duration":  0.0013257,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.AcquiringTargetUnderHeldPinchRequiresOpeningBeforeActivation",
+                        "Status":  "Passed",
+                        "Duration":  0.0000966,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.ChangingOrJitteringTargetDoesNotTransferArmedPinch",
+                        "Status":  "Passed",
+                        "Duration":  0.0000946,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.DelayedFrameAndInvalidDistanceCannotArmAnActivation",
+                        "Status":  "Passed",
+                        "Duration":  0.0000589,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.EitherTrackedHandCanActivateAndHeldPinchDoesNotRepeat(True)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001279,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.EitherTrackedHandCanActivateAndHeldPinchDoesNotRepeat(False)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001015,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.LostHandCannotReactivateUntilAValidOpening(True)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001125,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.LostHandCannotReactivateUntilAValidOpening(False)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000588,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.ModalResetRequiresFreshOpeningEvenWhenTargetIdIsReused",
+                        "Status":  "Passed",
+                        "Duration":  0.0001542,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.NegativeUnityInstanceIdIsAValidTarget",
+                        "Status":  "Passed",
+                        "Duration":  0.0000845,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.NoGazeOrUnavailableTargetCannotActivate",
+                        "Status":  "Passed",
+                        "Duration":  0.0000595,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.PinchBeforeGazeDwellDoesNotBecomeAnActivationWhenHeld",
+                        "Status":  "Passed",
+                        "Duration":  0.0000705,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGazePinchTests.SimultaneousAndFollowingHandPinchesAreConsumedAcrossPages",
+                        "Status":  "Passed",
+                        "Duration":  0.0000888,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.FistRequiresObservedOpenHandAndStableClosure",
+                        "Status":  "Passed",
+                        "Duration":  0.000133,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.HysteresisKeepsGripButReleaseNeedsFreshOpenDwell",
+                        "Status":  "Passed",
+                        "Duration":  0.0000682,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.InvalidStrengthRequiresOpenAfterRecovery(float.NaN)",
+                        "Status":  "Passed",
+                        "Duration":  0.000095,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.InvalidStrengthRequiresOpenAfterRecovery(float.PositiveInfinity)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000404,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.InvalidStrengthRequiresOpenAfterRecovery(-0.1f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000347,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.InvalidStrengthRequiresOpenAfterRecovery(1.1f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000899,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.SharedStrokeNeverCompletesFromReturnOnlyOrPartialCycles",
+                        "Status":  "Passed",
+                        "Duration":  0.000062,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.ThresholdJitterCannotAccumulateCloseDwell",
+                        "Status":  "Passed",
+                        "Duration":  0.0000436,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepGripGestureTests.TrackingLossAndLongFramesCannotCreateFreshGrip",
+                        "Status":  "Passed",
+                        "Duration":  0.0001066,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandOcclusionTests.ClearingDisablingAndDestroyingSolidRestoresHandPixels",
+                        "Status":  "Passed",
+                        "Duration":  0.001332,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandOcclusionTests.InvalidVolumeClearsPreviousSlotWithoutErasingOtherSolid",
+                        "Status":  "Passed",
+                        "Duration":  0.000488,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandOcclusionTests.RotatedScaledSolidClipsOnlyItsInteriorAndDoesNotMoveTracking",
+                        "Status":  "Passed",
+                        "Duration":  0.0008107,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.BothHandsCanPointAtDifferentButtonsAndClickTheirOwnTarget",
+                        "Status":  "Passed",
+                        "Duration":  0.0014399,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.ClosingPinchRetainsSettledButtonAcrossSmallDriftWithoutSelectingItsNeighbor",
+                        "Status":  "Passed",
+                        "Duration":  0.0005742,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.ExistingSupplyOwnerCanRestrictWhichButtonsReceiveAnyHandInput",
+                        "Status":  "Passed",
+                        "Duration":  0.0004106,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.InvalidPointerPoseCancelsRatherThanReusingPreviousAim",
+                        "Status":  "Passed",
+                        "Duration":  0.000391,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.LargePinchMovementCannotTransferAPreparedClickToAnotherButton",
+                        "Status":  "Passed",
+                        "Duration":  0.0003899,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.OffscreenOrBehindCameraButtonsCannotOwnInputOrShowRays(2.0f,0.0f,1.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0008045,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.OffscreenOrBehindCameraButtonsCannotOwnInputOrShowRays(0.0f,0.0f,-1.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0004786,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.OnlyTheHandPointingAtATargetMayClickIt",
+                        "Status":  "Passed",
+                        "Duration":  0.0003924,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.OwnershipLossAndNonfiniteSamplesRequireFreshOpening",
+                        "Status":  "Passed",
+                        "Duration":  0.0009334,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.RayIsVisibleOnlyOverAnEligibleTargetAndHidesImmediatelyOnExit",
+                        "Status":  "Passed",
+                        "Duration":  0.0004082,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.SimultaneousPinchesProduceOneActionAndCannotClickThroughNextPage",
+                        "Status":  "Passed",
+                        "Duration":  0.0005703,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.SystemPointerPoseRemainsAuthoritativeThroughPinchAndWristAimChanges",
+                        "Status":  "Passed",
+                        "Duration":  0.0004202,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.TargetLeavingTheViewCancelsPreparedPinchAndCannotResumeHeld",
+                        "Status":  "Passed",
+                        "Duration":  0.0004892,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHandRayTests.TrackingRecoveryWithClosedHandHasNoStaleRay",
+                        "Status":  "Passed",
+                        "Duration":  0.0003271,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.DeviceOriginZeroIsLegitimateWhenWorldPoseAndTrackingAreValid",
+                        "Status":  "Passed",
+                        "Duration":  0.000108,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.EachFrameIsIndependentAndRecoveryDoesNotNeedAnOriginEvent",
+                        "Status":  "Passed",
+                        "Duration":  0.0000393,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.FloorOriginZeroCannotBeMaskedByPrefabHeightOffset",
+                        "Status":  "Passed",
+                        "Duration":  0.0000401,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.InvalidWorldOrFloorDataRejectsEvenWithValidTracking(0)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001251,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.InvalidWorldOrFloorDataRejectsEvenWithValidTracking(1)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000493,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.InvalidWorldOrFloorDataRejectsEvenWithValidTracking(2)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000385,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.InvalidWorldOrFloorDataRejectsEvenWithValidTracking(3)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000425,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.InvalidWorldOrFloorDataRejectsEvenWithValidTracking(4)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000395,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.InvalidWorldOrFloorDataRejectsEvenWithValidTracking(5)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000342,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ReadableIncompleteTrackingStateRejectsPose(None)",
+                        "Status":  "Passed",
+                        "Duration":  0.0002129,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ReadableIncompleteTrackingStateRejectsPose(Position)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000826,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ReadableIncompleteTrackingStateRejectsPose(Rotation)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000739,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ReadableIncompleteTrackingStateRejectsPose(Velocity, AngularVelocity)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000582,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ReadableNonfiniteRawPoseRejectsEveryOrigin(Floor)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001156,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ReadableNonfiniteRawPoseRejectsEveryOrigin(Device)",
+                        "Status":  "Passed",
+                        "Duration":  0.000094,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.UnavailableOptionalSignalsDifferFromExplicitTrackingFailure",
+                        "Status":  "Passed",
+                        "Duration":  0.0000496,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.UnknownOriginNeverAcceptsAStableLookingWorldPose",
+                        "Status":  "Passed",
+                        "Duration":  0.0000375,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ValidFloorPosesAcceptStandingSeatedAndTranslatedRig(1.65f,0.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001679,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ValidFloorPosesAcceptStandingSeatedAndTranslatedRig(1.1f,0.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000451,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepHeadPoseGateTests.ValidFloorPosesAcceptStandingSeatedAndTranslatedRig(3.1f,2.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000338,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.AlternatingHandsCannotCombineDwellOrStealDock",
+                        "Status":  "Passed",
+                        "Duration":  0.0007591,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.AssistedModeRecordsOnceAndCannotOverrideTrackingLoss",
+                        "Status":  "Passed",
+                        "Duration":  0.0003496,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.AssistedSupplyPausesAllHazardClocksButNormalSupplyDoesNot",
+                        "Status":  "Passed",
+                        "Duration":  0.0001466,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.CannonCapsChargeToAvailableWaterWithoutSpendingOnCancellation(7.5f,False)",
+                        "Status":  "Passed",
+                        "Duration":  0.0003584,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.CannonCapsChargeToAvailableWaterWithoutSpendingOnCancellation(8.0f,True)",
+                        "Status":  "Passed",
+                        "Duration":  0.000114,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.CannonCapsChargeToAvailableWaterWithoutSpendingOnCancellation(9.0f,True)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001033,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.CannonCapsChargeToAvailableWaterWithoutSpendingOnCancellation(18.0f,True)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000987,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.CreekLastStrokeCreditsOnlyMissingWater",
+                        "Status":  "Passed",
+                        "Duration":  0.0000643,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.CreekNeedsHomeOutAndReturnAndJitterCannotDuplicate",
+                        "Status":  "Passed",
+                        "Duration":  0.0000949,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.DisconnectAndTrackingLossRetainPartialWaterButNeverResumeFlow",
+                        "Status":  "Passed",
+                        "Duration":  0.0000748,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.DockBlocksWeaponsAndRequiresReleaseAfterUnlock",
+                        "Status":  "Passed",
+                        "Duration":  0.0000744,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.DockNeedsContinuousAlignedDwellAndDoesNotGrantWater",
+                        "Status":  "Passed",
+                        "Duration":  0.0000657,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.DryTankNeverRegeneratesDuringFightOrClearOrNext",
+                        "Status":  "Passed",
+                        "Duration":  0.0000791,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.HydrantTransferClampsToCapacityAndCountersAgree",
+                        "Status":  "Passed",
+                        "Duration":  0.0001318,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InterruptedStrokeCannotBeBankedOnReconnect",
+                        "Status":  "Passed",
+                        "Duration":  0.0000677,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InvalidDockCannotOwnOrTransfer(float.NaN,0)",
+                        "Status":  "Passed",
+                        "Duration":  0.0002467,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InvalidDockCannotOwnOrTransfer(0.01f,float.PositiveInfinity)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001458,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InvalidDockCannotOwnOrTransfer(-0.01f,0)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000587,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InvalidDockCannotOwnOrTransfer(0.09f,0)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000652,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InvalidDockCannotOwnOrTransfer(0.01f,36)",
+                        "Status":  "Passed",
+                        "Duration":  0.000055,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.InvalidTimeNeverTransfersAndPauseDoesNotCatchUp",
+                        "Status":  "Passed",
+                        "Duration":  0.0001152,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.NewExpeditionSuppliesOnlyStarterTank",
+                        "Status":  "Passed",
+                        "Duration":  0.000054,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.RetryCannotReplaySettledSectorForAnotherReward",
+                        "Status":  "Passed",
+                        "Duration":  0.0000383,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.RetryRestoresEntryWaterAndRemovesAttemptIncomeAndSupply",
+                        "Status":  "Passed",
+                        "Duration":  0.0000859,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.SignedValveDetentsAndReleaseDiscardPartialTurn",
+                        "Status":  "Passed",
+                        "Duration":  0.0000673,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.SourceKindsAreExclusiveAndUnprimedCreekCannotPay",
+                        "Status":  "Passed",
+                        "Duration":  0.0000617,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.SupplyDockCancelsExistingCannonChargeAndCreekPumpCannotPrimeWeapon",
+                        "Status":  "Passed",
+                        "Duration":  0.0000813,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepManualWaterTests.UpgradeAddsCapacityWithoutWaterOrSupplyCredit",
+                        "Status":  "Passed",
+                        "Duration":  0.0000557,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.FloorOriginChangeRestartsAcquisition",
+                        "Status":  "Passed",
+                        "Duration":  0.0001253,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.HitchAndSmallCumulativeDriftDoNotSatisfyStability",
+                        "Status":  "Passed",
+                        "Duration":  0.0000406,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(False,0)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001989,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(True,1)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000719,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(True,2)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000636,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(True,3)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000541,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(True,4)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000498,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(True,5)",
+                        "Status":  "Passed",
+                        "Duration":  0.00005,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.InvalidInputDiscardsPreviousStableObservations(True,6)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000492,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.MovingOutsideStableWindowRestartsAcquisition(0.06f,0.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.000134,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.MovingOutsideStableWindowRestartsAcquisition(0.0f,6.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000514,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.RecenterRequiresANewStableWindowAndUsesTheNewHeading",
+                        "Status":  "Passed",
+                        "Duration":  0.0000702,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.StablePosePlacesExactlyAtSeatedOrStandingEyeHeight(1.65f,0.0f,0.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.000217,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.StablePosePlacesExactlyAtSeatedOrStandingEyeHeight(1.1f,0.0f,90.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000735,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.StablePosePlacesExactlyAtSeatedOrStandingEyeHeight(3.1f,2.0f,-90.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000647,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.StartupAtFloorNeverFallsBackEvenWhenTrackingClaimsReady",
+                        "Status":  "Passed",
+                        "Duration":  0.0002222,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepMenuPoseTests.VerticalLookPreservesLastHeadingButCannotInventInitialHeading",
+                        "Status":  "Passed",
+                        "Duration":  0.0000607,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepNaturalPumpTutorialTests.ConnectedLeverUsesWrapGraspWhileHeldToolAndCreekKeepTheirOwnInstructions",
+                        "Status":  "Passed",
+                        "Duration":  0.0003716,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepNaturalPumpTutorialTests.NoToolOffersNaturalGraspTrialAndKeepsEmptyReturnSeparateFromTankState",
+                        "Status":  "Passed",
+                        "Duration":  0.0000923,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillTutorialTests.CircularCouplingIgnoresRollButRejectsWrongFacingAxis",
+                        "Status":  "Passed",
+                        "Duration":  0.0001989,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillTutorialTests.CreekTutorialSeparatesIntakePlacementFromCompletedPumpStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.0001191,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillTutorialTests.TutorialDoesNotOverrideOtherSourceOrTrackingPause",
+                        "Status":  "Passed",
+                        "Duration":  0.0001174,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepRefillTutorialTests.TutorialReflectsAcceptedHydrantStatesWithoutSupplyingWater",
+                        "Status":  "Passed",
+                        "Duration":  0.0001007,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.ButtonNeedsRearmAndEachNewPressTogglesOnce",
+                        "Status":  "Passed",
+                        "Duration":  0.000223,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.FinalLeverStrokeCreditsOnlyRemainingCapacity",
+                        "Status":  "Passed",
+                        "Duration":  0.000087,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.InvalidLeverSampleCancelsPendingCredit(float.NaN)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000893,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.InvalidLeverSampleCancelsPendingCredit(float.PositiveInfinity)",
+                        "Status":  "Passed",
+                        "Duration":  0.000055,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.InvalidLeverSampleCancelsPendingCredit(0.31f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000599,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.LeverRequiresCompleteDownAndReturnWithoutDuplicateCredits",
+                        "Status":  "Passed",
+                        "Duration":  0.0001468,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.ReleasingOrLosingTrackingCancelsUnfinishedLeverStroke",
+                        "Status":  "Passed",
+                        "Duration":  0.000092,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.RetryRestoresPurchasedAssetsTierAndEntryEconomyTogether",
+                        "Status":  "Passed",
+                        "Duration":  0.0001137,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.RotaryRequiresSignedDisplacementAndRejectsOtherTierControls",
+                        "Status":  "Passed",
+                        "Duration":  0.0000788,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.StarterWellHasNoValveButtonOrIdleWaterPath",
+                        "Status":  "Passed",
+                        "Duration":  0.0001325,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.StationPurchasesCostExactlyAndNeverChangeAnyTank",
+                        "Status":  "Passed",
+                        "Duration":  0.0000773,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTierTests.TrackingLossDisconnectsButtonFlowWithoutExtraWater",
+                        "Status":  "Passed",
+                        "Duration":  0.0001255,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTutorialTests.LeverTutorialKeepsReturnInstructionUntilAcceptedStrokeCompletes",
+                        "Status":  "Passed",
+                        "Duration":  0.0001485,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.EmberdeepStationTutorialTests.RotaryAndButtonTutorialsDescribeDifferentAcceptedActions",
+                        "Status":  "Passed",
+                        "Duration":  0.0001264,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.FoamTemporarilyStopsSpreadAndRestartClearsInventory",
+                        "Status":  "Passed",
+                        "Duration":  0.0002003,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.NaturalRoundRewardsPayForTheEntireEquipmentRoute",
+                        "Status":  "Passed",
+                        "Duration":  0.0000667,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.PhysicalPickupRequiresFreshPinchAndReturnRequiresMovingAway(0)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001389,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.PhysicalPickupRequiresFreshPinchAndReturnRequiresMovingAway(1)",
+                        "Status":  "Passed",
+                        "Duration":  0.0000511,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.PulseAndChargeHaveDifferentTriggerBehaviorAndCancellationNeverFires",
+                        "Status":  "Passed",
+                        "Duration":  0.0003163,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.ShopHasUnlocksAtomicCostsAndNoDuplicatePurchases",
+                        "Status":  "Passed",
+                        "Duration":  0.0000638,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireEquipmentTests.SwitchingPreservesTankAndTuningAndCancelsCharge",
+                        "Status":  "Passed",
+                        "Duration":  0.0001583,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FirePumpTests.IncidentCompletionCancelsArmedCannonAndRemainingRain",
+                        "Status":  "Passed",
+                        "Duration":  0.0001886,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FirePumpTests.InvalidPinchSampleCancelsPulledPumpRatherThanReleasing",
+                        "Status":  "Passed",
+                        "Duration":  0.0001222,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FirePumpTests.MissingHandAndSidewaysEscapeCancelWithoutFiring",
+                        "Status":  "Passed",
+                        "Duration":  0.0007945,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FirePumpTests.PullInToolSpaceAndReleaseReturnsOneChargedGesture",
+                        "Status":  "Passed",
+                        "Duration":  0.0000879,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.EmptyTankStaysEmptyUntilDeliberateHydrantRefill",
+                        "Status":  "Passed",
+                        "Duration":  0.0001432,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.ExtinguishingPaysExactlyOnce",
+                        "Status":  "Passed",
+                        "Duration":  0.0000751,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.FiveIncidentCampaignIsWinnableWithEarnedUpgrades",
+                        "Status":  "Passed",
+                        "Duration":  0.0010998,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.HandTrackingLossAndMenuRequireFreshOpenThenPinch",
+                        "Status":  "Passed",
+                        "Duration":  0.0000536,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.IdleFiresSpreadAndEventuallyLoseWithoutReward",
+                        "Status":  "Passed",
+                        "Duration":  0.0003866,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.MiniatureFitsTableAndHandAimExtinguishesAtEitherHeight(1.65f,0.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0054005,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.MiniatureFitsTableAndHandAimExtinguishesAtEitherHeight(1.15f,73.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0059008,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.MissingAndOutOfRangeSpraysConsumeWaterButDoNotDamage",
+                        "Status":  "Passed",
+                        "Duration":  0.0000874,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.RestartClearsProgressAndReentryCannotSkipAnActiveIncident",
+                        "Status":  "Passed",
+                        "Duration":  0.0000626,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireRunTests.UpgradeIsAtomicAndIncreasesAllNozzleStats",
+                        "Status":  "Passed",
+                        "Duration":  0.000114,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.CabinThreatCanBeCooledAndLostCabinCannotBeResurrected",
+                        "Status":  "Passed",
+                        "Duration":  0.0001667,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.ComboRewardsTimingWithoutInflatingCashAndResetsAfterThreeSeconds",
+                        "Status":  "Passed",
+                        "Duration":  0.000152,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.EveryIncidentAddsReadableTargetsWithoutBlockingTreeCenters",
+                        "Status":  "Passed",
+                        "Duration":  0.0010566,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.LateImperfectClearStillProgressesWithOneStar",
+                        "Status":  "Passed",
+                        "Duration":  0.0002237,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.PausedOrInvalidTimeCannotAdvanceTacticsAndInvalidHitsCannotEarnRewards",
+                        "Status":  "Passed",
+                        "Duration":  0.0000608,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.PhysicalCannonPumpNeedsTravelAndUsesNormalReleaseAndCancelRules",
+                        "Status":  "Passed",
+                        "Duration":  0.000171,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.ProtectedCabinPaysOnceAndDoesNotReplaceTreeRewards",
+                        "Status":  "Passed",
+                        "Duration":  0.0000655,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTacticsTests.TowerNeedsAFullDirectHitBudgetThenRainsOnceAndCannotChargeOtherTowers",
+                        "Status":  "Passed",
+                        "Duration":  0.0001586,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.CannonEmitsOnePhysicalWaterBombWithOneImpactAndFrozenShotParameters",
+                        "Status":  "Passed",
+                        "Duration":  0.0003017,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.DesktopMouseCanFirstHitEachTacticalTargetWithEveryUnlockedTool(1)",
+                        "Status":  "Passed",
+                        "Duration":  0.0003198,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.DesktopMouseCanFirstHitEachTacticalTargetWithEveryUnlockedTool(2)",
+                        "Status":  "Passed",
+                        "Duration":  0.0001952,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.DesktopMouseCanFirstHitEachTacticalTargetWithEveryUnlockedTool(3)",
+                        "Status":  "Passed",
+                        "Duration":  0.0003083,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.DesktopMouseCanFirstHitEachTacticalTargetWithEveryUnlockedTool(4)",
+                        "Status":  "Passed",
+                        "Duration":  0.0007012,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.EveryTacticalTargetHasAComfortableStandingOrSeatedHandTrajectory(1.65f,0.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0095159,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.FireTrajectoryTacticsTests.EveryTacticalTargetHasAComfortableStandingOrSeatedHandTrajectory(1.15f,73.0f)",
+                        "Status":  "Passed",
+                        "Duration":  0.0096364,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.WaterJetTests.ExpiredWaterCannotHitOutsideItsRange",
+                        "Status":  "Passed",
+                        "Duration":  0.0002821,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.WaterJetTests.FanReachesSeparateTreesAndInFlightWaterKeepsOriginalEquipmentStats",
+                        "Status":  "Passed",
+                        "Duration":  0.0003816,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.WaterJetTests.FireOnlyCoolsOnArrivalAndSteamStateDecaysAfterRelease",
+                        "Status":  "Passed",
+                        "Duration":  0.0002133,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.WaterJetTests.GravityBendsJetAndReleaseKeepsExistingWaterInFlight",
+                        "Status":  "Passed",
+                        "Duration":  0.0002033,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.WaterJetTests.PredictedImpactMatchesSweptCollisionAndDoesNotPierceFrontTree",
+                        "Status":  "Passed",
+                        "Duration":  0.0002112,
+                        "Message":  null,
+                        "StackTrace":  null
+                    },
+                    {
+                        "FullName":  "FireRescue.Tests.WaterJetTests.WholeCampaignCanBeExtinguishedWithArcsFromOneStandingPosition",
+                        "Status":  "Passed",
+                        "Duration":  0.3097922,
+                        "Message":  null,
+                        "StackTrace":  null
+                    }
+                ]
+}

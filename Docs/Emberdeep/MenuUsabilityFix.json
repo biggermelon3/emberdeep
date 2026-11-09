@@ -1,0 +1,163 @@
+{
+  "record_scope": "Historical 0.1.1 menu repair plus version-scoped later records. superseding_current is 0.2.3/code 6. Original front-placement confirmation remains narrow; historical reports do not verify current changes.",
+  "superseding_current": {
+    "date": "2026-11-08",
+    "candidate": "0.2.3 / Android code 6",
+    "status": "IMPLEMENTED_CANDIDATE; 142 EditMode and 40 PlayMode passed; Quest and PICO APKs built; worn-headset acceptance pending",
+    "interaction": [
+      "Use the shared system hand pointer through ReadInteractionAim, including the existing filtered PICO fallback; do not derive UI aim from curling index-tip geometry.",
+      "Show the cyan ray/cursor only over an eligible, visible UI target. Hide on target exit, tracking loss or invalid ownership; suppress duplicate native SDK ray visuals without disabling input interactors.",
+      "Only a fresh pinch from the pointing hand activates its settled target. One dispatch owns the pinch; a held pinch cannot click through a page or confirm another hand's target.",
+      "Preserve stable front eye-height placement, explicit recenter, sound setting, New Game/Continue and Quit confirmation. Head pose places menus but does not select buttons.",
+      "UI hover cancels weapon charge. Supply ownership restricts UI to explicit assistance. Tracking/focus/pause/page changes clear selection and require opening before a new pinch."
+    ],
+    "implementation": [
+      "Assets/FireRescue/Runtime/EmberdeepHandRay.cs",
+      "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+      "Assets/FireRescue/Runtime/EmberdeepHandVisuals.cs",
+      "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs",
+      "Assets/FireRescue/Resources/EmberdeepTrackedHand.shader",
+      "Assets/FireRescue/Runtime/EmberdeepCamp.cs"
+    ],
+    "acceptance": "Current 0.2.3 verification passed 142 EditMode and 40 PlayMode tests with zero failures under Logs/EmberdeepPolish/FinalVerification. Both complete left/right scene-wiring cases are included in the 40 passes. Quest and PICO APKs were built with version 0.2.3/code 6, zero errors and exactly the camp/fireground scene whitelist. Both builds restored all 28 audited configuration hashes; 77 verified source and scene files also remained unchanged. Quest 3 installation/version is verified, but STANDBY persisted and no app process was observed after wake/launch requests. Worn-headset acceptance remains pending.",
+    "regression_evidence": {
+      "EditMode": {
+        "status": "passed",
+        "passed": 142,
+        "failed": 0,
+        "skipped": 0,
+        "path": "Logs/EmberdeepPolish/FinalVerification/EditMode-results.json",
+        "scope": "Current 0.2.3 complete-suite verification. The two left/right scene-wiring cases are included in the 40 PlayMode passes; do not count them twice. Editor results do not establish headset usability or performance."
+      },
+      "PlayMode": {
+        "status": "passed",
+        "passed": 40,
+        "failed": 0,
+        "skipped": 0,
+        "path": "Logs/EmberdeepPolish/FinalVerification/PlayMode-results.json",
+        "scope": "Current 0.2.3 complete-suite verification. The two left/right scene-wiring cases are included in the 40 PlayMode passes; do not count them twice. Editor results do not establish headset usability or performance."
+      }
+    },
+    "build_evidence": "Logs/EmberdeepPolish/ReleaseEvidence.json",
+    "source": "InteractionPolish.json",
+    "references": [
+      "https://developers.meta.com/vr/design/indirect_interactions_bp/",
+      "https://developers.meta.com/horizon/documentation/unity/unity-isdk-ray-interaction"
+    ],
+    "sceneWiringTests": "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs",
+    "install_evidence": "Logs/EmberdeepPolish/Quest-install.json",
+    "device_checklist_zh": "Deliverables/Emberdeep/Emberdeep-0.2.3-Device-Checks.txt"
+  },
+  "release": "0.1.1",
+  "version_code": 2,
+  "date": "2026-11-05",
+  "scope": "Standalone Emberdeep camp menu and launcher icon",
+  "reported_problems": [
+    "Main menu appeared near the floor",
+    "Pinching did not activate menu buttons",
+    "No clear gaze feedback"
+  ],
+  "implemented": [
+    "Wait for valid headset tracking and a stable pose before revealing the world menu; do not place using a four-second timeout fallback.",
+    "Place the menu centre at the headset camera eye height, 1.05 metres forward along horizontal heading. Keep it anchored until explicit recenter, origin reset or focus/tracking recovery.",
+    "Validate actual tracking origin and raw floor pose so a prefab camera height offset cannot make the initial zero pose look valid.",
+    "Use head-directed gaze, immediate button tint and cyan outline, plus a cursor and hand-readiness instructions. Eye tracking is not required.",
+    "Activate with a fresh thumb/index pinch from either hand using the existing tracked-joint adapter and pinch hysteresis. A held pinch cannot activate newly gazed targets or click through a page transition.",
+    "Main menu offers New Game, Settings and Quit; Continue is shown when the in-memory expedition has started. New Game enters the fireground directly.",
+    "Settings offers persistent sound on/off and menu recenter. Quit opens a Cancel or Yes Quit confirmation and explains current lack of persistent expedition saves.",
+    "Standalone Quest and PICO builds use the custom Emberdeep icon and version code 2. Build-time Android icon overrides are restored after building."
+  ],
+  "design_decision": "For the repaired camp menu, use a 0.35-second stable-pose acquisition rather than the earlier proposed 0.5-second plus two-second countdown. This supersedes that proposal for the camp menu only. Fireground placement and the broader proposed v0.2 gameplay remain separate work.",
+  "reuse": [
+    "MetaPlayerRig",
+    "MetaShadowPlayer.ReadHand",
+    "ShadowPinchGesture",
+    "WorkshopButton feedback and actions",
+    "Existing two-scene build whitelist"
+  ],
+  "build_delivery": {
+    "quest_apk": "Deliverables/Emberdeep/Emberdeep-Showcase.apk",
+    "pico_apk": "Deliverables/Emberdeep/Emberdeep-Showcase-Pico.apk",
+    "result": "Both release builds succeeded. APK signatures, hashes, version code, scene whitelist and extracted launcher icons verified. Original shared-project PlayerSettings and EditorBuildSettings restored byte-for-byte.",
+    "quest_device": "Historical build record: 0.1.1/code 2 installed on Quest 3; recorded launch remained in STANDBY. Subsequent user feedback confirms front menu position only; device identity and all-button hand acceptance are not supplied by that feedback.",
+    "pico_device": "PICO 4 package produced; no PICO device connected for runtime acceptance.",
+    "physical_acceptance_pending": [
+      "Cold-start seated and standing: menu at eye height in front",
+      "Gaze highlight and fresh left/right pinch activate each button",
+      "Held pinch does not click through Quit dialog",
+      "System recenter and sleep/resume reposition menu correctly",
+      "New Game enters firefighting and Confirm Quit exits"
+    ]
+  },
+  "regression_evidence": {
+    "edit_mode": "91 passed, 0 failed; Logs/EmberdeepMenuFix/EditMode-results.json",
+    "play_mode": "7 passed, 0 failed; Logs/EmberdeepMenuFix/PlayMode-results.json",
+    "editor_visuals": [
+      "Logs/Emberdeep-Menu-Main.png",
+      "Logs/Emberdeep-Menu-Hover.png",
+      "Logs/Emberdeep-Menu-Settings.png",
+      "Logs/Emberdeep-Menu-Quit.png"
+    ],
+    "limits": "Synthetic Editor gaze and joint tests validate menu logic, not headset hand tracking or subjective comfort. Build manifests and device evidence must be checked separately."
+  },
+  "user_followup": {
+    "date": "2026-11-06",
+    "confirmed": "The user reports that the menu appears in front.",
+    "not_confirmed": [
+      "All buttons",
+      "True hand-tracking interaction",
+      "Both devices",
+      "Seated and standing comfort",
+      "Performance"
+    ],
+    "scope": "Front position only. Preserve this narrow confirmation; do not infer a wider device sign-off."
+  },
+  "historical_iterations": [
+    {
+      "date": "2026-11-08",
+      "candidate": "0.2.1 / Android versionCode 4",
+      "status": "IMPLEMENTED_CANDIDATE: 129 EditMode and 30 PlayMode passed; APK audits tracked separately; physical acceptance pending",
+      "user_report": "The user reports that hand-tracked buttons remain unusable and explicitly requests index-finger ray pointing plus pinch click. This is a failed interaction acceptance report; it does not revoke the earlier front-position confirmation or establish a specific device identity.",
+      "interaction": [
+        "Camp, settings, quit confirmation, fireground HUD and gear shop share one index-ray UI adapter. The headset pose places the menu but does not select buttons.",
+        "Each tracked hand uses its own index knuckle-to-tip direction, visible thin cyan ray and cursor. Retain the last open index origin and direction in palm space while the finger curls to pinch; wrist rotation still aims the ray.",
+        "Only a new pinch from the hand pointing at a settled button may activate that button. Another hand cannot confirm its target. Simultaneous pinches select at most one action.",
+        "Reuse MetaShadowPlayer tracked joints, ShadowPinchGesture hysteresis and WorkshopButton actions. No parallel SDK UI dispatcher is added.",
+        "Tracking loss, invalid joints, focus/pause loss, page transitions and interaction ownership changes clear the pending gesture. Recovery requires opening the hand again.",
+        "Pointing at gameplay UI cancels weapon charge before activation. A supply-locked tool permits only REFILL ASSIST; accepted UI input is consumed before any refill gesture."
+      ],
+      "preserved": "Existing stable head-pose acquisition, eye-height front placement, explicit recenter, sound setting and deliberate quit confirmation.",
+      "implementation": [
+        "Assets/FireRescue/Runtime/EmberdeepHandRay.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs",
+        "Assets/FireRescue/Runtime/EmberdeepCamp.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "new_regressions": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepHandRayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepMenuPlayTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepHandRayGamePlayTests.cs"
+      ],
+      "acceptance": "Current Editor verification passed 129 EditMode and 30 PlayMode tests with zero failures. No headset is connected in this iteration. Synthetic tests cannot prove real hand tracking, button usability, comfort or PICO 4 performance; repeat the device checklist on the candidate APKs. Build audits are recorded separately in Logs/EmberdeepV2/ReleaseEvidence.json.",
+      "regression_evidence": {
+        "EditMode": {
+          "status": "passed",
+          "passed": 129,
+          "failed": 0,
+          "path": "Logs/EmberdeepV2/ReleaseVerification/EditMode-results.json",
+          "scope": "Current 0.2.1 candidate Editor verification. Synthetic interactions do not establish headset usability, comfort or performance."
+        },
+        "PlayMode": {
+          "status": "passed",
+          "passed": 30,
+          "failed": 0,
+          "path": "Logs/EmberdeepV2/ReleaseVerification/PlayMode-results.json",
+          "scope": "Current 0.2.1 candidate Editor verification. Synthetic interactions do not establish headset usability, comfort or performance."
+        }
+      },
+      "art_iteration_source": "ArtV2Iteration.json",
+      "build_evidence": "Logs/EmberdeepV2/ReleaseEvidence.json",
+      "historical_scope": "0.2.1/code 4 only; its current labels and test counts refer to that preserved historical record."
+    }
+  ]
+}

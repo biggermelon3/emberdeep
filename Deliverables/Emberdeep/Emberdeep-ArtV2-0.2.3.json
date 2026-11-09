@@ -1,0 +1,9 @@
+{
+  "file": "E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Deliverables\\Emberdeep\\Emberdeep-ArtV2-0.2.3.zip",
+  "files": 151,
+  "bytes": 8855975,
+  "sha256": "a1333968e41cefa3a71c74fba167b749f16e5bb61107bbe29a277bed1e0167dc",
+  "scope": "Separate art source and Unity assets for the existing Emberdeep project; not a standalone game project.",
+  "document_visual_qa": "Authoritative JSON included. Generated DOCX is excluded while its current visual review is unavailable.",
+  "capture_origin": "Concept is generated, preview is Blender; all Editor-named captures and Emberdeep-FirstResponse are Unity Editor evidence, not headset captures."
+}

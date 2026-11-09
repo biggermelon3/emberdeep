@@ -1,0 +1,104 @@
+{
+  "revision": "0.7",
+  "date": "2026-11-08",
+  "language": "English",
+  "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
+  "authoritative_sources": "The ordered JSON sections below are authoritative. Edit the source, regenerate DOCX, render and inspect all pages before delivery. Do not hand-edit generated DOCX without reconciling the source.",
+  "generator": "Tools/BuildEmberdeepDesignDocs.py",
+  "documents": [
+    {
+      "title": "Emberdeep Game Design and Development Specification",
+      "short_title": "Design and development",
+      "file": "Emberdeep-Design-and-Development.docx",
+      "sources": [
+        "DesignControl.json",
+        "GameplaySections.json",
+        "DirectorDetailSections.json",
+        "EngineeringSections.json",
+        "ImplementationStatus.json",
+        "InteractionPolish.json",
+        "HandVisualFix.json",
+        "InteractionStages.json",
+        "ContactGripIteration.json"
+      ]
+    },
+    {
+      "title": "Emberdeep Art V2 Delivery",
+      "short_title": "Art V2 delivery",
+      "file": "Emberdeep-Art-V2-Delivery.docx",
+      "sources": [
+        "ArtV2Iteration.json"
+      ]
+    },
+    {
+      "title": "Emberdeep Art Production Requirements",
+      "short_title": "Art production",
+      "file": "Emberdeep-Art-Production-Requirements.docx",
+      "sources": [
+        "ArtControl.json",
+        "ArtProductionSections.json",
+        "InteractionPolish.json",
+        "HandVisualFix.json",
+        "InteractionStages.json",
+        "ContactGripIteration.json"
+      ]
+    }
+  ],
+  "change_log": [
+    {
+      "revision": "0.2",
+      "date": "2026-11-04",
+      "decision": "Expand the showcase overview into implementation and art specifications. Make physical water collection, safe search, animal rescue and deeper sector progression the next development direction.",
+      "implementation_status": "Documentation only. No new runtime feature or APK is implied by this revision.",
+      "verification": "Baseline source and existing test reports inspected; new mechanics require future implementation and device acceptance."
+    },
+    {
+      "revision": "0.2.1",
+      "date": "2026-11-06",
+      "decision": "Implement M1 manual hydrant and creek supply, exclusive refill input, conserved tank amounts and sector-entry retry; retain the repaired camp menu and standalone route.",
+      "implementation_status": "0.2.0 / Android code 3 M1 candidate with clean Editor rule and interaction regressions. Headset usability and performance are not accepted. M2 search, animals, settlement and durable saves, and M3 sidegrades remain proposed.",
+      "verification": "Clean release verification: 119 EditMode and 17 PlayMode passed, zero failed, under Logs/EmberdeepM1/ReleaseVerification. APK status remains separately tracked in ImplementationStatus.json. Worn-headset checks are deferred by user availability; M1DeviceAcceptance.json is the handoff checklist. Word regenerated with structural content verification; new visual rendering remains blocked by unavailable bundled LibreOffice and stalled unlicensed Word export."
+    },
+    {
+      "revision": "0.3",
+      "date": "2026-11-08",
+      "decision": "Respond to user-reported unusable hand buttons with visible index-finger rays and same-hand fresh-pinch UI across camp, modals, HUD and shop. Deliver separate editable Blender Art V2 assets and bounded Unity rendering integration while preserving M1 manual supply and stable menu placement.",
+      "implementation_status": "0.2.1 / Android code 4 candidate. The historical positive device confirmation remains front placement only; no headset is connected this iteration. M2 search, animals, settlement and durable saves, and M3 progression remain proposed.",
+      "verification": "Current release verification passed 129 EditMode and 30 PlayMode tests with zero failures under Logs/EmberdeepV2/ReleaseVerification. APK scene/settings/hash audits are tracked separately in Logs/EmberdeepV2/ReleaseEvidence.json. All three DOCX regenerated; source-content and hash QA at Logs/EmberdeepV2/Docs/qa.json. Visual document QA remains unavailable: no bundled LibreOffice and historical native Word export stalled while unlicensed; no Word retry or old render is claimed as current evidence."
+    },
+    {
+      "revision": "0.4",
+      "date": "2026-11-08",
+      "decision": "Use system hand aim and contextual UI rays; add guided manual refill cues and 12-degree valve-tap tolerance; reuse car hand visuals with interior clipping and pinch-midpoint grip; restore the original soft flame contour.",
+      "implementation_status": "0.2.3 / Android code 6 implemented candidate. M2/M3 and durable saves remain proposed.",
+      "verification": "Current 0.2.3 verification passed 142 EditMode and 40 PlayMode tests with zero failures under Logs/EmberdeepPolish/FinalVerification. Both complete left/right scene-wiring cases are included in the 40 passes. Quest and PICO APKs were built with version 0.2.3/code 6, zero errors and exactly the camp/fireground scene whitelist. Both builds restored all 28 audited configuration hashes; 77 verified source and scene files also remained unchanged. Quest 3 installation/version is verified, but STANDBY persisted and no app process was observed after wake/launch requests. Worn-headset acceptance remains pending. Final Word regeneration and exact source-content checks passed; current rendering failed because soffice.exe is unavailable, so Word drafts have no visual layout approval."
+    },
+    {
+      "revision": "0.5",
+      "date": "2026-11-08",
+      "decision": "Correct live-hand selection and preserve SDK pose/visibility ownership after confirmed frozen-model device feedback.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE; 142 EditMode and 43 PlayMode passed; Quest/PICO APKs built and audited; Quest 0.2.4/code 7 installed; Quest hand-following confirmed by user; other device acceptance pending",
+      "verification": "Logs/EmberdeepHandFreeze/Verification; 142 EditMode and 43 PlayMode passed. User confirmed normal hand-model following after New Game on Quest 3 0.2.4 only; other checks pending."
+    },
+    {
+      "revision": "0.6",
+      "date": "2026-11-08",
+      "decision": "Freeze the last hand model when Quest palm system controls suppress app tracking. Show contextual full-hand action poses while retaining pinch input. Replace the initial hydrant with a hand-operated well lever; upgrades unlock a rotary hydrant and then one-press automatic filling.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE; 156 EditMode and 64 PlayMode passed; Quest/PICO APKs built and audited; Quest 0.2.5/code 8 installed; user confirmed system-menu hand hold/recovery and starter well refill on Quest 3; other device acceptance pending",
+      "verification": "Logs/EmberdeepInteractionStages/FinalVerification: 156 EditMode and 64 PlayMode passed. Both APKs audited for version, ARM64, signing, camp/fireground whitelist and restored settings. Editor injected action captures are not headset evidence. Exact DOCX source checks are tracked in Docs/qa.json; Word visual review remains pending renderer availability."
+    },
+    {
+      "revision": "0.7",
+      "date": "2026-11-08",
+      "decision": "Explicit user feedback supersedes 0.2.5 bounded wrist correction, pinch-operated starter lever and tool-required pump interaction. Other station tiers, creek and firearm input remain unchanged.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
+      "verification": "Current 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance."
+    }
+  ],
+  "implementation_status_source": "ImplementationStatus.json",
+  "device_acceptance_source": "M1DeviceAcceptance.json",
+  "art_iteration_source": "ArtV2Iteration.json",
+  "interaction_polish_source": "InteractionPolish.json",
+  "current_release_evidence": "Logs/EmberdeepContactGrip/ReleaseEvidence.json",
+  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.6-Device-Checks.txt"
+}

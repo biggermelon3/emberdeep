@@ -1,0 +1,638 @@
+{
+  "pages": [
+    {
+      "title": "Art Direction for a Miniature Forest",
+      "intro": "Create a tactile, optimistic tabletop forest with convincing water weight and clear rescue outcomes. The player is large relative to the landscape, while held tools remain comfortable real-size objects. This specification targets Unity 6000.3.21f1, URP 17.3.0, Android, PICO 4 and Quest 3. All v0.2 assets and interfaces below are production requirements, not claims that finished assets already exist.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Visual hierarchy and shape language"
+        },
+        {
+          "kind": "p",
+          "text": "Read the scene in this order: dangerous flame; current tool and its landing point; available water source; recoverable animal or salvage; decorative scenery. Use broad, rounded industrial shapes for equipment and faceted organic masses for the forest. Give every interactive silhouette a distinctive outline at arm's length. A hydrant needs a broad valve and recognizable docking throat; a refuge needs an open arch and animal emblem. Keep the active play surface approximately 0.88 by 1.04 real metres. Change its contents between sectors rather than expanding the room or moving the camera."
+        },
+        {
+          "kind": "h2",
+          "text": "Palette and material roles"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Forest: deep green #244C3C, sage #78996C and warm bark #775538. Keep foliage darker than fire and objective labels.",
+            "Water and functional handles: cyan #46D4E5 with pale highlights #D3F7F6. Pair cyan with a grip rib, socket ring or fill mark; colour alone is insufficient.",
+            "Fire: amber #FFAA38 through orange #F35A22. Reserve saturated orange motion for active danger and cannon charge, separated by location and shape.",
+            "Recovery: mint #8BE2AE, cream #F0DFC0 and a checkmark silhouette. Charred surfaces use warm dark grey #292923, preserving readable forms.",
+            "Use matte painted metal, simple rubber and restrained water sheen. Texture details support identity; they must not compete with silhouettes."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Avoid and approve"
+        },
+        {
+          "kind": "p",
+          "text": "Avoid photorealistic gore, animal suffering, flashing full-screen overlays, forced camera recoil, tiny engraved instructions, realistic guns, dense leaf cards and bright transparent fog. Wetness is a separate visual channel from Healthy, Burning, Extinguished and Charred. Clear Patch means a SearchSafe sector, not merely a dark patch. Approve grey silhouettes, a five-colour scene blockout and a headset readability capture before detailed texturing. Test both hands, seated reach and PICO 4 first; desktop screenshots alone do not approve readability."
+        }
+      ]
+    },
+    {
+      "title": "Environment Asset Register and State Variants",
+      "intro": "Quantities distinguish authored variants from simultaneous placements. Dimensions use unscaled forest metres; the Arena parent applies 0.08 scale. Triangle counts are per LOD0 instance. All budgets are PROVISIONAL, subject to PICO 4 profiling.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "ID / priority",
+            "Asset and quantity",
+            "Authoring dimensions",
+            "LOD0 / materials"
+          ],
+          "rows": [
+            [
+              "ENV-01 / P0",
+              "Terrain island: 1; plinth: 1",
+              "11 × 13 m footprint",
+              "3,000 triangles total / 2"
+            ],
+            [
+              "ENV-02 / P0",
+              "Pine and broadleaf: 2 variants; 42 trees maximum",
+              "0.75–1.0 m wide; 1.8 m high",
+              "500 each / 1 shared"
+            ],
+            [
+              "ENV-03 / P0",
+              "Cabin: 1 kit; 2 instances maximum",
+              "0.9 × 0.8 × 1.2 m",
+              "1,500 / 1"
+            ],
+            [
+              "ENV-04 / P0",
+              "Rain tower: 1 kit; 3 maximum",
+              "0.85 m footprint; 1.9 m high",
+              "1,500 / 1"
+            ],
+            [
+              "ENV-05 / P0",
+              "Creek: 3 modular tiles; 1 active intake area",
+              "1.2 m wide; 2–5 m long",
+              "600 per tile / 1"
+            ],
+            [
+              "ENV-06 / P0",
+              "Clear Patch: 3 reveal overlays; 5 maximum",
+              "1.2–2.0 m diameter",
+              "100 each / 1 shared"
+            ],
+            [
+              "ENV-07 / P1",
+              "Rock, fence and path: 6 modular pieces",
+              "0.3–2.0 m longest edge",
+              "150–400 each / 1 shared"
+            ],
+            [
+              "ENV-08 / P0",
+              "Refuge: 1 open shelter; 1 per sector",
+              "1.8 × 1.5 × 1.5 m",
+              "2,000 / 1"
+            ],
+            [
+              "ENV-09 / P0",
+              "Search branch/debris: 2 movable pieces; 4 maximum",
+              "0.6–1.0 m long",
+              "300 each / 1 shared"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "State contract"
+        },
+        {
+          "kind": "p",
+          "text": "Trees/cabins require Healthy, Burning, Extinguished and Charred; Wetness blends independently. Supply a char mask and optional collapsed silhouette, not duplicate materials. Towers show level, rotation and Used/Empty. Clear Patch reveals only in SearchSafe. Search branches/debris need Grip pivots and safe removal poses."
+        },
+        {
+          "kind": "p",
+          "text": "Deliver ground-contact pivots and simplified collision proxies. Decorative stones and fences must not block water targeting. Keep canopies below objective labels and approaches visible. Review the populated fifth sector and seated close views. Fire, wetness and char must remain distinguishable in greyscale; both eyes must show stable edges."
+        }
+      ]
+    },
+    {
+      "title": "Equipment, Water Sources and Interaction Anchors",
+      "intro": "Tools and fixtures use real metres and scale-one roots. M1 adds RefillPort and Socket and exposes Valve, Pump, Intake and IntakeSocket from EmberdeepWaterStationView. Existing equipment grip/muzzle/pump transforms remain compatible. WS-01/02/03 and equipment refill couplings are procedural blockouts, not finished authored assets. The proposed anchor contract below remains the replacement-art target.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "ID",
+            "Required silhouette / dimensions",
+            "Initial mesh budget"
+          ],
+          "rows": [
+            [
+              "EQ-01",
+              "Foam extinguisher: cylinder, hose, horn; 0.30 m high",
+              "4,000 triangles / 2 materials"
+            ],
+            [
+              "EQ-02",
+              "Pulse pistol: short receiver, visible tank; 0.22 m long",
+              "4,000 / 2"
+            ],
+            [
+              "EQ-03",
+              "Rain fan: five-outlet manifold; 0.25 m long, 0.20 m wide",
+              "5,000 / 2"
+            ],
+            [
+              "EQ-04",
+              "Pressure cannon: broad barrel, cyan side pump; 0.33 m long",
+              "7,000 / 2"
+            ],
+            [
+              "WS-01",
+              "Hydrant dock: broad valve, funnel socket; 0.22 m high",
+              "3,000 / 2"
+            ],
+            [
+              "WS-02",
+              "Creek intake/cradle: 0.18 m; hose: 0.8 m, ≤6 bend bones",
+              "2,000 / 2"
+            ],
+            [
+              "WS-03",
+              "Refill pump: stable base, large sliding handle; 0.20 m high",
+              "3,000 / 2"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Proposed anchor contract"
+        },
+        {
+          "kind": "p",
+          "text": "Use child names Grip, Muzzle, Pump, RefillPort and Socket. Grip marks palm attachment. Muzzle +Z is discharge; +Y is tool-up. Pump marks neutral position, with local −Z as pull direction. RefillPort and Socket +Z point outward, opposing when connected; +Y axes align. Animated barrels remain separate from authoritative Muzzle. Deliver dimensioned anchor diagrams and simplified triggers; decorative meshes never define hit accuracy."
+        },
+        {
+          "kind": "p",
+          "text": "Hydrant states are Idle, Aligning, DockedClosed, Filling, DockedFull and Disconnecting. Docking latches the tool; turning the valve opens flow. One hand can dock, release and operate the valve. Creek states are IntakePlaced, Primed, Pumping and Full/Interrupted. Show a submerged intake and complete pump return stroke. RefillPump and CannonChargePump must remain visually distinct and mutually exclusive in code."
+        },
+        {
+          "kind": "p",
+          "text": "Provide positive-scale left/right variants. Mirror pump placement and clearance, never Muzzle forward, text or normals. Preserve the cannon's existing 0.09 m pull stroke initially. Validate grips and sockets with both hands before approval. Budgets remain PROVISIONAL."
+        }
+      ]
+    },
+    {
+      "title": "Animals, Salvage and Interface Asset Pack",
+      "intro": "Rescue starts in SearchSafe without death or progression gates. Model fox and rabbit silhouettes. Place one animal in sectors 3/4, two total in sector 5. Values are STARTING TARGETS.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "ID",
+            "Model / placement",
+            "Animation or interface requirement"
+          ],
+          "rows": [
+            [
+              "AN-01",
+              "Fox: 0.60 m forest length; 4.8 cm final; shared sector cap 2",
+              "2,500 triangles; ≤18 bones; 1 material"
+            ],
+            [
+              "AN-02",
+              "Rabbit: 0.40 m forest length; 3.2 cm final; shared sector cap 2",
+              "2,000 triangles; ≤14 bones; 1 material"
+            ],
+            [
+              "LO-01",
+              "Coin: 1 model; pooled 12 visible maximum",
+              "300 triangles; spin and collection burst"
+            ],
+            [
+              "LO-02",
+              "Parts: 3 readable silhouettes; pooled 8 maximum",
+              "400 triangles each; wrench/gear/connector"
+            ],
+            [
+              "LO-03",
+              "Salvage crate: 1 model; 3 maximum",
+              "1,000 triangles; separate lid pivot"
+            ],
+            [
+              "UI-01",
+              "Inventory and shop icon atlas: 24 icons",
+              "4 tools, water, coins, parts, animals, actions"
+            ],
+            [
+              "UI-02",
+              "Optional M3 cards: Foam spreader / Pistol focused nozzle / Fan wide manifold / Cannon splash collar",
+              "Owned/Available/Locked variants; no baked prices"
+            ],
+            [
+              "LO-04",
+              "Pouch plus recovery tray: 2 assets; real-size 0.18/0.24 m",
+              "1,000 triangles each; visible deposit mouth"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Animation and safe handling"
+        },
+        {
+          "kind": "p",
+          "text": "Each species needs ShelteredIdle (1.5 s loop), AvailableIdle (1.5 s loop), Pickup (0.25 s), Carried (1 s loop), Rescued (0.8 s) and ReturnToAnchor (0.35 s). These support Sheltered → Available → Carried → Rescued; wrong placement returns safely. Use in-place clips, no root motion, one skinned renderer and ground-contact root. Carried displacement stays below 3 mm final. Supply proposed Grip and scene SafeReturnAnchor locations."
+        },
+        {
+          "kind": "p",
+          "text": "Animals need a proposed 6 cm real pickup proxy without visual enlargement. Programming owns interruption recovery and refuge acceptance. Supply calm return cues, never injury. Spawn salvage on LootRevealed; collection cues require LootDeposited or AnimalDelivered. Bank confirmation requires SectorSettled. Accepted animal deposits currently propose 25 pending coins; this is not instant banked cash."
+        },
+        {
+          "kind": "p",
+          "text": "Deliver 128 px source icons, checked at 64 px, with separate labels/values. Include water-low, refill-ready, valve-closed, pump-stroke, search, carry, refuge, upgrade and tracking-paused. Blueprint sidegrade duplicates convert to Parts."
+        }
+      ]
+    },
+    {
+      "title": "VFX and Audio Event Production Sheet",
+      "intro": "Gameplay dispatches events; artists author responses. CPU water trajectories and hits remain authoritative. Limits below are initial concurrent caps or burst targets, not measured performance. Reuse pools; never create per-tree emitters.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Event / ID",
+            "Visual and audio response",
+            "Priority / initial limit"
+          ],
+          "rows": [
+            [
+              "FireActive / FX-01",
+              "Tapered flame, sparse ember, quiet crackle",
+              "P0; flames 1,024, smoke 384, embers 160"
+            ],
+            [
+              "WaterFlow / FX-02",
+              "Ballistic droplets; soft material-specific hiss",
+              "P0; 768 visible droplets"
+            ],
+            [
+              "CannonCharge / FX-03",
+              "Gauge rise, compact muzzle glow, rising tone",
+              "P0; no full-screen flash"
+            ],
+            [
+              "CannonLaunch / FX-04",
+              "Round water core, short trail, low wet pop",
+              "P0; one simulated projectile per shot"
+            ],
+            [
+              "WaterImpact / FX-05",
+              "Directional splash; hot hits add steam",
+              "P0; splash 384, steam 256"
+            ],
+            [
+              "TreeExtinguished / FX-06",
+              "Small mint lift, rising completion note",
+              "P0; ≤18 particles per burst"
+            ],
+            [
+              "TowerActivated / FX-07",
+              "Rotating sprinkler, clear rain arc, valve pop",
+              "P0; ≤65 droplets/second/tower"
+            ],
+            [
+              "DockConfirmed / FX-08",
+              "Socket ring closes; tactile click",
+              "P0; one cue per accepted dock"
+            ],
+            [
+              "PumpStroke / FX-09",
+              "Tank increment pulse; wet mechanical click",
+              "P0; one cue per completed stroke"
+            ],
+            [
+              "LootRevealed / FX-10",
+              "Search reveal; LootDeposited adds collection trail",
+              "P1; ≤12 simultaneous trails"
+            ],
+            [
+              "AnimalDelivered / FX-11",
+              "Refuge pulse and chirp; pending reward",
+              "P1; one burst per accepted deposit"
+            ],
+            [
+              "TrackingPaused / FX-12",
+              "Stop loops and discharge; calm static icon",
+              "P0; no camera motion"
+            ],
+            [
+              "AnimalAutoEvacuated / FX-13",
+              "Calm departure; no reward burst",
+              "P1; one cue"
+            ],
+            [
+              "SectorSettled / FX-14",
+              "Bank confirmation chime and tally",
+              "P0; once per settlement"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Mix, timing and failure behaviour"
+        },
+        {
+          "kind": "p",
+          "text": "Current capacities also include glow 84: total 3,060, not measured active count. Clocks support 42 trees/four sprinkler slots; keep these initially. Four synthesized audio voices exist; propose six authored voices. Merge rescue notes, limit impacts, prioritize confirmations. Stop loops on tracking loss/exit/cancellation. Reject docks with a neutral tick."
+        },
+        {
+          "kind": "p",
+          "text": "Deliver dry WAVs and loop notes. Keep hiss quiet and cabins visible through splashes. Validate recycling, cleanup, stacking and stereo comfort on both headsets."
+        }
+      ]
+    },
+    {
+      "title": "Shader Specification I: Opaque State Surfaces and Fire",
+      "intro": "SH-01/02 are proposed. Current FireRescueParticles.shader exposes only _DstBlend and _Flame; soft alpha edges are not depth fading. Baseline Mobile_RPAsset disables depth/opaque textures and HDR; MSAA is 4×, render scale 1, shadow distance zero. No bloom dependency is allowed. New properties require programmer bindings.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Shader / property",
+            "Type, range, units",
+            "Meaning and driver"
+          ],
+          "rows": [
+            [
+              "SH-01 _BaseColor",
+              "Color; sRGB authoring",
+              "Shared painted surface palette"
+            ],
+            [
+              "SH-01 _Wetness",
+              "Float 0–1; unitless",
+              "Gameplay-normalized wet channel"
+            ],
+            [
+              "SH-01 _Char",
+              "Float 0–1; unitless",
+              "Persistent burn damage, independent of wetness"
+            ],
+            [
+              "SH-01 _Heat",
+              "Float 0–1; unitless",
+              "Tree heat / maximum heat"
+            ],
+            [
+              "SH-01 _WetRoughness",
+              "Float 0.15–0.7; unitless",
+              "Material-authored wet roughness target"
+            ],
+            [
+              "SH-01 _CharColor / _WetTint",
+              "Color; sRGB authoring",
+              "Artist colours; no hidden gameplay meaning"
+            ],
+            [
+              "SH-02 _Intensity / _Opacity",
+              "Float 0–1 each; unitless",
+              "Heat/wetness suppression and visibility"
+            ],
+            [
+              "SH-02 _FlameColorA / _FlameColorB",
+              "Color; linear RGB 0–1",
+              "Warm core and orange edge"
+            ],
+            [
+              "SH-02 _NoiseScale / _FlickerRate",
+              "Float 1–30 cycles/m; 0–12 Hz",
+              "World-scale turbulence and animation"
+            ],
+            [
+              "SH-02 _DepthFadeDistance",
+              "Float 0–0.04 m; optional",
+              "OFF baseline; requires validated XR depth sampling"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Render and runtime contract"
+        },
+        {
+          "kind": "p",
+          "text": "SH-01 uses opaque URP forward rendering, back-face culling, ZWrite On, no blending. Wetness darkens base colour and tightens highlights; char desaturates. Document roughness/smoothness conversion. Use cached MaterialPropertyBlocks. Normalize simulation wetness explicitly; raw values can exceed one."
+        },
+        {
+          "kind": "p",
+          "text": "SH-02 uses Transparent queue, ZWrite Off and two-sided particle cards. Baseline blend is SrcAlpha/OneMinusSrcAlpha; additive ember material is separate. Retain URP instancing and stereo instance setup/transfer/fragment eye setup. Validate each eye independently. Fire intensity must decrease immediately on a confirmed water hit, including existing particles. No full-screen bloom is required."
+        },
+        {
+          "kind": "p",
+          "text": "Fallbacks: SH-01 flat lit state tint; SH-02 fixed tapered alpha card/reduced emission. Optional depth fade cannot require depth textures in baseline. Test all state extremes."
+        },
+        {
+          "kind": "p",
+          "text": "Defaults: SH-01 _BaseColor=#244C3C, _Wetness/_Char/_Heat=0, _WetRoughness=0.35, _CharColor=#292923, _WetTint=#638C86. SH-02 _Intensity=1, _Opacity=0.65, _FlameColorA=#FFF08C, _FlameColorB=#FF6106, _NoiseScale=18, _FlickerRate=3, _DepthFadeDistance=0. Colour swatches are sRGB; convert when linear input is required."
+        }
+      ]
+    },
+    {
+      "title": "Shader Specification II: Water, Creek and Interaction",
+      "intro": "Proposed shaders require no refraction, opaque-texture grab or fluid simulation. Water follows CPU projectiles and confirmed hits. Materials cannot decide damage, filling, docking or rewards. Use world units; validate both XR eyes.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Shader / property",
+            "Type, range, units",
+            "Required behaviour"
+          ],
+          "rows": [
+            [
+              "SH-03 _Tint / _Opacity",
+              "Color; Float 0–1",
+              "Blue water or pale foam, readable alpha"
+            ],
+            [
+              "SH-03 _FoamAmount",
+              "Float 0–1; unitless",
+              "Material blend, not a damage multiplier"
+            ],
+            [
+              "SH-03 _EdgeSoftness",
+              "Float 0.05–0.5; UV radius",
+              "Smooth sprite edge without depth sampling"
+            ],
+            [
+              "SH-03 _Highlight",
+              "Float 0–1; unitless",
+              "Restrained core glint"
+            ],
+            [
+              "SH-04 _ShallowColor / _DeepColor",
+              "Color; sRGB authoring",
+              "Authored creek colour gradient"
+            ],
+            [
+              "SH-04 _FlowDirection",
+              "Vector2; normalized XZ",
+              "Artist-specified downstream direction"
+            ],
+            [
+              "SH-04 _FlowSpeed",
+              "Float 0–0.2 m/s",
+              "Decorative current animation"
+            ],
+            [
+              "SH-04 _RippleScale",
+              "Float 1–20 cycles/m",
+              "World-space ripple frequency"
+            ],
+            [
+              "SH-04 _ShoreMask",
+              "Texture2D; linear R 0–1",
+              "Baked shoreline; no runtime depth lookup"
+            ],
+            [
+              "SH-05 _HighlightColor",
+              "Color; linear RGB 0–1",
+              "Cyan available, mint accepted, amber blocked"
+            ],
+            [
+              "SH-05 _Amount / _PulseRate",
+              "Float 0–1; Float 0–2 Hz",
+              "Program-controlled visibility; gentle pulse"
+            ],
+            [
+              "SH-05 _RimWidth",
+              "Float 0.1–0.6; unitless",
+              "View-angle rim threshold, not metre outline"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Pipeline and degradation"
+        },
+        {
+          "kind": "p",
+          "text": "SH-03: Transparent, SrcAlpha/OneMinusSrcAlpha, ZWrite Off, two-sided. Cannon cores require billboards: zero-velocity stretched particles can disappear. Streams may stretch. Effects own size, orientation and lifetime. Fallback: one coloured alpha sprite."
+        },
+        {
+          "kind": "p",
+          "text": "SH-04: opaque creek, ZWrite On, back-face culling, baked shore mask; fallback static colour. SH-05: opaque local highlight, no full-screen outline; fallback tint plus icon. Preserve depth occlusion; never glow through scenery."
+        },
+        {
+          "kind": "p",
+          "text": "Require URP XR instancing/stereo plumbing. Avoid per-eye noise divergence, screen-coordinate assumptions and keyword churn. Pool reuse restores material defaults."
+        },
+        {
+          "kind": "p",
+          "text": "Defaults: SH-03 _Tint=#A4E6FF, _Opacity=0.8, _FoamAmount=0, _EdgeSoftness=0.2, _Highlight=0.35. SH-04 _ShallowColor=#155E77, _DeepColor=#103C50, _FlowDirection=(0,1), _FlowSpeed=0.05, _RippleScale=8, _ShoreMask=black. SH-05 _HighlightColor=#46D4E5, _Amount=0, _PulseRate=1, _RimWidth=0.3. Colour defaults follow the previous page conversion rule."
+        }
+      ]
+    },
+    {
+      "title": "Technical Import, Naming and Device Budgets",
+      "intro": "PICO 4 is the lower-hardware validation baseline; Quest 3 is the second acceptance target. The 72 Hz goal provides approximately 13.9 ms per frame, but this is a target, not an achieved measurement. Asset acceptance depends on the fully populated fifth sector with hands, water, fire and interface active together.",
+      "blocks": [
+        {
+          "kind": "h2",
+          "text": "Files, axes and authoring"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Use names such as ED_EQ04_PressureCannon_LOD0, ED_ENV02_Pine_A and ED_AN01_Fox_Idle. Keep asset IDs stable across DCC source, export, prefab and tracker. English ASCII names only.",
+            "Proposed Unity directories: Assets/FireRescue/Art/{Environment,Equipment,Animals,UI,VFX,Audio,Materials,Shaders}. Keep editable source in ArtSource/Emberdeep and delivery records in Docs/Emberdeep. Preserve generated Unity .meta files in source control.",
+            "Export metres, +Y up and +Z forward; apply modelling transforms before export. Tool roots remain scale one. Forest prefabs remain unscaled authoring units until parented beneath the 0.08 Arena. Include a one-metre reference cube in the review scene, not the shipping prefab.",
+            "Use simple primitive collision/trigger proxies where practical. Disable decorative colliders; water collision and pickup acceptance remain programmer-owned. Avoid concave moving mesh colliders and invisible geometry that changes reach."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "PROVISIONAL starting budgets"
+        },
+        {
+          "kind": "p",
+          "text": "Target at most 150,000 visible art triangles and 100 art draw submissions in the representative sector, excluding the platform hand rig from this initial art-only allowance. Measure total application cost separately; these numbers do not guarantee frame time. Equipment: two materials maximum each. Small props: one shared material. Trees: two LODs, approximately 500/200 triangles, and no alpha-card canopy baseline. Avoid visible LOD popping at the normal seated viewing distance."
+        },
+        {
+          "kind": "p",
+          "text": "Start with shared 1,024 px atlases, one 2,048 px equipment atlas and 512 px animal/UI sheets. Budget 64 MB resident art textures provisionally. Use Android ASTC 6×6 as the initial colour choice; evaluate 4×4 only for visibly damaged UI or masks. Inspect compressed assets on-device, enable mipmaps for world surfaces, use sRGB for colour and linear import for data masks. Record final resolution, compression and memory from Unity imports."
+        },
+        {
+          "kind": "p",
+          "text": "Profile CPU, GPU, overdraw, memory and sustained frame pacing after ten minutes. Reduce transparent coverage and material changes before adding detail. Publish the device, OS, build hash, scene and capture conditions with every performance result."
+        }
+      ]
+    },
+    {
+      "title": "Milestones, Delivery Package and Acceptance Register",
+      "intro": "Approve small integrated slices without changing gameplay meaning or losing anchors. Assign owners and reviewers before production. Milestones are planned gates, not claims of completed assets or achieved device targets.",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Gate",
+            "Required delivery",
+            "Acceptance evidence"
+          ],
+          "rows": [
+            [
+              "A — Readable blockout",
+              "ENV-01/02, EQ-01, WS-01, refuge; scale and anchor diagrams",
+              "Both hands can see targets, dock and reach controls"
+            ],
+            [
+              "B — Water production",
+              "B1 Trailhead hydrant; B2 creek intake and pump for sector 2",
+              "Single-hand fallback; cancellation; no pump/fire overlap"
+            ],
+            [
+              "C — Recovery slice",
+              "Two animals, crate, coin/parts icons, Clear Patch",
+              "SearchSafe gating; safe return; reward appears once"
+            ],
+            [
+              "D — Combat polish",
+              "Four tools, SH-01–05, fire/water/audio event pack",
+              "Cannon visible in both eyes; hit response; clean pooling"
+            ],
+            [
+              "E — Device sign-off",
+              "Complete five-sector art pass and budget report",
+              "PICO 4 and Quest 3 captures; ten-minute performance run"
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Required package contents"
+        },
+        {
+          "kind": "p",
+          "text": "Deliver DCC sources, FBX meshes, source and PNG/TGA textures, rigs/clips, dry WAV masters, Unity prefabs/materials/shaders and .meta files. Include a review scene, anchor-coordinate sheet, shader dictionary, state/contact sheet, atlas map, audio event sheet and export README. Key changelogs by asset ID. List missing variants explicitly; screenshots alone are insufficient."
+        },
+        {
+          "kind": "h2",
+          "text": "Per-asset tracker template"
+        },
+        {
+          "kind": "p",
+          "text": "Record: Asset ID; description; revision; owner; reviewer; status; source/export/prefab paths; dimensions; triangle and material counts; texture settings; supported states; required anchors; animation names; licence/source; test build; device evidence; outstanding issue; next action. Allowed status values: Planned, Blockout, Review, Integrated, DeviceVerified, Approved. DeviceVerified requires evidence; only the project lead moves an item to Approved."
+        },
+        {
+          "kind": "p",
+          "text": "For every external texture, model, sound or font, include creator, source URL, licence, permitted modification/redistribution and purchase record where applicable. Do not copy another game's identifiable assets or branding. Record generated-asset provenance and manual edits. Acceptance checks include missing references, correct scale, valid pivots, both-eye rendering, tracking interruption, scene return, pooled reset, readable colour-independent states and no duplicate reward cues. Archive superseded exports without silently replacing approved source files."
+        }
+      ]
+    }
+  ]
+}

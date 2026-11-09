@@ -1,0 +1,5 @@
+{
+  "name": "CloudGarden.Integration.Editor",
+  "references": ["CloudGarden", "CloudGarden.Integration", "PhysicalAssembly.MetaXR", "Oculus.VR", "Unity.TextMeshPro"],
+  "includePlatforms": ["Editor"]
+}

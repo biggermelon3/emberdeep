@@ -1,0 +1,81 @@
+{
+  "pages": [
+    {
+      "title": "Emberdeep Game Design and Development Specification",
+      "intro": "Build a hand-tracked miniature firefighting expedition in which the player collects water, contains fire, searches recovered ground, rescues wildlife and improves equipment to reach deeper forest sectors. This specification gives design, engineering and QA one executable direction for the next iteration.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Revision 0.7 | 8 November 2026 | Current candidate Emberdeep 0.2.6 / Android code 9. Current 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance. Word files remain drafts until current page rendering is approved."
+        },
+        {
+          "kind": "h2",
+          "text": "Authority and status"
+        },
+        {
+          "kind": "p",
+          "text": "CURRENT v0.1 in original sections denotes their historical inspected baseline. IMPLEMENTED describes candidate code, not hardware acceptance. PROPOSED and TARGET remain future work. Read ImplementationStatus.json and the final ContactGripIteration.json section for the current override and evidence. Prior device confirmations retain their version and question scope."
+        },
+        {
+          "kind": "h2",
+          "text": "Reading map"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Sections",
+            "Use"
+          ],
+          "rows": [
+            [
+              "2 to 4",
+              "Product boundaries, expedition state and hand interaction ownership."
+            ],
+            [
+              "5 to 7",
+              "Physical water supplies and fire simulation contracts."
+            ],
+            [
+              "8 to 10",
+              "Search, animals, economy and sector teaching progression."
+            ],
+            [
+              "11 and 12",
+              "Equipment parameters, salvage modifications and session presentation."
+            ],
+            [
+              "13 to 16",
+              "Architecture, migration, persistence, QA and release gates."
+            ],
+            [
+              "Implementation register",
+              "M1 source and test mapping, accepted decisions, remaining gates."
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Director decisions"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "DD-01: One active tabletop sector at a time; deeper exploration changes the active sector without requiring physical room traversal.",
+            "DD-02: Manual supply replaces passive regeneration. A reusable hydrant or creek source must remain reachable with an empty tank.",
+            "DD-03: Containment leads to safe search. Animal rescue is rewarding and gentle; it cannot become a mandatory progression lock.",
+            "DD-04: Equipment changes interaction and water coverage, not only numerical damage. Preserve the existing ballistic water and hand interaction investment.",
+            "DD-05: Ship a standalone firefighting experience with the camp and fireground only; no route into the shadow or car games."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Maintenance contract"
+        },
+        {
+          "kind": "p",
+          "text": "The reviewable JSON files in Docs/Emberdeep are the source of truth. Regenerate the Word documents with Tools/BuildEmberdeepDesignDocs.py after edits. Keep requirement IDs stable, record decisions in DocumentManifest.json, and update status only with linked code and test evidence. The earlier one-page showcase remains a presentation summary, not an implementation authority. Owner roles in this document describe responsibilities to assign, not staffed commitments."
+        }
+      ]
+    }
+  ]
+}

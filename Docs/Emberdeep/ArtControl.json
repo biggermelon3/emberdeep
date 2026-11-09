@@ -1,0 +1,72 @@
+{
+  "pages": [
+    {
+      "title": "Emberdeep Art Production Requirements",
+      "intro": "Produce readable, tactile miniature firefighting assets for a hand-tracked tabletop world. Art must make water quantity, fire response, safe interaction and recovered terrain visible while preserving the feel of manipulating a small living forest. This document is a production brief for artists and technical artists, with integration and acceptance requirements for engineering.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Revision 0.7 | 8 November 2026 | Current candidate Emberdeep 0.2.6 / Android code 9. Current 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance. Word files remain drafts until current page rendering is approved."
+        },
+        {
+          "kind": "h2",
+          "text": "Production order"
+        },
+        {
+          "kind": "p",
+          "text": "Approve an in-headset interaction blockout first: extinguisher, refill port, hydrant socket and valve, then a small set of trees and readable water/fire feedback. Advance to searchable objects and two animal types only after the manual-water loop works. Complete creek refill, equipment variants and forest themes after the shared interaction contracts are stable. Validate on PICO 4 first as the baseline, then Quest 3."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Sections",
+            "Production responsibility"
+          ],
+          "rows": [
+            [
+              "2 and 3",
+              "Art direction and environment asset inventory."
+            ],
+            [
+              "4 and 5",
+              "Equipment, water stations, animals, loot and interface assets."
+            ],
+            [
+              "6 to 8",
+              "Effects, audio cues and shader contracts."
+            ],
+            [
+              "9 and 10",
+              "Import specifications, budgets, handoff and acceptance."
+            ]
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Approval responsibilities"
+        },
+        {
+          "kind": "bullets",
+          "items": [
+            "Project director approves silhouette, miniature scale, visual hierarchy and whether each asset supports its intended interaction.",
+            "Gameplay and XR engineers approve anchors, collision proxies, left-hand use, event bindings and reachable placement before detailing.",
+            "Technical artist owns material and shader implementations, variants, profiling captures and fallback quality.",
+            "QA accepts the integrated prefab on the named headset and records build hash, test conditions and defects. A beauty render alone is not delivery acceptance."
+          ]
+        },
+        {
+          "kind": "h2",
+          "text": "Scope and working files"
+        },
+        {
+          "kind": "p",
+          "text": "Keep the existing procedural world available as an integration fallback until authored prefabs pass acceptance. Source models, textures and audio need editable originals and usage provenance. Delivery must include the Unity prefab or material, documented public anchors, a preview and test evidence. Record each asset ID, owner, revision and review state in the production tracker. Do not bake gameplay state into textures or award currency from animation events."
+        },
+        {
+          "kind": "p",
+          "text": "Docs/Emberdeep/ArtProductionSections.json is the maintainable source for these requirements. Update it with any accepted interface or budget change, regenerate this Word document, and inspect every rendered page. The design document governs reward and state rules; this document governs their visual representation and asset integration."
+        }
+      ]
+    }
+  ]
+}

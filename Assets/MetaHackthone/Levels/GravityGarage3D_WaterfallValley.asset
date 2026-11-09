@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfde2ae9ecb1eaa478bfedbd6398c508, type: 3}
+  m_Name: GravityGarage3D_WaterfallValley
+  m_EditorClassIdentifier: PhysicalAssembly.Runtime::PhysicalAssembly.GravityGarage3DLevelAsset
+  Title: Waterfall Valley
+  Thumbnail: {fileID: 2800000, guid: 28c3039dc2caf734784f616b8897ba34, type: 3}
+  Radius: 4
+  LaneLength: 14
+  StartHeight: 8.4
+  UpperDrop: 2.4
+  TurnDrop: 3.2
+  LowerDrop: 1.4
+  DeckWidth: 2.4
+  RailHeight: 0.65
+  WeakPointHeight: 0.48
+  WeakPointRadius: 0.18
+  WeakPointHalfWidth: 1.05
+  Timeout: 45
+  Scenery: 1
+  BalanceRise: 0.16

@@ -1,0 +1,5 @@
+Independent modular art prefabs: 20
+0 colliders; 0 runtime behaviours; no missing materials
+Straight deck width 0.4 m; Entry z=0, Exit z=0.4
+Build station is a prefab variant of the start station
+Gameplay level is not edited by this tool

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Cloud atmosphere 7
+  m_Shader: {fileID: 4800000, guid: 1ec4842898b08944cbe87267716e549c, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: baca85c84313860489b4341dc6fd04ed, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: 881a75c9dca54074888dca112be0dce6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WispTex:
+        m_Texture: {fileID: 2800000, guid: 9ea34eb9455467046a4b22098356aeb3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Drift: 0.035
+    - _EdgeWarp: 0.022
+    - _Mirror: 1
+    - _NoiseSpeed: 0.008
+    - _Opacity: 0.85
+    - _WispAmount: 0.55
+    m_Colors:
+    - _Tint: {r: 0.92, g: 0.92, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

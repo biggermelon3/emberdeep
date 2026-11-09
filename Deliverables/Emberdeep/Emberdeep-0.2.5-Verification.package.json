@@ -1,0 +1,9 @@
+{
+  "version": "0.2.5",
+  "file": "Emberdeep-0.2.5-Verification.zip",
+  "sha256": "584037a4efe46665a4d850bfd688e976c40961a4f5900541749635c87f91cad7",
+  "bytes": 3576671,
+  "entries": 184,
+  "scope": "Verification evidence, authoritative English JSON and relevant FireRescue source snapshot. Requires the full project and its shared dependencies to rebuild; not a standalone Unity project. No APKs or unrendered Word drafts included.",
+  "physical_acceptance": "Quest 3 user confirmed system-menu hand hold/recovery and starter well refill. Other scenarios and PICO pending. Editor injected capture labels must be preserved."
+}

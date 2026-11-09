@@ -1,0 +1,12 @@
+{
+  "name": "CloudGarden.Tests",
+  "references": [
+    "CloudGarden"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

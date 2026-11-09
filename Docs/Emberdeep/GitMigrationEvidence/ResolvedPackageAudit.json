@@ -1,0 +1,24 @@
+{
+  "name": "com.unity.xr.openxr.picoxr",
+  "version": "1.4.1",
+  "source": "Git",
+  "resolvedPath": "E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Library\\PackageCache\\com.unity.xr.openxr.picoxr@3aa3e62bff41",
+  "plugins": [
+    {
+      "path": "Packages/com.unity.xr.openxr.picoxr/Runtime/Android/arm64/libopenxr_loader.so",
+      "android": true,
+      "editor": false,
+      "cpu": "ARM64"
+    },
+    {
+      "path": "Packages/com.unity.xr.openxr.picoxr/Runtime/Android/arm64/libopenxr_pico.so",
+      "android": true,
+      "editor": false,
+      "cpu": "ARM64"
+    }
+  ],
+  "scenes": [
+    "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
+    "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
+  ]
+}

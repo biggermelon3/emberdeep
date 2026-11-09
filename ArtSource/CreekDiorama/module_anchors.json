@@ -1,0 +1,212 @@
+{
+  "Deck_Straight_040": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0,
+      0.4
+    ]
+  },
+  "Deck_Straight_080": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0,
+      0.8
+    ]
+  },
+  "Deck_Ramp_080_Rise020": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0.2,
+      0.8
+    ]
+  },
+  "Deck_Stairs_080_Rise020": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0.2,
+      0.8
+    ]
+  },
+  "Stair_Tread_040": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0,
+      0.1
+    ]
+  },
+  "Deck_Turn90_080": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0.6,
+      0,
+      0.6
+    ],
+    "ExitYaw": 90
+  },
+  "Support_Pier_020": {
+    "Foot": [
+      0,
+      0,
+      0
+    ],
+    "Deck": [
+      0,
+      0.2,
+      0
+    ]
+  },
+  "Support_Pier_040": {
+    "Foot": [
+      0,
+      0,
+      0
+    ],
+    "Deck": [
+      0,
+      0.4,
+      0
+    ]
+  },
+  "Support_Pier_060": {
+    "Foot": [
+      0,
+      0,
+      0
+    ],
+    "Deck": [
+      0,
+      0.6,
+      0
+    ]
+  },
+  "Railing_040": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0,
+      0.4
+    ]
+  },
+  "Landing_Platform_080": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0,
+      0.8
+    ],
+    "Center": [
+      0,
+      0,
+      0.4
+    ]
+  },
+  "Marker_Start": {
+    "Gate": [
+      0,
+      0,
+      0
+    ],
+    "Banner": [
+      0,
+      0.36,
+      0
+    ]
+  },
+  "Marker_Goal": {
+    "Gate": [
+      0,
+      0,
+      0
+    ],
+    "Banner": [
+      0,
+      0.36,
+      0
+    ]
+  },
+  "Portal_Frame": {
+    "Threshold": [
+      0,
+      0,
+      0
+    ],
+    "EffectCenter": [
+      0,
+      0.22,
+      0
+    ]
+  },
+  "Water_Tile_080": {
+    "Entry": [
+      0,
+      0,
+      0
+    ],
+    "Exit": [
+      0,
+      0,
+      0.8
+    ]
+  },
+  "Waterfall_020x040": {
+    "Lip": [
+      0,
+      0.4,
+      0
+    ],
+    "Impact": [
+      0,
+      0,
+      0.1
+    ]
+  },
+  "Cliff_Terrace_040": {
+    "Foot": [
+      0,
+      0,
+      0.2
+    ],
+    "Top": [
+      0,
+      0.37,
+      0.2
+    ]
+  }
+}
