@@ -18,12 +18,12 @@ namespace FireRescue.Editor
         public const string CampScenePath="Assets/FireRescue/Scenes/EmberdeepCamp.unity";
         public const string ShowcaseScenePath="Assets/FireRescue/Scenes/EmberdeepFireground.unity";
         public const string ShowcasePackageId="com.metahackathon2026.emberdeep";
-        public const string ShowcaseVersion="0.2.6";
-        public const int ShowcaseVersionCode=9;
+        public const string ShowcaseVersion="0.2.7";
+        public const int ShowcaseVersionCode=10;
         public const string ShowcaseIconPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png";
         const string ShowcaseIconBackgroundPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Icon-Background.png";
-        public const string ShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.6.apk";
-        public const string PicoShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.6-Pico.apk";
+        public const string ShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.7.apk";
+        public const string PicoShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.apk";
         // Return a fresh whitelist so callers cannot accidentally mutate a future build.
         public static string[] ShowcaseScenes=>new[]{CampScenePath,ShowcaseScenePath};
 

@@ -1,10 +1,10 @@
 {
-  "revision": "0.2.6",
-  "date": "2026-11-08",
+  "revision": "0.2.7",
+  "date": "2026-11-09",
   "candidate": {
-    "version": "0.2.6",
-    "android_version_code": 9,
-    "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending."
+    "version": "0.2.7",
+    "android_version_code": 10,
+    "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING."
   },
   "historical_delivery": {
     "version": "0.1.1",
@@ -12,11 +12,11 @@
     "menu_user_confirmation": "Front position only"
   },
   "milestones": {
-    "M0": "Stable placement retained. Current system hand aim/contextual UI is covered by the passing FinalVerification Editor suite; physical button usability remains pending.",
-    "M1": "0.2.6 implements natural whole-hand starter lever, empty-outlet pumping and anchored display contact. Fresh 167 EditMode and 84 PlayMode passes. Device acceptance pending.",
+    "M0": "Stable placement and scoped prior menu behavior retained. Current Editor regressions passed; new physical button and posture acceptance remains pending.",
+    "M1": "0.2.7 restores pinch-operated starter lever, empty pumping and anchored hand display. Fresh 167 EditMode / 87 PlayMode passed; device acceptance pending.",
     "M2": "PROPOSED: safe search, loot, optional animals, pending ledger, durable saves",
     "M3": "PROPOSED: authored teaching progression, sidegrades and measured feedback",
-    "M4": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending."
+    "M4": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING."
   },
   "evidence": {
     "version_scope": "Historical 0.2.0 / code 3 only; current evidence is in current_iteration.",
@@ -61,62 +61,115 @@
     "device_checklist": "Docs/Emberdeep/M1DeviceAcceptance.json"
   },
   "current_iteration": {
-    "version": "0.2.6",
-    "android_version_code": 9,
-    "date": "2026-11-08",
-    "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
-    "source": "ContactGripIteration.json",
-    "evidence": "Logs/EmberdeepContactGrip/ReleaseEvidence.json",
+    "version": "0.2.7",
+    "android_version_code": 10,
+    "date": "2026-11-09",
+    "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
+    "source": "PinchRestore.json",
+    "evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json",
     "tests": {
       "EditMode": {
+        "status": "PASSED",
         "total": 167,
         "passed": 167,
         "failed": 0,
         "skipped": 0,
-        "inconclusive": 0
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json"
       },
       "PlayMode": {
-        "total": 84,
-        "passed": 84,
+        "status": "PASSED",
+        "total": 87,
+        "passed": 87,
         "failed": 0,
         "skipped": 0,
-        "inconclusive": 0
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
       }
     },
     "builds": {
       "Quest": {
+        "status": "BUILT_AND_AUDITED",
         "settingsRestored": true,
         "sceneWhitelistPassed": true,
-        "version": "0.2.6",
+        "version": "0.2.7",
         "signatureVerified": true,
-        "sha256": "e5c7d8910823ebc08046f35dbeb643152827a0d8ebfa0a7ae0db98a8336b1a3d",
+        "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
         "target": "Quest",
-        "bytes": 105507663,
+        "bytes": 105508923,
         "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "versionCode": 9,
-        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png"
+        "versionCode": 10,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "android_version_code": 10,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7.manifest.json",
+        "audit": "Logs/EmberdeepPinchRestore/Quest-Audit.json",
+        "errors": 0,
+        "settings_restoration": {
+          "changed": [],
+          "audited_count": 28,
+          "unchanged": true,
+          "path": "Logs/EmberdeepPinchRestore/Quest-SettingsRestoration.json"
+        }
       },
       "Pico": {
+        "status": "BUILT_AND_AUDITED",
         "settingsRestored": true,
         "sceneWhitelistPassed": true,
-        "version": "0.2.6",
+        "version": "0.2.7",
         "signatureVerified": true,
-        "sha256": "410cace421f208615ed3722f05a096c6ab7baac4f842a748f3ef8e9d8db8b24b",
+        "sha256": "06bb290fed74218bcc5b7edd247bceace8d575281f6b30d1f6f9d8b85a27d2e2",
         "target": "Pico",
-        "bytes": 87212435,
+        "bytes": 87208527,
         "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "versionCode": 9,
-        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png"
+        "versionCode": 10,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "android_version_code": 10,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.manifest.json",
+        "audit": "Logs/EmberdeepPinchRestore/Pico-Audit.json",
+        "errors": 0,
+        "settings_restoration": {
+          "changed": [],
+          "audited_count": 28,
+          "unchanged": true,
+          "path": "Logs/EmberdeepPinchRestore/Pico-SettingsRestoration.json"
+        }
       }
     },
-    "devices": "User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 not connected.",
+    "devices": {
+      "Quest3": "PENDING",
+      "PICO4": "PENDING performance baseline"
+    },
+    "user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
     "known_limits": [
-      "Existing well geometry and procedural grip poses remain interaction grayboxes; no full-body IK or per-finger collision simulation.",
-      "Display palm is constrained relative to the grip; weapon aiming still follows the tracked hand.",
-      "Natural grasp thresholds, comfort, hand-size contact fit and PICO performance require hardware checks.",
-      "M2/M3 and durable expedition saves remain proposed.",
-      "Word source/content checks do not establish visual layout acceptance."
-    ]
+      "Worn-headset operation, hand fit and performance remain pending.",
+      "Existing well and display-hand pose assets remain grayboxes; no physical finger collision.",
+      "M2/M3 and durable saves remain proposed.",
+      "Word content checks do not establish visual layout approval."
+    ],
+    "captures": {
+      "source": "Isolated Editor PlayMode with injected outlet event",
+      "paths": [
+        "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png",
+        "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png"
+      ],
+      "visual_review": "Outlet arc/drops visible in burst and absent in stopped capture; labels explicitly identify injected samples. This is presentation inspection, not physical hand acceptance.",
+      "waterTransferred": false,
+      "real_hand_tracking": false,
+      "engine_progression": {
+        "from_frame": 8782,
+        "from_time": 8.604,
+        "to_frame": 16381,
+        "to_time": 17.152,
+        "scope": "Editor engine progression observed by parent QA; no device performance inference."
+      }
+    },
+    "source_integrity": {
+      "unchanged_after_verification": true,
+      "file_count": 93,
+      "snapshot": "Logs/EmberdeepPinchRestore/VerifiedSources.json"
+    }
   },
   "requirements": [
     {
@@ -333,6 +386,91 @@
         "Headset reset/recenter and tracking recovery on PICO 4 and Quest 3"
       ],
       "historical_evidence_scope": "Linked Logs/EmberdeepM1 results are historical 0.2.0. Current 0.2.3 FinalVerification results are recorded in InteractionPolish.json."
+    },
+    {
+      "requirement_ids": [
+        "PR-01 / GD-HAND-01 / WS-05"
+      ],
+      "rule": "Acquire the starter lever with a fresh existing ShadowPinchGesture edge when index contact is within 10 cm. GripValid, whole-hand curl and per-finger confidence are not extra gates. A full fist without pinch does not acquire it.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/ShadowWorkshop/Runtime/ShadowPinchGesture.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepFreeLeverGripTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepStationTierInteractionTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "requirement_ids": [
+        "PR-02 / GD-WATER-01 / GD-WATER-05"
+      ],
+      "rule": "Maintain pinch and measure palm translation: lower at least 8 cm and return within 2 cm of upper rest. A connected complete cycle transfers 12 units capped by capacity. Release, invalid tracking, cancellation, modal input or ownership change discards unfinished travel. Reopen before a new pinch; never complete a stored half-stroke after recovery.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepLeverStroke.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepStationTierInteractionTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "requirement_ids": [
+        "PR-03 / WS-06 / GD-ECON-01"
+      ],
+      "rule": "No tool is required for empty pumping. A completed unconnected pinch cycle emits a bounded cosmetic outlet splash only; no tank, damage, coins or pending transfer. A tool in the other hand is allowed; same-hand tool/control double ownership is rejected.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepEmptyPumpGameTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepFreeLeverGripTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepOutletFeedbackPlayTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "requirement_ids": [
+        "PR-04 / GD-HAND-02 / IP-08"
+      ],
+      "rule": "Retain anchored display-hand contact, staged finger closure/release and moving LeverVisual pose. The visible closed hand is an animation; input is pinch. No new tracking provider or physical finger collision claim. Tutorial and labels describe pinch rather than whole-hand acquisition.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandPose.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandPresentation.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillTutorial.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepNaturalPumpTutorialTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
     }
   ],
   "decisions": [
@@ -343,7 +481,7 @@
       ],
       "decision": "A fresh pinch and release on the broad valve with at most five degrees of wrist rotation toggles the accepted detent. Larger incomplete rotations return to the previous detent. The normal 45-degree turn remains available.",
       "reason": "Sequential one-hand accessibility without a second resource path; same 30 units/second and interruption rules.",
-      "current_override": "0.2.3 permits at most 12 degrees for the fresh pinch/release valve tap; historical five-degree decision retained here for traceability."
+      "current_override": "0.2.5 and later remove rotary tap fallback; rotate 45 degrees. 0.2.7 restores pinch acquisition of the separate starter lever, not a rotary tap."
     },
     {
       "id": "M1-DD-02",
@@ -417,7 +555,7 @@
   "pages": [
     {
       "title": "Historical M1 Implementation Register (0.2.0)",
-      "intro": "Historical 0.2.0 / code 3 M1 implementation record. Its 119/17 results do not verify later changes. Read InteractionStages.json for current 0.2.5 behavior, mapping and pending acceptance.",
+      "intro": "Historical 0.2.0 / code 3 M1 implementation record. Its 119/17 results do not verify later changes. Read PinchRestore.json for current 0.2.7 behavior, mapping and pending acceptance.",
       "blocks": [
         {
           "kind": "table",
@@ -470,7 +608,7 @@
     },
     {
       "title": "Historical M1 Decisions and Subsequent Overrides",
-      "intro": "Historical 0.2.0/0.2.1 decisions are retained below. The subsequent 0.2.3 system hand pointer remains; 0.2.5 replaces the initial hydrant with a lever well and removes rotary tap fallback. InteractionStages.json defines current behavior; M2/M3 remain proposed.",
+      "intro": "Historical 0.2.0/0.2.1 decisions are retained below. The subsequent 0.2.3 system hand pointer remains; 0.2.5 replaces the initial hydrant with a lever well and removes rotary tap fallback. PinchRestore.json defines current behavior; M2/M3 remain proposed.",
       "blocks": [
         {
           "kind": "h2",
@@ -841,7 +979,67 @@
       },
       "devices": "Quest 3 installation/version verified as 0.2.5/code 8. User confirmed system-menu hand hold/recovery and complete starter well refill cycle. Other controls, detailed pose fit/postures and performance pending. PICO not connected.",
       "historical_scope": "0.2.5 only: user confirmed system-menu hand hold/recovery and starter lever refill. Later feedback requests firmer pose contact, full-hand lever and empty pumping."
+    },
+    {
+      "version": "0.2.6",
+      "android_version_code": 9,
+      "date": "2026-11-08",
+      "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
+      "source": "ContactGripIteration.json",
+      "evidence": "Logs/EmberdeepContactGrip/ReleaseEvidence.json",
+      "tests": {
+        "EditMode": {
+          "total": 167,
+          "passed": 167,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0
+        },
+        "PlayMode": {
+          "total": 84,
+          "passed": 84,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0
+        }
+      },
+      "builds": {
+        "Quest": {
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.6",
+          "signatureVerified": true,
+          "sha256": "e5c7d8910823ebc08046f35dbeb643152827a0d8ebfa0a7ae0db98a8336b1a3d",
+          "target": "Quest",
+          "bytes": 105507663,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 9,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png"
+        },
+        "Pico": {
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.6",
+          "signatureVerified": true,
+          "sha256": "410cace421f208615ed3722f05a096c6ab7baac4f842a748f3ef8e9d8db8b24b",
+          "target": "Pico",
+          "bytes": 87212435,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 9,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png"
+        }
+      },
+      "devices": "User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 not connected.",
+      "known_limits": [
+        "Existing well geometry and procedural grip poses remain interaction grayboxes; no full-body IK or per-finger collision simulation.",
+        "Display palm is constrained relative to the grip; weapon aiming still follows the tracked hand.",
+        "Natural grasp thresholds, comfort, hand-size contact fit and PICO performance require hardware checks.",
+        "M2/M3 and durable expedition saves remain proposed.",
+        "Word source/content checks do not establish visual layout acceptance."
+      ],
+      "historical_scope": "0.2.6 only; subsequent user feedback reports whole-hand lever unusable.",
+      "subsequent_user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical."
     }
   ],
-  "historical_scope": "Top-level evidence covers 0.2.0 only; historical_iterations are version scoped. current_iteration is 0.2.6. User confirmed 0.2.5 system-menu hand hold/recovery and starter well refill, not the new natural grasp/contact changes."
+  "historical_scope": "Top-level evidence covers 0.2.0; historical_iterations are version scoped. current_iteration is 0.2.7. The 0.2.6 full-grip attempt was reported unusable by the user; its passing Editor tests are not positive hardware acceptance."
 }

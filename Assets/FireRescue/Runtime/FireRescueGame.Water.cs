@@ -118,7 +118,7 @@ namespace FireRescue
                 (EmberdeepRefillInteraction.NearStation(owner.position,hydrantStation) ||
                  EmberdeepRefillInteraction.NearStation(owner.position,creekStation)))return false;
             if(!hands.ReadHand(hand==0,out var palm,out var tip,out _))return false;
-            if(NearWellLever(hand,palm))return false;
+            if(NearWellLever(tip))return false;
             // Direct work owns the hand before the UI gets a chance to consume
             // its pinch. The other hand remains available for distant UI.
             if((grip.Held || Run.Supply.Locked) &&
@@ -153,20 +153,11 @@ namespace FireRescue
             if(grip.Held && !Run.Supply.Locked && !refill.OwnsControl && valid)
                 EmberdeepRefillInteraction.TryGuideHeldTool(heldView,new Pose(GripPoint(LeftHanded,palm),palm.rotation),hydrantStation,creekStation);
             if(interfaceHovered && !Run.Supply.Locked){refill.Reset();return false;}
-            return ProcessRefillHands(ReadRefillHand(0,l,lp,lt,ld),ReadRefillHand(1,r,rp,rt,rd),dt);
+            return ProcessRefillHands(new EmberdeepRefillInteraction.Hand(l,lp,ld,lt),new EmberdeepRefillInteraction.Hand(r,rp,rd,rt),dt);
         }
-        EmberdeepRefillInteraction.Hand ReadRefillHand(int index,bool tracked,Pose palm,Vector3 tip,float pinch)
-        {
-            var sample=new EmberdeepRefillInteraction.Hand(tracked,palm,pinch,tip);
-            if(tracked && EmberdeepHandGrasp.TryRead(hands.TrackedHand(index==0),out var strength,out var contact))
-            {sample.GripValid=true;sample.GripStrength=strength;sample.GripContact=contact;sample.HasGripContact=true;}
-            return sample;
-        }
-        bool NearWellLever(int index,Pose palm)
+        bool NearWellLever(Vector3 contact)
         {
             if(!hydrantStation || !hydrantStation.gameObject.activeInHierarchy || Run.StationTier!=WaterStationTier.LeverWell)return false;
-            var contact=palm.position;
-            if(EmberdeepHandGrasp.TryRead(hands.TrackedHand(index==0),out _,out var center))contact=center;
             return Vector3.Distance(contact,hydrantStation.LeverVisual.position)<.13f;
         }
         // Production path exposed for synthetic joint regressions; never invents a transfer.
@@ -178,7 +169,7 @@ namespace FireRescue
             bool consumed=refill.Process(Run,heldView,hydrantStation,creekStation,grip.Held,grip.Hand,left,right,dt);
             if(refill.Detached){grip.EquipForDesktop(refill.DetachedHand);LeftHanded=refill.DetachedHand==0;CancelWeaponInput();}
             if(refill.Interrupted){hydrantStation.StopOutlet();if(hadDock)ReturnEquipment();}
-            else if(wasEmpty && (Run.Phase==FirePhase.Lost || !(previousOperator==0?left:right).GripValid))hydrantStation.StopOutlet();
+            else if(wasEmpty && (Run.Phase==FirePhase.Lost || !(previousOperator==0?left:right).Tracked || !refill.EmptyOutlet))hydrantStation.StopOutlet();
             return consumed;
         }
         bool DesktopRefill(float dt)

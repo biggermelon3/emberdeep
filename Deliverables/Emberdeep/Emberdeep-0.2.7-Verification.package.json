@@ -1,0 +1,9 @@
+{
+  "file": "E:\\GameDevelopment\\MetaHackson\\Emberdeep\\Deliverables\\Emberdeep\\Emberdeep-0.2.7-Verification.zip",
+  "version": "0.2.7",
+  "android_version_code": 10,
+  "bytes": 635752,
+  "sha256": "865dfe8edc207255d87504c00bc4d4ac46bf9ebcda421a44233c4e080a71cc64",
+  "entries": 57,
+  "scope": "Authoritative JSON, current Editor test/render evidence, two APK manifests, build reproduction scripts and device checklist. APKs separate; Word drafts excluded because layout rendering unavailable. No real headset capture or acceptance."
+}

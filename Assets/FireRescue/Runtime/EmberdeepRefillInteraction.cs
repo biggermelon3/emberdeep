@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FireRescue
 {
-    // Reuses tracked poses: full-hand grasp for the lever, existing pinch for
+    // Reuses tracked poses: the existing pinch for the lever and
     // other controls. Empty-outlet feedback never passes through tank transfer.
     public sealed class EmberdeepRefillInteraction
     {
@@ -28,7 +28,6 @@ namespace FireRescue
             {Tracked=tracked;Palm=palm;Pinch=pinch;ContactPoint=indexTip;HasContactPoint=true;}
         }
         readonly ShadowPinchGesture[] gestures={new(),new()};
-        readonly EmberdeepGripGesture[] grasps={new(),new()};
         readonly EmberdeepLeverStroke outletStroke=new();
         EmberdeepWaterSupply leverSupply;
         int operatingHand=-1;
@@ -63,7 +62,6 @@ namespace FireRescue
             leverSupply?.SampleLever(0,false,true);leverSupply=null;
             if(ActiveView && ActiveView.IsCreek)ActiveView.RestoreIntake();
             foreach(var g in gestures)g.Reset();
-            foreach(var g in grasps)g.Reset();
             outletStroke.Reset();EmptyOutlet=false;
             operatingHand=-1;operation=ActionKind.None;ValveVisualDegrees=ActionAmount=PumpTravel=0;intakePlaced=false;
             ActiveView=null;Detached=Interrupted=false;
@@ -72,7 +70,6 @@ namespace FireRescue
         {
             leverSupply?.SampleLever(0,false,true);leverSupply=null;
             foreach(var g in gestures)g.Reset();
-            foreach(var g in grasps)g.Reset();
             outletStroke.Reset();if(EmptyOutlet)ActiveView=null;EmptyOutlet=false;
             if(operation==ActionKind.Intake && ActiveView)ActiveView.RestoreIntake();
             operation=ActionKind.None;operatingHand=-1;ActionAmount=PumpTravel=0;
@@ -105,13 +102,12 @@ namespace FireRescue
             {
                 var h=i==0?left:right;
                 gestures[i].Sample(h.Tracked,h.Pinch,Mathf.Min(dt,.025f));
-                grasps[i].Sample(h.GripValid,h.GripStrength,dt);
             }
             if(EmptyOutlet)
             {
                 // An independently accepted connection changes the recipient. Never
                 // carry an empty-outlet half-stroke into a newly docked tank.
-                if(supply.Locked){Reset();Hint="Tool connected - open your hand before gripping the lever";return true;}
+                if(supply.Locked){Reset();Hint="Tool connected - release, then pinch the lever";return true;}
                 return ProcessEmptyLever(run,held,holdingHand,left,right);
             }
             if(!supply.Locked)
@@ -121,7 +117,7 @@ namespace FireRescue
                     for(int i=0;i<2;i++)
                     {
                         var free=i==0?left:right;
-                        if((held && holdingHand==i) || !free.GripValid || !grasps[i].Pressed || Vector3.Distance(free.GraspContact,hydrant.Lever.position)>.10f)continue;
+                        if((held && holdingHand==i) || !free.Tracked || !gestures[i].Pressed || Vector3.Distance(free.Contact,hydrant.Lever.position)>.10f)continue;
                         supply.Interrupt("Empty outlet - dock a tool to collect water");
                         ActiveView=hydrant;EmptyOutlet=true;outletStroke.Reset();
                         BeginLever(run,free,i);
@@ -137,7 +133,7 @@ namespace FireRescue
                 bool accepted=supply.SampleDock(view==hydrant?WaterSourceKind.Hydrant:WaterSourceKind.Creek,holdingHand,distance,angle,true,dt);
                 if(accepted)
                 {
-                    ActiveView=view;foreach(var g in gestures)g.Reset();foreach(var g in grasps)g.Reset();outletStroke.Reset();
+                    ActiveView=view;foreach(var g in gestures)g.Reset();outletStroke.Reset();
                     intakePlaced=false;Hint="Docked. Open your hand, then operate the cyan control";
                     Snap(tool,view.Socket);
                 }
@@ -147,7 +143,7 @@ namespace FireRescue
             if(!ActiveView){ActiveView=supply.Kind==WaterSourceKind.Creek?creek:hydrant;intakePlaced=supply.IntakePlaced;}
             var owner=supply.OwnerHand==0?left:right;
             var operatorHand=operatingHand==0?left:right;
-            if(!owner.Tracked || (operatingHand>=0 && (!operatorHand.Tracked || (operation==ActionKind.Lever && !operatorHand.GripValid))))
+            if(!owner.Tracked || (operatingHand>=0 && !operatorHand.Tracked))
             {
                 supply.Interrupt("Hand tracking lost - dock again");Reset();Interrupted=true;return true;
             }
@@ -161,11 +157,11 @@ namespace FireRescue
                 var hand=i==0?left:right;
                 if(!hand.Tracked)continue;
                 if(operation==ActionKind.None && supply.Kind==WaterSourceKind.Hydrant && run.StationTier==WaterStationTier.LeverWell
-                    && hand.GripValid && grasps[i].Pressed && Vector3.Distance(hand.GraspContact,ActiveView.Lever.position)<=.10f)
+                    && gestures[i].Pressed && Vector3.Distance(hand.Contact,ActiveView.Lever.position)<=.10f)
                     BeginLever(run,hand,i);
-                bool graspAtLever=supply.Kind==WaterSourceKind.Hydrant && run.StationTier==WaterStationTier.LeverWell
-                    && hand.GripValid && Vector3.Distance(hand.GraspContact,ActiveView.Lever.position)<=.10f;
-                if(operation==ActionKind.None && gestures[i].Pressed && !graspAtLever)
+                bool pinchAtLever=supply.Kind==WaterSourceKind.Hydrant && run.StationTier==WaterStationTier.LeverWell
+                    && Vector3.Distance(hand.Contact,ActiveView.Lever.position)<=.10f;
+                if(operation==ActionKind.None && gestures[i].Pressed && !pinchAtLever)
                 {
                     Vector3 p=hand.Contact;
                     float gripDistance=Vector3.Distance(p,tool.Grip.position);
@@ -196,7 +192,7 @@ namespace FireRescue
                 Transform control=operation switch {
                     ActionKind.Valve=>ActiveView.Valve,ActionKind.Lever=>ActiveView.Lever,
                     ActionKind.Button=>ActiveView.Button,ActionKind.Pump=>ActiveView.Pump,_=>null };
-                if(control && Vector3.Distance(operation==ActionKind.Lever?hand.GraspContact:hand.Contact,control.position)>.28f)
+                if(control && Vector3.Distance(hand.Contact,control.position)>.28f)
                 {
                     // Leaving a direct control gives up its grip, without a remote
                     // wrist turn/stroke. Accepted flow remains until stopped/full.
@@ -204,10 +200,10 @@ namespace FireRescue
                     if(operation==ActionKind.Lever){supply.SampleLever(0,false,true);leverSupply=null;}
                     else if(operation==ActionKind.Pump)supply.SamplePump(0,false,true);
                     else if(operation==ActionKind.Button)supply.SampleButton(false,true);
-                    gestures[i].Reset();grasps[i].Reset();operation=ActionKind.None;operatingHand=-1;ActionAmount=PumpTravel=0;
+                    gestures[i].Reset();operation=ActionKind.None;operatingHand=-1;ActionAmount=PumpTravel=0;
                     continue;
                 }
-                bool closed=operation==ActionKind.Lever?grasps[i].Closed:gestures[i].Closed;
+                bool closed=gestures[i].Closed;
                 if(operation==ActionKind.Valve)
                 {
                     // Rotation around the fixture's axis; yaw/translation cannot turn the valve.
@@ -234,7 +230,7 @@ namespace FireRescue
                 }
                 else if(operation==ActionKind.Lever)
                 {
-                    float travel=Vector3.Dot(pumpStart-hand.GraspContact,ActiveView.transform.up);
+                    float travel=Vector3.Dot(pumpStart-hand.Palm.position,ActiveView.transform.up);
                     ActionAmount=Mathf.Clamp(travel,0,.12f);
                     supply.SampleLever(travel,closed,true);
                 }
@@ -249,8 +245,8 @@ namespace FireRescue
         }
         void BeginLever(FireRun run,Hand hand,int index)
         {
-            operation=ActionKind.Lever;operatingHand=index;pumpStart=hand.GraspContact;ActionAmount=0;
-            gestures[index].Reset(); // Its closing fingers cannot also detach a tool.
+            operation=ActionKind.Lever;operatingHand=index;pumpStart=hand.Palm.position;ActionAmount=0;
+            // Keep this pinch held; operation ownership prevents the same pinch detaching a tool.
             leverSupply=EmptyOutlet?null:run.Supply;
             if(EmptyOutlet)outletStroke.Sample(0,true,true);else run.Supply.SampleLever(0,true,true);
         }
@@ -258,11 +254,11 @@ namespace FireRescue
         {
             var hand=operatingHand==0?left:right;
             if(!ActiveView || !ActiveView.gameObject.activeInHierarchy || run.StationTier!=WaterStationTier.LeverWell || run.Phase==FirePhase.Lost
-                || !hand.GripValid || (held && holdingHand==operatingHand) || Vector3.Distance(hand.GraspContact,ActiveView.Lever.position)>.28f)
-            {Reset();Hint="Lever released - open your hand to grip again";return true;}
-            if(!grasps[operatingHand].Closed)
-            {Reset();Hint="Dock a tool to collect water, or grip the lever to try it";return true;}
-            float travel=Vector3.Dot(pumpStart-hand.GraspContact,ActiveView.transform.up);
+                || !hand.Tracked || (held && holdingHand==operatingHand) || Vector3.Distance(hand.Contact,ActiveView.Lever.position)>.28f)
+            {Reset();Hint="Lever released - release, then pinch again";return true;}
+            if(!gestures[operatingHand].Closed)
+            {Reset();Hint="Dock a tool to collect water, or pinch the lever to try it";return true;}
+            float travel=Vector3.Dot(pumpStart-hand.Palm.position,ActiveView.transform.up);
             ActionAmount=Mathf.Clamp(travel,0,.12f);
             if(outletStroke.Sample(travel,true,true))OutletStroke?.Invoke(EmberdeepWaterSupply.PumpUnits);
             Hint=outletStroke.ReturnRequired?"Raise the lever to splash water from the empty outlet":"Lower and return the lever - dock a tool to collect water";

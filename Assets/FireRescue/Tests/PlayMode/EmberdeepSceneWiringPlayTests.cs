@@ -103,10 +103,10 @@ namespace FireRescue.Tests
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(game.Arena.position+Vector3.up,Quaternion.identity),Open);
             game.ProcessRefillHands(hand==0?sample:idle,hand==1?sample:idle,Dt);
         }
-        void LeverSample(int hand,Pose palm,float strength,int frames=1)
+        void LeverSample(int hand,Pose palm,float closure,int frames=1)
         {
-            var sample=new EmberdeepRefillInteraction.Hand(true,palm,Open,palm.position)
-                {GripValid=true,GripStrength=strength,GripContact=palm.position,HasGripContact=true};
+            var sample=new EmberdeepRefillInteraction.Hand(true,palm,closure>.5f?Closed:Open,palm.position)
+                {GripValid=false,GripStrength=0};
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(game.Arena.position+Vector3.up,Quaternion.identity),Open);
             for(int i=0;i<frames;i++)game.ProcessRefillHands(hand==0?sample:idle,hand==1?sample:idle,Dt);
         }

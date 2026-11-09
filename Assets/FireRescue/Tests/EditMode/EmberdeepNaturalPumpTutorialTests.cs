@@ -4,14 +4,14 @@ namespace FireRescue.Tests
 {
     public sealed class EmberdeepNaturalPumpTutorialTests
     {
-        [Test] public void NoToolOffersNaturalGraspTrialAndKeepsEmptyReturnSeparateFromTankState()
+        [Test] public void NoToolOffersPinchTrialAndKeepsEmptyReturnSeparateFromTankState()
         {
             var run=new FireRun();float water=run.Water;
             var trial=EmberdeepRefillTutorial.Describe(run,false,false,true);
             Assert.AreEqual(EmberdeepRefillTutorial.Step.TryPump,trial.Stage);
             Assert.AreEqual(EmberdeepRefillTutorial.Target.Lever,trial.Focus);
-            Assert.That(trial.Text,Does.Contain("wrap fingers").And.Contain("Dock a tool"));
-            Assert.That(trial.Text.ToLowerInvariant(),Does.Not.Contain("pinch"));
+            Assert.That(trial.Text,Does.Contain("Dock a tool"));
+            Assert.That(trial.Text.ToLowerInvariant(),Does.Contain("pinch").And.Not.Contain("wrap fingers"));
             var down=EmberdeepRefillTutorial.Describe(run,false,false,true,false,true,false);
             var back=EmberdeepRefillTutorial.Describe(run,false,false,true,false,true,true);
             Assert.AreEqual(EmberdeepRefillTutorial.Step.LowerLever,down.Stage);
@@ -21,7 +21,7 @@ namespace FireRescue.Tests
             Assert.AreEqual(water,run.Water);Assert.Zero(run.SuppliedWater);
         }
 
-        [Test] public void ConnectedLeverUsesWrapGraspWhileHeldToolAndCreekKeepTheirOwnInstructions()
+        [Test] public void ConnectedLeverUsesPinchWhileHeldToolAndCreekKeepTheirOwnInstructions()
         {
             var run=new FireRun();
             Assert.AreEqual(EmberdeepRefillTutorial.Target.Socket,EmberdeepRefillTutorial.Describe(run,false,true,true).Focus);
@@ -30,8 +30,8 @@ namespace FireRescue.Tests
             for(int i=0;i<3;i++)run.Supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.1f);
             var connected=EmberdeepRefillTutorial.Describe(run,false,false,true);
             Assert.AreEqual(EmberdeepRefillTutorial.Step.LowerLever,connected.Stage);
-            Assert.That(connected.Text,Does.Contain("wrap fingers").And.Contain("8 cm").And.Contain("+12"));
-            Assert.That(connected.Text.ToLowerInvariant(),Does.Not.Contain("pinch"));
+            Assert.That(connected.Text,Does.Contain("8 cm").And.Contain("+12"));
+            Assert.That(connected.Text.ToLowerInvariant(),Does.Contain("pinch").And.Not.Contain("wrap fingers"));
             Assert.AreEqual(EmberdeepRefillTutorial.Step.Unavailable,EmberdeepRefillTutorial.Describe(run,false,false,false,false,true,true).Stage);
         }
     }

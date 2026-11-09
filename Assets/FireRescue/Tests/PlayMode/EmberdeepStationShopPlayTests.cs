@@ -22,10 +22,10 @@ namespace FireRescue.Tests
             game.ProcessRefillHands(idle,hand,Dt);
         }
         void Open(Vector3 at,Quaternion? rotation=null){for(int i=0;i<6;i++)Sample(at,OpenPinch,rotation);}
-        void Lever(Vector3 at,float strength,int frames=1)
+        void Lever(Vector3 at,float closure,int frames=1)
         {
-            var hand=new EmberdeepRefillInteraction.Hand(true,new Pose(at,Quaternion.identity),OpenPinch,at)
-                {GripValid=true,GripStrength=strength,GripContact=at,HasGripContact=true};
+            var hand=new EmberdeepRefillInteraction.Hand(true,new Pose(at,Quaternion.identity),closure>.5f?ClosedPinch:OpenPinch,at)
+                {GripValid=false,GripStrength=0};
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(game.Arena.position+Vector3.up,Quaternion.identity),OpenPinch);
             for(int i=0;i<frames;i++)game.ProcessRefillHands(idle,hand,Dt);
         }

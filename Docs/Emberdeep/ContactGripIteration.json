@@ -41,8 +41,8 @@
   "resources": "Existing production hand meshes and procedural pose data. Existing graybox well, hydrant shell, button station and water shader. No full-body IK rig, new hand tracking provider or physical per-finger collision claim.",
   "pages": [
     {
-      "title": "0 2 6 Anchored Hand Contact and Natural Lever Grasp",
-      "intro": "CURRENT candidate responding to user feedback that held hands still rotated and lever pinch felt misleading. Use an analytic display wrist constraint, staged finger closure and natural whole-hand lever input.",
+      "title": "Historical 0 2 6 Anchored Hand Contact and Natural Lever Grasp",
+      "intro": "HISTORICAL 0.2.6; pinch acquisition supersedes full-grip input in 0.2.7. Historical candidate responding to user feedback that held hands still rotated and lever pinch felt misleading. Use an analytic display wrist constraint, staged finger closure and natural whole-hand lever input.",
       "blocks": [
         {
           "kind": "p",
@@ -63,8 +63,8 @@
       ]
     },
     {
-      "title": "0 2 6 Empty Outlet Pumping and Verification",
-      "intro": "The pump responds even without a docked tool. Its visible outlet communicates where water comes out and why a tool should be connected.",
+      "title": "Historical 0 2 6 Empty Outlet Pumping and Verification",
+      "intro": "HISTORICAL 0.2.6; pinch acquisition supersedes full-grip input in 0.2.7. The pump responds even without a docked tool. Its visible outlet communicates where water comes out and why a tool should be connected.",
       "blocks": [
         {
           "kind": "p",
@@ -88,7 +88,7 @@
         },
         {
           "kind": "p",
-          "text": "Current 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance."
+          "text": "Historical 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance."
         }
       ]
     }
@@ -110,5 +110,7 @@
       "inconclusive": 0,
       "path": "Logs/EmberdeepContactGrip/FinalCalibration/PlayMode-results.json"
     }
-  }
+  },
+  "record_scope": "HISTORICAL 0.2.6. Whole-hand acquisition superseded by PinchRestore.json after user-reported failure; historical verification below is preserved.",
+  "subsequent_user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical."
 }

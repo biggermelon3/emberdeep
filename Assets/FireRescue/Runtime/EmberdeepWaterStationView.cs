@@ -114,7 +114,7 @@ namespace FireRescue
                 new Vector3(.035f,.031f,.035f),Cyan,waterMaterial).transform.localRotation=Quaternion.Euler(0,0,90);
             Part("Well lever hinge",PrimitiveType.Cylinder,leverPivot,Vector3.zero,
                 new Vector3(.032f,.019f,.032f),Charcoal,darkMaterial).transform.localRotation=Quaternion.Euler(0,0,90);
-            leverInstruction=Label("Lever instruction",controls,new Vector3(-.13f,.255f,.005f),"GRASP / LOWER + RETURN",.008f,Cream).transform;
+            leverInstruction=Label("Lever instruction",controls,new Vector3(-.13f,.255f,.005f),"PINCH / LOWER + RETURN",.008f,Cream).transform;
             // WS-05 replacement contract: Button is the neutral contact point;
             // ButtonVisual depresses into the station (+local Z), never the anchor.
             Button=Anchor("Button",controls,new Vector3(-.13f,.17f,-.025f));

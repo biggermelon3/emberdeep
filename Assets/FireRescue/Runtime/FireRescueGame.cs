@@ -221,8 +221,8 @@ namespace FireRescue
             {
                 for(int hand=0;hand<2;hand++)
                 {
-                    bool tracked=hands.ReadHand(hand==0,out var pose,out _,out var distance);
-                    if((!grip.Held || grip.Hand!=hand) && ((refill.OwnsControl && refill.OperatingHand==hand) || (tracked && NearWellLever(hand,pose))))
+                    bool tracked=hands.ReadHand(hand==0,out var pose,out var tip,out var distance);
+                    if((!grip.Held || grip.Hand!=hand) && ((refill.OwnsControl && refill.OperatingHand==hand) || (tracked && NearWellLever(tip))))
                     {grip.Sample(hand,false,distance,Vector3.zero,rackView.Grip.position,false,Time.unscaledDeltaTime);continue;}
                     bool wasHeld=grip.Held;
                     if(grip.Sample(hand,tracked,distance,GripPoint(hand==0,pose),rackView.Grip.position,Run.Owns(SelectedEquipment),Time.unscaledDeltaTime))

@@ -10,8 +10,8 @@ namespace FireRescue.Tests
 {
     public sealed class EmberdeepEmptyPumpGameTests
     {
-        [UnityTest] public IEnumerator LeftEmptyGraspDrivesOutletWithoutWaterOrSameHandUI()=>Run(0);
-        [UnityTest] public IEnumerator RightEmptyGraspDrivesOutletWithoutWaterOrSameHandUI()=>Run(1);
+        [UnityTest] public IEnumerator LeftEmptyPinchDrivesOutletWithoutGripDataWaterOrSameHandUI()=>Run(0);
+        [UnityTest] public IEnumerator RightEmptyPinchDrivesOutletWithoutGripDataWaterOrSameHandUI()=>Run(1);
         IEnumerator Run(int hand)
         {
             EmberdeepSession.NewExpedition();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
@@ -20,10 +20,10 @@ namespace FireRescue.Tests
             game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
             game.ReturnEquipment();var station=game.HydrantStation;var home=station.Lever.position;
             float water=game.Run.Water,supplied=game.Run.SuppliedWater;int coins=game.Run.Coins;
-            void Sample(float strength,Vector3 contact,int count=1,bool valid=true)
+            void Sample(float closure,Vector3 contact,int count=1,bool valid=true)
             {
-                var active=new EmberdeepRefillInteraction.Hand(valid,new Pose(contact,station.Lever.rotation),.04f,contact)
-                    {GripValid=valid,GripStrength=strength,GripContact=contact,HasGripContact=true};
+                var active=new EmberdeepRefillInteraction.Hand(valid,new Pose(contact,station.Lever.rotation),closure>.5f?.01f:.04f,contact)
+                    {GripValid=false,GripStrength=0};
                 var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(home+Vector3.up,Quaternion.identity),.04f);
                 for(int i=0;i<count;i++)game.ProcessRefillHands(hand==0?active:idle,hand==1?active:idle,.025f);
             }
@@ -42,7 +42,7 @@ namespace FireRescue.Tests
             Assert.IsTrue(station.OutletActive,"The production event wiring starts visible empty-outlet water");
             Assert.AreEqual(water,game.Run.Water);Assert.AreEqual(supplied,game.Run.SuppliedWater);Assert.AreEqual(coins,game.Run.Coins);
             Sample(1,home,1,false);Assert.IsFalse(station.OutletActive);Assert.IsFalse(game.RefillInteraction.OwnsControl);
-            // A tracked fist returning after loss is not a new grasp.
+            // A tracked held pinch returning after loss is not a fresh press.
             Sample(1,home,12);Assert.IsFalse(game.RefillInteraction.OwnsControl);
             Assert.IsTrue(game.TakeEquipment(1-hand),"The other hand can take the owned tool after empty-pump tracking loss");
             Assert.AreEqual(hand==1,game.LeftHanded);

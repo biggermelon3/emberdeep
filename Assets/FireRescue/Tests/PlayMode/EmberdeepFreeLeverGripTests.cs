@@ -5,7 +5,7 @@ using UnityEngine.TestTools;
 
 namespace FireRescue.Tests
 {
-    // Full-hand samples target the real station anchors. Empty strokes drive
+    // Pinch samples target the real station anchors with grip data unavailable. Empty strokes drive
     // only a presentation event, without pretending a tank is docked.
     public sealed class EmberdeepFreeLeverGripTests
     {
@@ -30,12 +30,12 @@ namespace FireRescue.Tests
             input.OutletStroke+=v=>{events++;outletUnits+=v;};
         }
         [TearDown] public void Cleanup(){if(root)Object.Destroy(root);if(material)Object.Destroy(material);}
-        void Sample(int hand,float strength,Vector3 contact,bool held=false,int toolHand=1,bool valid=true,bool gripValid=true,float pinch=.04f,float dt=.025f)
+        void Sample(int hand,float closure,Vector3 contact,bool held=false,int toolHand=1,bool valid=true,bool gripValid=false,float? pinch=null,float dt=.025f,Vector3? palmPosition=null,float gripStrength=0)
         {
-            var active=new EmberdeepRefillInteraction.Hand(valid,new Pose(contact+Vector3.right*.06f,Quaternion.identity),pinch,contact)
-                {GripValid=gripValid,GripStrength=strength,GripContact=contact,HasGripContact=true};
+            var active=new EmberdeepRefillInteraction.Hand(valid,new Pose(palmPosition??contact+Vector3.right*.06f,Quaternion.identity),pinch??(closure>.5f?.01f:.04f),contact)
+                {GripValid=gripValid,GripStrength=gripStrength,GripContact=contact,HasGripContact=true};
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(Vector3.up*2,Quaternion.identity),.04f)
-                {GripValid=true,GripStrength=0};
+                {GripValid=false,GripStrength=0};
             input.Process(run,tool,station,creek,held,toolHand,hand==0?active:idle,hand==1?active:idle,dt);
         }
         void Grasp(int hand,bool held=false,int toolHand=1)
@@ -45,8 +45,8 @@ namespace FireRescue.Tests
         }
         void Stroke(int hand,bool held=false,int toolHand=1)
         {Sample(hand,1,station.Lever.position-Vector3.up*.085f,held,toolHand);Sample(hand,1,station.Lever.position,held,toolHand);}
-        [UnityTest] public IEnumerator LeftFistPumpsEmptyOutletWithoutPinchingOrChangingEconomy()=>EmptyCycles(0);
-        [UnityTest] public IEnumerator RightFistPumpsEmptyOutletWithoutPinchingOrChangingEconomy()=>EmptyCycles(1);
+        [UnityTest] public IEnumerator LeftPinchPumpsEmptyOutletWithoutGripDataOrChangingEconomy()=>EmptyCycles(0);
+        [UnityTest] public IEnumerator RightPinchPumpsEmptyOutletWithoutGripDataOrChangingEconomy()=>EmptyCycles(1);
         IEnumerator EmptyCycles(int hand)
         {
             run.StartStage();var first=run.Trees[0];float heat=first.Heat,water=run.Water;int coins=run.Coins;
@@ -57,13 +57,37 @@ namespace FireRescue.Tests
             Assert.Zero(run.SuppliedWater);Assert.Zero(run.ConsumedWater);Assert.AreEqual(heat,first.Heat);Assert.AreEqual(TreeState.Burning,first.State);
             Assert.IsFalse(run.Supply.Locked);Assert.IsFalse(input.Interrupted);yield return null;
         }
-        [UnityTest] public IEnumerator PinchOnlySamplesNeverImplyFullHandGrip()
+        [UnityTest] public IEnumerator FullFistWithoutPinchCannotAcquireConnectedOrEmptyLever()
         {
+            for(int i=0;i<5;i++)Sample(0,0,station.Lever.position,gripValid:true);
+            for(int i=0;i<8;i++)Sample(0,1,station.Lever.position,gripValid:true,pinch:.04f,gripStrength:1);
+            Assert.IsFalse(input.OwnsControl);Assert.Zero(events);
             for(int i=0;i<5;i++)run.Supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.05f);
             Assert.IsTrue(run.Supply.Locked);
-            for(int i=0;i<8;i++)Sample(0,0,station.Lever.position,gripValid:false);
-            for(int i=0;i<8;i++)Sample(0,0,station.Lever.position,gripValid:false,pinch:.01f);
+            for(int i=0;i<8;i++)Sample(0,0,station.Lever.position,gripValid:true);
+            for(int i=0;i<8;i++)Sample(0,1,station.Lever.position,gripValid:true,pinch:.04f,gripStrength:1);
             Assert.IsFalse(input.OwnsControl);Assert.Zero(events);Assert.IsTrue(run.Supply.Locked);Assert.Zero(run.SuppliedWater);yield return null;
+        }
+        [UnityTest] public IEnumerator IndexContactAcquiresButOnlyPalmTravelCompletesStrokeWithoutGripData()
+        {
+            var home=station.Lever.position;var palm=home+Vector3.right*.16f;
+            for(int i=0;i<5;i++)Sample(0,0,home,palmPosition:palm);
+            Sample(0,1,home,palmPosition:palm);
+            Assert.IsTrue(input.OwnsControl,"Near index fingertip acquires even when palm is outside the acquisition radius");
+            Sample(0,1,home,palmPosition:palm);
+            Assert.IsTrue(input.OwnsControl,"BeginLever must not reset the pinch that just acquired ownership");
+            Sample(0,1,home-Vector3.up*.09f,palmPosition:palm);Sample(0,1,home,palmPosition:palm);
+            Assert.Zero(events,"Moving only the index tip is not a pump stroke");
+            Sample(0,1,home,palmPosition:palm-Vector3.up*.085f);Assert.IsTrue(input.EmptyLeverReturnRequired);Assert.Zero(events);
+            Sample(0,1,home,palmPosition:palm);Assert.AreEqual(1,events);Assert.AreEqual(12,outletUnits);
+            for(int i=0;i<8;i++)Sample(0,1,home,palmPosition:palm);Assert.AreEqual(1,events);yield return null;
+        }
+        [UnityTest] public IEnumerator FarIndexCannotAcquireEvenWithPalmAndFullGripAtLever()
+        {
+            var home=station.Lever.position;var index=home+Vector3.right*.12f;
+            for(int i=0;i<5;i++)Sample(0,0,index,palmPosition:home,gripValid:true,gripStrength:1);
+            for(int i=0;i<5;i++)Sample(0,1,index,palmPosition:home,gripValid:true,gripStrength:1);
+            Assert.IsFalse(input.OwnsControl);Assert.Zero(events);yield return null;
         }
         [UnityTest] public IEnumerator OtherHandCanPumpWhileToolHandCannotStealTheLever()
         {
@@ -81,7 +105,7 @@ namespace FireRescue.Tests
             Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.085f);Sample(0,1,station.Lever.position,valid:false);
             Assert.Zero(events);Assert.IsFalse(input.OwnsControl);Assert.IsFalse(input.Interrupted);
             for(int i=0;i<10;i++)Sample(0,1,station.Lever.position);
-            Assert.IsFalse(input.OwnsControl,"Recovery with a closed fist requires an open hand first");yield return null;
+            Assert.IsFalse(input.OwnsControl,"Recovery with a held pinch requires opening first");yield return null;
         }
         [UnityTest] public IEnumerator DockingAfterEmptyHalfStrokeCannotCreditTheNewTank()
         {

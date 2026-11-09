@@ -1,6 +1,6 @@
 {
-  "candidate": "0.2.6 / Android code 9",
-  "status": "User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO pending. Preserve version-scoped prior observations.",
+  "candidate": "0.2.7 / Android code 10",
+  "status": "Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending. The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
   "devices": [
     "PICO 4 (performance baseline)",
     "Quest 3"
@@ -33,7 +33,7 @@
     },
     {
       "id": "M1-DEVICE-03",
-      "action": "Start a new expedition. Empty the extinguisher, align its blue connector and dock. Open the free hand, wrap fingers around the lever without an index-thumb pinch, move down 8 cm and return within 2 cm of upper rest. Repeat each hand, partial travel, jitter and release midstroke. Current 0.2.6 natural grasp acceptance is pending; existing observed text is historical 0.2.5.",
+      "action": "Start a new expedition and dock an empty tool. Release pinch near the lever, place index contact within 10 cm and pinch freshly. Keep pinching while lowering the palm 8 cm and returning within 2 cm. Repeat left/right and seated/standing. Whole-grip confidence must not be an extra gate.",
       "expected": "Only a complete down-and-return cycle adds 12 units, capped by capacity. No idle or partial-cycle refill. Grip pose follows the lever. The tutorial changes from down to return and then to full/disconnect. Zero water never prevents reaching the source.",
       "observed": "User answered both are normal when asked whether the system-menu hand holds/restores and the full down-return well cycle refills. Version 0.2.5 / code 8 on Quest 3. This does not establish every boundary, hand/posture, control upgrade or performance."
     },
@@ -117,13 +117,13 @@
       "id": "M1-DEVICE-CONTACT-LOCK",
       "action": "Hold each tool and the lever. After grip settles, rotate the physical wrist while keeping contact. Move the lever, then open/release. Repeat left/right, seated/standing and different hand sizes.",
       "expected": "The displayed palm remains seated on the grip relative to the tool/control, with gradual closure/squeeze/release. Weapon aim still follows tracking. No residual wrist roll relative to the lever; unreachable contact fades back. Check finger penetration and comfort manually.",
-      "observed": "Pending for 0.2.6."
+      "observed": "0.2.7 PENDING. User reported 0.2.6 full-grip well operation unusable; historical tests did not establish usability."
     },
     {
       "id": "M1-DEVICE-EMPTY-GRASP",
-      "action": "Leave tool on rack. Open hand near lever, close whole hand, lower 8 cm and return. Try pinch-only, repeated fist, incomplete stroke and loss/recovery; repeat with a tool held in the other hand, then dock it.",
-      "expected": "Whole grasp operates pump without a tool. Empty full stroke emits a small brief water arc from docking socket; tank and coins unchanged. Pinch-only does not pump. Loss requires reopening. Connected full stroke adds 12 capped units. Empty partial stroke cannot become stored refill after docking. Same hand cannot click UI or fire while operating.",
-      "observed": "Pending for 0.2.6."
+      "action": "Leave the tool on the rack. Release pinch near the lever, pinch within 10 cm, lower 8 cm and return. Test a full fist without pinch, repeated held pinch, half-stroke release and tracking recovery; repeat with a tool in the other hand, then dock it.",
+      "expected": "Fresh pinch operates the lever without GripValid or all-finger confidence. Fist alone cannot acquire it. Empty full strokes create only a short splash; no water, damage or coins. A partial empty stroke cannot complete into a newly docked tank.",
+      "observed": "0.2.7 PENDING. User reported 0.2.6 full-grip well operation unusable; historical tests did not establish usability."
     }
   ],
   "scope_limit": "M1 validates manual supply and retained combat. Safe search, loot deposits, animals, settlement and durable recovery are not implemented by this candidate. Editor captures and synthetic hands do not establish physical acceptance.",
@@ -181,60 +181,272 @@
     "Logs/EmberdeepFlameFeedback/Editor-Flame-OriginalBaseline.png",
     "Logs/EmberdeepFlameFeedback/Editor-Flame-Refined.png"
   ],
-  "install_evidence": "Logs/EmberdeepPolish/Quest-install.json",
-  "chinese_user_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.3-Device-Checks.txt",
+  "install_evidence": "PENDING for 0.2.7",
+  "chinese_user_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.7-Device-Checks.txt",
   "current_builds": {
-    "status": "Quest and PICO APKs built; both manifests and APK SHA256 values verified",
-    "quest_apk": "Deliverables/Emberdeep/Emberdeep-0.2.3.apk",
-    "pico_apk": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.apk",
-    "release_evidence": "Logs/EmberdeepPolish/ReleaseEvidence.json",
-    "release_evidence_status": "Assembled at the referenced path",
+    "status": "Quest and PICO APKs built and audited",
     "platforms": {
       "Quest": {
-        "status": "built",
-        "version": "0.2.3",
-        "android_version_code": 6,
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.3.apk",
-        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.3.manifest.json",
-        "sha256": "74d63cf7508f9f218bc3c5e7b910740b746a74e4f76921b60fc51bc1ff3bd389",
+        "status": "BUILT_AND_AUDITED",
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.7",
+        "signatureVerified": true,
+        "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+        "target": "Quest",
+        "bytes": 105508923,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 10,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "android_version_code": 10,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7.manifest.json",
+        "audit": "Logs/EmberdeepPinchRestore/Quest-Audit.json",
         "errors": 0,
-        "warnings": 41,
-        "scene_whitelist_passed": true,
-        "reported_scenes": [
-          "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
-          "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
-        ]
+        "settings_restoration": {
+          "changed": [],
+          "audited_count": 28,
+          "unchanged": true,
+          "path": "Logs/EmberdeepPinchRestore/Quest-SettingsRestoration.json"
+        }
       },
-      "PICO": {
-        "status": "built",
-        "version": "0.2.3",
-        "android_version_code": 6,
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.apk",
-        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.manifest.json",
-        "sha256": "66b73a5df8abf2a3320ba61f3dce7171277bf29cf9af08e9c20a77552ba44f40",
+      "Pico": {
+        "status": "BUILT_AND_AUDITED",
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.7",
+        "signatureVerified": true,
+        "sha256": "06bb290fed74218bcc5b7edd247bceace8d575281f6b30d1f6f9d8b85a27d2e2",
+        "target": "Pico",
+        "bytes": 87208527,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 10,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "android_version_code": 10,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.apk",
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.manifest.json",
+        "audit": "Logs/EmberdeepPinchRestore/Pico-Audit.json",
         "errors": 0,
-        "warnings": 45,
-        "scene_whitelist_passed": true,
-        "reported_scenes": [
-          "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
-          "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
-        ]
+        "settings_restoration": {
+          "changed": [],
+          "audited_count": 28,
+          "unchanged": true,
+          "path": "Logs/EmberdeepPinchRestore/Pico-SettingsRestoration.json"
+        }
       }
     },
-    "scene_whitelist": "Both manifests report only EmberdeepCamp and EmberdeepFireground; sceneWhitelistPassed=true; errors=0.",
-    "settings_restoration": {
-      "Quest": {
-        "status": "verified",
-        "files": 28,
-        "unchanged": true,
-        "path": "Logs/EmberdeepPolish/QuestSettings-restoration.json"
+    "release_evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json"
+  },
+  "historical_records": [
+    {
+      "candidate": "0.2.6 / Android code 9",
+      "status": "User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO pending. Preserve version-scoped prior observations.",
+      "scenarios": [
+        {
+          "id": "M1-DEVICE-HAND-FREEZE",
+          "action": "Start New Game, translate/rotate each wrist and curl every finger; repeat while holding equipment, after tracking loss, pause/resume, and camp/fireground round trips. Test seated and standing.",
+          "expected": "Exactly one live hand model per tracked hand follows both root and finger changes, with no stationary preview duplicate or pinch indicator. Input still responds; interruption requires fresh rearm. This is pending physical acceptance, not established by synthetic Editor passes.",
+          "observed": "User confirmed normal hand-model following after New Game on Quest 3 0.2.4. Remaining interruption/posture checks not separately confirmed."
+        },
+        {
+          "id": "M1-DEVICE-01",
+          "action": "Cold-launch forward and sideways. Use a relaxed hand to aim the system hand pointer at Settings; pinch with that hand. Repeat all camp, settings, quit, shop and HUD buttons with each hand. Move the finger to pinch without deliberately compensating with the wrist. Aim away from all UI and then at a target behind or outside the current view.",
+          "expected": "Stable front eye-height menu. Cyan ray/cursor appear only on an eligible in-view target, with no duplicate native ray. System hand aim remains usable during pinch; the other hand and a held pinch cannot activate it. Offscreen targets do not own input. Record actual failures without expanding the earlier front-position-only confirmation."
+        },
+        {
+          "id": "M1-DEVICE-02",
+          "action": "Take the extinguisher, open the hand, then pinch to spray until empty. Wait with the hand open.",
+          "expected": "Pickup pinch does not fire. Water follows the visible arc. Empty tank stays empty. Reachable cyan free water station remains available."
+        },
+        {
+          "id": "M1-DEVICE-03",
+          "action": "Start a new expedition. Empty the extinguisher, align its blue connector and dock. Open the free hand, wrap fingers around the lever without an index-thumb pinch, move down 8 cm and return within 2 cm of upper rest. Repeat each hand, partial travel, jitter and release midstroke. Current 0.2.6 natural grasp acceptance is pending; existing observed text is historical 0.2.5.",
+          "expected": "Only a complete down-and-return cycle adds 12 units, capped by capacity. No idle or partial-cycle refill. Grip pose follows the lever. The tutorial changes from down to return and then to full/disconnect. Zero water never prevents reaching the source.",
+          "observed": "User answered both are normal when asked whether the system-menu hand holds/restores and the full down-return well cycle refills. Version 0.2.5 / code 8 on Quest 3. This does not establish every boundary, hand/posture, control upgrade or performance."
+        },
+        {
+          "id": "M1-DEVICE-04",
+          "action": "Earn coins by clearing incidents. In the existing shop buy the 100-coin rotary upgrade, then the 200-coin button upgrade when affordable. Rotary: dock, grip and turn 45 degrees, then reverse. Button: dock, press once, hold, release and press again. Repeat with one hand, seated and standing.",
+          "expected": "Each purchase changes the control and hand pose without giving water. Rotary tap and incomplete turns give no flow. Button fresh press starts 30 units/s, second fresh press stops; held pinch never toggles repeatedly. Full/interruption stops flow. Disconnect requires deliberate open-hand rearm before firing."
+        },
+        {
+          "id": "M1-DEVICE-05",
+          "action": "In sector two, dock at the creek, pinch the intake, move it to the marked water socket and release. Pull its pump 8 cm and return to within 2 cm of home.",
+          "expected": "Only a complete connected stroke adds 12 units, clamped at capacity. Partial strokes, decorative water contact and idle pumping give nothing."
+        },
+        {
+          "id": "M1-DEVICE-06",
+          "action": "Interrupt filling and an extended pump stroke by covering the operating hand, suspending the headset, or losing focus. Resume while pinching.",
+          "expected": "Flow and weapon charge stop safely; incomplete stroke is discarded. Intake returns safely. Resume never opens flow or launches a shot; reconnect and deliberately rearm."
+        },
+        {
+          "id": "M1-DEVICE-07",
+          "action": "While docked, aim the contextual system hand ray at REFILL ASSIST and pinch with that same hand. Keep the pinch closed near the valve/pump. Then open and perform a new action. Attempt to point at Return Tool while still docked.",
+          "expected": "The UI pinch does not operate a second control. Supply ownership prevents unrelated UI actions. Assistance pauses hazards only; it does not grant water or override lost tracking. Subsequent deliberate station operation works."
+        },
+        {
+          "id": "M1-DEVICE-08",
+          "action": "Clear an incident, point and same-hand pinch Gear Shop, Next/Previous, Buy, Tune and Back; repeat with each hand. Return to camp and Continue, then Retry an active sector. During cannon charge, point at a HUD button and then release the pinch.",
+          "expected": "Shop and HUD use the same hand-ray interaction as camp. Opening a modal or hovering UI cancels charge; release cannot launch a shot and a held UI pinch cannot act again. New equipment is empty; switching/upgrading/changing sector does not fill it. Camp preserves in-memory water. Retry restores entry water and earnings together."
+        },
+        {
+          "id": "M1-DEVICE-09",
+          "action": "With the cannon, test pinch charge and its cyan offhand pump. Begin charge, dock to supply, then operate the separate creek pump.",
+          "expected": "Docking cancels the shot. Refill motion never charges or fires the cannon. After disconnect and fresh-open rearm both cannon controls remain usable."
+        },
+        {
+          "id": "M1-DEVICE-10",
+          "action": "Repeat each core action with left/right hands while seated/standing. Play ten minutes, including later incident particles and hand occlusion.",
+          "expected": "No excessive reach, bending, lost source or progression lock. Record actual frame timing against the proposed 72 Hz /13.9 ms target; do not infer performance from Editor results."
+        },
+        {
+          "id": "M1-DEVICE-11",
+          "action": "Use camp, Quit confirmation and Android Back paths; relaunch the app.",
+          "expected": "No route reaches shared, shadow or car scenes. Quit remains deliberate. M1 has no durable save: relaunch starts a new expedition; M2 persistence remains explicitly pending."
+        },
+        {
+          "id": "M1-DEVICE-12",
+          "action": "Inspect the Art V2 terrain, trees, cabin, hydrant and creek pump in both eyes. Test active flames, smoke, water strands, wet/scorched surfaces, and return to camp. Record worst observed CPU/GPU timing on PICO 4 and repeat compatibility checks on Quest 3.",
+          "expected": "UI rays and cyan controls remain legible without hiding the work area. No distracting stereo artifacts or oversized tool shadows. Camp restores its prior rendering configuration. Asset budgets and Editor screenshots do not substitute for measured headset frame timing."
+        },
+        {
+          "id": "IP-DEVICE-01",
+          "action": "Hold each tool with both hands in turn; inspect contact at the thumb/index midpoint. Move the hand into the defined tool, hydrant and tabletop solid interiors, and then around handle gaps and outside island corners. Repeat after tracking loss, camp return and source disconnection.",
+          "expected": "No duplicate hand mesh or native always-on ray. Hand pixels inside configured solids disappear; external fingers and handle openings remain visible. Releasing/removing a solid restores visibility. Camera and tracked skeleton are never forced away. This is visual clipping only, not physical hand collision or authored finger wrap."
+        },
+        {
+          "id": "IP-DEVICE-02",
+          "action": "Ask a first-time tester to refill at the hydrant and creek using only the station cues. Try fingertip contact with an undocked valve, interrupted pump strokes and empty/full tanks.",
+          "expected": "Cue and marker identify one current step, advance only from accepted supply state, and explain interruption. Undocked contact and tutorial display never grant water. Empty tank always retains access to free supply."
+        },
+        {
+          "id": "IP-DEVICE-03",
+          "action": "Compare the restored soft flame contour before and after accepted water hits, at close tabletop distance and in both eyes. Measure the active-fire scene on PICO 4.",
+          "expected": "Broad soft-alpha flame rather than an opaque triangle; readable contraction/extinguishing, retained water curve and controlled smoke. Record measured frame timings and stereo defects separately from Editor screenshots."
+        },
+        {
+          "id": "M1-DEVICE-SYSTEM-HAND-HOLD",
+          "action": "While holding a tool, turn the palm toward the face to invoke Quest system controls; also test ordinary occlusion and pause. Return with pinch still held, then open and pinch deliberately.",
+          "expected": "While the app can render, the last app-valid hand stays at its world pose and the tool does not jump or fire. Flow and charge stop. Reacquisition restores exactly one live hand. The app cannot draw over an OS compositor takeover or run while fully suspended.",
+          "observed": "User answered both are normal when asked whether the system-menu hand holds/restores and the full down-return well cycle refills. Version 0.2.5 / code 8 on Quest 3. This does not establish every boundary, hand/posture, control upgrade or performance."
+        },
+        {
+          "id": "M1-DEVICE-ACTION-POSES",
+          "action": "With left and right hands inspect extinguisher hold/squeeze, pistol trigger, cannon support/offhand pull, lever wrap, valve grasp, creek intake carry/pump and button point/press.",
+          "expected": "Each operation has the corresponding smooth visual pose; no generic pinch silhouette for every action. Wrist correction is bounded and does not move input or the camera. Record contact fit/clipping/discomfort; this is not full physical finger collision."
+        },
+        {
+          "id": "M1-DEVICE-STATION-CHECKPOINT",
+          "action": "Upgrade between incidents, continue, return to camp and resume, then retry. Start New Game and separately close/reopen the app.",
+          "expected": "Camp keeps in-memory tier. Retry restores entry tier, tools, tuning, coins and tanks together. New expedition starts at the lever well. No durable expedition save is claimed."
+        },
+        {
+          "id": "M1-DEVICE-CONTACT-LOCK",
+          "action": "Hold each tool and the lever. After grip settles, rotate the physical wrist while keeping contact. Move the lever, then open/release. Repeat left/right, seated/standing and different hand sizes.",
+          "expected": "The displayed palm remains seated on the grip relative to the tool/control, with gradual closure/squeeze/release. Weapon aim still follows tracking. No residual wrist roll relative to the lever; unreachable contact fades back. Check finger penetration and comfort manually.",
+          "observed": "Pending for 0.2.6."
+        },
+        {
+          "id": "M1-DEVICE-EMPTY-GRASP",
+          "action": "Leave tool on rack. Open hand near lever, close whole hand, lower 8 cm and return. Try pinch-only, repeated fist, incomplete stroke and loss/recovery; repeat with a tool held in the other hand, then dock it.",
+          "expected": "Whole grasp operates pump without a tool. Empty full stroke emits a small brief water arc from docking socket; tank and coins unchanged. Pinch-only does not pump. Loss requires reopening. Connected full stroke adds 12 capped units. Empty partial stroke cannot become stored refill after docking. Same hand cannot click UI or fire while operating.",
+          "observed": "Pending for 0.2.6."
+        }
+      ],
+      "current_builds": {
+        "status": "Quest and PICO APKs built; both manifests and APK SHA256 values verified",
+        "quest_apk": "Deliverables/Emberdeep/Emberdeep-0.2.3.apk",
+        "pico_apk": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.apk",
+        "release_evidence": "Logs/EmberdeepPolish/ReleaseEvidence.json",
+        "release_evidence_status": "Assembled at the referenced path",
+        "platforms": {
+          "Quest": {
+            "status": "built",
+            "version": "0.2.3",
+            "android_version_code": 6,
+            "apk": "Deliverables/Emberdeep/Emberdeep-0.2.3.apk",
+            "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.3.manifest.json",
+            "sha256": "74d63cf7508f9f218bc3c5e7b910740b746a74e4f76921b60fc51bc1ff3bd389",
+            "errors": 0,
+            "warnings": 41,
+            "scene_whitelist_passed": true,
+            "reported_scenes": [
+              "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
+              "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
+            ]
+          },
+          "PICO": {
+            "status": "built",
+            "version": "0.2.3",
+            "android_version_code": 6,
+            "apk": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.apk",
+            "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.3-Pico.manifest.json",
+            "sha256": "66b73a5df8abf2a3320ba61f3dce7171277bf29cf9af08e9c20a77552ba44f40",
+            "errors": 0,
+            "warnings": 45,
+            "scene_whitelist_passed": true,
+            "reported_scenes": [
+              "Assets/FireRescue/Scenes/EmberdeepCamp.unity",
+              "Assets/FireRescue/Scenes/EmberdeepFireground.unity"
+            ]
+          }
+        },
+        "scene_whitelist": "Both manifests report only EmberdeepCamp and EmberdeepFireground; sceneWhitelistPassed=true; errors=0.",
+        "settings_restoration": {
+          "Quest": {
+            "status": "verified",
+            "files": 28,
+            "unchanged": true,
+            "path": "Logs/EmberdeepPolish/QuestSettings-restoration.json"
+          },
+          "PICO": {
+            "status": "verified",
+            "path": "Logs/EmberdeepPolish/PicoSettings-restoration.json",
+            "files": 28,
+            "unchanged": true
+          }
+        }
       },
-      "PICO": {
-        "status": "verified",
-        "path": "Logs/EmberdeepPolish/PicoSettings-restoration.json",
-        "files": 28,
-        "unchanged": true
-      }
+      "install_evidence": "Logs/EmberdeepPolish/Quest-install.json",
+      "chinese_user_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.3-Device-Checks.txt"
+    }
+  ],
+  "current_iteration_source": "PinchRestore.json",
+  "current_test_evidence": {
+    "EditMode": {
+      "status": "PASSED",
+      "total": 167,
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json"
+    },
+    "PlayMode": {
+      "status": "PASSED",
+      "total": 87,
+      "passed": 87,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+    }
+  },
+  "current_captures": {
+    "source": "Isolated Editor PlayMode with injected outlet event",
+    "paths": [
+      "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png",
+      "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png"
+    ],
+    "visual_review": "Outlet arc/drops visible in burst and absent in stopped capture; labels explicitly identify injected samples. This is presentation inspection, not physical hand acceptance.",
+    "waterTransferred": false,
+    "real_hand_tracking": false,
+    "engine_progression": {
+      "from_frame": 8782,
+      "from_time": 8.604,
+      "to_frame": 16381,
+      "to_time": 17.152,
+      "scope": "Editor engine progression observed by parent QA; no device performance inference."
     }
   }
 }

@@ -1,0 +1,292 @@
+{
+  "revision": "0.2.7",
+  "date": "2026-11-09",
+  "candidate": {
+    "version": "0.2.7",
+    "android_version_code": 10
+  },
+  "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
+  "user_feedback": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
+  "authority": "Explicit latest user instruction supersedes the 0.2.6 full-grip acquisition requirement only. Retain its contact presentation and empty-outlet behavior.",
+  "requirements": [
+    {
+      "id": "PR-01 / GD-HAND-01 / WS-05",
+      "rule": "Acquire the starter lever with a fresh existing ShadowPinchGesture edge when index contact is within 10 cm. GripValid, whole-hand curl and per-finger confidence are not extra gates. A full fist without pinch does not acquire it.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/ShadowWorkshop/Runtime/ShadowPinchGesture.cs",
+        "Assets/FireRescue/Runtime/FireRescueGame.Water.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepFreeLeverGripTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepStationTierInteractionTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "id": "PR-02 / GD-WATER-01 / GD-WATER-05",
+      "rule": "Maintain pinch and measure palm translation: lower at least 8 cm and return within 2 cm of upper rest. A connected complete cycle transfers 12 units capped by capacity. Release, invalid tracking, cancellation, modal input or ownership change discards unfinished travel. Reopen before a new pinch; never complete a stored half-stroke after recovery.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepLeverStroke.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepStationTierInteractionTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "id": "PR-03 / WS-06 / GD-ECON-01",
+      "rule": "No tool is required for empty pumping. A completed unconnected pinch cycle emits a bounded cosmetic outlet splash only; no tank, damage, coins or pending transfer. A tool in the other hand is allowed; same-hand tool/control double ownership is rejected.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepRefillInteraction.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepEmptyPumpGameTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepFreeLeverGripTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepOutletFeedbackPlayTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    },
+    {
+      "id": "PR-04 / GD-HAND-02 / IP-08",
+      "rule": "Retain anchored display-hand contact, staged finger closure/release and moving LeverVisual pose. The visible closed hand is an animation; input is pinch. No new tracking provider or physical finger collision claim. Tutorial and labels describe pinch rather than whole-hand acquisition.",
+      "code": [
+        "Assets/FireRescue/Runtime/EmberdeepHandPose.cs",
+        "Assets/FireRescue/Runtime/EmberdeepHandPresentation.cs",
+        "Assets/FireRescue/Runtime/EmberdeepRefillTutorial.cs",
+        "Assets/FireRescue/Runtime/EmberdeepWaterStationView.cs"
+      ],
+      "tests": [
+        "Assets/FireRescue/Tests/EditMode/EmberdeepNaturalPumpTutorialTests.cs",
+        "Assets/FireRescue/Tests/PlayMode/EmberdeepSceneWiringPlayTests.cs"
+      ],
+      "status": "IMPLEMENTED_CANDIDATE; current Editor regression suite PASSED; device acceptance PENDING",
+      "evidence": [
+        "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json",
+        "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+      ],
+      "device_acceptance": "PENDING on Quest 3 and PICO 4"
+    }
+  ],
+  "test_evidence": {
+    "EditMode": {
+      "status": "PASSED",
+      "total": 167,
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepPinchRestore/FinalVerification/EditMode-results.json"
+    },
+    "PlayMode": {
+      "status": "PASSED",
+      "total": 87,
+      "passed": 87,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepPinchRestore/FinalVerification/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.7",
+      "signatureVerified": true,
+      "sha256": "58c5c53526c861f3c097b448186c840bc382a8a4aa1426f14ed32e4e0337aac5",
+      "target": "Quest",
+      "bytes": 105508923,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 10,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 10,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7.manifest.json",
+      "audit": "Logs/EmberdeepPinchRestore/Quest-Audit.json",
+      "errors": 0,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepPinchRestore/Quest-SettingsRestoration.json"
+      }
+    },
+    "Pico": {
+      "status": "BUILT_AND_AUDITED",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.7",
+      "signatureVerified": true,
+      "sha256": "06bb290fed74218bcc5b7edd247bceace8d575281f6b30d1f6f9d8b85a27d2e2",
+      "target": "Pico",
+      "bytes": 87208527,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "versionCode": 10,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "android_version_code": 10,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.apk",
+      "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.7-Pico.manifest.json",
+      "audit": "Logs/EmberdeepPinchRestore/Pico-Audit.json",
+      "errors": 0,
+      "settings_restoration": {
+        "changed": [],
+        "audited_count": 28,
+        "unchanged": true,
+        "path": "Logs/EmberdeepPinchRestore/Pico-SettingsRestoration.json"
+      }
+    }
+  },
+  "devices": {
+    "Quest3": "PENDING",
+    "PICO4": "PENDING performance baseline"
+  },
+  "release_evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json",
+  "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.7-Device-Checks.txt",
+  "documents": {
+    "structural_review": "PASSED exact source content; see Logs/EmberdeepPinchRestore/Docs/qa.json",
+    "visual_review": "BLOCKED: bundled render_docx.py reports missing soffice.exe. No current page images or visual layout acceptance.",
+    "render_log": "Logs/EmberdeepPinchRestore/Docs/render.log"
+  },
+  "pages": [
+    {
+      "title": "0 2 7 Restore Pinch for the Well Lever",
+      "intro": "CURRENT candidate restores thumb-index pinch after the user reported that 0.2.6 whole-hand acquisition could not operate the well. Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical."
+        },
+        {
+          "kind": "p",
+          "text": "Acquire the starter lever with a fresh existing ShadowPinchGesture edge when index contact is within 10 cm. GripValid, whole-hand curl and per-finger confidence are not extra gates. A full fist without pinch does not acquire it."
+        },
+        {
+          "kind": "p",
+          "text": "Maintain pinch and measure palm translation: lower at least 8 cm and return within 2 cm of upper rest. A connected complete cycle transfers 12 units capped by capacity. Release, invalid tracking, cancellation, modal input or ownership change discards unfinished travel. Reopen before a new pinch; never complete a stored half-stroke after recovery."
+        },
+        {
+          "kind": "p",
+          "text": "No tool is required for empty pumping. A completed unconnected pinch cycle emits a bounded cosmetic outlet splash only; no tank, damage, coins or pending transfer. A tool in the other hand is allowed; same-hand tool/control double ownership is rejected."
+        },
+        {
+          "kind": "p",
+          "text": "Keep the established shared pinch filter and exclusive ownership: a lever pinch must not also fire, grab a tool or activate UI. Retain left/right operation, reach bounds and fresh-input recovery. Rotary 45-degree operation, the button station, creek supply and weapon controls retain their existing separate behavior."
+        }
+      ]
+    },
+    {
+      "title": "0 2 7 Presentation and Acceptance",
+      "intro": "A closed display hand communicates contact with the handle. It no longer implies that full-finger recognition is required to operate the well.",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "Retain anchored display-hand contact, staged finger closure/release and moving LeverVisual pose. The visible closed hand is an animation; input is pinch. No new tracking provider or physical finger collision claim. Tutorial and labels describe pinch rather than whole-hand acquisition."
+        },
+        {
+          "kind": "p",
+          "text": "Keep the neutral Lever measurement anchor and moving LeverVisual contact frame, positive-scale mirroring and 8 cm pivot arc. Keep the 0.34-second empty-outlet feedback with a reused 12-point arc, 16-point ripple and maximum 12 particles. This presentation never grants gameplay resources."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Requirement",
+            "Verification focus"
+          ],
+          "rows": [
+            [
+              "PR-01 / GD-HAND-01 / WS-05",
+              "Acquire the starter lever with a fresh existing ShadowPinchGesture edge when index contact is within 10 cm. GripValid, whole-hand curl and per-finger confidence are not extra gates. A full fist without pinch does not acquire it."
+            ],
+            [
+              "PR-02 / GD-WATER-01 / GD-WATER-05",
+              "Maintain pinch and measure palm translation: lower at least 8 cm and return within 2 cm of upper rest. A connected complete cycle transfers 12 units capped by capacity. Release, invalid tracking, cancellation, modal input or ownership change discards unfinished travel. Reopen before a new pinch; never complete a stored half-stroke after recovery."
+            ],
+            [
+              "PR-03 / WS-06 / GD-ECON-01",
+              "No tool is required for empty pumping. A completed unconnected pinch cycle emits a bounded cosmetic outlet splash only; no tank, damage, coins or pending transfer. A tool in the other hand is allowed; same-hand tool/control double ownership is rejected."
+            ],
+            [
+              "PR-04 / GD-HAND-02 / IP-08",
+              "Retain anchored display-hand contact, staged finger closure/release and moving LeverVisual pose. The visible closed hand is an animation; input is pinch. No new tracking provider or physical finger collision claim. Tutorial and labels describe pinch rather than whole-hand acquisition."
+            ]
+          ]
+        },
+        {
+          "kind": "p",
+          "text": "Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending. The connected lever palm-motion case is included in the 87 passes. Evidence: Logs/EmberdeepPinchRestore/FinalVerification, Quest-Audit.json, Pico-Audit.json and ReleaseEvidence.json. Editor results do not establish physical hand usability."
+        },
+        {
+          "kind": "p",
+          "text": "On each device verify fresh pinch with incomplete whole-grip data, both hands, seated and standing, a connected 12-unit stroke, full capacity, an empty cosmetic stroke, half-stroke release, tracking interruption, UI ownership and release-to-rearm. No prior Editor test count or user confirmation verifies this revision. M2/M3 and durable expedition saves remain proposed."
+        },
+        {
+          "kind": "p",
+          "text": "Current Editor outlet captures: Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png and Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png. These use an injected outlet event on isolated runtime views; no water is transferred and no real hands are sampled. The Editor advanced from frame 8782 at time 8.604 to frame 16381 at time 17.152. This establishes engine progression only, not headset usability, physics contact or performance."
+        }
+      ]
+    }
+  ],
+  "captures": {
+    "source": "Isolated Editor PlayMode with injected outlet event",
+    "paths": [
+      "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png",
+      "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png"
+    ],
+    "visual_review": "Outlet arc/drops visible in burst and absent in stopped capture; labels explicitly identify injected samples. This is presentation inspection, not physical hand acceptance.",
+    "waterTransferred": false,
+    "real_hand_tracking": false,
+    "engine_progression": {
+      "from_frame": 8782,
+      "from_time": 8.604,
+      "to_frame": 16381,
+      "to_time": 17.152,
+      "scope": "Editor engine progression observed by parent QA; no device performance inference.",
+      "source_record": {
+        "before": {
+          "frame": 8782,
+          "time": 8.604403
+        },
+        "after": {
+          "frame": 16381,
+          "time": 17.1516285
+        }
+      }
+    },
+    "image_hashes": [
+      {
+        "path": "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Burst.png",
+        "sha256": "31f3616fa5dfdc1f1ab976bdb4350a88f883c5db0db941b203bf1ef2129472bc"
+      },
+      {
+        "path": "Logs/EmberdeepPinchRestore/Editor-Injected-Outlet-Stopped.png",
+        "sha256": "b962b71158925ed3271ef5d426f78093fadbd6a83ab8820e58e9ae4eb8954660"
+      }
+    ]
+  },
+  "source_integrity": {
+    "unchanged_after_verification": true,
+    "file_count": 93,
+    "snapshot": "Logs/EmberdeepPinchRestore/VerifiedSources.json"
+  }
+}

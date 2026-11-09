@@ -25,9 +25,9 @@ namespace FireRescue
                 if(!creek && run.StationTier==WaterStationTier.LeverWell && emptyOutlet)
                     return emptyReturnRequired
                         ?new Cue(Step.ReturnLever,Target.Lever,"RETURN THE LEVER\nRaise the handle to release a small splash\nDock a tool to collect the water")
-                        :new Cue(Step.LowerLever,Target.Lever,"LOWER THE HANDLE 8 cm\nKeep your fingers wrapped, then raise\nDock a tool to collect the water");
+                        :new Cue(Step.LowerLever,Target.Lever,"LOWER THE HANDLE 8 cm\nKeep pinching, then raise\nDock a tool to collect the water");
                 if(!creek && run.StationTier==WaterStationTier.LeverWell && !held)
-                    return new Cue(Step.TryPump,Target.Lever,"TRY THE PUMP\nOpen hand, wrap fingers; lower + return\nDock a tool to collect the water");
+                    return new Cue(Step.TryPump,Target.Lever,"TRY THE PUMP\nPinch handle; hold, lower + return\nDock a tool to collect the water");
                 if(!held)return new Cue(Step.TakeTool,Target.Pickup,"1  TAKE YOUR TOOL\nOpen hand, then pinch its grip");
                 if(supply.Alignment01>0)return new Cue(Step.HoldStill,Target.Socket,"1  HOLD STILL\nKeep the blue rings together");
                 return new Cue(Step.BringTool,Target.Socket,"1  BRING THE TOOL HERE\nMatch its blue ring to this ring");
@@ -39,7 +39,7 @@ namespace FireRescue
                 if(run.StationTier==WaterStationTier.LeverWell)
                     return supply.LeverReturnRequired
                         ?new Cue(Step.ReturnLever,Target.Lever,"2  RETURN THE LEVER\nRaise it to finish: +12 water")
-                        :new Cue(Step.LowerLever,Target.Lever,"2  GRASP THE LEVER\nOpen hand, wrap fingers around handle\nLower 8 cm, then raise: +12 water");
+                        :new Cue(Step.LowerLever,Target.Lever,"2  PINCH THE LEVER\nKeep thumb + index finger together\nLower 8 cm, then raise: +12 water");
                 if(run.StationTier==WaterStationTier.PushButton)
                     return supply.ValveOpen
                         ?new Cue(Step.Filling,Target.Button,"2  FILLING\nPress again to stop early")

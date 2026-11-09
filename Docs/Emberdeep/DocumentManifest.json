@@ -1,8 +1,8 @@
 {
-  "revision": "0.7",
-  "date": "2026-11-08",
+  "revision": "0.8",
+  "date": "2026-11-09",
   "language": "English",
-  "status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
+  "status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
   "authoritative_sources": "The ordered JSON sections below are authoritative. Edit the source, regenerate DOCX, render and inspect all pages before delivery. Do not hand-edit generated DOCX without reconciling the source.",
   "generator": "Tools/BuildEmberdeepDesignDocs.py",
   "documents": [
@@ -19,7 +19,8 @@
         "InteractionPolish.json",
         "HandVisualFix.json",
         "InteractionStages.json",
-        "ContactGripIteration.json"
+        "ContactGripIteration.json",
+        "PinchRestore.json"
       ]
     },
     {
@@ -40,7 +41,8 @@
         "InteractionPolish.json",
         "HandVisualFix.json",
         "InteractionStages.json",
-        "ContactGripIteration.json"
+        "ContactGripIteration.json",
+        "PinchRestore.json"
       ]
     }
   ],
@@ -93,12 +95,20 @@
       "decision": "Explicit user feedback supersedes 0.2.5 bounded wrist correction, pinch-operated starter lever and tool-required pump interaction. Other station tiers, creek and firearm input remain unchanged.",
       "implementation_status": "IMPLEMENTED_CANDIDATE; 167 EditMode and 84 PlayMode passed; Quest/PICO APKs built and audited. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. PICO 4 physical acceptance pending.",
       "verification": "Current 0.2.6 verification: 167 EditMode and 84 PlayMode tests passed. Both APKs passed version, ARM64, signature, standalone scene whitelist and restored-settings audits. User requested APK delivery only this round; 0.2.6 installation and worn-headset acceptance pending. Editor captures use injected SDK samples and actual runtime props. They show stable anchored display contact under wrist rotation and moving lever contact, not physical hand comfort or performance."
+    },
+    {
+      "revision": "0.8",
+      "date": "2026-11-09",
+      "decision": "The user reported that the 0.2.6 whole-hand well gesture was unusable and explicitly requested restoring pinch. This is negative device feedback, not acceptance of 0.2.7. Earlier scoped confirmations and test reports remain historical.",
+      "implementation_status": "IMPLEMENTED_CANDIDATE 0.2.7 / code 10; 167 EditMode and 87 PlayMode passed; Quest/PICO APKs built and audited; installation and worn-headset acceptance PENDING.",
+      "verification": "Current 0.2.7 FinalVerification passed 167 EditMode and 87 PlayMode tests, zero failed, skipped or inconclusive. Both APKs passed version 0.2.7/code 10, ARM64, signature, standalone camp/fireground whitelist and settings-restoration audits. Installation and worn-headset acceptance remain pending. See Logs/EmberdeepPinchRestore/ReleaseEvidence.json. Word structural QA is separate from blocked visual rendering."
     }
   ],
   "implementation_status_source": "ImplementationStatus.json",
   "device_acceptance_source": "M1DeviceAcceptance.json",
   "art_iteration_source": "ArtV2Iteration.json",
   "interaction_polish_source": "InteractionPolish.json",
-  "current_release_evidence": "Logs/EmberdeepContactGrip/ReleaseEvidence.json",
-  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.6-Device-Checks.txt"
+  "current_release_evidence": "Logs/EmberdeepPinchRestore/ReleaseEvidence.json",
+  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.7-Device-Checks.txt",
+  "pinch_restore_source": "PinchRestore.json"
 }

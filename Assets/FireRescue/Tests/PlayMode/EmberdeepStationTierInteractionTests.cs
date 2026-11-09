@@ -49,10 +49,10 @@ namespace FireRescue.Tests
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(Vector3.up*2,Quaternion.identity),Open);
             interaction.Process(run,tool,station,creek,true,hand,hand==0?sample:idle,hand==1?sample:idle,dt);
         }
-        void SampleGrasp(int hand,Pose palm,float strength,Vector3 contact,bool tracked=true,float dt=Dt)
+        void SampleGrasp(int hand,Pose palm,float closure,Vector3 contact,bool tracked=true,float dt=Dt)
         {
-            var sample=new EmberdeepRefillInteraction.Hand(tracked,palm,Open,contact)
-                {GripStrength=strength,GripValid=true,GripContact=contact,HasGripContact=true};
+            var sample=new EmberdeepRefillInteraction.Hand(tracked,palm,closure>.5f?Closed:Open,contact)
+                {GripStrength=0,GripValid=false};
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(Vector3.up*2,Quaternion.identity),Open);
             interaction.Process(run,tool,station,creek,true,hand,hand==0?sample:idle,hand==1?sample:idle,dt);
         }
@@ -67,6 +67,21 @@ namespace FireRescue.Tests
         }
         [UnityTest] public IEnumerator LeftLeverCompletesPhysicalCyclesAndPublishesControlOwnership()=>Lever(0);
         [UnityTest] public IEnumerator RightLeverCompletesPhysicalCyclesAndPublishesControlOwnership()=>Lever(1);
+        [UnityTest] public IEnumerator ConnectedLeverUsesPalmStrokeAndKeepsOneContinuousPinchWithoutGripProvider()
+        {
+            Setup(WaterStationTier.LeverWell,1);var rest=Ready(1,station.Lever);var contact=station.Lever.position;
+            SampleGrasp(1,rest,1,contact);
+            Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.Lever,interaction.CurrentAction);
+            SampleGrasp(1,rest,1,contact);
+            Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.Lever,interaction.CurrentAction,"Acquiring the lever cannot reset its owning pinch");
+            SampleGrasp(1,rest,1,contact-Vector3.up*.09f);SampleGrasp(1,rest,1,contact);
+            Assert.Zero(run.Water);Assert.IsFalse(run.Supply.LeverReturnRequired,"Index-only motion cannot load a stroke");
+            var down=rest;down.position-=station.transform.up*.085f;
+            SampleGrasp(1,down,1,contact);Assert.IsTrue(run.Supply.LeverReturnRequired);Assert.Zero(run.Water);
+            SampleGrasp(1,rest,1,contact);Assert.AreEqual(12,run.Water);Assert.AreEqual(12,run.SuppliedWater);
+            for(int i=0;i<8;i++)SampleGrasp(1,rest,1,contact);
+            Assert.AreEqual(12,run.Water);Assert.IsTrue(run.Supply.Locked);yield return null;
+        }
         IEnumerator Lever(int hand)
         {
             Setup(WaterStationTier.LeverWell,hand);var rest=Ready(hand,station.Lever);
@@ -157,7 +172,7 @@ namespace FireRescue.Tests
             Assert.IsFalse(run.Supply.Locked);Assert.IsTrue(interaction.Interrupted);Assert.Zero(run.Water);Assert.Zero(run.SuppliedWater);
             Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.None,interaction.CurrentAction);yield return null;
         }
-        [UnityTest] public IEnumerator LeavingLeverCancelsCreditAndHeldFistCannotReacquire()
+        [UnityTest] public IEnumerator LeavingLeverCancelsCreditAndHeldPinchCannotReacquire()
         {
             Setup(WaterStationTier.LeverWell,1);var rest=Ready(1,station.Lever);CloseGrasp(1,rest);
             var down=rest;down.position-=Vector3.up*.085f;SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.085f);
