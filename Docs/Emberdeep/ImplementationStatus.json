@@ -1,10 +1,10 @@
 {
-  "revision": "0.2.11",
-  "date": "2026-11-09",
+  "revision": "0.2.14",
+  "date": "2026-11-10",
   "candidate": {
-    "version": "0.2.11",
-    "android_version_code": 14,
-    "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending."
+    "version": "0.2.14",
+    "android_version_code": 17,
+    "status": "IMPLEMENTED_CANDIDATE 0.2.14 / code 17; rising immersive sky implemented; 208 EditMode and 161 PlayMode passed; both APKs audited; physical-headset acceptance PENDING. Art redesign and removal of the optional creek pump are PROPOSAL ONLY."
   },
   "historical_delivery": {
     "version": "0.1.1",
@@ -12,11 +12,11 @@
     "menu_user_confirmation": "Front position only"
   },
   "milestones": {
-    "M0": "Retained HUD/menu-intent rules passed the final 204 EditMode and 144 PlayMode suite. Physical acceptance is still version-scoped and pending for 0.2.11.",
-    "M1": "Manual supply plus explicit slow recovery passed the final 204 EditMode and 144 PlayMode suite. Twelve Editor captures were reviewed. Hardware timing, comfort and performance acceptance pending.",
+    "M0": "Hand aiming and fresh pinch on Quest/PICO; native portable joint validity, independent ray/pinch availability and stable button acquisition implemented; device acceptance pending.",
+    "M1": "Manual supply, recovery and shop rules retained; covered by 208 EditMode and 157 PlayMode tests; device acceptance pending.",
     "M2": "PROPOSED: safe search, loot, optional animals, pending ledger, durable saves",
     "M3": "PROPOSED: authored teaching progression, sidegrades and measured feedback",
-    "M4": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending."
+    "M4": "IMPLEMENTED_CANDIDATE 0.2.14 / code 17; rising immersive sky implemented; 208 EditMode and 161 PlayMode passed; both APKs audited; physical-headset acceptance PENDING. Art redesign and removal of the optional creek pump are PROPOSAL ONLY."
   },
   "evidence": {
     "version_scope": "Historical 0.2.0 / code 3 only; current evidence is in current_iteration.",
@@ -61,204 +61,82 @@
     "device_checklist": "Docs/Emberdeep/M1DeviceAcceptance.json"
   },
   "current_iteration": {
-    "version": "0.2.11",
-    "android_version_code": 14,
-    "date": "2026-11-09",
-    "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
-    "source": "WaterRecoveryAndShopPreview.json",
-    "evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
+    "version": "0.2.14",
+    "android_version_code": 17,
+    "date": "2026-11-10",
+    "status": "IMPLEMENTED_CANDIDATE 0.2.14 / code 17; rising immersive sky implemented; 208 EditMode and 161 PlayMode passed; both APKs audited; physical-headset acceptance PENDING. Art redesign and removal of the optional creek pump are PROPOSAL ONLY.",
+    "source": "ImmersiveSkyAndArtDirection.json",
+    "retained_hand_input_contract": "PicoHandTrackingFix.json",
     "tests": {
       "EditMode": {
-        "status": "PASSED",
-        "total": 204,
-        "passed": 204,
+        "total": 208,
+        "passed": 208,
         "failed": 0,
         "skipped": 0,
         "inconclusive": 0,
-        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
-        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+        "path": "Logs/EmberdeepImmersiveSky/FinalAcceptance/EditMode-results.json"
       },
       "PlayMode": {
-        "status": "PASSED",
-        "total": 144,
-        "passed": 144,
+        "total": 161,
+        "passed": 161,
         "failed": 0,
         "skipped": 0,
         "inconclusive": 0,
-        "path": "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
-        "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+        "path": "Logs/EmberdeepImmersiveSky/FinalAcceptance/PlayMode-results.json"
       }
     },
     "builds": {
-      "Quest": {
-        "status": "BUILT_AND_AUDITED",
-        "settingsRestored": true,
-        "sceneWhitelistPassed": true,
-        "version": "0.2.11",
-        "signatureVerified": true,
-        "sha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363",
-        "target": "Quest",
-        "bytes": 105528715,
-        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "versionCode": 14,
+      "Pico": {
         "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
-        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11.manifest.json",
-        "audit": "Logs/EmberdeepRecoveryShop/Quest-Audit.json",
-        "errors": 0,
-        "warnings": 8,
-        "settings_audited": 28
-      },
-      "PICO": {
-        "status": "BUILT_AND_AUDITED",
-        "settingsRestored": true,
         "sceneWhitelistPassed": true,
-        "version": "0.2.11",
-        "signatureVerified": true,
-        "sha256": "06fc81735916822c2a525218596255d18145170c7552d29d768b389576f1f203",
+        "settingsRestored": true,
+        "sha256": "1e41ca08d3f0620f4e24bab5305c838a5d5e89b60356ca8392b7bf02391d349e",
+        "version": "0.2.14",
         "target": "Pico",
-        "bytes": 87230967,
+        "signatureVerified": true,
         "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "versionCode": 14,
-        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.apk",
-        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.manifest.json",
-        "audit": "Logs/EmberdeepRecoveryShop/Pico-Audit.json",
-        "errors": 0,
+        "versionCode": 17,
+        "bytes": 87243481,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.14-Pico.apk",
         "warnings": 12,
-        "settings_audited": 28
+        "errors": 0,
+        "sky_shader_packed": true
+      },
+      "Quest": {
+        "target": "Quest",
+        "bytes": 105538829,
+        "signatureVerified": true,
+        "versionCode": 17,
+        "sha256": "978c42b987dd3e4ac1f94976a758f441f9ac03a1922e65a95ac88138ddcb7fe3",
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "sceneWhitelistPassed": true,
+        "settingsRestored": true,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "version": "0.2.14",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.14.apk",
+        "warnings": 8,
+        "errors": 0,
+        "sky_shader_packed": true
       }
     },
-    "captures": {
-      "status": "EDITOR_VISUAL_REVIEW_PASSED",
-      "reviewed_images": 12,
-      "capture": "Logs/EmberdeepRecoveryShop/Capture.json",
-      "review": "Logs/EmberdeepRecoveryShop/VisualReview.json",
-      "images": [
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Active.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Waiting.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-CurrentLever.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Extinguisher.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PressureCannon.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PulsePistol.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PushButton.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RainFan.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RotaryHydrant.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning-Purchased.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning.png",
-        "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Standing-Shop-PushButton.png"
-      ],
-      "scope": "Editor synthetic eye positions, hand rays and domain time; station second comparison and purchase use public scene APIs to avoid same-frame UI debounce. Not headset or physical feel evidence.",
-      "checks": [
-        "All four tool models are visible and contained",
-        "Tuning text and price no longer overlap",
-        "Current and upgraded station models are distinct",
-        "Waiting and active recovery feedback are visible",
-        "Seated and standing synthetic eye heights keep shop forward"
-      ],
-      "limitations": [
-        "Existing blockout models reused",
-        "Synthetic Editor captures do not establish headset legibility, comfort or performance"
-      ],
-      "capture_helper_history": [
-        "Prior capture attempts hit same-frame WorkshopButton debounce, Vector3 JSON recursion and restart ordering; helper corrected and final run completed with 12 captures. These are capture-helper failures, distinct from runtime regression results."
-      ]
-    },
-    "devices": {
-      "Quest3": {
-        "status": "INSTALLED_VERSION_VERIFIED",
-        "device": "Quest 3",
-        "serial": "2G0YC1ZG42020Y",
-        "package": "com.metahackathon2026.emberdeep",
-        "version": "0.2.11",
-        "versionCode": 14,
-        "installedInfo": {
-          "package": "com.metahackathon2026.emberdeep",
-          "version_name": "0.2.11",
-          "version_code": "14",
-          "install_path": "/data/app/~~iNIbpQzmHNl-b8_XruGT4g==/com.metahackathon2026.emberdeep-J_LNuVyIc7P2i9QCQASYQg==",
-          "is_system": false,
-          "first_install_time": "2026-11-06 13:30:58",
-          "last_update_time": "2026-11-10 04:44:47",
-          "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
-        },
-        "method": "metavr install --replace, followed by metavr app info",
-        "powerState": "Asleep",
-        "processRunning": false,
-        "physicalAcceptance": "PENDING; no physical hand tracking, comfort, stereo readability or performance result claimed",
-        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
-        "apkSha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363"
-      },
-      "PICO4": "Physical hand tracking, readability, comfort and performance acceptance pending"
-    },
-    "documents": {
-      "generation": "GENERATED final revision 0.13 from current JSON and final release evidence",
-      "structural_review": "PASSED exact ordered JSON source comparison for all three DOCX",
-      "structural_evidence": "Logs/EmberdeepRecoveryShop/Docs/qa.json",
-      "visual_review": "BLOCKED; all three packaged render attempts failed because LibreOffice soffice.exe is absent. Bounded hidden Word COM fallback failed before opening the task DOCX because Application.Hwnd returned null. No PDF or page images produced; no layout approval claimed.",
-      "render_logs": [
-        "Logs/EmberdeepRecoveryShop/Docs/render-design.log",
-        "Logs/EmberdeepRecoveryShop/Docs/render-art.log",
-        "Logs/EmberdeepRecoveryShop/Docs/render-v2.log"
-      ],
-      "delivery_status": "Generated drafts pending visual layout acceptance",
-      "fallback_log": "Logs/EmberdeepRecoveryShop/Docs/word-result.log"
-    },
-    "device_checklist": "Docs/Emberdeep/RecoveryShopDeviceAcceptance.json",
-    "historical_evidence_scope": "Historical 0.2.10 / code 13 passed 184 EditMode and 115 PlayMode and built both APKs. Those reports, screenshots, installation and user feedback do not validate 0.2.11.",
-    "verification_attempts": [
-      {
-        "scope": "0.2.11 intermediate attempt only; not release acceptance",
-        "path": "Logs/EmberdeepRecoveryShop/InitialVerification",
-        "compile_history": "Initial missing PhysicalAssembly namespace import in FireRescueGame.Shop.cs corrected before this test run.",
-        "EditMode": {
-          "passed": 204,
-          "failed": 0
-        },
-        "PlayMode": {
-          "total": 132,
-          "passed": 62,
-          "failed": 70
-        },
-        "cause": "New preview instantiated MaterialPropertyBlock in a MonoBehaviour field initializer; Unity CreateImpl rejected this construction path. Root moved creation into Show.",
-        "coverage_repair": "Three test scripts had 33-character GUIDs and were not compiled: EmberdeepShopPreviewPlayTests, EmberdeepOutletFeedbackPlayTests and EmberdeepStationShopPlayTests. Root verified no external asset references to those invalid GUIDs, normalized them to 32 characters and force-reimported. The latter two are restored existing test groups, not newly authored coverage.",
-        "status": "SUPERSEDED_BY_PASSING_RELEASEVERIFICATION_AFTER_FIXES"
-      },
-      {
-        "scope": "Intermediate passing suite before final preview layout corrections",
-        "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification",
-        "tests": {
-          "EditMode": {
-            "status": "PASSED",
-            "total": 204,
-            "passed": 204,
-            "failed": 0,
-            "skipped": 0,
-            "inconclusive": 0,
-            "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/EditMode-results.json",
-            "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
-          },
-          "PlayMode": {
-            "status": "PASSED",
-            "total": 143,
-            "passed": 143,
-            "failed": 0,
-            "skipped": 0,
-            "inconclusive": 0,
-            "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/PlayMode-results.json",
-            "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
-          }
-        },
-        "status": "PASSED_BEFORE_FINAL_LAYOUT_CHANGES",
-        "subsequent_changes": "Larger previews, one-line tuning description, lower price row and corrected world-space speed units; one layout regression added. FinalVerification supersedes this run when completed."
-      }
-    ],
-    "test_count_scope": "20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases relative to historical 184/115.",
-    "release_evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
     "source_integrity": {
       "unchanged_after_verification": true,
-      "file_count": 100
-    }
+      "file_count": 106
+    },
+    "restored_settings_count": 28,
+    "pico_tracking_space": {
+      "valid": true,
+      "name": "TrackingSpace"
+    },
+    "evidence": "Logs/EmberdeepImmersiveSky/ReleaseEvidence.json",
+    "visual_review": "Four Editor renders reviewed: entering, rising, surrounded and level view. Live frames with synthetic sector advancement and desktop camera; no real compositor evidence.",
+    "device_acceptance": "Quest 3 replacement installation and installed version 0.2.14/code 17 verified. Later launch attempt failed because the device disconnected. Worn-headset acceptance remains PENDING; PICO model and OS unknown.",
+    "limitations": [
+      "Actual compositor occlusion, stereo comfort, hand visibility and frame rate require headset checks.",
+      "HUD/foliage/riverbank/device redesign and ordinary-level creek-pump removal remain proposals.",
+      "Generated revision 0.13 DOCX remains the 0.2.11 baseline; use current JSON addenda."
+    ],
+    "installation_record": "Deliverables/Emberdeep/Emberdeep-0.2.14-Installation.json"
   },
   "requirements": [
     {
@@ -2636,9 +2514,376 @@
         "file_count": 94,
         "snapshot": "Logs/EmberdeepInteractionGuard/VerifiedSources.json"
       }
+    },
+    {
+      "version": "0.2.11",
+      "android_version_code": 14,
+      "date": "2026-11-09",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
+      "source": "WaterRecoveryAndShopPreview.json",
+      "evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
+      "tests": {
+        "EditMode": {
+          "status": "PASSED",
+          "total": 204,
+          "passed": 204,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepRecoveryShop/FinalVerification/EditMode-results.json",
+          "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+        },
+        "PlayMode": {
+          "status": "PASSED",
+          "total": 144,
+          "passed": 144,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepRecoveryShop/FinalVerification/PlayMode-results.json",
+          "scope": "Final frozen 0.2.11 source, after preview enlargement, text layout and world-speed unit corrections."
+        }
+      },
+      "builds": {
+        "Quest": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.11",
+          "signatureVerified": true,
+          "sha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363",
+          "target": "Quest",
+          "bytes": 105528715,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 14,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11.manifest.json",
+          "audit": "Logs/EmberdeepRecoveryShop/Quest-Audit.json",
+          "errors": 0,
+          "warnings": 8,
+          "settings_audited": 28
+        },
+        "PICO": {
+          "status": "BUILT_AND_AUDITED",
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.11",
+          "signatureVerified": true,
+          "sha256": "06fc81735916822c2a525218596255d18145170c7552d29d768b389576f1f203",
+          "target": "Pico",
+          "bytes": 87230967,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 14,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.apk",
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.11-Pico.manifest.json",
+          "audit": "Logs/EmberdeepRecoveryShop/Pico-Audit.json",
+          "errors": 0,
+          "warnings": 12,
+          "settings_audited": 28
+        }
+      },
+      "captures": {
+        "status": "EDITOR_VISUAL_REVIEW_PASSED",
+        "reviewed_images": 12,
+        "capture": "Logs/EmberdeepRecoveryShop/Capture.json",
+        "review": "Logs/EmberdeepRecoveryShop/VisualReview.json",
+        "images": [
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Active.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Recovery-Waiting.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-CurrentLever.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Extinguisher.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PressureCannon.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PulsePistol.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-PushButton.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RainFan.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-RotaryHydrant.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning-Purchased.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Shop-Tuning.png",
+          "Logs/EmberdeepRecoveryShop/Editor-Synthetic-Standing-Shop-PushButton.png"
+        ],
+        "scope": "Editor synthetic eye positions, hand rays and domain time; station second comparison and purchase use public scene APIs to avoid same-frame UI debounce. Not headset or physical feel evidence.",
+        "checks": [
+          "All four tool models are visible and contained",
+          "Tuning text and price no longer overlap",
+          "Current and upgraded station models are distinct",
+          "Waiting and active recovery feedback are visible",
+          "Seated and standing synthetic eye heights keep shop forward"
+        ],
+        "limitations": [
+          "Existing blockout models reused",
+          "Synthetic Editor captures do not establish headset legibility, comfort or performance"
+        ],
+        "capture_helper_history": [
+          "Prior capture attempts hit same-frame WorkshopButton debounce, Vector3 JSON recursion and restart ordering; helper corrected and final run completed with 12 captures. These are capture-helper failures, distinct from runtime regression results."
+        ]
+      },
+      "devices": {
+        "Quest3": {
+          "status": "INSTALLED_VERSION_VERIFIED",
+          "device": "Quest 3",
+          "serial": "2G0YC1ZG42020Y",
+          "package": "com.metahackathon2026.emberdeep",
+          "version": "0.2.11",
+          "versionCode": 14,
+          "installedInfo": {
+            "package": "com.metahackathon2026.emberdeep",
+            "version_name": "0.2.11",
+            "version_code": "14",
+            "install_path": "/data/app/~~iNIbpQzmHNl-b8_XruGT4g==/com.metahackathon2026.emberdeep-J_LNuVyIc7P2i9QCQASYQg==",
+            "is_system": false,
+            "first_install_time": "2026-11-06 13:30:58",
+            "last_update_time": "2026-11-10 04:44:47",
+            "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+          },
+          "method": "metavr install --replace, followed by metavr app info",
+          "powerState": "Asleep",
+          "processRunning": false,
+          "physicalAcceptance": "PENDING; no physical hand tracking, comfort, stereo readability or performance result claimed",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.11.apk",
+          "apkSha256": "17208d3405ebe15eab5d5ed46ebe7b7cfe25b2c28c5454cb43b751b5d6445363"
+        },
+        "PICO4": "Physical hand tracking, readability, comfort and performance acceptance pending"
+      },
+      "documents": {
+        "generation": "GENERATED final revision 0.13 from current JSON and final release evidence",
+        "structural_review": "PASSED exact ordered JSON source comparison for all three DOCX",
+        "structural_evidence": "Logs/EmberdeepRecoveryShop/Docs/qa.json",
+        "visual_review": "BLOCKED; all three packaged render attempts failed because LibreOffice soffice.exe is absent. Bounded hidden Word COM fallback failed before opening the task DOCX because Application.Hwnd returned null. No PDF or page images produced; no layout approval claimed.",
+        "render_logs": [
+          "Logs/EmberdeepRecoveryShop/Docs/render-design.log",
+          "Logs/EmberdeepRecoveryShop/Docs/render-art.log",
+          "Logs/EmberdeepRecoveryShop/Docs/render-v2.log"
+        ],
+        "delivery_status": "Generated drafts pending visual layout acceptance",
+        "fallback_log": "Logs/EmberdeepRecoveryShop/Docs/word-result.log"
+      },
+      "device_checklist": "Docs/Emberdeep/RecoveryShopDeviceAcceptance.json",
+      "historical_evidence_scope": "Historical 0.2.10 / code 13 passed 184 EditMode and 115 PlayMode and built both APKs. Those reports, screenshots, installation and user feedback do not validate 0.2.11.",
+      "verification_attempts": [
+        {
+          "scope": "0.2.11 intermediate attempt only; not release acceptance",
+          "path": "Logs/EmberdeepRecoveryShop/InitialVerification",
+          "compile_history": "Initial missing PhysicalAssembly namespace import in FireRescueGame.Shop.cs corrected before this test run.",
+          "EditMode": {
+            "passed": 204,
+            "failed": 0
+          },
+          "PlayMode": {
+            "total": 132,
+            "passed": 62,
+            "failed": 70
+          },
+          "cause": "New preview instantiated MaterialPropertyBlock in a MonoBehaviour field initializer; Unity CreateImpl rejected this construction path. Root moved creation into Show.",
+          "coverage_repair": "Three test scripts had 33-character GUIDs and were not compiled: EmberdeepShopPreviewPlayTests, EmberdeepOutletFeedbackPlayTests and EmberdeepStationShopPlayTests. Root verified no external asset references to those invalid GUIDs, normalized them to 32 characters and force-reimported. The latter two are restored existing test groups, not newly authored coverage.",
+          "status": "SUPERSEDED_BY_PASSING_RELEASEVERIFICATION_AFTER_FIXES"
+        },
+        {
+          "scope": "Intermediate passing suite before final preview layout corrections",
+          "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification",
+          "tests": {
+            "EditMode": {
+              "status": "PASSED",
+              "total": 204,
+              "passed": 204,
+              "failed": 0,
+              "skipped": 0,
+              "inconclusive": 0,
+              "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/EditMode-results.json",
+              "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
+            },
+            "PlayMode": {
+              "status": "PASSED",
+              "total": 143,
+              "passed": 143,
+              "failed": 0,
+              "skipped": 0,
+              "inconclusive": 0,
+              "path": "Logs/EmberdeepRecoveryShop/ReleaseVerification/PlayMode-results.json",
+              "scope": "Current 0.2.11 ReleaseVerification; captures and build audits recorded separately."
+            }
+          },
+          "status": "PASSED_BEFORE_FINAL_LAYOUT_CHANGES",
+          "subsequent_changes": "Larger previews, one-line tuning description, lower price row and corrected world-space speed units; one layout regression added. FinalVerification supersedes this run when completed."
+        }
+      ],
+      "test_count_scope": "20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases relative to historical 184/115.",
+      "release_evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 100
+      }
+    },
+    {
+      "version": "0.2.12",
+      "android_version_code": 15,
+      "date": "2026-11-10",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.12 / code 15; 209 EditMode and 153 PlayMode passed; Quest/PICO APKs built and audited; worn-headset acceptance PENDING.",
+      "source": "PicoMenuRecoveryFix.json",
+      "tests": {
+        "EditMode": {
+          "total": 209,
+          "passed": 209,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepPicoMenuFix/FinalAcceptance/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 153,
+          "passed": 153,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepPicoMenuFix/FinalAcceptance/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.12",
+          "signatureVerified": true,
+          "sha256": "be2f19ca4e56c8023c20f60972da974fc29c8d8a44036d9adcf89cd66452d992",
+          "target": "Quest",
+          "bytes": 105536027,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 15,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.12.apk",
+          "warnings": 8,
+          "errors": 0,
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.12.manifest.json"
+        },
+        "Pico": {
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.12",
+          "signatureVerified": true,
+          "sha256": "b00cec5d77fdcdac9a9b4432d1b71a83b16b17cb5f51064fcd5ca38b38e95c01",
+          "target": "Pico",
+          "bytes": 87232823,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 15,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.12-Pico.apk",
+          "warnings": 12,
+          "errors": 0,
+          "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.12-Pico.manifest.json"
+        }
+      },
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 104
+      },
+      "baseline_documents": {
+        "structural_review": "passed for three baseline DOCX files; not a visual re-review",
+        "evidence": "Logs/EmberdeepPicoMenuFix/BaselineDocs-qa.json"
+      },
+      "visuals": {
+        "scope": "Two synthetic Editor camp images reviewed; cursor, title instruction and button-side progress arc visible. Not headset evidence.",
+        "paths": [
+          "Logs/EmberdeepPicoMenuFix/Editor-HeadMenu-Rearm.png",
+          "Logs/EmberdeepPicoMenuFix/Editor-HeadMenu-Progress.png"
+        ]
+      },
+      "device_acceptance": "PENDING; PICO model and OS unknown; no installation or hardware acceptance claimed",
+      "evidence": "Logs/EmberdeepPicoMenuFix/ReleaseEvidence.json",
+      "verification_history": [
+        "InitialVerification: 208 EditMode passed, 151/152 PlayMode passed. New page-transition test caught neutral-space rearm; fixed by title-only rearm.",
+        "FinalVerification setup rejected an untitled default test scene with Camera/Light roots before running tests. Only this task-owned batch scene was cleared.",
+        "ReleaseVerification: 209 EditMode and 153 PlayMode passed before final arc placement and visual-root gate changes. FinalAcceptance supersedes it."
+      ],
+      "limitations": [
+        "OS system menus are not disabled.",
+        "Real tracking/SDK visibility loss still freezes the render-only hand snapshot.",
+        "Gameplay still requires valid tracked hand joints.",
+        "No proof of the exact tester-device root cause without hardware logs.",
+        "Generated Word revision 0.13 remains the 0.2.11 baseline; this JSON addendum contains the hotfix."
+      ],
+      "superseded_by": "0.2.13; user rejected head-dwell replacement"
+    },
+    {
+      "version": "0.2.13",
+      "android_version_code": 16,
+      "date": "2026-11-10",
+      "status": "IMPLEMENTED_CANDIDATE 0.2.13 / code 16; hand aiming and pinch on both platforms; 208 EditMode and 157 PlayMode passed; both APKs audited; worn-headset acceptance PENDING.",
+      "source": "PicoHandTrackingFix.json",
+      "tests": {
+        "EditMode": {
+          "total": 208,
+          "passed": 208,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepStableHands/FinalAcceptance/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 157,
+          "passed": 157,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepStableHands/FinalAcceptance/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Pico": {
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.13",
+          "signatureVerified": true,
+          "sha256": "ad8d96dafe9dc712b20f5ff36ef941bea8982f82133e7fc8483ffc3b6b2a45ed",
+          "target": "Pico",
+          "bytes": 87244183,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 16,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.13-Pico.apk",
+          "warnings": 12,
+          "errors": 0
+        },
+        "Quest": {
+          "settingsRestored": true,
+          "sceneWhitelistPassed": true,
+          "version": "0.2.13",
+          "signatureVerified": true,
+          "sha256": "ac9fd20598554ed75f143ff3912ec6ca150447062da76ca2b7c5ada74fceac58",
+          "target": "Quest",
+          "bytes": 105538111,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "versionCode": 16,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "apk": "Deliverables/Emberdeep/Emberdeep-0.2.13.apk",
+          "warnings": 8,
+          "errors": 0
+        }
+      },
+      "source_integrity": {
+        "unchanged_after_verification": true,
+        "file_count": 103
+      },
+      "restored_settings_count": 28,
+      "pico_tracking_space": {
+        "valid": true,
+        "name": "TrackingSpace"
+      },
+      "evidence": "Logs/EmberdeepStableHands/ReleaseEvidence.json",
+      "supersedes": "0.2.12 head-dwell menu rejected by user; removed from source. Use this hand-tracking candidate instead.",
+      "visual_review": "Editor-Hand-Menu.png reviewed: hand-pinch instructions and hovered button; synthetic Editor image only.",
+      "verification_history": [
+        "InitialVerification: 208 EditMode and 155/157 PlayMode passed. Two old camp assertions expected idle rays to be hidden; updated to assert visible ray with no button ownership. FinalAcceptance supersedes this run."
+      ],
+      "device_acceptance": "PENDING. No installation or physical-headset acceptance claimed. PICO model and OS unknown.",
+      "limitations": [
+        "Cannot improve missing camera-level observations or disable OS system controls.",
+        "Editor tests do not exercise a real PICO provider, sensor, tracking quality or performance.",
+        "Generated Word revision 0.13 remains the 0.2.11 baseline; the current JSON addendum defines this hotfix."
+      ]
     }
   ],
-  "historical_scope": "Top-level evidence covers 0.2.0; historical_iterations retain prior releases. Current iteration is 0.2.10. Prior 0.2.8 Shop access and 0.2.9 partial position feedback do not validate current behavior.",
+  "historical_scope": "Top-level evidence covers 0.2.0; historical_iterations retain earlier releases. Current iteration is 0.2.14. Historical device observations do not establish acceptance of current behavior.",
   "design_revision": "0.13",
   "planned_design_updates": {
     "status": "SUPERSEDED_BY_0.13_IMPLEMENTATION_CANDIDATE",
@@ -2721,5 +2966,8 @@
       },
       "evidence": "Design-source and generated Word content checks only. Existing 0.2.10 tests, captures, APKs and deferred device acceptance remain historical runtime evidence."
     }
-  ]
+  ],
+  "current_runtime_override": "ImmersiveSkyAndArtDirection.json",
+  "generated_pages_scope": "The pages array and revision 0.13 DOCX preserve the 0.2.11 baseline. Read current_iteration, ImmersiveSkyAndArtDirection.json and the retained PicoHandTrackingFix.json for current behavior.",
+  "retained_hand_input_contract": "PicoHandTrackingFix.json"
 }

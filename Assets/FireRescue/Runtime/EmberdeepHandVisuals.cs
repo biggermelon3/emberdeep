@@ -129,8 +129,10 @@ namespace FireRescue
         void UpdateVisibility()
         {
             bool available=focused && !paused && provider && provider.Active && provider.HeadReady;
-            bool left=available && provider.ReadHand(true,out _,out _,out _);
-            bool right=available && provider.ReadHand(false,out _,out _,out _);
+            // A system-owned pinch blocks actions, not otherwise valid joint
+            // rendering. If the SDK really loses/hides a hand, Present still freezes it.
+            bool left=available && provider.HasVisualHand(true);
+            bool right=available && provider.HasVisualHand(false);
             foreach(var item in visuals)
             {
                 var visual=item.Hand;if(!visual)continue;

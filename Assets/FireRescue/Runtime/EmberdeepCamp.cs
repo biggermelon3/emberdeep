@@ -45,7 +45,7 @@ namespace FireRescue
         {
             var instance=Instantiate(PlayerPrefab);Player=instance.GetComponentInChildren<MetaPlayerRig>(true);
             Player.Initialize(Player.XRRig,Player.DesktopCamera);
-            hands=gameObject.AddComponent<MetaShadowPlayer>();hands.Player=Player;
+            hands=gameObject.AddComponent<MetaShadowPlayer>();hands.Player=Player;hands.IndependentPortableAim=true;
             var handVisuals=gameObject.AddComponent<EmberdeepHandVisuals>();handVisuals.Configure(hands);
             oldAmbient=RenderSettings.ambientLight;oldAmbientMode=RenderSettings.ambientMode;oldFog=RenderSettings.fog;
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
@@ -76,7 +76,7 @@ namespace FireRescue
             Button(quitPage,"Yes, Quit",-.18f,ConfirmQuit);
             instruction=Text(panel,"AIM YOUR HAND AT A BUTTON  -  PINCH",new Vector3(0,-.315f,-.035f),.014f,new Color(.68f,.85f,.86f));
             Text(panel,"Use either hand. Open your fingers before each pinch.",new Vector3(0,-.36f,-.035f),.012f,new Color(.59f,.70f,.73f));
-            menuInput=gameObject.AddComponent<EmberdeepHandRayMenu>();menuInput.Initialize(transform,PanelMaterial);
+            menuInput=gameObject.AddComponent<EmberdeepHandRayMenu>();menuInput.Initialize(transform,PanelMaterial);menuInput.ShowUnfocusedRays=true;
             waiting=Text(transform,"Look ahead\nFinding your headset position...",Vector3.zero,.02f,Color.white);
             if(!Player.IsXR)
             {

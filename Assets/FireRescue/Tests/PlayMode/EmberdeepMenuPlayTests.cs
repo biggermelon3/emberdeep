@@ -76,7 +76,7 @@ namespace FireRescue.Tests
             var miss=new Ray(ray.origin,Vector3.up);
             camp.ProcessMenuInput(miss,true,true,Open,false,float.PositiveInfinity,Dt);
             Assert.IsNull(camp.HoveredButton);Assert.IsFalse(button.IsHovered);
-            Assert.IsFalse(camp.GetComponentsInChildren<LineRenderer>().Any(l=>l.enabled && l.name.Contains("contextual hand ray")),"No idle ray after leaving an interactable");
+            Assert.IsTrue(camp.GetComponentsInChildren<LineRenderer>().Any(l=>l.enabled && l.name.Contains("contextual hand ray")),"Camp retains a live hand ray so the player can find the next button");
             camp.ProcessMenuInput(ray,false,true,Closed,true,Closed,Dt);
             Assert.IsNull(camp.HoveredButton);Assert.IsFalse(button.IsHovered);
             yield return null;
@@ -216,6 +216,50 @@ namespace FireRescue.Tests
             camp.ConfirmQuit();Assert.IsTrue(camp.QuitRequested);
         }
 
+        [UnityTest] public IEnumerator FingerOcclusionKeepsAimThenRequiresReleaseBeforeSettingsClick()
+        {
+            var button=Button("Settings");var sample=new EmberdeepHandRay.Sample(true,RayTo(button),Open);
+            for(int i=0;i<8;i++)camp.ProcessHandMenuInput(sample,default,true,Dt);
+            sample.PinchUnavailable=true;sample.Pinch=float.PositiveInfinity;
+            for(int i=0;i<20;i++)camp.ProcessHandMenuInput(sample,default,true,Dt);
+            Assert.AreSame(button,camp.HoveredButton);Assert.IsTrue(camp.MenuInput.RayVisible(0));
+            Assert.AreEqual(EmberdeepCamp.MenuPage.Main,camp.ActivePage);
+            Directory.CreateDirectory("Logs/EmberdeepStableHands");Capture("Logs/EmberdeepStableHands/Editor-Hand-Menu.png");
+            sample.PinchUnavailable=false;sample.Pinch=Closed;
+            for(int i=0;i<20;i++)camp.ProcessHandMenuInput(sample,default,true,Dt);
+            Assert.AreEqual(EmberdeepCamp.MenuPage.Main,camp.ActivePage);
+            Select("Settings",true);Assert.AreEqual(EmberdeepCamp.MenuPage.Settings,camp.ActivePage);
+            yield return null;
+        }
+        [UnityTest] public IEnumerator PauseAndFocusRecoveryCannotReuseAHeldMenuPinch()
+        {
+            var sample=new EmberdeepHandRay.Sample(true,RayTo(Button("Settings")),Open);
+            for(int i=0;i<8;i++)camp.ProcessHandMenuInput(sample,default,true,Dt);
+            camp.SendMessage("OnApplicationPause",true);camp.SendMessage("OnApplicationFocus",false);
+            camp.SendMessage("OnApplicationFocus",true);
+            sample.Pinch=Closed;camp.ProcessHandMenuInput(sample,default,true,Dt);
+            Assert.AreEqual(EmberdeepCamp.MenuPage.Main,camp.ActivePage);
+            camp.SendMessage("OnApplicationPause",false);camp.enabled=true;yield return WaitPlaced();camp.enabled=false;
+            sample.Ray=RayTo(Button("Settings"));
+            for(int i=0;i<20;i++)camp.ProcessHandMenuInput(sample,default,true,Dt);
+            Assert.AreEqual(EmberdeepCamp.MenuPage.Main,camp.ActivePage);
+            Select("Settings",true);Assert.AreEqual(EmberdeepCamp.MenuPage.Settings,camp.ActivePage);
+        }
+        [UnityTest] public IEnumerator NewGameStillRequiresHandPinchAndStartsFireground()
+        {
+            Assert.IsTrue(camp.GetComponent<CloudGarden.Integration.MetaShadowPlayer>().IndependentPortableAim);
+            Assert.IsTrue(camp.MenuInput.ShowUnfocusedRays);
+            var ray=RayTo(Button("New Game"));
+            for(int i=0;i<200;i++)camp.ProcessMenuInput(ray,true,false,Open,false,Open,Dt);
+            Assert.IsFalse(camp.Transitioning,"Head direction alone never enters the game");
+            Select("New Game",false);Assert.IsTrue(camp.Transitioning);
+            float deadline=Time.realtimeSinceStartup+15;
+            while(SceneManager.GetActiveScene().name!=EmberdeepSession.FireScene && Time.realtimeSinceStartup<deadline)yield return null;
+            Assert.AreEqual(EmberdeepSession.FireScene,SceneManager.GetActiveScene().name);
+            yield return null;yield return null;
+            var game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);
+            Assert.IsTrue(game.GetComponent<CloudGarden.Integration.MetaShadowPlayer>().IndependentPortableAim);game.enabled=false;
+        }
         WorkshopButton Button(string command)=>camp.GetComponentsInChildren<WorkshopButton>().Single(b=>b.Command==command);
         Ray RayTo(WorkshopButton button)
         {

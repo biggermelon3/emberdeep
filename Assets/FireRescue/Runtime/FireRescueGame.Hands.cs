@@ -10,6 +10,8 @@ namespace FireRescue
         // distance alone. Animated hands cannot drive the real input samples.
         void LateUpdate()
         {
+            if(ImmersiveSky)ImmersiveSky.Tick(Time.unscaledDeltaTime,Player && hands && focused && !paused
+                && hands.HeadReady && !acquiringPose && !returningToCamp && Arena && Arena.gameObject.activeInHierarchy);
             if(!handVisuals)return;
             handVisuals.ClearInteractionPoses();
             if(!Player || !hands || !focused || paused || ShopOpen || returningToCamp || acquiringPose)return;

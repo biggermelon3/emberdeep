@@ -1,0 +1,91 @@
+{
+  "version": "0.2.12",
+  "android_version_code": 15,
+  "date": "2026-11-10",
+  "status": "SUPERSEDED: user rejected the head-dwell workaround. Do not distribute 0.2.12 as the hand-tracking fix.",
+  "baseline": "0.2.11 / code 14; design 0.13 documents remain the baseline. This addendum overrides the PICO camp input and Emberdeep portable aim contracts.",
+  "reported_issue": "PICO testers cannot reliably activate the main menu and report intermittent hand tracking. The user also observes palm-facing system controls and apparent tracking loss on Quest. PICO model and OS version are unknown.",
+  "evidence_boundary": "The failure paths were identified in source. No captured PICO device log proves a single hardware root cause. Editor synthetic input does not establish headset usability, tracking quality or performance.",
+  "changes": [
+    {
+      "id": "PM-01",
+      "rule": "PICO/portable-XR camp uses head direction, not eye tracking or hand pinch. Look at the title region for 0.15 seconds to arm, then hold on a button for 1.5 seconds. A cursor, button highlight and progress arc show intent. Looking away cancels the countdown. Each action/page change, focus loss, pause or invalid head state requires explicit title rearm. Blank space created by a page change cannot rearm. Large frame deltas cannot complete a selection.",
+      "code": "Assets/FireRescue/Runtime/EmberdeepCamp.cs",
+      "scope": "Main menu, Settings, Continue/New Game and Quit confirmation. Quest camp retains its existing hand-ray/fresh-pinch route. Fireground UI remains hand-operated."
+    },
+    {
+      "id": "PM-02",
+      "rule": "Emberdeep opts into portable aim computed from live index/thumb base joints and the existing shoulder model. Filtering is independent per hand and sampled once per frame. Missing SDK pointer objects, pointer validity and WhenHandUpdated bindings no longer block this ray. Missing/malformed joint data or a system-owned hand still blocks input and resets the filter. Other shared games retain the original pointer binding unless they opt in.",
+      "code": "Assets/ShadowWorkshop/Integration/MetaShadowPlayer.cs"
+    },
+    {
+      "id": "PM-03",
+      "rule": "Valid hand rendering is separate from whether the system owns that hand's input. SDK visibility and actual tracking loss are still respected; display snapshots are never used as input. App pause and focus are independent gates, and both must recover before input resumes. Existing open-then-pinch rearm rules remain.",
+      "code": "Assets/FireRescue/Runtime/EmberdeepHandVisuals.cs"
+    }
+  ],
+  "system_menu_policy": "Do not suppress OS-owned system controls or treat their gestures as gameplay. This change avoids needing the reserved gesture to enter the PICO game; it does not claim to disable the Quest or PICO system menu or repair camera-level hand occlusion.",
+  "references": [
+    "https://developers.meta.com/vr/documentation/unity/unity-handtracking-interactions/",
+    "https://developer.picoxr.com/document/unity-openxr/hand-tracking/"
+  ],
+  "evidence_directory": "Logs/EmberdeepPicoMenuFix",
+  "device_acceptance": "PENDING",
+  "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.12-Device-Checks.txt",
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 209,
+        "passed": 209,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepPicoMenuFix/FinalAcceptance/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 153,
+        "passed": 153,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepPicoMenuFix/FinalAcceptance/PlayMode-results.json"
+      }
+    },
+    "builds": {
+      "Quest": {
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.12",
+        "signatureVerified": true,
+        "sha256": "be2f19ca4e56c8023c20f60972da974fc29c8d8a44036d9adcf89cd66452d992",
+        "target": "Quest",
+        "bytes": 105536027,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 15,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.12.apk",
+        "warnings": 8,
+        "errors": 0,
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.12.manifest.json"
+      },
+      "Pico": {
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.12",
+        "signatureVerified": true,
+        "sha256": "b00cec5d77fdcdac9a9b4432d1b71a83b16b17cb5f51064fcd5ca38b38e95c01",
+        "target": "Pico",
+        "bytes": 87232823,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 15,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.12-Pico.apk",
+        "warnings": 12,
+        "errors": 0,
+        "manifest": "Deliverables/Emberdeep/Emberdeep-0.2.12-Pico.manifest.json"
+      }
+    },
+    "evidence": "Logs/EmberdeepPicoMenuFix/ReleaseEvidence.json"
+  },
+  "superseded_by": "PicoHandTrackingFix.json / 0.2.13"
+}

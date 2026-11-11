@@ -20,22 +20,23 @@ namespace FireRescue.Tests
             Assert.Less(Vector3.Angle(aimed.Ray.direction,pointer.rotation*Vector3.forward),.01f);
             Assert.AreEqual(pointer.position,aimed.Ray.origin,"Intentional system pointer movement remains usable while pinching");
         }
-        [Test] public void TrackingRecoveryWithClosedHandHasNoStaleRay()
+        [Test] public void TrackedClosedHandCanAimButTrackingLossNeverReusesARay()
         {
             var input=new EmberdeepHandRay();var pointer=new Pose(Vector3.zero,Quaternion.identity);
-            Assert.IsFalse(input.FromPointerPose(true,pointer,Closed).Valid);
+            Assert.IsTrue(input.FromPointerPose(true,pointer,Closed).Valid);
             Assert.IsTrue(input.FromPointerPose(true,pointer,Open).Valid);
             Assert.IsFalse(input.FromPointerPose(false,pointer,Open).Valid);
-            Assert.IsFalse(input.FromPointerPose(true,pointer,Closed).Valid);
+            pointer.position=Vector3.right;
+            Assert.AreEqual(pointer.position,input.FromPointerPose(true,pointer,Closed).Ray.origin);
             Assert.IsTrue(input.FromPointerPose(true,pointer,Open).Valid);
-            input.Reset();Assert.IsFalse(input.FromPointerPose(true,pointer,Closed).Valid,"Ownership reset also requires reopening");
+            input.Reset();Assert.IsTrue(input.FromPointerPose(true,pointer,Closed).Valid,"Click rearm belongs to the menu, not ray visibility");
         }
         [Test] public void InvalidPointerPoseCancelsRatherThanReusingPreviousAim()
         {
             var input=new EmberdeepHandRay();var pointer=new Pose(Vector3.zero,Quaternion.identity);
             input.FromPointerPose(true,pointer,Open);
             Assert.IsFalse(input.FromPointerPose(true,new Pose(new Vector3(float.NaN,0,0),Quaternion.identity),Open).Valid);
-            Assert.IsFalse(input.FromPointerPose(true,pointer,Closed).Valid);
+            Assert.IsTrue(input.FromPointerPose(true,pointer,Closed).Valid);
             Assert.IsFalse(input.FromPointerPose(true,new Pose(Vector3.zero,new Quaternion(0,0,0,0)),Open).Valid);
             Assert.IsFalse(input.FromPointerPose(true,pointer,float.NaN).Valid);
             Assert.IsTrue(input.FromPointerPose(true,pointer,Open).Valid);
@@ -172,6 +173,44 @@ namespace FireRescue.Tests
             Assert.IsFalse(menu.ProcessSamples(Point(0,Closed),Point(1,Open),buttons,true,Dt,b=>b==buttons[1]));
             Assert.IsTrue(menu.ProcessSamples(Point(0,Closed),Point(1,Closed),buttons,true,Dt,b=>b==buttons[1]));
             Assert.AreSame(buttons[1],menu.PressedButton);
+        }
+        [Test] public void MissingPinchTipsRetainLivePointingButRequireFreshOpenBeforeClick()
+        {
+            ReadyLeft();var tracker=new EmberdeepHandRay();var pose=new Pose(Vector3.zero,Quaternion.LookRotation(buttons[0].transform.position));
+            var obscured=tracker.FromPointerPose(true,pose,float.PositiveInfinity,false);
+            Assert.IsTrue(EmberdeepHandRay.Valid(obscured));Assert.IsTrue(obscured.PinchUnavailable);
+            for(int i=0;i<12;i++)Assert.IsFalse(menu.ProcessSamples(obscured,default,buttons,true,Dt));
+            Assert.AreSame(buttons[0],menu.HoveredButton);Assert.IsTrue(menu.RayVisible(0));
+            for(int i=0;i<12;i++)Assert.IsFalse(menu.ProcessSamples(Point(0,Closed),default,buttons,true,Dt));
+            ReadyLeft();Assert.IsTrue(menu.ProcessSamples(Point(0,Closed),default,buttons,true,Dt));
+        }
+        [Test] public void ClosedHandCanFindAButtonButCannotClickUntilReopened()
+        {
+            var tracker=new EmberdeepHandRay();var pose=new Pose(Vector3.zero,Quaternion.LookRotation(buttons[0].transform.position));
+            for(int i=0;i<20;i++)Assert.IsFalse(menu.ProcessSamples(tracker.FromPointerPose(true,pose,Closed),default,buttons,true,Dt));
+            Assert.AreSame(buttons[0],menu.HoveredButton);
+            ReadyLeft();Assert.IsTrue(menu.ProcessSamples(Point(0,Closed),default,buttons,true,Dt));
+        }
+        [Test] public void OpenHandEdgeJitterDoesNotKeepCancellingRearm()
+        {
+            // A ends at x=-.05. Alternate just outside the acquisition margin
+            // but inside the narrower retention margin, with real live rays.
+            menu.ProcessSamples(Point(0,Open),default,buttons,true,Dt);
+            for(int i=0;i<8;i++)
+            {
+                var sample=new EmberdeepHandRay.Sample(true,new Ray(Vector3.zero,new Vector3(i%2==0?-.037f:-.06f,0,1)),Open);
+                Assert.IsFalse(menu.ProcessSamples(sample,default,buttons,true,Dt));
+                Assert.AreSame(buttons[0],menu.HoveredButton);
+            }
+            Assert.IsTrue(menu.ProcessSamples(Point(0,Closed),default,buttons,true,Dt));
+        }
+        [Test] public void CampMayShowLiveIdleRaysWithoutAcquiringOffTargetButtons()
+        {
+            menu.ShowUnfocusedRays=true;
+            var miss=new EmberdeepHandRay.Sample(true,new Ray(Vector3.zero,Vector3.up),Closed);
+            for(int i=0;i<20;i++)Assert.IsFalse(menu.ProcessSamples(miss,default,buttons,true,Dt));
+            Assert.IsTrue(menu.RayVisible(0));Assert.IsFalse(menu.OwnsInput);Assert.IsNull(menu.HoveredButton);
+            menu.ProcessSamples(default,default,buttons,true,Dt);Assert.IsFalse(menu.RayVisible(0));
         }
     }
 }

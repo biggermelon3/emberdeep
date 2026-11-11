@@ -20,6 +20,9 @@ namespace FireRescue
         public Camera ViewCamera { get; set; }
         // Fireground requires attention near the panel; camp keeps its own policy.
         public float MaximumHeadAngle { get; set; }=180f;
+        // Camp needs a visible pointer before the player finds a button.
+        // Fireground keeps contextual rays to avoid clutter during manipulation.
+        public bool ShowUnfocusedRays { get; set; }
         public bool RayVisible(int hand)=>hand>=0 && hand<2 && visible[hand];
         Material material;
         IReadOnlyList<WorkshopButton> currentButtons;
@@ -61,8 +64,8 @@ namespace FireRescue
             EmberdeepHandRay.Sample left=default,right=default;
             if(available && xr)
             {
-                if(handAllowed==null || handAllowed(0))left=sampleAllowed==null?rays[0].Read(provider,true):ReadIntent(provider,true);else rays[0].Reset();
-                if(handAllowed==null || handAllowed(1))right=sampleAllowed==null?rays[1].Read(provider,false):ReadIntent(provider,false);else rays[1].Reset();
+                if(handAllowed==null || handAllowed(0))left=rays[0].Read(provider,true);else rays[0].Reset();
+                if(handAllowed==null || handAllowed(1))right=rays[1].Read(provider,false);else rays[1].Reset();
                 if(sampleAllowed!=null)
                 {
                     if(!sampleAllowed(0,left))left=default;
@@ -72,19 +75,6 @@ namespace FireRescue
             else if(available && camera && Mouse.current!=null)
                 right=new EmberdeepHandRay.Sample(true,camera.ScreenPointToRay(Mouse.current.position.ReadValue()),Mouse.current.leftButton.isPressed?.01f:.04f);
             return ProcessSamples(left,right,buttons,available,dt,allowed);
-        }
-        // Game-only arbitration needs valid pointing even on the first closed
-        // sample. Reserving a target does not click it: the existing pinch filter
-        // below still requires an observed open hand and a fresh edge. Camp keeps
-        // using EmberdeepHandRay.Read and its unchanged acquisition policy.
-        static EmberdeepHandRay.Sample ReadIntent(MetaShadowPlayer provider,bool left)
-        {
-            if(!provider || !provider.ReadHand(left,out var palm,out _,out var pinch)
-                || !provider.ReadInteractionAim(left,out var pointer))return default;
-            var q=pointer.rotation;float norm=q.x*q.x+q.y*q.y+q.z*q.z+q.w*q.w;
-            if(!(norm>=.5f && norm<=1.5f))return default;
-            var sample=new EmberdeepHandRay.Sample(true,new Ray(pointer.position,q*Vector3.forward),pinch){VisualOrigin=palm.position};
-            return EmberdeepHandRay.Valid(sample)?sample:default;
         }
         public bool ProcessSamples(EmberdeepHandRay.Sample left,EmberdeepHandRay.Sample right,
             IReadOnlyList<WorkshopButton> buttons,bool available,float dt,Predicate<WorkshopButton> allowed=null)
@@ -103,7 +93,8 @@ namespace FireRescue
                     targets[hand]=FindTarget(sample,buttons,previous,allowed,out end);
                 }
                 else rays[hand].Reset();
-                visible[hand]=valid && targets[hand];
+                visible[hand]=valid && (targets[hand] || ShowUnfocusedRays);
+                if(valid && !targets[hand])end=sample.Ray.GetPoint(1.1f);
                 if(lines[hand])
                 {
                     // No idle laser in the forest or while directly manipulating a source.
@@ -112,8 +103,9 @@ namespace FireRescue
                     cursors[hand].gameObject.SetActive(visible[hand]);cursors[hand].position=end;
                     cursors[hand].localScale=Vector3.one*.009f;
                 }
-                bool pressed=pinches[hand].Sample(targets[hand]?targets[hand].GetInstanceID():0,valid,
-                    valid,sample.Pinch,false,float.PositiveInfinity,dt);
+                bool pinchTracked=valid && !sample.PinchUnavailable;
+                bool pressed=pinches[hand].Sample(targets[hand]?targets[hand].GetInstanceID():0,pinchTracked,
+                    pinchTracked,sample.Pinch,false,float.PositiveInfinity,dt);
                 if(pressed && (pressedHand<0 || hand==PointerHand))pressedHand=hand;
             }
             if(pressedHand>=0)PointerHand=pressedHand;
@@ -138,10 +130,11 @@ namespace FireRescue
             WorkshopButton previous,Predicate<WorkshopButton> allowed,out Vector3 end)
         {
             end=default;
-            // A small selection envelope keeps a closing pinch on its settled
-            // button; it never acquires a new target outside the normal hit area.
-            if(sample.Pinch<.035f && Eligible(previous,allowed) &&
-                ExpandedHit(previous.GetComponent<Collider>(),sample.Ray,.022f,out end,out _))return previous;
+            // Hysteresis prevents tiny edge jitter from restarting open-hand
+            // rearm. Closing a pinch gets the existing slightly wider envelope.
+            float retention=!sample.PinchUnavailable && sample.Pinch<.035f?.022f:.016f;
+            if(Eligible(previous,allowed) &&
+                ExpandedHit(previous.GetComponent<Collider>(),sample.Ray,retention,out end,out _))return previous;
             WorkshopButton best=null;float nearest=3;
             foreach(var b in buttons)
             {

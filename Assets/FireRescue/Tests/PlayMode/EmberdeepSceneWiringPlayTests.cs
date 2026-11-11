@@ -146,11 +146,11 @@ namespace FireRescue.Tests
             camp.enabled=false;Physics.SyncTransforms();
             var start=Button(camp,"New Game");var aim=Point(camp.Player.ViewCamera,start,Open);
             var miss=new EmberdeepHandRay.Sample(true,new Ray(aim.Ray.origin,Vector3.up),Open);
-            CampSample(hand,miss);Assert.IsFalse(camp.MenuInput.RayVisible(hand));
+            CampSample(hand,miss);Assert.IsTrue(camp.MenuInput.RayVisible(hand),"Camp shows live hand aim before acquiring a button");Assert.IsFalse(camp.MenuInput.OwnsInput);
             for(int i=0;i<8;i++)CampSample(hand,aim);
             Assert.AreSame(start,camp.HoveredButton);Assert.IsTrue(camp.MenuInput.RayVisible(hand));
             if(hand==1)Capture(camp.Player.ViewCamera,"Editor-synthetic-Camp-hover");
-            CampSample(hand,miss);Assert.IsFalse(camp.MenuInput.RayVisible(hand));
+            CampSample(hand,miss);Assert.IsTrue(camp.MenuInput.RayVisible(hand));Assert.IsNull(camp.HoveredButton);
             for(int i=0;i<8;i++)CampSample(hand,aim);
             aim.Pinch=Closed;CampSample(hand,aim);
             deadline=Time.realtimeSinceStartup+15;

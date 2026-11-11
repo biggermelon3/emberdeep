@@ -20,6 +20,7 @@ namespace FireRescue
         public bool Spraying { get; private set; }
         public Transform Arena { get; private set; }
         public bool LeftHanded { get; private set; }
+        public EmberdeepImmersiveSky ImmersiveSky { get; private set; }
         GardenNavigation navigation;
         MetaShadowPlayer hands;
         readonly FireSprayGesture gesture = new FireSprayGesture();
@@ -67,7 +68,7 @@ namespace FireRescue
                 navigation=new GameObject("Fire navigation").AddComponent<GardenNavigation>();
                 navigation.InitializeStandaloneFire(Player);
             }
-            hands=gameObject.AddComponent<MetaShadowPlayer>(); hands.Player=Player;
+            hands=gameObject.AddComponent<MetaShadowPlayer>(); hands.Player=Player;hands.IndependentPortableAim=true;
             handVisuals=gameObject.AddComponent<EmberdeepHandVisuals>();handVisuals.Configure(hands);
             savedAmbient=RenderSettings.ambientLight; savedAmbientMode=RenderSettings.ambientMode;
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat; RenderSettings.ambientLight=new Color(.62f,.69f,.68f);
@@ -88,6 +89,8 @@ namespace FireRescue
             Run.PropActivated+=OnPropActivated;Run.CabinLost+=OnCabinLost;
             if(StandaloneShowcase && Run.Trees.Length>0)BuildIncident();else StartNext();
             if(!Player.IsXR)TakeEquipment();
+            if(StandaloneShowcase)
+            {ImmersiveSky=gameObject.AddComponent<EmberdeepImmersiveSky>();ImmersiveSky.Initialize(Player.ViewCamera);}
             yield break;
         }
         void BuildWorld()

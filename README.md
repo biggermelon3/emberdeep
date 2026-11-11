@@ -1,6 +1,24 @@
 # Emberdeep
 
-Emberdeep is a hand-tracked VR miniature-world firefighting game for Quest 3 and PICO 4. This folder is the Unity project root and independent Git repository root. Current candidate: **0.2.11 / Android versionCode 14**. Slow recovery and shop catalogue previews are implemented as a candidate; FinalVerification passed 204 EditMode and 144 PlayMode; all 12 final Editor captures were reviewed. Both APK audits passed; device acceptance remains pending. Historical 0.2.10 passed 184 EditMode and 115 PlayMode; those results do not validate this candidate.
+Emberdeep is a hand-tracked VR miniature-world firefighting game for Quest 3 and PICO 4. This folder is the Unity project root and independent Git repository root. Current candidate: **0.2.14 / Android versionCode 17**, retaining hand input on both platforms.
+
+## Current sky and art direction
+
+Candidate **0.2.14 / Android versionCode 17** adds a four-second bottom-to-top surrounding forest sky after fireground placement. It covers the passthrough background while leaving scene geometry and hands in front; recenter/sector advance do not replay it, and returning to camp removes it. Hand tracking and both refill stations remain intact.
+
+See the [implementation and proposal contract](Docs/Emberdeep/ImmersiveSkyAndArtDirection.json), [Chinese art plan](Deliverables/Emberdeep/Emberdeep-0.2.14-Art-Plan.txt), [Editor view](Deliverables/Emberdeep/Emberdeep-0.2.14-Surrounded.png) and [device checks](Deliverables/Emberdeep/Emberdeep-0.2.14-Device-Checks.txt). HUD simplification, foliage/riverbank polish and removal of the optional creek pump from ordinary levels are proposals only.
+
+FinalAcceptance passed **208 EditMode and 161 PlayMode** tests, including rendered alpha coverage, foreground visibility and live-frame lifecycle checks. Both APKs passed version, ARM64, signature, scene-whitelist and 28-setting restoration audits. Real compositor occlusion, stereo, hand visibility and performance acceptance remain pending. Word revision 0.13 remains the 0.2.11 baseline supplemented by these JSON contracts.
+
+Quest 3 installation of 0.2.14/code 17 was verified; a later launch check could not run after the device disconnected. See the [installation and old-APK cleanup record](Deliverables/Emberdeep/Emberdeep-0.2.14-Installation.json) and [0.2.14 changelist](Docs/Emberdeep/Changelist-0.2.14.txt).
+
+## Retained hand-tracking fix (0.2.13)
+
+Retained input baseline: **0.2.13 / Android versionCode 16**. Both Quest and PICO use **hand aiming and a fresh thumb-index pinch**. The user rejected the 0.2.12 head-dwell workaround; it has been removed. Looking at a button alone never selects it. Use the [current hand-tracking contract](Docs/Emberdeep/PicoHandTrackingFix.json) and [Chinese device checks](Deliverables/Emberdeep/Emberdeep-0.2.13-Device-Checks.txt).
+
+PICO menu aim reads live OpenXR wrist/knuckle poses and per-joint validity, independently of SDK pointer objects and update bindings. Pinch availability is separate: missing tips stop clicks while valid aiming joints keep the ray live. Lost native updates, system-owned gestures, focus loss and pause still suppress input. A fresh opening is required after recovery. The camp displays live hand rays before acquiring a button, and small edge jitter no longer repeatedly cancels an acquired target. Fireground rays remain contextual. No camera-level tracking or OS system-menu fix is claimed.
+
+FinalAcceptance passed **208 EditMode and 157 PlayMode** tests. Both APKs passed version, ARM64, signature, scene-whitelist and 28-setting restoration audits. Worn-headset acceptance is pending. The tester's PICO model and OS are unknown. Design revision 0.13 and its generated Word files remain the **0.2.11 baseline**, supplemented by the current JSON contract. The inherited default Editor scene list still requires the standalone test/build runner's whitelist.
 
 ## Open
 
@@ -11,7 +29,7 @@ Emberdeep is a hand-tracked VR miniature-world firefighting game for Quest 3 and
 
 PICO OpenXR 1.4.1 is pinned to official commit `3aa3e62bff41df618529eeb60ff02c29a515dafe` in the package manifest and lockfile. No external workstation SDK checkout is required. Unity restores Meta XR and other UPM dependencies; the first import needs internet access.
 
-## Latest design update
+## Previous design baseline (0.2.11)
 
 Design revision **0.13** implements the approved 0.12 direction for slow recovery and per-purchase shop previews. The recovery transaction waits 3 eligible seconds, then adds 0.25 units/second to the active owned tank, including when racked; manual refill remains much faster. Recovery has separate accounting, fresh-delay interruption rules and a quiet gauge cue. Shop Equipment, Tuning and Station pages now display one stable model preview, explicit numeric comparisons and station current/result views. View Tuning/View Water browse; Buy remains a separate deliberate action. Missing models show PREVIEW UNAVAILABLE. Direct display geometry has no gameplay/physics/audio/particle components; optional thumbnail tiles and rotate/demo controls are not implemented. See [the current implementation contract](Docs/Emberdeep/WaterRecoveryAndShopPreview.json) and [draft device checks](Docs/Emberdeep/RecoveryShopDeviceAcceptance.json). FinalVerification passed 204 EditMode and 144 PlayMode under `Logs/EmberdeepRecoveryShop`. Twelve final Editor captures show all tools, tuning, station comparison and recovery states. Both APKs are delivered and audited; device acceptance remains pending. The increase includes 20 new EditMode and 26 new PlayMode cases plus 3 restored existing PlayMode cases, not 29 newly written cases.
 
@@ -39,7 +57,11 @@ The runner creates a fresh timestamped output directory, temporarily selects the
 
 For APKs use **Emberdeep > Build standalone Quest showcase** or **Emberdeep > Build standalone PICO showcase** in Unity. Automation entry points are `FireRescue.Editor.FireRescueBuilder.BuildShowcaseQuest` and `FireRescue.Editor.FireRescueBuilder.BuildShowcasePico`.
 
-Candidate 0.2.11 outputs are `Deliverables/Emberdeep/Emberdeep-0.2.11.apk` and `Emberdeep-0.2.11-Pico.apk`. Quest and PICO APKs passed version 0.2.11/code 14, ARM64, signature/icon, exact Camp/Fireground scene whitelist and settings-restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings. Source integrity is recorded in Logs/EmberdeepRecoveryShop/ReleaseEvidence.json; these build checks do not establish headset operation or performance. Quest 3 replacement installation and app info verified 0.2.11/code 14. The device was Asleep and no app process was observed; physical hand tracking, comfort, stereo readability and performance remain pending. No PICO hardware acceptance is claimed.
+Current 0.2.13 outputs are `Deliverables/Emberdeep/Emberdeep-0.2.13.apk` (Quest) and `Deliverables/Emberdeep/Emberdeep-0.2.13-Pico.apk` (PICO), Android versionCode 16. Both passed APK audits with zero build errors; warnings and hashes are in `Logs/EmberdeepStableHands/ReleaseEvidence.json`.
+
+Withdrawn 0.2.12: the user rejected the head-dwell replacement. Its APKs and evidence are historical and must not be distributed as the current hand-tracking fix.
+
+Historical 0.2.11 outputs are `Deliverables/Emberdeep/Emberdeep-0.2.11.apk` and `Emberdeep-0.2.11-Pico.apk`. Quest and PICO APKs passed version 0.2.11/code 14, ARM64, signature/icon, exact Camp/Fireground scene whitelist and settings-restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings. Source integrity is recorded in Logs/EmberdeepRecoveryShop/ReleaseEvidence.json; these build checks do not establish headset operation or performance. Quest 3 replacement installation and app info verified 0.2.11/code 14. The device was Asleep and no app process was observed; physical hand tracking, comfort, stereo readability and performance remain pending. No PICO hardware acceptance is claimed.
 
 Historical verified 0.2.10 outputs are `Deliverables/Emberdeep/Emberdeep-0.2.10.apk` and `Emberdeep-0.2.10-Pico.apk`. Both Quest and PICO APKs passed version 0.2.10/code 13, ARM64, signature/icon, camp/fireground scene-whitelist and 28-setting restoration audits. Both builds report zero errors, with 8 Quest warnings and 12 PICO warnings; they are not warning-free builds. Quest 3 replacement installation and app info verified 0.2.10/code 13. The headset was Asleep, no app process was observed, and launch was not attempted. The user explicitly deferred testing until later this round; current placement/menu interaction acceptance remains pending. Do not infer acceptance from old feedback or ask again this round. No PICO 4 physical usability or performance acceptance.
 
@@ -53,6 +75,7 @@ Historical only: the 0.2.6 pre-migration release verification passed **167 EditM
 
 - [Document manifest](Docs/Emberdeep/DocumentManifest.json): authoritative English JSON reading order.
 - [Implementation status](Docs/Emberdeep/ImplementationStatus.json): current, proposed and target scope.
+- [Current hand-tracking fix](Docs/Emberdeep/PicoHandTrackingFix.json).
 - [Recovery and preview candidate](Docs/Emberdeep/WaterRecoveryAndShopPreview.json).
 - [Retained 0.2.10 interaction intent and HUD height](Docs/Emberdeep/InteractionIntentFix.json).
 - [Historical 0.2.9 placement contract](Docs/Emberdeep/HudPlacementFix.json).

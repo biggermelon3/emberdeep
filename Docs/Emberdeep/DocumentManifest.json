@@ -2,7 +2,7 @@
   "revision": "0.13",
   "date": "2026-11-09",
   "language": "English",
-  "status": "IMPLEMENTED_CANDIDATE 0.2.11 / code 14; FinalVerification passed 204 EditMode and 144 PlayMode, all 12 Editor captures reviewed, Quest/PICO APKs built and audited. Worn-headset usability and performance acceptance pending.",
+  "status": "IMPLEMENTED_CANDIDATE 0.2.14 / code 17; rising immersive sky implemented; 208 EditMode and 161 PlayMode passed; both APKs audited; physical-headset acceptance PENDING. Art redesign and removal of the optional creek pump are PROPOSAL ONLY.",
   "authoritative_sources": "The ordered JSON sections below are authoritative. Edit the source, regenerate DOCX, render and inspect all pages before delivery. Do not hand-edit generated DOCX without reconciling the source.",
   "generator": "Tools/BuildEmberdeepDesignDocs.py",
   "documents": [
@@ -151,12 +151,15 @@
   "device_acceptance_source": "M1DeviceAcceptance.json",
   "art_iteration_source": "ArtV2Iteration.json",
   "interaction_polish_source": "InteractionPolish.json",
-  "current_release_evidence": "Logs/EmberdeepRecoveryShop/ReleaseEvidence.json",
-  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.11-Device-Checks.txt",
+  "current_release_evidence": "Logs/EmberdeepImmersiveSky/ReleaseEvidence.json",
+  "current_chinese_device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.14-Device-Checks.txt",
   "pinch_restore_source": "PinchRestore.json",
   "shop_access_fix_source": "ShopAccessFix.json",
   "hud_placement_fix_source": "HudPlacementFix.json",
   "interaction_intent_fix_source": "InteractionIntentFix.json",
   "water_recovery_and_shop_preview_source": "WaterRecoveryAndShopPreview.json",
-  "current_device_acceptance_source": "RecoveryShopDeviceAcceptance.json"
+  "current_device_acceptance_source": "ImmersiveSkyAndArtDirection.json",
+  "current_runtime_override": "ImmersiveSkyAndArtDirection.json",
+  "generated_document_scope": "Revision 0.13 sources/pages and DOCX remain the 0.2.11 baseline. Current sky/art addendum is 0.2.14; retain the 0.2.13 hand-input addendum. Broad art and second-station proposals have not been implemented.",
+  "retained_hand_input_contract": "PicoHandTrackingFix.json"
 }

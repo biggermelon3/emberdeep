@@ -19,10 +19,16 @@ namespace CloudGarden.Integration
     public sealed class MetaShadowPlayer : ShadowPlayerContext
     {
         public MetaPlayerRig Player;
+        // Emberdeep owns its visible rays. Do not depend on an SDK interactor's
+        // active pointer object or update event to aim on the portable PICO rig.
+        public bool IndependentPortableAim;
+        readonly PortableJointAim[] portableAims={new(),new()};
+        readonly PortableXRHandInput portableHands=new();
+        Oculus.Interaction.TransformTrackingToWorldTransformer portableSpace;
         public IShadowHost Host;
         Hand[] hands;
         OVRHand[] systemHands;
-        bool focused = true;
+        bool focused = true, paused;
         Oculus.Interaction.RayInteractor[] rays;
         float nextBind;
         bool headWasReady;
@@ -32,6 +38,7 @@ namespace CloudGarden.Integration
             if(!Active)return;
             bool ready=HeadReady;
             if(ready!=headWasReady){headWasReady=ready;Debug.Log("SHAPE_OF_MEMORY_HEAD "+HeadState());}
+            if(UnityXRRig && IndependentPortableAim){portableHands.Bind();return;}
             if(Time.unscaledTime<nextBind)return;
             nextBind=Time.unscaledTime+1;
             rays ??= Player.XRRig.GetComponentsInChildren<Oculus.Interaction.RayInteractor>(true);
@@ -100,7 +107,7 @@ namespace CloudGarden.Integration
         {
             get
             {
-                if (!focused || !Player) return false;
+                if (!focused || paused || !Player) return false;
                 if (!Active) return true;
                 var head = InputDevices.GetDeviceAtXRNode(XRNode.Head);
                 return head.isValid
@@ -117,12 +124,59 @@ namespace CloudGarden.Integration
             return $"ready={HeadReady} focus={focused}/{Application.isFocused} head={head.isValid} tracked={Read(CommonUsages.isTracked, tracking)} present={Read(CommonUsages.userPresence, presence)}";
         }
         public override bool ReadHand(bool left, out Pose palm, out Vector3 tip, out float pinchDistance)
+            =>ReadHandPose(left,out palm,out tip,out pinchDistance);
+        // UI pointing and pinch availability are separate: an obscured fingertip
+        // must stop clicks without discarding a still-tracked wrist/knuckle ray.
+        public bool ReadMenuHand(bool left,out Pose palm,out Pose aim,out float pinch,out bool pinchAvailable)
+        {
+            palm=aim=default;pinch=float.PositiveInfinity;pinchAvailable=false;
+            if(!ReadInteractionAim(left,out aim))return false;
+            if(UnityXRRig && IndependentPortableAim)
+            {
+                if(!ReadPortable(left,out var sample))return false;
+                palm=sample.Wrist;pinchAvailable=sample.PinchAvailable;
+                if(pinchAvailable)pinch=sample.Pinch;
+                return true;
+            }
+            var hand=Tracked(left);
+            if(!hand || !hand.GetRootPose(out palm) || !float.IsFinite(palm.position.sqrMagnitude))return false;
+            pinchAvailable=TryReadPinch(hand,out pinch);
+            return true;
+        }
+        bool ReadPortable(bool left,out PortableXRHandInput.Sample sample)
+        {
+            if(!portableSpace)portableSpace=Player.XRRig.GetComponentInChildren<Oculus.Interaction.TransformTrackingToWorldTransformer>(true);
+            return portableHands.TryRead(left,portableSpace?portableSpace.Transform:null,out sample);
+        }
+        public static bool TryReadPinch(IHand hand,out float pinch)
+        {
+            pinch=float.PositiveInfinity;
+            if(hand==null || !hand.IsConnected || !hand.IsTrackedDataValid
+                || !hand.GetJointPose(HandJointId.HandIndexTip,out var index)
+                || !hand.GetJointPose(HandJointId.HandThumbTip,out var thumb))return false;
+            pinch=Vector3.Distance(index.position,thumb.position);
+            return float.IsFinite(pinch);
+        }
+        public bool HasVisualHand(bool left)
+        {
+            if(!HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy)return false;
+            var hand=Tracked(left);
+            // Rendering does not require two usable pinch tips. Palm rotation
+            // can obscure a fingertip while the SDK still has a valid hand pose.
+            return hand && hand.GetRootPose(out var root) && float.IsFinite(root.position.sqrMagnitude);
+        }
+        bool SystemOwnsHand(bool left)
+        {
+            systemHands ??= Player.XRRig.GetComponentsInChildren<OVRHand>(true);
+            return systemHands.Any(h=>h && h.GetHand()==(left?OVRPlugin.Hand.HandLeft:OVRPlugin.Hand.HandRight)
+                && h.IsSystemGestureInProgress) || InSystemGesture(left);
+        }
+        bool ReadHandPose(bool left,out Pose palm,out Vector3 tip,out float pinchDistance)
         {
             palm = default; tip = default; pinchDistance = float.PositiveInfinity;
             if (!HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy) return false;
-            systemHands ??= Player.XRRig.GetComponentsInChildren<OVRHand>(true);
-            if (systemHands.Any(h => h && h.GetHand() == (left ? OVRPlugin.Hand.HandLeft : OVRPlugin.Hand.HandRight) && h.IsSystemGestureInProgress)) return false;
-            if (InSystemGesture(left)) return false;
+            if(SystemOwnsHand(left))return false;
+            if(UnityXRRig && IndependentPortableAim && (!ReadPortable(left,out var native) || !native.PinchAvailable))return false;
             var hand = Tracked(left);
             if (!hand || !hand.GetRootPose(out var wrist) || !hand.GetJointPose(HandJointId.HandMiddle1, out var middle)
                 || !hand.GetJointPose(HandJointId.HandIndexTip, out var index) || !hand.GetJointPose(HandJointId.HandThumbTip, out var thumb)) return false;
@@ -139,14 +193,23 @@ namespace CloudGarden.Integration
             var hand = Tracked(left);
             return hand && hand.IsPointerPoseValid && hand.GetPointerPose(out aim);
         }
-        // Firefighting uses the same final ray as the visible menu pointer. PICO's
-        // UnityXR pointer is corrected by ShoulderHandAim; the raw IHand pointer
-        // can disagree with it or be unavailable even while joint tracking works.
+        // Emberdeep's portable rig owns a joint-driven ray; older shared scenes
+        // retain their filtered SDK pointer binding. Neither uses stale tracking.
         public bool ReadInteractionAim(bool left,out Pose aim)
         {
             aim=default;
-            if(!HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy || InSystemGesture(left))
+            if(!HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy)
             {InvalidateInteractionAims();return false;}
+            if(SystemOwnsHand(left)){portableAims[left?0:1].Reset();return false;}
+            if(UnityXRRig && IndependentPortableAim)
+            {
+                var filter=portableAims[left?0:1];
+                if(!ReadPortable(left,out var sample)){filter.Reset();return false;}
+                // Missing tips relax aiming stiffness; they never become an
+                // open pinch sample. ReadMenuHand reports PinchAvailable=false.
+                return filter.TryRead(Time.frameCount,Player.ViewCamera.transform,left,sample.IndexBase,sample.ThumbBase,
+                    sample.PinchAvailable?sample.Pinch:.08f,Time.unscaledDeltaTime,out aim);
+            }
             if(!UnityXRRig)return ReadAim(left,out aim);
             var handedness=left?Handedness.Left:Handedness.Right;
             foreach(var binding in interactionAims)
@@ -185,16 +248,48 @@ namespace CloudGarden.Integration
             public void Invalidate()=>freshness.Invalidate();
             public void Dispose(){Hand.WhenHandUpdated-=Updated;freshness.Invalidate();}
         }
-        void InvalidateInteractionAims(){foreach(var binding in interactionAims)binding.Invalidate();}
+        void InvalidateInteractionAims()
+        {foreach(var binding in interactionAims)binding.Invalidate();foreach(var aim in portableAims)aim.Reset();portableHands.Invalidate();}
         void OnEnable()=>nextBind=0;
         void OnDisable()
         {
+            InvalidateInteractionAims();
+            portableHands.Dispose();
             foreach(var binding in interactionAims)binding.Dispose();interactionAims.Clear();nextBind=0;
         }
         public override void Recenter() { if (HeadReady && Host != null && !Host.Busy) Host.Recenter(); }
         public override void SwitchLevel(string level) => Host?.LoadLevel(level);
         void OnApplicationFocus(bool value) {focused=value;InvalidateInteractionAims();}
-        void OnApplicationPause(bool value) {focused=!value;InvalidateInteractionAims();}
+        void OnApplicationPause(bool value) {paused=value;InvalidateInteractionAims();}
+    }
+
+    // Driven directly from the current tracked joints. Missing pointer/aim flags
+    // cannot invalidate valid joint aiming; system gestures are gated by the caller.
+    public sealed class PortableJointAim
+    {
+        readonly OneEuro origin=new(1.2f,3),direction=new(.8f,1.5f);
+        Vector3 lastDirection;
+        int lastFrame=-1;
+        Pose cached;
+        public void Reset(){origin.Reset();direction.Reset();lastDirection=Vector3.zero;lastFrame=-1;}
+        public bool TryRead(int frame,Transform head,bool left,Vector3 index,Vector3 thumb,float pinch,float dt,out Pose aim)
+        {
+            aim=default;
+            if(frame<0 || !head || !Finite(head.position) || !Finite(head.forward) || !Finite(index) || !Finite(thumb)
+                || !float.IsFinite(pinch) || pinch<0 || !float.IsFinite(dt) || dt<=0)
+            {Reset();return false;}
+            if(frame==lastFrame){aim=cached;return true;}
+            if(frame<lastFrame || frame-lastFrame>1)Reset();
+            dt=Mathf.Clamp(dt,.0001f,.05f);
+            var at=origin.Filter(Vector3.Lerp(index,thumb,.5f),dt);
+            var wanted=ShoulderHandAim.Pointing(head,left,at);
+            var filtered=direction.Filter(wanted,dt).normalized;
+            float hold=Mathf.InverseLerp(.065f,.03f,pinch);
+            float follow=1-Mathf.Pow(.96f*hold,dt*72f);
+            lastDirection=lastDirection.sqrMagnitude>0?Vector3.Slerp(lastDirection,filtered,follow).normalized:filtered;
+            cached=new Pose(at,Quaternion.LookRotation(lastDirection,Vector3.up));lastFrame=frame;aim=cached;return true;
+        }
+        static bool Finite(Vector3 value)=>float.IsFinite(value.x)&&float.IsFinite(value.y)&&float.IsFinite(value.z);
     }
 
     // A new hand-ray binding has no usable pose until a real hand update arrives.

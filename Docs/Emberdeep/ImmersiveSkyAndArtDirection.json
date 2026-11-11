@@ -1,0 +1,99 @@
+{
+  "revision": "0.2.14",
+  "android_version_code": 17,
+  "status": "IMPLEMENTED_CANDIDATE 0.2.14 / code 17; rising immersive sky implemented; 208 EditMode and 161 PlayMode passed; both APKs audited; physical-headset acceptance PENDING. Art redesign and removal of the optional creek pump are PROPOSAL ONLY.",
+  "user_intent": "Reveal a surrounding sky/environment slowly from bottom to top on entering firefighting, then obscure the real surroundings; provide a scene beautification proposal and reconsider the second water device. Keep hand tracking.",
+  "retained_hand_input_contract": "PicoHandTrackingFix.json",
+  "implemented": {
+    "scope": "Standalone Emberdeep fireground only; scene-owned background, removed on leaving the scene.",
+    "timing": "Approximately four eligible seconds after stable scene placement. Uses unscaled delta time with a 0.1-second per-frame cap. Focus, pause, head readiness and placement gate progression; recenter and sector advance do not reset it.",
+    "transition": "Soft world-height mask reveals nadir to zenith. Initial framebuffer coverage is zero; final coverage is opaque. The transparent compositor underlay is progressively covered without switching off the passthrough provider.",
+    "art": "Muted warm horizon and sun, cool upper sky, distant mountain ridge and two dark forest silhouette layers, with a dark lower hemisphere.",
+    "geometry": "One inward-visible sphere follows camera position with fixed world rotation; no shadows, probes or active collider; URP shader with stereo instancing macros. It does not alter miniature scale or interaction positions.",
+    "lifecycle": "Camera background is transparent while the sky owns it; the previous camera clear state is restored if still owned when destroyed. Material and geometry are scene-owned.",
+    "foreground": "Fireground objects, UI and tracked hands retain their existing foreground rendering and input. No dwell selection, controller substitution or hand-tracking disable switch was introduced."
+  },
+  "proposal_only": {
+    "human_readable_chinese": "Deliverables/Emberdeep/Emberdeep-0.2.14-Art-Plan.txt",
+    "direction": "Twilight forest rescue diorama; improve information hierarchy before adding asset complexity.",
+    "priorities": [
+      "P1: Reduce persistent HUD and station signage. Make objective, remaining fires and water dominant; show detailed instructions contextually. Preserve target sizes and reachable hand interaction positions.",
+      "P2: Three muted foliage values, orange-red fire focus, grey-brown charred silhouettes and restrained wet-tree feedback. Integrate riverbanks and station foundations with soil, rocks and reeds while leaving hand paths clear.",
+      "P3: Vary repeating sky silhouettes, unify station materials and distinguish upgrades by structure. Keep peripheral scenery still and avoid new volumetric effects or extra real-time lights until measured on devices."
+    ],
+    "right_water_device": {
+      "observed": "The optional creek pump appears from sector two, requires intake placement and a pull/return stroke. Both manual pumps deliver 12 water per valid cycle; the primary upgrade path reaches 30 water/second. Left-hand mode mirrors station sides.",
+      "recommendation": "Remove the second refill device from ordinary default layouts while retaining the creek scenery. Reserve the creek pump for a later main-supply-interruption mission with a distinct objective and reward; do not simply inflate its yield to compete with the primary station upgrade.",
+      "reason": "Extra intake interaction currently adds neither a unique resource nor a distinct strategic benefit, while duplicating signage, hand targets and teaching burden.",
+      "implementation_status": "PROPOSAL ONLY. Both stations, progression and refill values are unchanged in 0.2.14."
+    }
+  },
+  "sources": [
+    "Assets/FireRescue/Runtime/EmberdeepImmersiveSky.cs",
+    "Assets/FireRescue/Resources/EmberdeepImmersiveSky.shader",
+    "Assets/FireRescue/Runtime/FireRescueGame.cs",
+    "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs",
+    "Assets/FireRescue/Runtime/FireRescueGame.Water.cs",
+    "Assets/FireRescue/Runtime/EmberdeepWaterSupply.cs",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepImmersiveSkyTests.cs"
+  ],
+  "verification": {
+    "EditMode": {
+      "passed": 208,
+      "failed": 0,
+      "path": "Logs/EmberdeepImmersiveSky/FinalAcceptance/EditMode-results.json"
+    },
+    "PlayMode": {
+      "passed": 161,
+      "failed": 0,
+      "path": "Logs/EmberdeepImmersiveSky/FinalAcceptance/PlayMode-results.json"
+    },
+    "new_coverage": "Rendered alpha before/midway/after reveal; foreground visibility; no active collider; fixed world orientation; paused progress and bounded resume; camera state restoration; live-frame scene progression and camp cleanup.",
+    "capture_scope": "Live Editor frames, synthetic sector advancement, desktop camera. All four images visually reviewed. This is not a real headset or passthrough-compositor capture.",
+    "captures": [
+      "Deliverables/Emberdeep/Emberdeep-0.2.14-Entering.png",
+      "Deliverables/Emberdeep/Emberdeep-0.2.14-Rising.png",
+      "Deliverables/Emberdeep/Emberdeep-0.2.14-Surrounded.png",
+      "Deliverables/Emberdeep/Emberdeep-0.2.14-Level-View.png"
+    ],
+    "device_acceptance": "PENDING: actual compositor occlusion, stereo consistency, hand visibility, comfort and frame rate on PICO/Quest.",
+    "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.14-Device-Checks.txt",
+    "release_evidence": "Logs/EmberdeepImmersiveSky/ReleaseEvidence.json",
+    "builds": {
+      "Pico": {
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "sceneWhitelistPassed": true,
+        "settingsRestored": true,
+        "sha256": "1e41ca08d3f0620f4e24bab5305c838a5d5e89b60356ca8392b7bf02391d349e",
+        "version": "0.2.14",
+        "target": "Pico",
+        "signatureVerified": true,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 17,
+        "bytes": 87243481,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.14-Pico.apk",
+        "warnings": 12,
+        "errors": 0,
+        "sky_shader_packed": true
+      },
+      "Quest": {
+        "target": "Quest",
+        "bytes": 105538829,
+        "signatureVerified": true,
+        "versionCode": 17,
+        "sha256": "978c42b987dd3e4ac1f94976a758f441f9ac03a1922e65a95ac88138ddcb7fe3",
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "sceneWhitelistPassed": true,
+        "settingsRestored": true,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "version": "0.2.14",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.14.apk",
+        "warnings": 8,
+        "errors": 0,
+        "sky_shader_packed": true
+      }
+    },
+    "installation_record": "Deliverables/Emberdeep/Emberdeep-0.2.14-Installation.json"
+  },
+  "generated_document_scope": "The revision 0.13 Word documents remain the 0.2.11 design baseline. Read this runtime/art addendum and the retained 0.2.13 hand-input contract for current changes. Broad art and second-station changes above are proposals only."
+}

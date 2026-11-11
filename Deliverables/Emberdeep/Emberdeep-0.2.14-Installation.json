@@ -1,0 +1,16 @@
+{
+  "package": "com.metahackathon2026.emberdeep",
+  "device_model": "Quest 3",
+  "version": "0.2.14",
+  "version_code": 17,
+  "installation": "Replacement install completed; installed version and code confirmed by metavr app info. Existing app data retained.",
+  "apk_sha256": "978c42b987dd3e4ac1f94976a758f441f9ac03a1922e65a95ac88138ddcb7fe3",
+  "launch": "Attempted after installation verification; device was no longer connected. Subsequent device list was empty. Launch and worn-headset acceptance are not confirmed.",
+  "cleanup": {
+    "removed_old_apks": 22,
+    "freed_bytes": 2119931054,
+    "scope": "Deliverables/Emberdeep: Emberdeep Quest/PICO APK versions 0.2.3 through 0.2.13",
+    "retained_apks": ["Emberdeep-0.2.14.apk", "Emberdeep-0.2.14-Pico.apk"],
+    "record": "Logs/EmberdeepImmersiveSky/RemovedOldApks.json"
+  }
+}

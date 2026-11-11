@@ -1,0 +1,92 @@
+{
+  "version": "0.2.13",
+  "android_version_code": 16,
+  "date": "2026-11-10",
+  "status": "IMPLEMENTED_CANDIDATE 0.2.13 / code 16; hand aiming and pinch on both platforms; 208 EditMode and 157 PlayMode passed; both APKs audited; worn-headset acceptance PENDING.",
+  "user_requirement": "Keep hand tracking and improve its stability. The user explicitly rejected the 0.2.12 head-dwell workaround.",
+  "supersedes": "PicoMenuRecoveryFix.json / 0.2.12. Do not distribute the 0.2.12 head-dwell APK as this fix.",
+  "input_contract": "Both platforms use hand aiming and a fresh thumb-index pinch. Looking at a button, holding a pinch from a previous page, or recovering with closed fingers cannot click it. There is no head-dwell route.",
+  "changes": [
+    {
+      "id": "SH-01",
+      "rule": "The PICO portable rig reads Dynamic XRHandSubsystem updates and each required joint's TryGetPose result directly. It binds when a running subsystem becomes available and can rebind after stop/restart. SDK pointer validity, pointer objects and Hand.WhenHandUpdated are not prerequisites for portable aiming. Missing native joints cannot be replaced by cached SDK joint values.",
+      "code": "Assets/ShadowWorkshop/Integration/PortableXRHandInput.cs"
+    },
+    {
+      "id": "SH-02",
+      "rule": "Wrist, index-base and thumb-base poses determine pointing. Thumb/index fingertip validity determines whether pinch is available. Missing fingertips keep a valid live aim visible but clear click rearm; they are not treated as open fingers. Native tracking loss, missing aiming joints, stopped updates and system ownership suppress input. Freshness allows current/previous frame for update ordering, with an 80 ms wall-time ceiling, and explicit lost/invalid updates clear immediately.",
+      "code": "Assets/ShadowWorkshop/Integration/MetaShadowPlayer.cs"
+    },
+    {
+      "id": "SH-03",
+      "rule": "The camp displays valid hand rays even before a button is found, including when fingers are closed. A tracked closed hand may aim but must reopen before clicking. Fireground retains contextual rays. A 16 mm retention margin keeps an already acquired button stable under small open-hand jitter; the existing 22 mm closing-pinch retention remains. New target acquisition retains the 12 mm margin and eligibility rules.",
+      "code": "Assets/FireRescue/Runtime/EmberdeepHandRayMenu.cs"
+    },
+    {
+      "id": "SH-04",
+      "rule": "Portable aim uses independent per-hand One Euro filters and frame-time-scaled pinch damping. Focus and pause remain independent gates. Valid visual hands are separate from system-owned interaction input. Neither render-only snapshots nor missing finger data are used for gameplay actions.",
+      "code": "Assets/ShadowWorkshop/Integration/MetaShadowPlayer.cs"
+    }
+  ],
+  "verification_scope": "Editor tests exercise native-sample validity/freshness, transforms, filtered aim, actual menu colliders, hand-specific pinch, page/focus recovery, scene transitions and existing gameplay. They do not exercise a real PICO sensor/provider or establish worn-headset usability/performance.",
+  "device_acceptance": "PENDING; tester PICO model and OS unknown",
+  "system_menu_policy": "System menus are not disabled. The fix keeps hand interaction and rejects system-owned gestures instead of replacing hand tracking.",
+  "device_checklist": "Deliverables/Emberdeep/Emberdeep-0.2.13-Device-Checks.txt",
+  "references": [
+    "https://developer.picoxr.com/document/unity-openxr/hand-tracking/",
+    "https://docs.unity3d.com/Packages/com.unity.xr.hands@1.7/manual/hand-data/xr-hand-access-data.html"
+  ],
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 208,
+        "passed": 208,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepStableHands/FinalAcceptance/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 157,
+        "passed": 157,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepStableHands/FinalAcceptance/PlayMode-results.json"
+      }
+    },
+    "builds": {
+      "Pico": {
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.13",
+        "signatureVerified": true,
+        "sha256": "ad8d96dafe9dc712b20f5ff36ef941bea8982f82133e7fc8483ffc3b6b2a45ed",
+        "target": "Pico",
+        "bytes": 87244183,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 16,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.13-Pico.apk",
+        "warnings": 12,
+        "errors": 0
+      },
+      "Quest": {
+        "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.13",
+        "signatureVerified": true,
+        "sha256": "ac9fd20598554ed75f143ff3912ec6ca150447062da76ca2b7c5ada74fceac58",
+        "target": "Quest",
+        "bytes": 105538111,
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 16,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.13.apk",
+        "warnings": 8,
+        "errors": 0
+      }
+    },
+    "evidence": "Logs/EmberdeepStableHands/ReleaseEvidence.json"
+  }
+}
