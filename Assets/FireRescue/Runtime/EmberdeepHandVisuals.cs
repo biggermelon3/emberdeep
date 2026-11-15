@@ -39,6 +39,7 @@ namespace FireRescue
         bool focused=true,paused;
         struct InteractionPose {public EmberdeepHandPoseKind Kind;public Transform Anchor;public float Amount;}
         readonly InteractionPose[] interactionPoses=new InteractionPose[2];
+        public EmberdeepHandContact Contacts {get;}=new();
         public Material RuntimeMaterial=>material;
         public int BoundVisualCount=>visuals.Count;
         public int FrozenHandCount
@@ -125,7 +126,7 @@ namespace FireRescue
             }
             material.SetMatrixArray(MatricesId,matrices);material.SetVectorArray(ExtentsId,extents);
         }
-        void LateUpdate(){ApplyOcclusion();UpdateVisibility();}
+        void LateUpdate(){ApplyOcclusion();Contacts.Prepare();UpdateVisibility();}
         void UpdateVisibility()
         {
             bool available=focused && !paused && provider && provider.Active && provider.HeadReady;
@@ -143,6 +144,7 @@ namespace FireRescue
                     && !staticPose && (isLeft?left:right);
                 var pose=interactionPoses[isLeft?0:1];
                 item.Presentation?.Present(show,pose.Kind,pose.Anchor,pose.Amount,Time.unscaledDeltaTime);
+                if(show)item.Presentation?.Constrain(Contacts,pose.Kind!=EmberdeepHandPoseKind.Free);
                 // SDK owns renderer.enabled and HandVisual.ForceOffVisibility.
                 // Its source geometry is masked while the render-only copy is
                 // used. SDK updates and visibility decisions remain untouched.

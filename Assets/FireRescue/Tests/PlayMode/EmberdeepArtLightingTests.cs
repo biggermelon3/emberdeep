@@ -17,6 +17,17 @@ namespace FireRescue.Tests
             var art=EmberdeepArtLibrary.Load();Assert.NotNull(art.Pipeline);
             Assert.AreSame(art.Pipeline,QualitySettings.renderPipeline);
             var game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);
+            Assert.IsTrue(game.Player.ViewCamera.allowMSAA,"The XR camera must retain hardware edge antialiasing");
+#if UNITY_EDITOR
+            var pipeline=new UnityEditor.SerializedObject(art.Pipeline);
+            Assert.AreEqual(4,pipeline.FindProperty("m_MSAA").intValue);
+            Assert.IsFalse(pipeline.FindProperty("m_RequireOpaqueTexture").boolValue);
+            foreach(var shaderName in new[]{"Emberdeep/V2 Sculpted Surface","Emberdeep/V2 Shallow Creek","Emberdeep/Rising Forest Sky","Emberdeep/V2/Particles"})
+            {
+                var shader=Shader.Find(shaderName);Assert.NotNull(shader,shaderName);
+                Assert.IsFalse(UnityEditor.ShaderUtil.ShaderHasError(shader),shaderName);
+            }
+#endif
             Assert.Greater(game.Arena.GetComponentsInChildren<MeshFilter>().Length,10);
             game.ReturnToMenu();
             for(int i=0;i<120 && SceneManager.GetActiveScene().name!=EmberdeepSession.CampScene;i++)yield return null;

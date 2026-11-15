@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-12",
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "package": "com.metahackathon2026.emberdeep",
+  "version": "0.2.17",
+  "versionCode": 20,
+  "installedVersionVerified": true,
+  "installation": "Replace existing application, preserve data",
+  "apkSha256": "5fc0f64ac1bb9871957d8e5d665793e0dba2afa0a8495eae2aa79ea858ca3de3",
+  "headsetInteractionAcceptance": "Pending user worn-headset test of canonical poses, retained hold, proportional lever and material AA",
+  "appInfo": {
+    "package": "com.metahackathon2026.emberdeep",
+    "version_name": "0.2.17",
+    "version_code": "20",
+    "install_path": "/data/app/~~9akLaNgiIWEJP-6y5zugiQ==/com.metahackathon2026.emberdeep-QzIObbKiMLUm4Iq-OzRE8g==",
+    "is_system": false,
+    "first_install_time": "2026-11-06 13:30:58",
+    "last_update_time": "2026-11-13 10:21:03",
+    "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+  }
+}

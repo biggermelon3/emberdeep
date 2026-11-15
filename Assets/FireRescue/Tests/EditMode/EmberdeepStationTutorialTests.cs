@@ -25,8 +25,8 @@ namespace FireRescue.Tests
             Assert.AreEqual(EmberdeepRefillTutorial.Step.ReturnLever,returning.Stage);
             Assert.AreEqual(EmberdeepRefillTutorial.Target.Lever,returning.Focus);
             for(int i=0;i<20;i++)EmberdeepRefillTutorial.Describe(run,false,true,true);
-            Assert.Zero(run.Water,"Drawing the tutorial cannot complete a stroke");
-            Assert.AreEqual(12,run.Supply.SampleLever(0,true,true));
+            Assert.AreEqual(6,run.Water,"Drawing the tutorial cannot add to measured return travel");
+            Assert.AreEqual(6,run.Supply.SampleLever(0,true,true));
             Assert.AreEqual(EmberdeepRefillTutorial.Step.LowerLever,EmberdeepRefillTutorial.Describe(run,false,true,true).Stage);
         }
 

@@ -78,9 +78,17 @@ namespace FireRescue
             ClearInterfaceReservation();
         }
         void OnSupplyDock(){CancelWeaponInput();Feedback.Impact(false);}
-        void OnSupplyStroke(float units){supplyStrokeFlashUntil=Time.unscaledTime+.25f;Feedback.Impact(false);}
+        void OnSupplyStroke(float units)
+        {if(Time.unscaledTime>=supplyStrokeFlashUntil)Feedback.Impact(false);supplyStrokeFlashUntil=Time.unscaledTime+.15f;}
         void OnSupplyDisconnect(){CancelWeaponInput();Feedback.Impact(false);}
-        void OnEmptyOutletStroke(float units){hydrantStation.EmitOutletSplash();Feedback.Impact(false);}
+        float outletFeedbackUnits;
+        void OnEmptyOutletStroke(float units)
+        {
+            outletFeedbackUnits+=units;
+            if(outletFeedbackUnits<1)return;
+            outletFeedbackUnits%=1;hydrantStation.EmitOutletSplash();
+            if(Time.unscaledTime>=supplyStrokeFlashUntil){Feedback.Impact(false);supplyStrokeFlashUntil=Time.unscaledTime+.15f;}
+        }
         void PositionWaterStations()
         {
             if(!hydrantStation || !Arena)return;
@@ -99,6 +107,7 @@ namespace FireRescue
         }
         void CancelWeaponInput()
         {
+            toolManipulation.CancelActions();
             Spraying=false;desktopReady=false;gesture.Reset();pump.Reset();Run.CancelTrigger();
             grip.ConsumePickup();
             if(aimMarker)aimMarker.gameObject.SetActive(false);if(coverage)coverage.enabled=false;
@@ -135,6 +144,7 @@ namespace FireRescue
         }
         bool AllowHandInterface(int hand,EmberdeepRefillInteraction.Hand sample,EmberdeepHandRay.Sample ray)
         {
+            if(ToolOwnsHand(hand))return false;
             if(!ValidInterfaceHand(sample) || (refill.OwnsControl && refill.OperatingHand==hand))return false;
             // A real eligible ray + head attention beats proximity alone. Existing
             // physical ownership remains exclusive; no target means normal rules.
@@ -174,6 +184,8 @@ namespace FireRescue
         }
         bool ProcessHandMenuCore(EmberdeepHandRay.Sample left,EmberdeepHandRay.Sample right,bool available,float dt)
         {
+            if(ToolOwnsHand(0))left=default;
+            if(ToolOwnsHand(1))right=default;
             available=available && focused && !paused && !returningToCamp && !acquiringPose;
             if(!available){CancelWeaponInput();ClearInterfaceReservation();}
             if(refill.OwnsControl){if(refill.OperatingHand==0)left=default;else right=default;}
@@ -222,12 +234,9 @@ namespace FireRescue
         bool ProcessRefillInput(Pose palm,bool valid,float dt)
         {
             if(!Player.IsXR)return interfaceHovered?BlockRefillForInterface(dt):DesktopRefill(dt);
-            bool l=hands.ReadHand(true,out var lp,out var lt,out var ld);
-            bool r=hands.ReadHand(false,out var rp,out var rt,out var rd);
-            if(InterfaceBlocksPhysical)return ProcessRefillHands(new EmberdeepRefillInteraction.Hand(l,lp,ld,lt),new EmberdeepRefillInteraction.Hand(r,rp,rd,rt),dt);
-            if(grip.Held && !Run.Supply.Locked && !refill.OwnsControl && valid)
-                EmberdeepRefillInteraction.TryGuideHeldTool(heldView,new Pose(GripPoint(LeftHanded,palm),palm.rotation),hydrantStation,creekStation,LeftHanded?ld:rd);
-            return ProcessRefillHands(new EmberdeepRefillInteraction.Hand(l,lp,ld,lt),new EmberdeepRefillInteraction.Hand(r,rp,rd,rt),dt);
+            // Surface grabs retain their real pose: the visible coupling must
+            // actually reach the dock, without rotating a body grip onto it.
+            return ProcessRefillHands(objectHands[0],objectHands[1],dt);
         }
         bool NearWellLever(Vector3 contact)
         {
@@ -243,13 +252,13 @@ namespace FireRescue
             if(InterfaceBlocksPhysical && !refill.OwnsControl && ownerTracked && validTime)return BlockRefillForInterface(dt);
             // Keep actual tracking (including the dock owner) while suppressing
             // this UI hand's physical pinch until it has really reopened.
-            if(interfacePhysicalBlocked[0] && ValidInterfaceHand(left))left.Pinch=.04f;
-            if(interfacePhysicalBlocked[1] && ValidInterfaceHand(right))right.Pinch=.04f;
+            if(interfacePhysicalBlocked[0] && ValidInterfaceHand(left)){left.Pinch=.04f;left.GripValid=false;}
+            if(interfacePhysicalBlocked[1] && ValidInterfaceHand(right)){right.Pinch=.04f;right.GripValid=false;}
             bool hadDock=Run.Supply.Locked;
             bool wasEmpty=refill.EmptyOutlet;int previousOperator=refill.OperatingHand;
             bool consumed=refill.Process(Run,heldView,hydrantStation,creekStation,grip.Held,grip.Hand,left,right,dt);
-            if(refill.Detached){grip.EquipForDesktop(refill.DetachedHand);LeftHanded=refill.DetachedHand==0;CancelWeaponInput();}
-            if(refill.Interrupted){hydrantStation.StopOutlet();if(hadDock)ReturnEquipment();}
+            if(refill.Detached){grip.EquipForDesktop(refill.DetachedHand);LeftHanded=refill.DetachedHand==0;CancelWeaponInput();toolManipulation.Begin(heldView,refill.DetachedHand,toolHands[refill.DetachedHand]);}
+            if(refill.Interrupted){hydrantStation.StopOutlet();if(hadDock){if(left.UsesGrip || right.UsesGrip)toolManipulation.Park();else ReturnEquipment();}}
             else if(wasEmpty && (Run.Phase==FirePhase.Lost || !(previousOperator==0?left:right).Tracked || !refill.EmptyOutlet))hydrantStation.StopOutlet();
             return consumed;
         }
@@ -274,7 +283,7 @@ namespace FireRescue
             {
                 if(Run.StationTier!=WaterStationTier.LeverWell || (!keys.rKey.isPressed && !keys.rKey.wasReleasedThisFrame))return false;
                 desktopOutletTravel=keys.rKey.isPressed && !keys.rKey.wasPressedThisFrame?.085f:0;
-                if(desktopOutletStroke.Sample(desktopOutletTravel,true,true))OnEmptyOutletStroke(12);
+                if(desktopOutletStroke.Sample(desktopOutletTravel,true,true))OnEmptyOutletStroke(desktopOutletStroke.WaterUnits);
                 if(keys.rKey.wasReleasedThisFrame)desktopOutletStroke.Reset();
                 return true;
             }
@@ -302,7 +311,7 @@ namespace FireRescue
             var s=Run.Supply;float ratio=Run.Water/Run.Capacity;
             string control=Run.StationTier==WaterStationTier.LeverWell?"LOWER + RETURN LEVER":Run.StationTier==WaterStationTier.RotaryHydrant?"TURN THE WHEEL":"PRESS THE BUTTON";
             string hyd=s.Kind==WaterSourceKind.Hydrant?(s.ValveOpen?"FILLING":"DOCKED / "+(ratio>=.999f?"FULL":control)):"FREE WATER\nAlign cyan coupling";
-            string creek=s.Kind==WaterSourceKind.Creek?(ratio>=.999f?"FULL / TAKE TOOL":s.IntakePlaced?"PULL + RETURN":"PLACE INTAKE"):"OPTIONAL CREEK / FREE WATER\nRelease pinch, then dock";
+            string creek=s.Kind==WaterSourceKind.Creek?(ratio>=.999f?"FULL / TAKE TOOL":s.IntakePlaced?"PULL + RETURN":"PLACE INTAKE"):"OPTIONAL CREEK / FREE WATER\nRelax grip, then dock";
             if(!Player.IsXR)
             {
                 hyd=s.Kind==WaterSourceKind.Hydrant?(Run.StationTier==WaterStationTier.LeverWell?"R: lower / release to return\nX: leave":"V: operate  |  X: leave"):

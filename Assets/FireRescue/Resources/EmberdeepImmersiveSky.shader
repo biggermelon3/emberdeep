@@ -39,16 +39,20 @@ Shader "Emberdeep/Rising Forest Sky"
                 half3 color=lerp(horizon,zenith,smoothstep(-.04,.68,d.y));
                 float sunlight=saturate(dot(d,normalize(float3(-.48,.24,.84))));
                 color+=half3(.28,.115,.025)*pow(sunlight,24);
-                color=lerp(color,half3(.95,.65,.31),smoothstep(.99915,.99965,sunlight)*.85);
+                float sunWidth=max(.00025,fwidth(sunlight));
+                color=lerp(color,half3(.95,.65,.31),smoothstep(.9994-sunWidth,.9994+sunWidth,sunlight)*.85);
                 // Broad, low-contrast layers frame the miniature without adding
                 // expensive fog, moving peripheral scenery or background lights.
                 float ridge=.008+sin(az*3+.7)*.035+sin(az*7-1.2)*.014;
-                color=lerp(color,half3(.085,.155,.17),1-smoothstep(ridge-.004,ridge+.004,d.y));
+                float ridgeWidth=max(.004,fwidth(d.y-ridge));
+                color=lerp(color,half3(.085,.155,.17),1-smoothstep(-ridgeWidth,ridgeWidth,d.y-ridge));
                 float farTrees=-.045+sin(az*4)*.012+(1-abs(frac(az*17)*2-1))*.055;
-                color=lerp(color,half3(.035,.09,.095),1-smoothstep(farTrees-.002,farTrees+.002,d.y));
+                float farWidth=max(.002,fwidth(d.y-farTrees));
+                color=lerp(color,half3(.035,.09,.095),1-smoothstep(-farWidth,farWidth,d.y-farTrees));
                 float nearTrees=-.11+sin(az*2+.3)*.018+(1-abs(frac(az*25+.27)*2-1))*.07;
                 half3 ground=lerp(half3(.018,.037,.041),half3(.025,.065,.067),smoothstep(-.9,-.05,d.y));
-                color=lerp(color,ground,1-smoothstep(nearTrees-.002,nearTrees+.002,d.y));
+                float nearWidth=max(.002,fwidth(d.y-nearTrees));
+                color=lerp(color,ground,1-smoothstep(-nearWidth,nearWidth,d.y-nearTrees));
                 float edge=lerp(-.08,1.08,smoothstep(0,1,_Reveal));
                 float alpha=1-smoothstep(edge-.08,edge+.08,d.y*.5+.5);
                 return half4(color,alpha);

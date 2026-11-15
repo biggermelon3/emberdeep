@@ -33,7 +33,7 @@ namespace FireRescue.Tests
             Assert.IsTrue(run.Supply.Locked);
         }
         static float LeverStroke(EmberdeepWaterSupply s)
-        {s.SampleLever(0,true,true);s.SampleLever(.08f,true,true);return s.SampleLever(.01f,true,true);}
+        {s.SampleLever(0,true,true);s.SampleLever(.08f,true,true);return s.SampleLever(0,true,true);}
 
         [Test] public void StarterWellHasNoValveButtonOrIdleWaterPath()
         {
@@ -46,16 +46,18 @@ namespace FireRescue.Tests
             Assert.Zero(run.Water);Assert.Zero(run.SuppliedWater);
             Assert.AreEqual(12,LeverStroke(s));Assert.AreEqual(12,run.Water);Assert.AreEqual(12,run.SuppliedWater);
         }
-        [Test] public void LeverRequiresCompleteDownAndReturnWithoutDuplicateCredits()
+        [Test] public void LeverCreditsActualReturnTravelWithoutDuplicateCredits()
         {
             var run=new FireRun();Drain(run);Dock(run);var s=run.Supply;
             s.SampleLever(.09f,true,true);Assert.Zero(s.SampleLever(0,true,true));
-            for(int i=0;i<20;i++){s.SampleLever(.07f,true,true);Assert.Zero(s.SampleLever(.01f,true,true));}
-            Assert.Zero(run.Water);s.SampleLever(.08f,true,true);Assert.IsTrue(s.LeverReturnRequired);
-            Assert.Zero(s.SampleLever(.04f,true,true));Assert.IsTrue(s.LeverReturnRequired);
-            Assert.AreEqual(12,s.SampleLever(.02f,true,true));Assert.IsFalse(s.LeverReturnRequired);
-            for(int i=0;i<20;i++)Assert.Zero(s.SampleLever(.01f,true,true));
-            Assert.AreEqual(12,run.Water);
+            s.SampleLever(.04f,true,true);Assert.IsTrue(s.LeverReturnRequired);
+            Assert.That(s.SampleLever(.02f,true,true),Is.EqualTo(3).Within(.001f));
+            Assert.That(s.SampleLever(0,true,true),Is.EqualTo(3).Within(.001f));
+            Assert.IsFalse(s.LeverReturnRequired);
+            for(int i=0;i<20;i++)Assert.Zero(s.SampleLever(0,true,true));
+            s.SampleLever(.16f,true,true);
+            Assert.That(s.SampleLever(0,true,true),Is.EqualTo(24).Within(.001f));
+            Assert.That(run.Water,Is.EqualTo(30).Within(.001f));
         }
         [Test] public void ReleasingOrLosingTrackingCancelsUnfinishedLeverStroke()
         {

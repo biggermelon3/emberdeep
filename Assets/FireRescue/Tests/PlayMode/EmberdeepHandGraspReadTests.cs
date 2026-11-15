@@ -32,6 +32,14 @@ namespace FireRescue.Tests
             Assert.IsFalse(EmberdeepHandGrasp.TryRead(hand,out _,out _));
             hand.Joints.Remove(HandJointId.HandRingTip);Assert.IsFalse(EmberdeepHandGrasp.TryRead(hand,out _,out _));
         }
+        [Test] public void ObjectRootAndClosureDoNotRequirePointerOrThumbPinch()
+        {
+            var hand=new SampleHand(1,false,true);hand.Joints.Remove(HandJointId.HandThumbTip);
+            Assert.IsTrue(CloudGarden.Integration.MetaShadowPlayer.TryReadObjectRoot(hand,out _));
+            Assert.IsTrue(EmberdeepHandGrasp.TryReadClosure(hand,out var closure,out _));Assert.Greater(closure,.84f);
+            hand.Joints.Remove(HandJointId.HandRingTip);
+            Assert.IsFalse(EmberdeepHandGrasp.TryReadClosure(hand,out _,out _));
+        }
         sealed class SampleHand:IHand
         {
             public readonly Dictionary<HandJointId,Pose> Joints=new();
@@ -56,7 +64,7 @@ namespace FireRescue.Tests
             public Handedness Handedness {get;}
             public float Scale {get;}
             public bool IsConnected=>true;public bool IsHighConfidence=>true;public bool IsTrackedDataValid=>true;
-            public bool IsDominantHand=>false;public bool IsPointerPoseValid=>true;public int CurrentDataVersion=>1;
+            public bool IsDominantHand=>false;public bool IsPointerPoseValid=>false;public int CurrentDataVersion=>1;
             public event Action WhenHandUpdated {add{} remove{}}
             public bool GetFingerIsHighConfidence(HandFinger finger)=>Confidence;
             public bool GetFingerIsPinching(HandFinger finger)=>false;public bool GetIndexFingerIsPinching()=>false;

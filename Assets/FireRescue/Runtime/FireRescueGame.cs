@@ -218,22 +218,12 @@ namespace FireRescue
             if(!ready){ResetInput(true,!returningToCamp && !navigation.IsTransitioning);return;} // Input pauses; last held pose stays visual only.
             if(hydrantStation)hydrantStation.TickOutlet(Time.unscaledDeltaTime);
             if(Player.IsXR && !xrPlaced){Recenter();return;}
+            if(Player.IsXR)ReadObjectHands();
             if(ProcessInterfaceInput()){Run.ResetRecovery();Refresh();return;}
             if(ShopOpen){Run.ResetRecovery();CancelWeaponInput();Refresh();return;}
             if(Player.IsXR && !Run.Supply.Locked && !interfaceHovered)
             {
-                for(int hand=0;hand<2;hand++)
-                {
-                    bool tracked=hands.ReadHand(hand==0,out var pose,out var tip,out var distance);
-                    if((!grip.Held || grip.Hand!=hand) && ((refill.OwnsControl && refill.OperatingHand==hand) || (tracked && NearWellLever(tip))))
-                    {grip.Sample(hand,false,distance,Vector3.zero,rackView.Grip.position,false,Time.unscaledDeltaTime);continue;}
-                    bool wasHeld=grip.Held;
-                    if(grip.Sample(hand,tracked,distance,GripPoint(hand==0,pose),rackView.Grip.position,Run.Owns(SelectedEquipment),Time.unscaledDeltaTime))
-                    {
-                        if(grip.Held && !wasHeld)TakeEquipment(hand);
-                        else ReturnEquipment();
-                    }
-                }
+                ProcessToolPickup(Time.unscaledDeltaTime);
             }
             bool trigger=false, valid=true;float pinch=float.PositiveInfinity;
             Ray ray=new Ray(Player.ViewCamera.transform.position,Player.ViewCamera.transform.forward);
@@ -241,13 +231,10 @@ namespace FireRescue
             WorkshopButton hovered=null;
             if(Player.IsXR)
             {
-                valid=hands.ReadHand(LeftHanded,out palm,out _,out pinch);
-                valid=hands.ReadInteractionAim(LeftHanded,out var aim) && valid;
-                if(valid)
-                {
-                    menuRay=new Ray(aim.position,aim.rotation*Vector3.forward);
-                    ray=FireMiniature.FromHand(Arena,palm,aim);
-                }
+                var primary=toolHands[grip.Hand];valid=primary.Usable;palm=primary.Palm;
+                pinch=objectHands[grip.Hand].Pinch;
+                ProcessCarriedTool(Time.unscaledDeltaTime,!interfaceHovered && !Run.Supply.Locked);
+                ray=new Ray(heldView.Muzzle.position,heldView.Muzzle.forward);
             }
             else if(Mouse.current!=null)
             {
@@ -263,7 +250,7 @@ namespace FireRescue
                 }
             }
             bool overMenu=interfaceHovered;
-            if(Player.IsXR)trigger=gesture.Sample(valid,pinch,overMenu,Time.unscaledDeltaTime);
+            if(Player.IsXR)trigger=toolManipulation.Firing;
             if(overMenu)
             {
                 trigger=false;
@@ -277,11 +264,11 @@ namespace FireRescue
             {
                 var target=WaterJet.MouseTarget(ray,Arena,waterTargets);
                 // Mouse points at a landing spot; VR uses the actual hand-held barrel direction.
-                var offset=heldView.Muzzle.localPosition-heldView.Grip.localPosition;
+                var offset=heldView.MuzzleOffset;
                 velocity=WaterJet.AimFromGrip(nozzlePosition,target,speed,offset);
             }
             var rotation=Quaternion.LookRotation(velocity);
-            if(valid)heldView.transform.SetPositionAndRotation(nozzlePosition-rotation*heldView.Grip.localPosition,rotation);
+            if(valid && !Player.IsXR){heldView.transform.SetPositionAndRotation(nozzlePosition-rotation*heldView.Grip.localPosition,rotation);heldView.UpdateHose();}
             if(ProcessRefillInput(palm,valid,Time.unscaledDeltaTime))
             {
                 Run.ResetRecovery();
@@ -297,13 +284,13 @@ namespace FireRescue
             }
             var origin=heldView.Muzzle.position;
             float dt=Mathf.Min(Time.unscaledDeltaTime,.1f);
-            if(Player.IsXR && heldView.Pump && valid && grip.Held && !overMenu)
+            if(Player.IsXR && heldView.Pump && valid && grip.Held && !overMenu && toolManipulation.TriggerValid)
             {
-                bool otherValid=hands.ReadHand(!LeftHanded,out var otherPalm,out _,out float otherPinch);
-                pump.Sample(otherValid,otherPinch,otherPalm.position,new Pose(heldView.Pump.position,heldView.transform.rotation),dt);
-                if(pump.Cancelled){Run.CancelTrigger();gesture.Reset();trigger=false;}
+                var other=toolHands[1-grip.Hand];
+                pump.SampleGrasp(other.Usable,other.Closure,other.Contact,new Pose(heldView.Pump.position,heldView.transform.rotation),dt);
+                if(pump.Cancelled){Run.CancelTrigger();gesture.Reset();toolManipulation.CancelActions();trigger=false;}
                 if(pump.Active || pump.Released)
-                {Run.PrimeCannon(pump.Pull01);trigger=pump.Active;gesture.Reset();}
+                {Run.PrimeCannon(pump.Pull01);trigger=pump.Active && toolManipulation.Region==FireToolRegion.Trigger;gesture.Reset();}
             }
             float launchCharge=Run.Charge01;
             Spraying=Run.Tick(introStarted?dt:0,trigger && valid && grip.Held && !ShopOpen,pump.Active);
@@ -386,15 +373,22 @@ namespace FireRescue
             economy.text=$"$ {Run.Coins}  |  {Run.Equipment.Name} +{Run.Upgrade}  |  WATER {Run.Water:0}/{Run.Capacity:0}";
             mission.text=Run.Objective;
             tactics.text=Run.Phase==FirePhase.Cleared || Run.Phase==FirePhase.Won?$"STARS {new string('*',Run.Stars)}  |  CABIN BONUS $ {Run.StageBonus}  |  SCORE {Run.Score}":$"CABINS {Run.CabinsSaved}/{Run.CabinsTotal}  |  CHAIN x{Run.Combo}  |  {Run.Elapsed:0}s / {Run.ParTime:0}s PAR";
-            help.text=Run.Phase==FirePhase.Cleared?"Spend your reward, then take on the next fire.":Run.Phase==FirePhase.Won?"Forest saved. Return to camp.":Run.Phase==FirePhase.Lost?"Too many trees burned. RETRY SECTOR restores its checkpoint.":Run.Water<1?"EMPTY - dock at the free cyan water source":Player.IsXR?"Aim the landing dot. Pinch to spray.":"Mouse: spray | H: water station | C: creek | B: shop";
-            if(!grip.Held)help.text="PICK UP THE TOOL: open hand, then pinch near its grip.";
+            help.text=Run.Phase==FirePhase.Cleared?"Spend your reward, then take on the next fire.":Run.Phase==FirePhase.Won?"Forest saved. Return to camp.":Run.Phase==FirePhase.Lost?"Too many trees burned. RETRY SECTOR restores its checkpoint.":Run.Water<1?"EMPTY - dock at the free cyan water source":Player.IsXR?"Grip the handle; squeeze to fire.":"Mouse: spray | H: water station | C: creek | B: shop";
+            if(!grip.Held)help.text="OPEN then lightly GRASP any tool surface.";
             else if(Run.Phase==FirePhase.Fighting)help.text=Run.Charge01>0?$"CHARGING {Run.Charge01:P0} - release to launch":Run.Equipment.Controls;
             if(Run.Phase==FirePhase.Fighting && Run.Equipment.Delivery==FireDelivery.Charge && Player.IsXR && grip.Held && Run.Charge01<=0)
-                help.text="PINCH TO CHARGE / or pinch cyan pump, pull back, release.";
+                help.text="SQUEEZE grip to charge / or grasp cyan pump, pull, release.";
             if(!Player.IsXR && !grip.Held)help.text="TAKE OWNED TOOL below. B: shop between incidents. 1-4: owned gear.";
             if(Run.Water<1)help.text="EMPTY - dock the cyan coupling at the free water source";
             if(Run.Equipment.Delivery==FireDelivery.Charge && grip.Held)
                 help.text=Run.Water<8?"REFILL - cannon needs at least 8 water":$"CHARGE {Run.Charge01:P0} / LIMIT {Run.AffordableCharge01:P0} | COST {8+20*Run.Charge01:0} | RELEASE TO LAUNCH";
+            if(Player.IsXR && grip.Held && !Run.Supply.Locked)
+            {
+                if(toolManipulation.Adjusting)help.text="GRASP to carry / OPEN at the tool rack to return";
+                else if(toolManipulation.Region!=FireToolRegion.Trigger)help.text="BODY GRIP: carry only / return to rack to choose the firing handle";
+                else if(heldView.Nozzle && !toolManipulation.NozzleHeld)help.text="GRASP the nozzle with your other hand to aim";
+                else help.text="SQUEEZE to spray / RELAX to stop / OPEN at the tool rack to return";
+            }
             if(Run.Supply.Locked)help.text=Run.Supply.Status;
             if(!Player.IsXR && !Run.Supply.Locked)help.text+=" | H: dock water station";
             RefreshWaterStations();
@@ -416,9 +410,9 @@ namespace FireRescue
         public bool TakeEquipment(int hand=1)
         {
             if(ShopOpen || !Run.Equip(SelectedEquipment))return false;
-            ResetInput(false);grip.EquipForDesktop(hand);LeftHanded=hand==0;introStarted=true;RefreshEquipment();PositionWaterStations();return true;
+            ResetInput(false);grip.EquipForDesktop(hand);toolManipulation.Prepare(hand);LeftHanded=hand==0;introStarted=true;RefreshEquipment();PositionWaterStations();return true;
         }
-        public void ReturnEquipment(){grip.Return();ResetInput(false);PositionRack();if(rackView)rackView.gameObject.SetActive(true);}
+        public void ReturnEquipment(){grip.Return();toolManipulation.Reset();ResetInput(false);PositionRack();if(rackView)rackView.gameObject.SetActive(true);}
         public void CycleOwnedEquipment(int direction)
         {
             if(ShopOpen)return;

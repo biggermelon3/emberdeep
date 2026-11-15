@@ -26,6 +26,8 @@ namespace FireRescue
         EmberdeepHandPoseKind contactKind,poseKind;
         Pose lastContact;
         bool hasContact;
+        Vector3 safePalm;
+        bool hasSafePalm;
         sealed class Skin
         {
             public SkinnedMeshRenderer Source,Live;
@@ -131,7 +133,8 @@ namespace FireRescue
                 var local=EmberdeepHandPose.GripContact(kind,left);
                 targetContact=new Pose(anchor.position+anchor.rotation*local.position,anchor.rotation*local.rotation);
                 reachable=Finite(targetContact.position) && Finite(targetContact.rotation)
-                    && Vector3.Distance(rawPalm.position,targetContact.position)<=EmberdeepHandPose.MaximumContactReach;
+                    && Vector3.Distance(rawPalm.position,targetContact.position)<=EmberdeepHandPose.MaximumContactReach
+                    && EmberdeepHandPose.CanAlignPalm(rawPalm.rotation,targetContact.rotation);
             }
             // An unreachable contact cannot keep an artificial gripping pose. The
             // input owner decides release; this rendering layer only fades back.
@@ -161,6 +164,11 @@ namespace FireRescue
             {
                 contactAnchor=null;
                 contactProgress=Mathf.MoveTowards(contactProgress,0,dt/EmberdeepHandPose.ContactReleaseSeconds);
+                // Do not blend toward a stale contact on the opposite side of
+                // the wrist, including a sudden tracking-orientation reversal.
+                if(hasContact && TryGetPalmFrame(out var releasedPalm)
+                    && !EmberdeepHandPose.CanAlignPalm(releasedPalm.rotation,lastContact.rotation))
+                {hasContact=false;contactProgress=0;}
             }
             if(hasContact && contactProgress>0)SolvePalmContact(lastContact,ContactWeight);
             else if(anchor && kind==EmberdeepHandPoseKind.ButtonPress)AlignIndexTip(anchor,weight);
@@ -184,6 +192,30 @@ namespace FireRescue
             }
         }
 
+        public void Constrain(EmberdeepHandContact contacts,bool gripping)
+        {
+            if(!hasPose || Frozen || contacts==null || !TryGetPalmFrame(out var palm))return;
+            if(!gripping)
+            {
+                var target=hasSafePalm && Vector3.Distance(safePalm,palm.position)<.5f
+                    ?contacts.Sweep(safePalm,palm.position,.023f):contacts.Resolve(palm.position,.023f);
+                display.transform.position+=target-palm.position;safePalm=target;hasSafePalm=true;
+            }
+            else {safePalm=palm.position;hasSafePalm=false;}
+            // Resolve only display phalanges, retaining the authored grasp palm.
+            // Parents precede children in the SDK joint table; repeated passes
+            // handle inherited motion without ever writing to the SDK skeleton.
+            for(int pass=0;pass<2;pass++)for(int i=0;i<joints.Length;i++)
+            {
+                var joint=(HandJointId)i;
+                if(!joints[i] || joint==HandJointId.HandWristRoot || joint==HandJointId.HandMiddle1
+                    || joint==HandJointId.HandIndex1 || joint==HandJointId.HandRing1 || joint==HandJointId.HandPinky1)continue;
+                if(!EmberdeepHandPose.IsArticulated(joint) && joint!=HandJointId.HandThumbTip && joint!=HandJointId.HandIndexTip
+                    && joint!=HandJointId.HandMiddleTip && joint!=HandJointId.HandRingTip && joint!=HandJointId.HandPinkyTip)continue;
+                joints[i].position=contacts.Resolve(joints[i].position,.007f);
+            }
+        }
+
         public bool TryGetPalmFrame(out Pose frame)
         {
             frame=default;
@@ -200,9 +232,9 @@ namespace FireRescue
         void SolvePalmContact(Pose target,float blend)
         {
             if(!TryGetPalmFrame(out var current))return;
-            // Analytic display wrist solve: cancel ALL tracked wrist rotation at
-            // full contact, then position the palm on the calibrated grip. No
-            // residual 65-degree clamp, provider changes, or camera movement.
+            // Reject a backwards approach rather than forcing a half-turn to
+            // fit a fixed pose. Accepted contacts use quaternion shortest arcs.
+            if(!EmberdeepHandPose.CanAlignPalm(current.rotation,target.rotation))return;
             var turn=Quaternion.Slerp(Quaternion.identity,target.rotation*Quaternion.Inverse(current.rotation),blend);
             display.transform.rotation=turn*display.transform.rotation;
             display.transform.position=current.position+turn*(display.transform.position-current.position);
@@ -212,6 +244,13 @@ namespace FireRescue
         void AlignIndexTip(Transform anchor,float blend)
         {
             var tip=DisplayJoint(HandJointId.HandIndexTip);if(!tip)return;
+            if(Vector3.Distance(tip.position,anchor.position)>.18f)return;
+            if(TryGetPalmFrame(out var palm))
+            {
+                var rotation=anchor.rotation*Quaternion.LookRotation(Vector3.forward,Vector3.down);
+                if(!EmberdeepHandPose.CanAlignPalm(palm.rotation,rotation))return;
+                SolvePalmContact(new Pose(palm.position,rotation),blend);
+            }
             // Directly reachable buttons receive a fingertip contact pose. A far
             // ray target cannot pull the visible hand across the play space.
             display.transform.position+=Vector3.ClampMagnitude(anchor.position-tip.position,.08f)*blend;

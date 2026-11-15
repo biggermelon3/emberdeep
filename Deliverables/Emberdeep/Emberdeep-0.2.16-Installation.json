@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-12",
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "package": "com.metahackathon2026.emberdeep",
+  "version": "0.2.16",
+  "versionCode": 19,
+  "installedVersionVerified": true,
+  "installation": "replace existing application, preserve data",
+  "apkSha256": "81d55494c8b38c74097da408339587b51bb8b3c037475b91e82ef1297d8f5e96",
+  "headsetInteractionAcceptance": "Pending user physical-hand testing"
+}

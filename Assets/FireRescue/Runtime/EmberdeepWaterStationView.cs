@@ -34,7 +34,7 @@ namespace FireRescue
         readonly Renderer[] socketSegments = new Renderer[12];
         Transform valveVisual, gaugeFill, gaugeFrame, controls, intakeRest, intakeArea, instructionPlate;
         Transform wellBody, hydrantBody, buttonBody, leverPivot, leverStand, leverInstruction, buttonInstruction;
-        const float LeverLength=.125f;
+        const float LeverLength=.22f;
         float leverTravel, valveAngle, buttonPress;
         Renderer flowLamp;
         TextMesh stateLabel, quantityLabel, tutorialLabel;
@@ -87,7 +87,7 @@ namespace FireRescue
             }
             Part("Valve hub", PrimitiveType.Sphere, valveVisual, Vector3.zero,
                 new Vector3(.035f, .035f, .025f), Cream, bodyMaterial);
-            Label("Valve instruction", controls, new Vector3(-.13f, .232f, -.022f), "GRIP + TURN 45", .008f, Cream);
+            Label("Valve instruction", controls, new Vector3(-.13f, .232f, -.022f), "GRASP RIM + TURN 45", .008f, Cream);
             Pump = Anchor("Pump", controls, new Vector3(-.13f, .12f, -.015f));
             PumpVisual = Anchor("RefillPump handle", controls, Pump.localPosition);
             Part("Broad pump handle", PrimitiveType.Capsule, PumpVisual, Vector3.zero,
@@ -104,17 +104,17 @@ namespace FireRescue
             // WS-04 replacement contract: keep Lever neutral and animate the
             // separate LeverVisual endpoint around LeverPivot. All scales stay
             // positive when controls move to the other side of the socket.
-            Lever=Anchor("Lever",controls,new Vector3(-.13f,.20f,-.06f));
+            Lever=Anchor("Lever",controls,new Vector3(-.13f,.20f,.065f-LeverLength));
             leverPivot=Anchor("LeverPivot",controls,new Vector3(-.13f,.20f,.065f));
             leverStand=Part("Well lever support",PrimitiveType.Cube,controls,new Vector3(-.13f,.10f,.065f),
                 new Vector3(.025f,.19f,.035f),new Color(.13f,.43f,.39f),bodyMaterial).transform;
             Tube("Well lever arm",leverPivot,Vector3.zero,new Vector3(0,0,-LeverLength),.008f,Cream,bodyMaterial);
             LeverVisual=Anchor("LeverVisual",leverPivot,new Vector3(0,0,-LeverLength));
             Part("Well broad lever grip",PrimitiveType.Capsule,LeverVisual,Vector3.zero,
-                new Vector3(.035f,.031f,.035f),Cyan,waterMaterial).transform.localRotation=Quaternion.Euler(0,0,90);
+                new Vector3(.035f,.07f,.035f),Cyan,waterMaterial).transform.localRotation=Quaternion.Euler(0,0,90);
             Part("Well lever hinge",PrimitiveType.Cylinder,leverPivot,Vector3.zero,
                 new Vector3(.032f,.019f,.032f),Charcoal,darkMaterial).transform.localRotation=Quaternion.Euler(0,0,90);
-            leverInstruction=Label("Lever instruction",controls,new Vector3(-.13f,.255f,.005f),"PINCH / LOWER + RETURN",.008f,Cream).transform;
+            leverInstruction=Label("Lever instruction",controls,new Vector3(-.13f,.255f,.005f),"GRASP / LOWER + RETURN",.008f,Cream).transform;
             // WS-05 replacement contract: Button is the neutral contact point;
             // ButtonVisual depresses into the station (+local Z), never the anchor.
             Button=Anchor("Button",controls,new Vector3(-.13f,.17f,-.025f));
@@ -237,7 +237,7 @@ namespace FireRescue
         public void SetControlAnimation(float leverTravelMetres,float valveDegrees,float buttonPress01)
         {
             if(!built)return;
-            leverTravel=float.IsFinite(leverTravelMetres)?Mathf.Clamp(leverTravelMetres,0,.08f):0;
+            leverTravel=float.IsFinite(leverTravelMetres)?Mathf.Clamp(leverTravelMetres,0,EmberdeepLeverStroke.MaximumTravel):0;
             valveAngle=float.IsFinite(valveDegrees)?valveDegrees:0;
             buttonPress=float.IsFinite(buttonPress01)?Mathf.Clamp01(buttonPress01):0;
             leverPivot.localRotation=Quaternion.Euler(-Mathf.Asin(leverTravel/LeverLength)*Mathf.Rad2Deg,0,0);

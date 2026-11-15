@@ -76,7 +76,7 @@ namespace FireRescue.Tests
             Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.Lever,interaction.CurrentAction,"Acquiring the lever cannot reset its owning pinch");
             SampleGrasp(1,rest,1,contact-Vector3.up*.09f);SampleGrasp(1,rest,1,contact);
             Assert.Zero(run.Water);Assert.IsFalse(run.Supply.LeverReturnRequired,"Index-only motion cannot load a stroke");
-            var down=rest;down.position-=station.transform.up*.085f;
+            var down=rest;down.position-=station.transform.up*.08f;
             SampleGrasp(1,down,1,contact);Assert.IsTrue(run.Supply.LeverReturnRequired);Assert.Zero(run.Water);
             SampleGrasp(1,rest,1,contact);Assert.AreEqual(12,run.Water);Assert.AreEqual(12,run.SuppliedWater);
             for(int i=0;i<8;i++)SampleGrasp(1,rest,1,contact);
@@ -90,9 +90,9 @@ namespace FireRescue.Tests
             Assert.AreEqual(hand,interaction.OperatingHand);Assert.AreSame(station.LeverVisual,interaction.ActionAnchor);
             for(int stroke=0;stroke<5;stroke++)
             {
-                var down=rest;down.position-=station.transform.up*.085f;
-                SampleGrasp(hand,down,1,station.Lever.position-station.transform.up*.085f);
-                Assert.That(interaction.ActionAmount,Is.EqualTo(.085f).Within(.0001f));
+                var down=rest;down.position-=station.transform.up*.08f;
+                SampleGrasp(hand,down,1,station.Lever.position-station.transform.up*.08f);
+                Assert.That(interaction.ActionAmount,Is.EqualTo(.08f).Within(.0001f));
                 Assert.AreEqual(stroke*12,run.Water);Assert.IsTrue(run.Supply.LeverReturnRequired);
                 SampleGrasp(hand,rest,1,station.Lever.position);Assert.AreEqual((stroke+1)*12,run.Water);
                 for(int i=0;i<4;i++)SampleGrasp(hand,rest,1,station.Lever.position);
@@ -107,10 +107,10 @@ namespace FireRescue.Tests
         {
             Setup(WaterStationTier.LeverWell,1);var rest=Ready(1,station.Lever);
             CloseGrasp(1,rest);
-            var down=rest;down.position-=station.transform.up*.085f;
-            SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.085f);SampleGrasp(1,rest,0,station.Lever.position);
+            var down=rest;down.position-=station.transform.up*.08f;
+            SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.08f);SampleGrasp(1,rest,0,station.Lever.position);
             Assert.Zero(run.Water);rest=Ready(1,station.Lever);CloseGrasp(1,rest);
-            SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.085f);SampleGrasp(1,rest,1,station.Lever.position,false);
+            SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.08f);SampleGrasp(1,rest,1,station.Lever.position,false);
             Assert.IsTrue(interaction.Interrupted);Assert.IsFalse(run.Supply.Locked);Assert.Zero(run.Water);
             Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.None,interaction.CurrentAction);yield return null;
         }
@@ -166,8 +166,8 @@ namespace FireRescue.Tests
         IEnumerator InvalidFrame(float invalid)
         {
             Setup(WaterStationTier.LeverWell,0);var rest=Ready(0,station.Lever);
-            CloseGrasp(0,rest);var down=rest;down.position-=Vector3.up*.085f;
-            SampleGrasp(0,down,1,station.Lever.position-Vector3.up*.085f);Assert.IsTrue(run.Supply.LeverReturnRequired);
+            CloseGrasp(0,rest);var down=rest;down.position-=Vector3.up*.08f;
+            SampleGrasp(0,down,1,station.Lever.position-Vector3.up*.08f);Assert.IsTrue(run.Supply.LeverReturnRequired);
             SampleGrasp(0,rest,1,station.Lever.position,true,invalid);
             Assert.IsFalse(run.Supply.Locked);Assert.IsTrue(interaction.Interrupted);Assert.Zero(run.Water);Assert.Zero(run.SuppliedWater);
             Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.None,interaction.CurrentAction);yield return null;
@@ -175,13 +175,13 @@ namespace FireRescue.Tests
         [UnityTest] public IEnumerator LeavingLeverCancelsCreditAndHeldPinchCannotReacquire()
         {
             Setup(WaterStationTier.LeverWell,1);var rest=Ready(1,station.Lever);CloseGrasp(1,rest);
-            var down=rest;down.position-=Vector3.up*.085f;SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.085f);
+            var down=rest;down.position-=Vector3.up*.08f;SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.08f);
             var far=rest;far.position+=Vector3.up*.5f;SampleGrasp(1,far,1,station.Lever.position+Vector3.up*.5f);
             Assert.IsTrue(run.Supply.Locked);Assert.IsFalse(run.Supply.LeverReturnRequired);
             for(int i=0;i<10;i++)SampleGrasp(1,rest,1,station.Lever.position);
             Assert.AreEqual(EmberdeepRefillInteraction.ActionKind.None,interaction.CurrentAction);Assert.Zero(run.Water);
             rest=Ready(1,station.Lever);CloseGrasp(1,rest);
-            SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.085f);SampleGrasp(1,rest,1,station.Lever.position);
+            SampleGrasp(1,down,1,station.Lever.position-Vector3.up*.08f);SampleGrasp(1,rest,1,station.Lever.position);
             Assert.AreEqual(12,run.Water);yield return null;
         }
         [UnityTest] public IEnumerator LeavingButtonKeepsAcceptedFlowButCannotReuseHeldPinch()

@@ -1,0 +1,136 @@
+{
+  "version": "0.2.15",
+  "android_version_code": 18,
+  "status": "IMPLEMENTED_CANDIDATE 0.2.15 / code 18; surface grips, separate squeeze triggers, independent nozzle and direct station controls; 210 EditMode + 188 PlayMode passed; both APKs audited. Physical hand comfort, tracking and thresholds require headset acceptance.",
+  "user_intent": "Stable latched ownership, separate light grip and firing squeeze, actual surface grabs with functional regions, independently held extinguisher nozzle, and direct pump/wheel/button operations. Keep hand tracking.",
+  "human_readable_design": "Deliverables/Emberdeep/Emberdeep-0.2.15-Interaction-Design.txt",
+  "input_contract": {
+    "menu": "Retain 0.2.13 hand aim and fresh pinch for menus. Object pose acquisition does not require a valid menu pointer.",
+    "measurement": "Mean of four tracked finger curls, independent from thumb/index pinch. Require valid observations; never use missing data as an open hand. Quest uses raw SDK joint data and confidence. Portable XR uses fresh native Dynamic joint samples and validity.",
+    "thresholds": {
+      "open_max": 0.2,
+      "grab_min": 0.45,
+      "fire_min": 0.84,
+      "fire_release_max": 0.52,
+      "close_dwell_seconds": 0.075,
+      "rack_return_dwell_seconds": 0.35,
+      "both_open_return_dwell_seconds": 0.5
+    },
+    "ownership": "Pickup follows actual rendered part bounds, preserving contact offset and relative pose. Either hand may initially carry a tool. Body grips do not gain trigger permission.",
+    "regrasp": "Opening only the carrying hand parks the tool for a new surface grasp. If both hands remain fully open and valid for 0.5 seconds, the separate release gesture returns it to the rack. No gravity drop animation or remote closed-hand reacquisition.",
+    "return": "Either leave the rack, bring the tool back and open the carrying hand near its geometry for 0.35 seconds; OR keep both valid tracked hands fully open anywhere for 0.5 seconds. Any hand reclosing, invalid tracking or UI interruption resets the dual-open dwell. Both routes use intentional rack return with charge cancellation. Existing explicit Return Tool, shop and scene-transition commands remain.",
+    "arbitration": "A hand physically carrying, holding the nozzle, supporting the barrel or operating the pump cannot simultaneously activate menu buttons. A parked tool frees the primary hand for UI; an unoccupied other hand can still use menus.",
+    "tracking_loss": "Cancel actions/charge and retain the tool pose. No stale sample may trigger a release shot or reacquire the nozzle. Dock interruptions park the tool for deliberate regrasp.",
+    "hand_presentation": "Use the real tracked skeleton during physical interactions; do not force a body grip into the authored trigger hand pose."
+  },
+  "equipment": {
+    "Extinguisher": "Top handle grants firing permission. A second hand must grasp the movable nozzle; its actual world pose directs the stream. Light grip holds, tight squeeze sprays, relaxing stops. The hose is tethered to 0.45 m.",
+    "PulsePistol": "Squeeze only from the grip for repeated pulses. Body and reservoir grabs carry only. Optional forward support steers the barrel around the retained primary contact.",
+    "RainFan": "Grip squeeze produces the existing fan stream. Optional forward support steers the tool; relaxing the firing hand stops flow without releasing ownership.",
+    "PressureCannon": "Grip squeeze charges and relaxing to a light grip launches. Full opening enters regrasp and cancels charge. Optional side-pump grasp retains pull-and-release charging/firing, gated by primary trigger-grip permission; tracking loss or leaving its bounds cancels. Front support and pump ownership are mutually exclusive."
+  },
+  "water_controls": {
+    "dock": "Use the real coupling pose; preserve distance/angle/dwell. Tight firing squeeze cannot dock. Do not auto-rotate arbitrary body grips into docking alignment.",
+    "lever": "Fresh light grasp, downward stroke and complete return; unfinished, released or lost-tracking strokes do not transfer water. Empty outlet remains feedback only.",
+    "valve": "Grasp the rim and move tangentially around its plane. Wrist rotation or axial translation alone cannot turn it. Reject center-axis grasps and discontinuous angular jumps.",
+    "button": "Approach the front then physically push the fingertip through the contact plane. Toggle once per press, withdraw before another press; holding cannot repeatedly toggle.",
+    "creek": "Grasp and place the intake on the existing target, then grasp and complete pump pull/return cycles. Preserve existing supply amounts and source progression.",
+    "legacy_test_contract": "Existing non-UsesGrip synthetic adapters retain their explicit pinch contract for prior regression coverage. Production object samples opt into UsesGrip; invalid closure never falls back to pinch."
+  },
+  "unchanged": [
+    "Menu pinch interaction",
+    "Sky reveal",
+    "Equipment prices and upgrade economy",
+    "Water capacity, flow, stroke yield and recovery",
+    "Both water stations remain available under existing progression"
+  ],
+  "acceptance_limits": [
+    "Thresholds are initial normalized curl targets, not measured squeeze pressure or hardware-calibrated hand poses.",
+    "Editor synthetic joints and rendered captures do not establish real headset tracking stability, comfort, reach or performance.",
+    "Whole-tool hand-to-hand transfer and gravity-based dropping are not added; regrasp uses the parked-tool rule.",
+    "Right-side creek-pump removal from ordinary levels remains a separate proposal."
+  ],
+  "verification": {
+    "version": "0.2.15",
+    "android_version_code": 18,
+    "date": "2026-11-11",
+    "status": "IMPLEMENTED_CANDIDATE 0.2.15 / code 18; surface grips, separate squeeze triggers, independent nozzle and direct station controls; 210 EditMode + 188 PlayMode passed; both APKs audited. Physical hand comfort, tracking and thresholds require headset acceptance.",
+    "source": "SurfaceGripInteraction.json",
+    "tests": {
+      "EditMode": {
+        "total": 210,
+        "passed": 210,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepSurfaceGrip/DualReleaseFinalAcceptance/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 188,
+        "passed": 188,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepSurfaceGrip/DualReleaseFinalAcceptance/PlayMode-results.json"
+      }
+    },
+    "builds": {
+      "Quest": {
+        "settingsRestored": true,
+        "signatureVerified": true,
+        "sceneWhitelistPassed": true,
+        "target": "Quest",
+        "sha256": "30184b0fb38a9196273f335c4268b9ea82ecf93f9f22a8ac995b80304633cf94",
+        "bytes": 105562249,
+        "version": "0.2.15",
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "versionCode": 18,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.15.apk",
+        "errors": 0,
+        "warnings": 8
+      },
+      "Pico": {
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "sceneWhitelistPassed": true,
+        "versionCode": 18,
+        "sha256": "58fb1732f4f33fd14d53dca3743012ff546df9fefc4563af712aadbc2587a5a0",
+        "bytes": 87264853,
+        "target": "Pico",
+        "signatureVerified": true,
+        "version": "0.2.15",
+        "settingsRestored": true,
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.15-Pico.apk",
+        "errors": 0,
+        "warnings": 12
+      }
+    },
+    "source_integrity": {
+      "unchanged_after_verification": true,
+      "file_count": 114
+    },
+    "restored_settings_count": 28,
+    "pico_tracking_space": {
+      "valid": true,
+      "name": "TrackingSpace"
+    },
+    "visual_review": {
+      "capture": "Deliverables/Emberdeep/Emberdeep-0.2.15-Independent-Nozzle.png",
+      "scope": "Actual fireground scene after the sky transition, driven by synthetic object-hand samples. Desktop camera. No headset or optical tracking evidence."
+    },
+    "verification_history": [
+      "InitialVerification: 208/210 EditMode passed; two tutorial assertions required obsolete pinch wording. Updated them to require grasp wording and reject pinch instructions.",
+      "InteractionVerification: 210 EditMode + 179 PlayMode passed. FinalAcceptance/ReleaseVerification: 210 + 181 passed after independent object-pose and scene wiring coverage.",
+      "FinalRelease: 210 + 184 passed with lost-support cancellation coverage. CandidateAcceptance covered 210 + 184 after physical-hand/UI ownership isolation was added to the real scene regression. DualReleaseAcceptance still used the earlier loaded assemblies and is not evidence of the new gesture. After explicit compilation, DualReleaseFinalAcceptance supersedes it with 210 + 188 and the user-requested two-hand release."
+    ],
+    "evidence": "Logs/EmberdeepSurfaceGrip/ReleaseEvidence.json",
+    "device_acceptance": "PENDING. No 0.2.15 installation or worn-headset acceptance is claimed. The previously installed and user-praised sky release was 0.2.14.",
+    "limitations": [
+      "Curl thresholds are initial values, not calibrated grip pressure.",
+      "Four-finger observation loss stops actions; optical tracking quality itself is not changed.",
+      "Tools park for regrasp; gravity drops and whole-tool hand-to-hand transfers are not implemented.",
+      "Generated revision 0.13 Word documents remain the 0.2.11 baseline."
+    ]
+  }
+}

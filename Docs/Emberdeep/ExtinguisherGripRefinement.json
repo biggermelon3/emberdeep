@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-14",
+  "status": "RELEASED_IN_0.2.18; ORIGINAL_SOURCE_VERIFICATION_RETAINED",
+  "based_on_release": "0.2.17 / code 20",
+  "retained_source_patch": "HandednessPoseAudit.json",
+  "changes": [
+    "Move the extinguisher carrying handle rearward and separate the fixed lower bar from the upper squeeze lever, leaving room behind the bottle shoulder for fingers.",
+    "Use mirrored left/right contact frames with a 15-degree relaxed wrist angle and a palm offset matched to the revised handle.",
+    "Use graded whole-hand curls in the holding pose; all four fingers tighten during firing instead of only the index finger acting like a pistol trigger.",
+    "Move the upper lever down by 10 mm during firing while the carrying bar stays fixed; extend the functional grip region to include the rear handle."
+  ],
+  "retained_behavior": "Retained ownership, existing squeeze thresholds, handedness routing and the 85-degree backwards-contact guard remain in effect. Nozzle pose is unchanged in this refinement.",
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 215,
+        "passed": 215,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 205,
+        "passed": 205,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/PlayMode-results.json"
+      }
+    },
+    "preview": "Deliverables/Emberdeep/Emberdeep-Extinguisher-Grip-Unreleased-2026-11-14.png",
+    "preview_layout": "Columns: left holding, left squeezing, right holding, right squeezing. Rows: upper and lower oblique views.",
+    "scope": "Production meshes and SDK display skeleton with synthetic input in Unity. Visual review completed; worn-headset ergonomic acceptance remains pending."
+  },
+  "source_sha256": {
+    "Assets/FireRescue/Runtime/EmberdeepHandPose.cs": "35b85413c1e057787b44e4910ec19f7d8508d3ed43329d20cf0f38881bcdfb86",
+    "Assets/FireRescue/Runtime/FireEquipmentView.cs": "c5453b9b9a7b44f3cd566d5f6b545fd0a5f517400dba05642d637c75ee5a7f54",
+    "Assets/FireRescue/Runtime/FireEquipmentView.Interaction.cs": "8e41adfe95f7d5181a37b95f122c92ac462f35b83223e3d4b9c7ea8f4f947fff",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepSurfaceToolTests.cs": "9dac4839411086f6a482bd0a150196863337223ef1751b592fc3fcbc125aa08f",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepHandPresentationPlayTests.cs": "e45d97de8a8079ffed204ba9ecf30d7e428fbb0a12ba4888ee01b1d5d7e2e8b1"
+  },
+  "delivery": "Included in Quest 0.2.18; installed version verified. See Release-0.2.18.json.",
+  "released_in": "0.2.18 / code 21",
+  "release_evidence": "Release-0.2.18.json"
+}

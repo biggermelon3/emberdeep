@@ -24,6 +24,7 @@ Shader "Emberdeep/V2/Particles"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.0
             #pragma multi_compile_instancing
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             CBUFFER_START(UnityPerMaterial)
@@ -61,6 +62,10 @@ Shader "Emberdeep/V2/Particles"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
                 float2 p=input.uv*2-1;
                 float r2=dot(p,p);
+                float pixelWidth=fwidth(r2);
+                float strandWidth=fwidth(input.uv.x*6.28318);
+                float glintPhase=input.world.y*71+input.world.z*53-_Time.y*8;
+                float glintFilter=1-smoothstep(.75,3.14,fwidth(glintPhase));
                 float soft=saturate(1-r2);
                 float alpha=soft*soft;
                 half3 color=input.color.rgb;
@@ -71,8 +76,8 @@ Shader "Emberdeep/V2/Particles"
                 {
                     // Closed four-sided mesh strands; the seam repeats at u=0/1.
                     float roundLight=.5+.5*cos(input.uv.x*6.28318-.7);
-                    float narrow=pow(saturate(roundLight),12);
-                    float glint=.82+.18*sin(input.world.y*71+input.world.z*53-_Time.y*8);
+                    float narrow=lerp(.16,pow(saturate(roundLight),12),1-smoothstep(.4,2,strandWidth));
+                    float glint=.82+.18*sin(glintPhase)*glintFilter;
                     color=lerp(color*.7,color,roundLight)+half3(.35,.48,.49)*narrow*_Highlight*glint;
                     alpha=.66+.18*roundLight;
                 }
@@ -80,7 +85,7 @@ Shader "Emberdeep/V2/Particles"
                 {
                     // Opaque-looking core, soft edge and one offset glint read as liquid,
                     // including a cannon particle with zero velocity.
-                    alpha=1-smoothstep(1-_EdgeSoftness,1,r2);
+                    alpha=1-smoothstep(1-max(_EdgeSoftness,pixelWidth),1,r2);
                     float bead=sqrt(saturate(1-r2));
                     float highlight=pow(saturate(1-dot(p-float2(-.26,.3),p-float2(-.26,.3))*3.4),3);
                     color=color*lerp(.6,1,bead)+half3(.65,.73,.75)*highlight*_Highlight;

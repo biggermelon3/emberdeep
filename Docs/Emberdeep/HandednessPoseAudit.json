@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-14",
+  "status": "RELEASED_IN_0.2.18; ORIGINAL_SOURCE_VERIFICATION_RETAINED",
+  "based_on_release": "0.2.17 / code 20",
+  "findings": [
+    "Hand indices and SDK skeleton handedness are correctly routed; shared grip frames mirror palm and finger directions.",
+    "0.2.17 checked reach but not approach angle, allowing a fixed contact to force an opposing wrist orientation.",
+    "Valve rim frames at left/right sides pointed fingers inward and could orient the wrist unnaturally; previous preview used the top rim instead of the production side contacts."
+  ],
+  "fixes": [
+    "Reject display contact when the required palm correction exceeds 85 degrees, including stale-contact release and button alignment.",
+    "Retain ownership and physical input; do not turn the SDK hand or require a drop/regrab when the display contact is rejected.",
+    "Valve hands approach from below with fingers upward and thumbs toward the wheel; preview uses the same left/right side anchors as production."
+  ],
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 215,
+        "passed": 215,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepHandednessAudit/Acceptance1/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 202,
+        "passed": 202,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepHandednessAudit/Acceptance1/PlayMode-results.json"
+      }
+    },
+    "grip_kinds": 11,
+    "hands_per_kind": 2,
+    "opposed_target_angles": [
+      100,
+      179,
+      181,
+      260
+    ],
+    "checks": [
+      "Mirror directions",
+      "Aligned acquisition",
+      "Reject backwards contact after lock",
+      "Recover at valid orientation",
+      "SDK input unchanged"
+    ],
+    "preview": "Deliverables/Emberdeep/Emberdeep-Handedness-Audit-2026-11-14.png",
+    "scope": "Real SDK display skeleton with synthetic input and production meshes; not worn-headset ergonomic acceptance"
+  },
+  "source_sha256": {
+    "Assets/FireRescue/Runtime/EmberdeepHandPose.cs": "adb9b4537c5c5eeac4591a3705430c9877868fda5d15dfb12e4f4ddc63cf824e",
+    "Assets/FireRescue/Runtime/EmberdeepHandPresentation.cs": "4c48a108f423c196100c1f6a0a4e91bec41a4748d5f6e3f200851fe8acb1fd88",
+    "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs": "2d35ee789314770cc49facaa8b2196f906541b9090725e2cce14ba42a405cf92",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepHandPresentationPlayTests.cs": "e3e8c297edffd6af7b1a04a6941e60493d987d4f1808f260291d6307dd5a3cbb"
+  },
+  "delivery": "Included in Quest 0.2.18; installed version verified. See Release-0.2.18.json.",
+  "released_in": "0.2.18 / code 21",
+  "release_evidence": "Release-0.2.18.json"
+}

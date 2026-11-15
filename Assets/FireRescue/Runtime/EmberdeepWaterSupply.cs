@@ -66,11 +66,11 @@ namespace FireRescue
             run.CancelSupplyInput();ClearStroke();ClearLever();buttonArmed=false;
             HydrantState=kind==WaterSourceKind.Hydrant?(Full?HydrantRefillState.DockedFull:HydrantRefillState.DockedClosed):HydrantRefillState.Idle;
             CreekState=CreekRefillState.Idle;intakePlaced=false;
-            Status=Full?"Tank full - pinch the grip to disconnect":kind==WaterSourceKind.Hydrant?StationInstruction:"Connected - place the intake in the marked water socket";
+            Status=Full?"Tank full - grasp the tool to disconnect":kind==WaterSourceKind.Hydrant?StationInstruction:"Connected - place the intake in the marked water socket";
             DockConfirmed?.Invoke();return true;
         }
 
-        string StationInstruction=>run.StationTier==WaterStationTier.LeverWell?"Connected - pull lever down 8 cm, then return":run.StationTier==WaterStationTier.RotaryHydrant?"Connected - rotate the valve 45 degrees":"Connected - press the button to fill";
+        string StationInstruction=>run.StationTier==WaterStationTier.LeverWell?"Connected - press down and lift; larger strokes collect more water":run.StationTier==WaterStationTier.RotaryHydrant?"Connected - rotate the valve 45 degrees":"Connected - press the button to fill";
         // Explicit rotary detent API retained for desktop/tests. The tracked
         // adapter only invokes it through signed TurnValve displacement.
         public bool SetValveOpen(bool open)
@@ -81,7 +81,7 @@ namespace FireRescue
         bool SetFlow(bool open)
         {
             valveTravel=0;
-            if(Full){HydrantState=HydrantRefillState.DockedFull;Status="Tank full - pinch the grip to disconnect";return !open;}
+            if(Full){HydrantState=HydrantRefillState.DockedFull;Status="Tank full - grasp the tool to disconnect";return !open;}
             HydrantState=open?HydrantRefillState.Filling:HydrantRefillState.DockedClosed;
             Status=run.StationTier==WaterStationTier.PushButton?
                 (open?"Filling - press again to stop":"Flow stopped - press the button to fill"):
@@ -117,13 +117,13 @@ namespace FireRescue
             if(run.Equipped!=Tool || run.Phase==FirePhase.Lost){Interrupt("Tool or sector unavailable");return 0;}
             if(!EmberdeepLeverStroke.ValidTravel(travelMetres))
             {ClearLever();Status="Lever position invalid - return to the upper rest";return 0;}
-            if(Full){ClearLever();HydrantState=HydrantRefillState.DockedFull;Status="Tank full - pinch the grip to disconnect";return 0;}
+            if(Full){ClearLever();HydrantState=HydrantRefillState.DockedFull;Status="Tank full - grasp the tool to disconnect";return 0;}
             if(!held){ClearLever();Status=StationInstruction;return 0;}
             if(!leverStroke.Sample(travelMetres,true,true))
             {Status=leverStroke.ReturnRequired?"Return the lever upwards to transfer water":"Lower the lever, then return it upwards";return 0;}
-            float transferred=Transfer(PumpUnits);
+            float transferred=Transfer(leverStroke.WaterUnits);
             if(Full)HydrantState=HydrantRefillState.DockedFull;
-            Status=Full?"Tank full - pinch the grip to disconnect":"Stroke accepted - lower and return the lever again";
+            Status=Full?"Tank full - grasp the tool to disconnect":"Stroke accepted - lower and return the lever again";
             if(transferred>0)PumpStroke?.Invoke(transferred);
             return transferred;
         }
@@ -135,7 +135,7 @@ namespace FireRescue
             if(run.Equipped!=Tool || run.Phase==FirePhase.Lost){Interrupt("Tool or sector unavailable");return 0;}
             if(run.StationTier==WaterStationTier.LeverWell || !ValveOpen)return 0;
             float transferred=Transfer(HydrantUnitsPerSecond*Mathf.Min(dt,.1f));
-            if(Full){HydrantState=HydrantRefillState.DockedFull;valveTravel=0;Status="Tank full - pinch the grip to disconnect";}
+            if(Full){HydrantState=HydrantRefillState.DockedFull;valveTravel=0;Status="Tank full - grasp the tool to disconnect";}
             return transferred;
         }
 
@@ -151,7 +151,7 @@ namespace FireRescue
             intakePlaced=true;ClearStroke();CreekState=CreekRefillState.IntakePlaced;
             // The tool is already exclusively owned and connected at this point.
             CreekState=Full?CreekRefillState.Full:CreekRefillState.Primed;
-            Status=Full?"Tank full - pinch the grip to disconnect":"Primed - pull 8 cm, then return the pump";
+            Status=Full?"Tank full - grasp the tool to disconnect":"Primed - pull 8 cm, then return the pump";
             return true;
         }
         public float SamplePump(float travelMetres,bool held,bool trackingValid)
@@ -160,7 +160,7 @@ namespace FireRescue
             if(Kind!=WaterSourceKind.Creek || !intakePlaced)return 0;
             if(!Finite(travelMetres) || travelMetres<-.02f || travelMetres>.3f)
             {ClearStroke();CreekState=CreekRefillState.Interrupted;Status="Pump position invalid - release and start at the detent";return 0;}
-            if(Full){ClearStroke();CreekState=CreekRefillState.Full;Status="Tank full - pinch the grip to disconnect";return 0;}
+            if(Full){ClearStroke();CreekState=CreekRefillState.Full;Status="Tank full - grasp the tool to disconnect";return 0;}
             if(!held){ClearStroke();CreekState=CreekRefillState.Primed;Status="Primed - pull 8 cm, then return the pump";return 0;}
             PumpTravel01=Mathf.Clamp01(travelMetres/PumpOutMetres);
             if(!pumpStarted)
@@ -172,7 +172,7 @@ namespace FireRescue
             if(!pumpExtended || travelMetres>PumpReturnMetres)return 0;
             pumpExtended=false; // A second callback at the return detent cannot pay twice.
             float transferred=Transfer(PumpUnits);
-            Status=Full?"Tank full - pinch the grip to disconnect":"Stroke accepted - pull and return again";
+            Status=Full?"Tank full - grasp the tool to disconnect":"Stroke accepted - pull and return again";
             CreekState=Full?CreekRefillState.Full:CreekRefillState.Pumping;
             if(transferred>0)PumpStroke?.Invoke(transferred);
             return transferred;

@@ -1,0 +1,14 @@
+{
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "package": "com.metahackathon2026.emberdeep",
+  "version": "0.2.15",
+  "versionCode": 18,
+  "installedVersionVerified": true,
+  "installation": "replace existing application, preserve data",
+  "apkSha256": "30184b0fb38a9196273f335c4268b9ea82ecf93f9f22a8ac995b80304633cf94",
+  "launchRequested": true,
+  "processObserved": false,
+  "processId": "",
+  "headsetInteractionAcceptance": "Not performed"
+}

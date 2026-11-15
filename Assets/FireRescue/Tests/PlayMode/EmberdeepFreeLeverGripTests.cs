@@ -44,7 +44,7 @@ namespace FireRescue.Tests
             for(int i=0;i<3;i++)Sample(hand,1,station.Lever.position,held,toolHand);
         }
         void Stroke(int hand,bool held=false,int toolHand=1)
-        {Sample(hand,1,station.Lever.position-Vector3.up*.085f,held,toolHand);Sample(hand,1,station.Lever.position,held,toolHand);}
+        {Sample(hand,1,station.Lever.position-Vector3.up*.08f,held,toolHand);Sample(hand,1,station.Lever.position,held,toolHand);}
         [UnityTest] public IEnumerator LeftPinchPumpsEmptyOutletWithoutGripDataOrChangingEconomy()=>EmptyCycles(0);
         [UnityTest] public IEnumerator RightPinchPumpsEmptyOutletWithoutGripDataOrChangingEconomy()=>EmptyCycles(1);
         IEnumerator EmptyCycles(int hand)
@@ -78,7 +78,7 @@ namespace FireRescue.Tests
             Assert.IsTrue(input.OwnsControl,"BeginLever must not reset the pinch that just acquired ownership");
             Sample(0,1,home-Vector3.up*.09f,palmPosition:palm);Sample(0,1,home,palmPosition:palm);
             Assert.Zero(events,"Moving only the index tip is not a pump stroke");
-            Sample(0,1,home,palmPosition:palm-Vector3.up*.085f);Assert.IsTrue(input.EmptyLeverReturnRequired);Assert.Zero(events);
+            Sample(0,1,home,palmPosition:palm-Vector3.up*.08f);Assert.IsTrue(input.EmptyLeverReturnRequired);Assert.Zero(events);
             Sample(0,1,home,palmPosition:palm);Assert.AreEqual(1,events);Assert.AreEqual(12,outletUnits);
             for(int i=0;i<8;i++)Sample(0,1,home,palmPosition:palm);Assert.AreEqual(1,events);yield return null;
         }
@@ -96,13 +96,13 @@ namespace FireRescue.Tests
             Stroke(1,true,0);Assert.AreEqual(1,events);Assert.IsFalse(run.Supply.Locked);Assert.IsFalse(input.Detached);
             Assert.AreEqual(Vector3.right*2,tool.transform.position,"Empty lever use cannot snap another hand's tool");yield return null;
         }
-        [UnityTest] public IEnumerator PartialJitterReleaseAndTrackingLossNeverEmitEmptyStroke()
+        [UnityTest] public IEnumerator TremorReleaseAndTrackingLossNeverEmitEmptyStroke()
         {
             Grasp(0);
-            for(int i=0;i<20;i++){Sample(0,1,station.Lever.position-Vector3.up*.07f);Sample(0,1,station.Lever.position);}
-            Assert.Zero(events);Sample(0,1,station.Lever.position-Vector3.up*.085f);Assert.IsTrue(input.EmptyLeverReturnRequired);
+            for(int i=0;i<20;i++){Sample(0,1,station.Lever.position-Vector3.up*.006f);Sample(0,1,station.Lever.position);}
+            Assert.Zero(events);Sample(0,1,station.Lever.position-Vector3.up*.08f);Assert.IsTrue(input.EmptyLeverReturnRequired);
             Sample(0,0,station.Lever.position);Assert.Zero(events);Assert.IsFalse(input.OwnsControl);
-            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.085f);Sample(0,1,station.Lever.position,valid:false);
+            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.08f);Sample(0,1,station.Lever.position,valid:false);
             Assert.Zero(events);Assert.IsFalse(input.OwnsControl);Assert.IsFalse(input.Interrupted);
             for(int i=0;i<10;i++)Sample(0,1,station.Lever.position);
             Assert.IsFalse(input.OwnsControl,"Recovery with a held pinch requires opening first");yield return null;
@@ -110,7 +110,7 @@ namespace FireRescue.Tests
         [UnityTest] public IEnumerator DockingAfterEmptyHalfStrokeCannotCreditTheNewTank()
         {
             run.StartStage();for(int i=0;i<100 && run.Water>0;i++)run.Tick(.1f,true);run.CancelTrigger();Assert.Zero(run.Water);
-            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.085f);Assert.IsTrue(input.EmptyLeverReturnRequired);
+            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.08f);Assert.IsTrue(input.EmptyLeverReturnRequired);
             for(int i=0;i<5;i++)run.Supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.05f);
             Assert.IsTrue(run.Supply.Locked);
             Sample(0,1,station.Lever.position,held:true,toolHand:1);
@@ -122,15 +122,15 @@ namespace FireRescue.Tests
         }
         [UnityTest] public IEnumerator InvalidTimeOrChangedOwnershipCancelsEmptyHalfStroke()
         {
-            Grasp(1);Sample(1,1,station.Lever.position-Vector3.up*.085f);
+            Grasp(1);Sample(1,1,station.Lever.position-Vector3.up*.08f);
             Sample(1,1,station.Lever.position,dt:float.NaN);Assert.Zero(events);Assert.IsFalse(input.OwnsControl);
-            Grasp(1);Sample(1,1,station.Lever.position-Vector3.up*.085f);
+            Grasp(1);Sample(1,1,station.Lever.position-Vector3.up*.08f);
             Sample(1,1,station.Lever.position,held:true,toolHand:1);
             Assert.Zero(events);Assert.IsFalse(input.OwnsControl);Assert.IsFalse(run.Supply.Locked);Assert.IsFalse(input.Interrupted);yield return null;
         }
         [UnityTest] public IEnumerator ConsumeInputDropsEmptyStrokeAndRequiresFreshOpenHand()
         {
-            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.085f);input.ConsumeInput(run);
+            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.08f);input.ConsumeInput(run);
             Assert.IsFalse(input.EmptyOutlet);Assert.IsNull(input.ActiveView);
             for(int i=0;i<10;i++)Sample(0,1,station.Lever.position);
             Assert.Zero(events);Assert.IsFalse(input.OwnsControl);yield return null;
@@ -145,7 +145,7 @@ namespace FireRescue.Tests
         {
             run.StartStage();for(int i=0;i<100 && run.Water>0;i++)run.Tick(.1f,true);run.CancelTrigger();Assert.Zero(run.Water);
             for(int i=0;i<5;i++)run.Supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.05f);
-            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.085f);Assert.IsTrue(run.Supply.LeverReturnRequired);
+            Grasp(0);Sample(0,1,station.Lever.position-Vector3.up*.08f);Assert.IsTrue(run.Supply.LeverReturnRequired);
             input.Reset();Assert.IsTrue(run.Supply.Locked);Assert.IsFalse(run.Supply.LeverReturnRequired);
             for(int i=0;i<8;i++)Sample(0,1,station.Lever.position);
             Assert.Zero(run.Water);Assert.IsFalse(input.OwnsControl);

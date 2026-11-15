@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-14",
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "package": "com.metahackathon2026.emberdeep",
+  "version": "0.2.18",
+  "versionCode": 21,
+  "installedVersionVerified": true,
+  "installation": "Replace existing application, preserve data",
+  "apkSha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
+  "headsetInteractionAcceptance": "Pending user worn-headset test of refined extinguisher handle and handedness guard",
+  "appInfo": {
+    "package": "com.metahackathon2026.emberdeep",
+    "version_name": "0.2.18",
+    "version_code": "21",
+    "install_path": "/data/app/~~gwYZOXK6qtvrlsdkLOcReg==/com.metahackathon2026.emberdeep-ZP72cCHM0Qjl1212e-iJLA==",
+    "is_system": false,
+    "first_install_time": "2026-11-06 13:30:58",
+    "last_update_time": "2026-11-15 12:23:37",
+    "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+  }
+}

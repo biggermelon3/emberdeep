@@ -1,0 +1,102 @@
+{
+  "version": "0.2.16",
+  "android_version_code": 19,
+  "date": "2026-11-12",
+  "status": "IMPLEMENTED_CANDIDATE; 403 tests passed; Quest APK audited; physical headset grasp comfort and performance acceptance pending",
+  "source": "GrabPoseInteraction.json",
+  "tests": {
+    "EditMode": {
+      "total": 211,
+      "passed": 211,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepGrabPoses/PoseAcceptance/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 192,
+      "passed": 192,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepGrabPoses/PoseAcceptance/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "version": "0.2.16",
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "target": "Quest",
+      "sceneWhitelistPassed": true,
+      "bytes": 105593985,
+      "signatureVerified": true,
+      "versionCode": 19,
+      "sha256": "81d55494c8b38c74097da408339587b51bb8b3c037475b91e82ef1297d8f5e96",
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "settingsRestored": true,
+      "errors": 0,
+      "warnings": 8
+    }
+  },
+  "source_integrity": {
+    "unchanged_after_verification": true,
+    "file_count": 116
+  },
+  "restored_settings_count": 28,
+  "installation": {
+    "date": "2026-11-12",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "package": "com.metahackathon2026.emberdeep",
+    "version": "0.2.16",
+    "versionCode": 19,
+    "installedVersionVerified": true,
+    "installation": "replace existing application, preserve data",
+    "apkSha256": "81d55494c8b38c74097da408339587b51bb8b3c037475b91e82ef1297d8f5e96",
+    "headsetInteractionAcceptance": "Pending user physical-hand testing"
+  },
+  "pico": "Shared source updated; no 0.2.16 PICO APK built in this iteration",
+  "visual_review": {
+    "capture": "Deliverables/Emberdeep/Emberdeep-0.2.16-Grasp-Atlas.png",
+    "scope": "Actual SDK skinned hand and production tool/station geometry, synthetic input; right-hand atlas, both hands covered by assertions.",
+    "order": [
+      "Extinguisher top",
+      "Pistol",
+      "Cannon",
+      "Well lever",
+      "Valve rim",
+      "Button",
+      "Intake",
+      "Cannon side pump",
+      "Body/bottom",
+      "Nozzle",
+      "Forward support"
+    ]
+  },
+  "verification_history": [
+    "InitialVerification 211+192 passed. Visual review identified an outward-facing valve grip.",
+    "FinalAcceptance 211+191/192: old button test expected a remote target to pull the hand by 8 cm. Updated it to require no movement for an unreachable target.",
+    "ReleaseAcceptance 211+192 passed after the valve/button pose corrections and deterministic per-tile atlas capture."
+  ],
+  "limits": [
+    "Contact constraints use per-part OBB proxies and palm/phalange radii, not per-triangle or full-scene rigid-body hand simulation.",
+    "No claim of measured Quest/PICO hand comfort, optical tracking improvement or performance from Editor samples."
+  ],
+  "input_contract": {
+    "separation": "Only display-copy transforms are posed/constrained. SDK hand data, raw curl, acquisition and trigger input never consume authored hand bones.",
+    "acquisition": "Fresh light grasp accepts nearby contact for 0.25 seconds; old closed fists cannot acquire distant objects. Extinguisher upper-handle region is expanded and snaps the tool grip to the raw contact.",
+    "thresholds": {
+      "grab": 0.4,
+      "fire": 0.76,
+      "stop_fire": 0.52,
+      "open": 0.2
+    },
+    "poses": "11 non-free pose types, including independently attached nozzle, body and front support. Station rim anchor is captured at accepted grasp and follows the wheel.",
+    "animation": {
+      "acquire_seconds": 0.16,
+      "release_seconds": 0.12
+    },
+    "contact": "Free palm sweep blocks thin part traversal; display phalanges are projected out of solid part proxies. Locked palm anchors are preserved. Matrices are cached once per visual frame.",
+    "retained": "Rack-open 0.35s and dual-open 0.5s return, tracking cancellation, raw hand menu input, independent nozzle, pumps, economy and sky."
+  }
+}

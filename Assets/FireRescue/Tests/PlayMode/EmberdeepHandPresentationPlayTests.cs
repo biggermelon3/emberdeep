@@ -161,6 +161,8 @@ namespace FireRescue.Tests
                     var center=(wrist.position+middle.position)*.5f;
                     var root=visual.Root.position;var index=visual.Joints[(int)HandJointId.HandIndex1].localRotation;
                     anchor.transform.position=center+Vector3.up*.06f;
+                    display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);display.TryGetPalmFrame(out var rawPalm);
+                    anchor.transform.rotation=rawPalm.rotation*Quaternion.Inverse(EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.ValveGrip,true).rotation);
                     for(int n=0;n<10;n++)display.Present(true,EmberdeepHandPoseKind.ValveGrip,anchor.transform,.7f,.02f);
                     var copiedCenter=(display.DisplayJoint(HandJointId.HandWristRoot).position+display.DisplayJoint(HandJointId.HandMiddle1).position)*.5f;
                     var contact=EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.ValveGrip,true);
@@ -180,7 +182,7 @@ namespace FireRescue.Tests
             foreach(var renderer in owned)Assert.IsTrue(renderer==null,"Scene/adapter cleanup must dispose snapshot objects as well as skins");
         }
 
-        [UnityTest] public IEnumerator ButtonPressAlignsOnlyDisplayTipAndCapsDistantRayTargetOffset()
+        [UnityTest] public IEnumerator ButtonPressAlignsOnlyDisplayTipAndRejectsDistantRayTargetOffset()
         {
             using(var fixture=new PairFixture())
             {
@@ -196,13 +198,15 @@ namespace FireRescue.Tests
                         display.Present(true,EmberdeepHandPoseKind.ButtonPress,null,1,.1f);
                         var tip=display.DisplayJoint(HandJointId.HandIndexTip).position;
                         anchor.transform.position=tip+Vector3.forward*.025f;
+                        display.TryGetPalmFrame(out var rawButtonPalm);
+                        anchor.transform.rotation=rawButtonPalm.rotation*Quaternion.Inverse(Quaternion.LookRotation(Vector3.forward,Vector3.down));
                         display.Present(true,EmberdeepHandPoseKind.ButtonPress,anchor.transform,1,.1f);
                         Assert.Less(Vector3.Distance(anchor.transform.position,display.DisplayJoint(HandJointId.HandIndexTip).position),.001f);
                         display.Present(true,EmberdeepHandPoseKind.ButtonPress,null,1,.1f);
                         var initial=display.DisplayRoot.position;
                         anchor.transform.position=display.DisplayJoint(HandJointId.HandIndexTip).position+Vector3.forward*3;
                         display.Present(true,EmberdeepHandPoseKind.ButtonPress,anchor.transform,1,.1f);
-                        Assert.That(Vector3.Distance(initial,display.DisplayRoot.position),Is.EqualTo(.08f).Within(.001f));
+                        Assert.That(Vector3.Distance(initial,display.DisplayRoot.position),Is.LessThan(.001f),"Distant UI cannot pull the hand toward it");
                         Assert.AreEqual(trackedRoot,visual.Root.position);Assert.AreEqual(trackedIndex,visual.Joints[(int)HandJointId.HandIndex1].localRotation);
                     }
                 }
@@ -211,7 +215,72 @@ namespace FireRescue.Tests
             yield return null;
         }
 
-        [UnityTest] public IEnumerator AnchoredContactCancelsTrackedWristRotationAndFollowsMovingObjectForBothHands()
+        [UnityTest] public IEnumerator EveryGripRejectsBackwardsWristAndRecoversWithoutChangingTrackedInput()
+        {
+            using(var fixture=new PairFixture())
+            {
+                yield return null;var anchor=new GameObject("Handedness and backwards approach audit");
+                try
+                {
+                    for(int h=0;h<2;h++)foreach(EmberdeepHandPoseKind kind in Enum.GetValues(typeof(EmberdeepHandPoseKind)))
+                    {
+                        if(kind==EmberdeepHandPoseKind.Free)continue;
+                        var hand=fixture.Hands[h];var display=fixture.Displays[h];
+                        hand.MoveWrist(new Vector3(h*.25f,1,.5f),Quaternion.identity,Quaternion.identity);
+                        for(int n=0;n<8;n++)display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
+                        display.TryGetPalmFrame(out var raw);
+                        var local=kind==EmberdeepHandPoseKind.ButtonPress?
+                            new Pose(Vector3.zero,Quaternion.LookRotation(Vector3.forward,Vector3.down)):EmberdeepHandPose.GripContact(kind,h==0);
+                        var aligned=raw.rotation*Quaternion.Inverse(local.rotation);
+                        anchor.transform.SetPositionAndRotation(raw.position-aligned*local.position,aligned);
+                        for(int n=0;n<10;n++)display.Present(true,kind,anchor.transform,0,.02f);
+                        if(kind!=EmberdeepHandPoseKind.ButtonPress)Assert.IsTrue(display.ContactLocked,kind+" "+h);
+                        foreach(float angle in new[]{100f,179f,181f,260f})
+                        {
+                            var turned=Quaternion.AngleAxis(angle,Vector3.up)*raw.rotation;
+                            anchor.transform.rotation=turned*Quaternion.Inverse(local.rotation);
+                            anchor.transform.position=raw.position-anchor.transform.rotation*local.position;
+                            for(int n=0;n<10;n++)
+                            {
+                                display.Present(true,kind,anchor.transform,0,.02f);display.TryGetPalmFrame(out var shown);
+                                Assert.IsFalse(display.ContactLocked,kind+" "+h+" "+angle);
+                                Assert.Less(Quaternion.Angle(raw.rotation,shown.rotation),.1f,"Backwards target must not flip the visible wrist");
+                            }
+                        }
+                        anchor.transform.SetPositionAndRotation(raw.position-aligned*local.position,aligned);
+                        for(int n=0;n<10;n++)display.Present(true,kind,anchor.transform,0,.02f);
+                        if(kind!=EmberdeepHandPoseKind.ButtonPress)Assert.IsTrue(display.ContactLocked);
+                        Assert.AreEqual(Quaternion.identity,hand.RootPose.rotation,"Display pose cannot change tracked input");
+                    }
+                }
+                finally{Object.Destroy(anchor);}
+            }
+        }
+
+        [Test] public void AllGripFramesMirrorPalmAndFingerDirectionsAcrossHands()
+        {
+            Vector3 Mirror(Vector3 v)=>new Vector3(-v.x,v.y,v.z);
+            foreach(EmberdeepHandPoseKind kind in Enum.GetValues(typeof(EmberdeepHandPoseKind)))
+            {
+                if(kind==EmberdeepHandPoseKind.Free || kind==EmberdeepHandPoseKind.ButtonPress)continue;
+                var left=EmberdeepHandPose.GripContact(kind,true);var right=EmberdeepHandPose.GripContact(kind,false);
+                Assert.Less(Vector3.Distance(Mirror(left.position),right.position),.0001f,kind.ToString());
+                Assert.Less(Vector3.Angle(Mirror(left.rotation*Vector3.forward),right.rotation*Vector3.forward),.03f,kind+" finger direction");
+                Assert.Less(Vector3.Angle(Mirror(left.rotation*Vector3.up),right.rotation*Vector3.up),.03f,kind+" palm direction");
+            }
+        }
+        [Test] public void ExtinguisherUsesWholeHandSqueezeWithRelaxedFingerSpacing()
+        {
+            var kind=EmberdeepHandPoseKind.ExtinguisherGrip;
+            foreach(var finger in new[]{HandFinger.Index,HandFinger.Middle,HandFinger.Ring,HandFinger.Pinky})
+            {
+                float relaxed=EmberdeepHandPose.Curl(kind,finger,0),pressed=EmberdeepHandPose.Curl(kind,finger,1);
+                Assert.That(relaxed,Is.InRange(.55f,.75f));
+                Assert.Greater(pressed-relaxed,.075f,"Every finger takes part in the squeeze");
+                Assert.Less(pressed,.85f,"Avoid a crushed or hooked fist");
+            }
+        }
+        [UnityTest] public IEnumerator AlignedContactFollowsMovingObjectWithinNaturalWristRangeForBothHands()
         {
             using(var fixture=new PairFixture())
             {
@@ -228,13 +297,13 @@ namespace FireRescue.Tests
                         hand.MoveWrist(physicalPosition,Quaternion.identity,Quaternion.Euler(50,0,0));
                         for(int n=0;n<8;n++)display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
                         Assert.IsTrue(display.TryGetPalmFrame(out var raw));
-                        anchor.transform.SetPositionAndRotation(raw.position+Vector3.forward*.02f,Quaternion.Euler(12,23,7));
+                        anchor.transform.SetPositionAndRotation(raw.position+Vector3.forward*.02f,raw.rotation*Quaternion.Inverse(EmberdeepHandPose.GripContact(kind,h==0).rotation));
                         // Object mesh scaling cannot shrink the metre-sized contact calibration.
                         anchor.transform.localScale=Vector3.one*.035f;
                         for(int n=0;n<12;n++)display.Present(true,kind,anchor.transform,.4f,.02f);
                         Assert.IsTrue(display.ContactLocked,kind.ToString());
                         var local=EmberdeepHandPose.GripContact(kind,h==0);
-                        foreach(var rotation in new[]{Quaternion.Euler(0,155,35),Quaternion.Euler(85,-70,110),Quaternion.Euler(-50,30,-120)})
+                        foreach(var rotation in new[]{Quaternion.Euler(0,25,5),Quaternion.Euler(25,-20,10),Quaternion.Euler(-20,15,-25)})
                         {
                             hand.MoveWrist(physicalPosition,rotation,Quaternion.Euler(55,5,0));
                             var actualRoot=source.Root.position;var actualRotation=source.Root.rotation;
@@ -247,7 +316,7 @@ namespace FireRescue.Tests
                             Assert.AreEqual(actualIndex,source.Joints[(int)HandJointId.HandIndex1].localRotation);
                         }
                         anchor.transform.position+=new Vector3(.025f,.015f,-.01f);
-                        anchor.transform.rotation*=Quaternion.Euler(-30,40,15);
+                        anchor.transform.rotation*=Quaternion.Euler(-10,12,5);
                         display.Present(true,kind,anchor.transform,.7f,.02f);
                         Assert.IsTrue(display.TryGetPalmFrame(out var moved));
                         Assert.Less(Vector3.Distance(anchor.transform.position+anchor.transform.rotation*local.position,moved.position),.0001f);
@@ -272,7 +341,7 @@ namespace FireRescue.Tests
                         var display=fixture.Displays[h];var hand=fixture.Hands[h];var source=fixture.Visuals[h];
                         hand.MoveWrist(new Vector3(h*.2f,1,.5f),Quaternion.Euler(15,20,5),Quaternion.Euler(10,5,0));
                         display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);Assert.IsTrue(display.TryGetPalmFrame(out var raw));
-                        anchor.transform.SetPositionAndRotation(raw.position+Vector3.up*.055f,Quaternion.Euler(20,35,45));
+                        anchor.transform.SetPositionAndRotation(raw.position+Vector3.up*.055f,raw.rotation*Quaternion.Inverse(EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.LeverGrip,h==0).rotation));
                         for(int n=0;n<10;n++)display.Present(true,EmberdeepHandPoseKind.LeverGrip,anchor.transform,0,.02f);
                         Assert.IsTrue(display.ContactLocked);Assert.IsTrue(display.TryGetPalmFrame(out var held));
                         display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
@@ -298,6 +367,108 @@ namespace FireRescue.Tests
                     }
                 }
                 finally{Object.Destroy(anchor);}
+            }
+            yield return null;
+        }
+
+        [UnityTest] public IEnumerator EveryProductionGraspLocksBothDisplayHandsAndRendersContactAtlas()
+        {
+            using(var fixture=new PairFixture())
+            {
+                yield return null;
+                var mat=new Material(Shader.Find("Universal Render Pipeline/Unlit"));mat.color=new Color(.22f,.55f,.62f);
+                var cameraObject=new GameObject("Grasp pose verification camera");var camera=cameraObject.AddComponent<Camera>();
+                camera.enabled=false;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.07f,.10f,.14f);
+                camera.orthographic=true;camera.orthographicSize=.20f;camera.nearClipPlane=.01f;camera.farClipPlane=3;
+                var target=new RenderTexture(400,400,24);camera.targetTexture=target;
+                var tile=new Texture2D(400,400,TextureFormat.RGB24,false);
+                var atlas=new Texture2D(3200,1200,TextureFormat.RGB24,false);
+                var extinguisherDetail=new Texture2D(1600,800,TextureFormat.RGB24,false);
+                foreach(var visual in fixture.Visuals)foreach(var r in visual.GetComponentsInChildren<Renderer>())r.forceRenderingOff=true;
+                int cell=0;
+                try
+                {
+                    foreach(EmberdeepHandPoseKind kind in Enum.GetValues(typeof(EmberdeepHandPoseKind)))
+                    {
+                        if(kind==EmberdeepHandPoseKind.Free)continue;
+                        var item=new GameObject(kind.ToString());Transform anchor;bool station=kind==EmberdeepHandPoseKind.LeverGrip
+                            || kind==EmberdeepHandPoseKind.ValveGrip || kind==EmberdeepHandPoseKind.ButtonPress || kind==EmberdeepHandPoseKind.IntakeGrip;
+                        if(station)
+                        {
+                            var view=item.AddComponent<EmberdeepWaterStationView>();view.Build(mat,mat,mat,kind==EmberdeepHandPoseKind.IntakeGrip);
+                            view.SetTier(kind==EmberdeepHandPoseKind.ValveGrip?WaterStationTier.RotaryHydrant:
+                                kind==EmberdeepHandPoseKind.ButtonPress?WaterStationTier.PushButton:WaterStationTier.LeverWell);
+                            anchor=kind==EmberdeepHandPoseKind.LeverGrip?view.LeverVisual:kind==EmberdeepHandPoseKind.ButtonPress?view.ButtonVisual:
+                                kind==EmberdeepHandPoseKind.IntakeGrip?view.IntakeVisual:view.ValveVisual;
+                            if(kind==EmberdeepHandPoseKind.ValveGrip){var rim=new GameObject("Rim contact").transform;rim.SetParent(anchor,false);anchor=rim;}
+                        }
+                        else
+                        {
+                            var view=item.AddComponent<FireEquipmentView>();view.Build(kind==EmberdeepHandPoseKind.PistolGrip?FireEquipmentId.PulsePistol:
+                                kind==EmberdeepHandPoseKind.CannonGrip || kind==EmberdeepHandPoseKind.CannonPump || kind==EmberdeepHandPoseKind.ForwardSupport
+                                ?FireEquipmentId.PressureCannon:FireEquipmentId.Extinguisher,mat,mat,mat);
+                            anchor=view.Grip;
+                            if(kind==EmberdeepHandPoseKind.NozzleGrip)anchor=view.Nozzle;
+                            if(kind==EmberdeepHandPoseKind.CannonPump)anchor=view.PumpGrip;
+                            if(kind==EmberdeepHandPoseKind.BodyGrip){view.CaptureGrip(FireToolRegion.Body,new Vector3(0,-.12f,-.06f));anchor=view.SurfaceGrip;}
+                            if(kind==EmberdeepHandPoseKind.ForwardSupport){view.CaptureSupport(new Vector3(0,-.06f,.16f));anchor=view.SupportGrip;}
+                        }
+                        var contacts=new EmberdeepHandContact();contacts.Add(item.transform);contacts.Prepare();
+                        // Let Unity register newly created renderer bounds before
+                        // manual camera culling; pose assertions still run below.
+                        yield return null;
+                        for(int h=0;h<2;h++)
+                        {
+                            if(kind==EmberdeepHandPoseKind.NozzleGrip)anchor.localPosition=new Vector3(h==0?-.16f:.16f,.04f,.1f);
+                            if(kind==EmberdeepHandPoseKind.ValveGrip)anchor.localPosition=Vector3.right*(h==0?-.05f:.05f);
+                            if(kind==EmberdeepHandPoseKind.CannonPump)item.GetComponent<FireEquipmentView>().SetLeftHanded(h==1);
+                            var hand=fixture.Hands[h];var display=fixture.Displays[h];var source=fixture.Visuals[h];
+                            display.DisplayRoot.gameObject.SetActive(true);
+                            var wristPosition=anchor.position+new Vector3(h==0?-.035f:.035f,0,-.065f);
+                            hand.MoveWrist(wristPosition,Quaternion.identity,Quaternion.identity);
+                            for(int n=0;n<8;n++)display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
+                            display.TryGetPalmFrame(out var rawApproach);
+                            var desired=anchor.rotation*(kind==EmberdeepHandPoseKind.ButtonPress?Quaternion.LookRotation(Vector3.forward,Vector3.down):EmberdeepHandPose.GripContact(kind,h==0).rotation);
+                            hand.MoveWrist(wristPosition,desired*Quaternion.Inverse(rawApproach.rotation),Quaternion.identity);
+                            var raw=source.Root.position;var rotations=source.Joints.Select(j=>j?j.localRotation:Quaternion.identity).ToArray();
+                            for(int n=0;n<14;n++)display.Present(true,kind,anchor,.7f,.02f);
+                            if(kind!=EmberdeepHandPoseKind.ButtonPress)Assert.IsTrue(display.ContactLocked,kind+" hand "+h);
+                            display.TryGetPalmFrame(out var before);display.Constrain(contacts,true);display.TryGetPalmFrame(out var after);
+                            Assert.Less(Vector3.Distance(before.position,after.position),.0001f,"Contact solver must preserve grasp anchor");
+                            Assert.AreEqual(raw,source.Root.position);
+                            for(int j=0;j<rotations.Length;j++)if(source.Joints[j])Assert.AreEqual(rotations[j],source.Joints[j].localRotation,"Display pose contaminated input");
+                            camera.transform.position=anchor.position+new Vector3(h==0?-.34f:.34f,.19f,-.55f);camera.transform.LookAt(anchor.position);
+                            camera.Render();var active=RenderTexture.active;RenderTexture.active=target;
+                            tile.ReadPixels(new Rect(0,0,400,400),0,0);tile.Apply();RenderTexture.active=active;
+                            atlas.SetPixels((cell%8)*400,(2-cell/8)*400,400,400,tile.GetPixels());cell++;
+                            if(kind==EmberdeepHandPoseKind.ExtinguisherGrip)
+                            {
+                                var tool=item.GetComponent<FireEquipmentView>();camera.orthographicSize=.105f;
+                                for(int state=0;state<2;state++)
+                                {
+                                    tool.Animate(1,0,state==1,.1f);contacts.Prepare();
+                                    for(int n=0;n<14;n++)display.Present(true,kind,anchor,state,.02f);
+                                    display.Constrain(contacts,true);
+                                    for(int view=0;view<2;view++)
+                                    {
+                                        var focus=anchor.position+Vector3.up*.018f;
+                                        camera.transform.position=focus+new Vector3(h==0?-.24f:.24f,view==0?.09f:-.015f,-.3f);
+                                        camera.transform.LookAt(focus);camera.Render();active=RenderTexture.active;RenderTexture.active=target;
+                                        tile.ReadPixels(new Rect(0,0,400,400),0,0);tile.Apply();RenderTexture.active=active;
+                                        extinguisherDetail.SetPixels((h*2+state)*400,(1-view)*400,400,400,tile.GetPixels());
+                                    }
+                                }
+                                camera.orthographicSize=.20f;tool.Animate(1,0,false,.1f);
+                            }
+                            display.DisplayRoot.gameObject.SetActive(false);
+                        }
+                        fixture.Displays[1].DisplayRoot.gameObject.SetActive(false);item.SetActive(false);Object.Destroy(item);
+                    }
+                    atlas.Apply();extinguisherDetail.Apply();System.IO.Directory.CreateDirectory("Logs/EmberdeepExtinguisherGrip");
+                    System.IO.File.WriteAllBytes("Logs/EmberdeepExtinguisherGrip/Grasp-Atlas.png",atlas.EncodeToPNG());
+                    System.IO.File.WriteAllBytes("Logs/EmberdeepExtinguisherGrip/Extinguisher-Detail.png",extinguisherDetail.EncodeToPNG());
+                }
+                finally{camera.targetTexture=null;target.Release();Object.Destroy(target);Object.Destroy(tile);Object.Destroy(atlas);Object.Destroy(extinguisherDetail);Object.Destroy(cameraObject);Object.Destroy(mat);}
             }
             yield return null;
         }

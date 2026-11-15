@@ -11,6 +11,35 @@ namespace FireRescue
         static readonly HandJointId[] Roots={HandJointId.HandIndex1,HandJointId.HandMiddle1,HandJointId.HandRing1,HandJointId.HandPinky1};
         static readonly HandJointId[] Middles={HandJointId.HandIndex2,HandJointId.HandMiddle2,HandJointId.HandRing2,HandJointId.HandPinky2};
         static readonly HandJointId[] Tips={HandJointId.HandIndexTip,HandJointId.HandMiddleTip,HandJointId.HandRingTip,HandJointId.HandPinkyTip};
+        public static bool TryReadPalmFrame(IHand hand,out Quaternion rotation)
+        {
+            rotation=Quaternion.identity;
+            if(hand==null || !hand.IsTrackedDataValid || !hand.IsHighConfidence
+                || !hand.GetJointPose(HandJointId.HandWristRoot,out var wrist)
+                || !Joint(hand,HandJointId.HandMiddle1,out var middle))return false;
+            var distal=middle-wrist.position;
+            var palmar=wrist.rotation*(hand.Handedness==Handedness.Left?Constants.LeftPalmar:Constants.RightPalmar);
+            if(!float.IsFinite(distal.sqrMagnitude) || !float.IsFinite(palmar.sqrMagnitude)
+                || Vector3.Cross(distal,palmar).sqrMagnitude<.000001f)return false;
+            rotation=Quaternion.LookRotation(distal,palmar);return true;
+        }
+        // Object manipulation measures four-finger closure independently from
+        // thumb/index pinching. Keep the historical full-fist reader below intact.
+        public static bool TryReadClosure(IHand hand,out float strength,out Vector3 contact)
+        {
+            strength=0;contact=default;
+            if(hand==null || !hand.IsConnected || !hand.IsTrackedDataValid || !hand.IsHighConfidence
+                || !Joint(hand,HandJointId.HandWristRoot,out var wrist) || !Joint(hand,HandJointId.HandMiddle1,out var middle))return false;
+            contact=(wrist+middle)*.5f;
+            for(int i=0;i<4;i++)
+            {
+                if(!hand.GetFingerIsHighConfidence((HandFinger)(i+1)) || !Joint(hand,Roots[i],out var a)
+                    || !Joint(hand,Middles[i],out var b) || !Joint(hand,Tips[i],out var c)
+                    || (b-a).sqrMagnitude<1e-8f || (c-b).sqrMagnitude<1e-8f)return false;
+                strength+=GrabLatch.FingerCurl(a,b,c);
+            }
+            strength/=4;return true;
+        }
         public static bool TryRead(IHand hand,out float strength,out Vector3 contact)
         {
             strength=0;contact=default;

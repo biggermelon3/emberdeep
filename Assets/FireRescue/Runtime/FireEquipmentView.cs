@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace FireRescue
 {
-    public sealed class FireEquipmentView : MonoBehaviour
+    public sealed partial class FireEquipmentView : MonoBehaviour
     {
         public Transform Muzzle { get; private set; }
         public Transform Grip { get; private set; }
@@ -18,11 +18,12 @@ namespace FireRescue
         void Awake()=>block=new MaterialPropertyBlock();
         float recoil;
         Vector3 barrelRest;
+        Vector3 squeezeHandleRest;
         public void Build(FireEquipmentId id,Material body,Material dark,Material emissive)
         {
             Id=id;shell=body;trim=dark;bright=emissive;bodyColor=FireEquipment.Get(id).Color;
             Muzzle=new GameObject("Water outlet").transform;Muzzle.SetParent(transform,false);
-            Grip=new GameObject("Grip anchor").transform;Grip.SetParent(transform,false);Grip.localPosition=id==FireEquipmentId.Extinguisher?new Vector3(0,.085f,-.025f):new Vector3(0,-.04f,-.015f);
+            Grip=new GameObject("Grip anchor").transform;Grip.SetParent(transform,false);Grip.localPosition=id==FireEquipmentId.Extinguisher?new Vector3(0,.11f,-.075f):new Vector3(0,-.04f,-.015f);
             if(id==FireEquipmentId.Extinguisher)Extinguisher();else Gun(id);
             RefillPort=new GameObject("RefillPort").transform;
             RefillPort.SetParent(transform,false);
@@ -35,12 +36,14 @@ namespace FireRescue
             Part("Rounded shoulder",PrimitiveType.Sphere,new Vector3(0,.06f,0),new Vector3(.1f,.045f,.1f),bodyColor);
             Part("Base boot",PrimitiveType.Cylinder,new Vector3(0,-.15f,0),new Vector3(.105f,.012f,.105f),Color.gray,trim);
             Part("Valve block",PrimitiveType.Cube,new Vector3(0,.085f,0),new Vector3(.04f,.035f,.04f),Color.gray,trim);
-            lever=Part("Squeeze handle",PrimitiveType.Cube,new Vector3(0,.105f,-.025f),new Vector3(.025f,.012f,.09f),Color.gray,trim).transform;
+            // Separate the load-bearing bar from the moving squeeze lever, and
+            // leave space behind the shoulder for real finger-sized contacts.
+            Part("Fixed carrying handle",PrimitiveType.Cube,new Vector3(0,.101f,-.068f),new Vector3(.028f,.014f,.108f),Color.gray,trim);
+            Tube("Handle hinge",new Vector3(-.022f,.116f,-.014f),new Vector3(.022f,.116f,-.014f),.009f,trim);
+            squeezeHandleRest=new Vector3(0,.126f,-.068f);
+            lever=Part("Squeeze handle",PrimitiveType.Cube,squeezeHandleRest,new Vector3(.032f,.012f,.108f),Color.gray,trim).transform;
             Part("Safety pin",PrimitiveType.Sphere,new Vector3(.035f,.086f,-.01f),new Vector3(.025f,.025f,.008f),new Color(1,.8f,.15f));
-            Tube("Flexible hose A",new Vector3(.025f,.08f,0),new Vector3(.065f,.06f,.07f),.009f,trim);
-            Tube("Flexible hose B",new Vector3(.065f,.06f,.07f),new Vector3(.035f,.015f,.12f),.009f,trim);
-            Tube("Discharge horn",new Vector3(.035f,.015f,.12f),new Vector3(0,.015f,.18f),.022f,trim);
-            Muzzle.localPosition=new Vector3(0,.015f,.18f);
+            BuildHoseNozzle();
             Part("Instruction band",PrimitiveType.Cube,new Vector3(0,-.045f,-.051f),new Vector3(.061f,.075f,.003f),new Color(.95f,.9f,.72f));
             Gauge(new Vector3(0,.065f,-.055f));Tank(new Vector3(.044f,-.05f,-.03f));
         }
@@ -96,7 +99,12 @@ namespace FireRescue
             needle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(65,-65,Id==FireEquipmentId.PressureCannon?charge:water));
             if(firing)recoil=1;else recoil=Mathf.MoveTowards(recoil,0,dt*12);
             if(barrel)barrel.localPosition=barrelRest+Vector3.back*(recoil*.012f);
-            if(lever)lever.localRotation=Quaternion.Euler(firing?12:0,0,0);
+            if(lever)
+            {
+                if(Id==FireEquipmentId.Extinguisher)
+                {lever.localPosition=squeezeHandleRest+Vector3.down*(recoil*.01f);lever.localRotation=Quaternion.identity;}
+                else lever.localRotation=Quaternion.Euler(firing?12:0,0,0);
+            }
             Tint(indicator,Color.Lerp(new Color(.1f,.7f,1),new Color(1,.4f,.05f),charge));
         }
         public void AnimatePump(float pull){if(pumpSlide)pumpSlide.localPosition=Pump.localPosition+Vector3.back*(Mathf.Clamp01(pull)*.09f);}

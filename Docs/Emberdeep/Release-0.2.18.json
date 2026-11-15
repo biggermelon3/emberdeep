@@ -1,0 +1,80 @@
+{
+  "version": "0.2.18",
+  "android_version_code": 21,
+  "date": "2026-11-14",
+  "status": "QUEST_BUILT_AND_INSTALLED; 420 tests passed; physical headset acceptance pending",
+  "source": "Release-0.2.18.json",
+  "changes": [
+    "HandednessPoseAudit.json",
+    "ExtinguisherGripRefinement.json"
+  ],
+  "retained_contract": "ErgonomicGripAndMaterialAA.json",
+  "changelist": "Changelist-0.2.18.txt",
+  "tests": {
+    "EditMode": {
+      "total": 215,
+      "passed": 215,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 205,
+      "passed": 205,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "target": "Quest",
+      "sceneWhitelistPassed": true,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "bytes": 105591357,
+      "versionCode": 21,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "sha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
+      "signatureVerified": true,
+      "version": "0.2.18",
+      "settingsRestored": true,
+      "errors": 0,
+      "warnings": 8
+    }
+  },
+  "source_integrity": {
+    "unchanged_during_build": true,
+    "file_count": 116,
+    "verified_interaction_sources_match_tests": true
+  },
+  "restored_settings_count": 28,
+  "installation": {
+    "date": "2026-11-14",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "package": "com.metahackathon2026.emberdeep",
+    "version": "0.2.18",
+    "versionCode": 21,
+    "installedVersionVerified": true,
+    "installation": "Replace existing application, preserve data",
+    "apkSha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
+    "headsetInteractionAcceptance": "Pending user worn-headset test of refined extinguisher handle and handedness guard",
+    "appInfo": {
+      "package": "com.metahackathon2026.emberdeep",
+      "version_name": "0.2.18",
+      "version_code": "21",
+      "install_path": "/data/app/~~gwYZOXK6qtvrlsdkLOcReg==/com.metahackathon2026.emberdeep-ZP72cCHM0Qjl1212e-iJLA==",
+      "is_system": false,
+      "first_install_time": "2026-11-06 13:30:58",
+      "last_update_time": "2026-11-15 12:23:37",
+      "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+    }
+  },
+  "preview": "Deliverables/Emberdeep/Emberdeep-0.2.18-Extinguisher-Grip.png",
+  "pico": "Shared source updated; no 0.2.18 PICO APK built",
+  "limits": [
+    "Synthetic Editor tests and SDK hand previews do not establish worn-headset comfort or optical tracking quality."
+  ]
+}

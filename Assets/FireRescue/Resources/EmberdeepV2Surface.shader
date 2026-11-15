@@ -21,6 +21,7 @@ Shader "Emberdeep/V2 Sculpted Surface"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.0
             #pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW
@@ -49,12 +50,14 @@ Shader "Emberdeep/V2 Sculpted Surface"
                 half sky=saturate(n.y*.5+.5);
                 half3 pigment=lerp(_BaseColor.rgb,half3(.075,.085,.08),_Scorch*.88);
                 float moss=sin(i.world.x*29+sin(i.world.z*23))*sin(i.world.z*31+i.world.x*7);
+                moss*=1-smoothstep(.75,3.14,max(fwidth(i.world.x*29+sin(i.world.z*23)),fwidth(i.world.z*31+i.world.x*7)));
                 pigment*=1+_GroundDetail*(moss*.12-.045);
                 pigment=lerp(pigment,pigment*.68+_WetColor.rgb*.12,_Wetness);
                 half3 color=pigment*(half3(.22,.3,.33)+sun.color*light*sun.shadowAttenuation*.68)*( .8+.2*sky );
                 half fresnel=pow(1-saturate(dot(n,v)),3);
                 half3 h=normalize(sun.direction+v);
-                half spec=pow(saturate(dot(n,h)),lerp(12,70,1-_Roughness));
+                float normalVariance=dot(ddx(n),ddx(n))+dot(ddy(n),ddy(n));
+                half spec=pow(saturate(dot(n,h)),lerp(12,70,1-saturate(_Roughness+normalVariance*8)));
                 color+=half3(.55,.85,.89)*(spec*.32+fresnel*.13)*_Wetness;
                 color+=half3(1,.18,.015)*_Heat*.14*(.8+.2*sin(_Time.y*5+i.world.z*8));
                 color+=_EmissionColor.rgb;

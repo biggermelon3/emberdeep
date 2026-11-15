@@ -25,36 +25,36 @@ namespace FireRescue
                 if(!creek && run.StationTier==WaterStationTier.LeverWell && emptyOutlet)
                     return emptyReturnRequired
                         ?new Cue(Step.ReturnLever,Target.Lever,"RETURN THE LEVER\nRaise the handle to release a small splash\nDock a tool to collect the water")
-                        :new Cue(Step.LowerLever,Target.Lever,"LOWER THE HANDLE 8 cm\nKeep pinching, then raise\nDock a tool to collect the water");
+                        :new Cue(Step.LowerLever,Target.Lever,"PRESS THE HANDLE DOWN\nKeep your grasp, then raise\nDock a tool to collect the water");
                 if(!creek && run.StationTier==WaterStationTier.LeverWell && !held)
-                    return new Cue(Step.TryPump,Target.Lever,"TRY THE PUMP\nPinch handle; hold, lower + return\nDock a tool to collect the water");
-                if(!held)return new Cue(Step.TakeTool,Target.Pickup,creek?"OPTIONAL CREEK REFILL\nPick up a tool to try it":"1  TAKE YOUR TOOL\nOpen hand, then pinch its grip");
+                    return new Cue(Step.TryPump,Target.Lever,"TRY THE PUMP\nGrasp handle; hold, lower + return\nDock a tool to collect the water");
+                if(!held)return new Cue(Step.TakeTool,Target.Pickup,creek?"OPTIONAL CREEK REFILL\nPick up a tool to try it":"1  TAKE YOUR TOOL\nOpen hand, then grasp the tool");
                 if(supply.Alignment01>0)return new Cue(Step.HoldStill,Target.Socket,"1  HOLD STILL\nKeep the blue rings together");
-                return new Cue(Step.BringTool,Target.Socket,creek?"OPTIONAL CREEK REFILL\nRelease pinch; match the blue rings":"1  RELEASE PINCH TO DOCK\nBring the two blue rings together");
+                return new Cue(Step.BringTool,Target.Socket,creek?"OPTIONAL CREEK REFILL\nRelax your grip; match the blue rings":"1  RELAX YOUR GRIP TO DOCK\nBring the two blue rings together");
             }
             if(run.Water>=run.Capacity-.001f)
-                return new Cue(Step.Full,Target.Grip,"3  FULL - TAKE YOUR TOOL\nOpen hand, then pinch its grip");
+                return new Cue(Step.Full,Target.Grip,"3  FULL - TAKE YOUR TOOL\nOpen hand, then grasp the tool");
             if(!creek)
             {
                 if(run.StationTier==WaterStationTier.LeverWell)
                     return supply.LeverReturnRequired
-                        ?new Cue(Step.ReturnLever,Target.Lever,"2  RETURN THE LEVER\nRaise it to finish: +12 water")
-                        :new Cue(Step.LowerLever,Target.Lever,"2  PINCH THE LEVER\nKeep thumb + index finger together\nLower 8 cm, then raise: +12 water");
+                        ?new Cue(Step.ReturnLever,Target.Lever,"2  RETURN THE LEVER\nLift to collect water; longer strokes give more")
+                        :new Cue(Step.LowerLever,Target.Lever,"2  GRASP THE LEVER\nHold with a relaxed fist\nPress down, then lift; longer strokes give more");
                 if(run.StationTier==WaterStationTier.PushButton)
                     return supply.ValveOpen
                         ?new Cue(Step.Filling,Target.Button,"2  FILLING\nPress again to stop early")
-                        :new Cue(Step.PressButton,Target.Button,"2  PRESS THE BLUE BUTTON\nPinch here once to fill");
+                        :new Cue(Step.PressButton,Target.Button,"2  PRESS THE BLUE BUTTON\nPush inward once to fill");
                 return supply.ValveOpen
                     ?new Cue(Step.Filling,Target.Valve,"2  FILLING\nGrip + turn back 45 degrees to stop")
-                    :new Cue(Step.OpenValve,Target.Valve,"2  GRIP + TURN THE WHEEL\nKeep pinching and turn 45 degrees");
+                    :new Cue(Step.OpenValve,Target.Valve,"2  GRIP + TURN THE WHEEL\nMove around the rim by 45 degrees");
             }
             if(!supply.IntakePlaced)
                 return carryingIntake
                     ?new Cue(Step.PlaceIntake,Target.IntakeSocket,"2  PUT STRAINER IN WATER\nRelease it on the green ring")
-                    :new Cue(Step.PlaceIntake,Target.Intake,"2  PICK UP THE STRAINER\nPinch, move to green ring, release");
+                    :new Cue(Step.PlaceIntake,Target.Intake,"2  PICK UP THE STRAINER\nGrasp, move to green ring, release");
             return supply.PumpTravel01>=.8f
                 ?new Cue(Step.ReturnPump,Target.Pump,"2  PUSH BACK TO FINISH\nReturn the handle for one refill")
-                :new Cue(Step.PullPump,Target.Pump,"2  PULL THE BLUE HANDLE\nPinch, pull 8 cm, then push back");
+                :new Cue(Step.PullPump,Target.Pump,"2  PULL THE BLUE HANDLE\nGrasp, pull 8 cm, then push back");
         }
     }
 }

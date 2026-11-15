@@ -159,7 +159,7 @@ namespace FireRescue.Tests
         [UnityTest] public IEnumerator DesktopManualIntentBlocksRecoveryBeforeConnectionOrCompletedStroke()
         {
             Field("desktopDock",WaterSourceKind.Creek);Sample(230);Assert.Zero(game.Run.Water);Assert.Zero(game.Run.RecoveredWater);
-            Field("desktopDock",WaterSourceKind.None);Field("desktopOutletTravel",.085f);
+            Field("desktopDock",WaterSourceKind.None);Field("desktopOutletTravel",.08f);
             Sample(230);Assert.Zero(game.Run.Water);Assert.Zero(game.Run.RecoveredWater);
             Field("desktopOutletTravel",0f);Sample(29);Assert.Zero(game.Run.Water);Sample(201);
             Assert.That(game.Run.Water,Is.EqualTo(5).Within(.001f));yield return null;
@@ -168,7 +168,7 @@ namespace FireRescue.Tests
         [UnityTest] public IEnumerator DockedManualStrokeAndRecoveryNeverCreditTheSameInterval()
         {
             var supply=game.Run.Supply;for(int i=0;i<4;i++)supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,Dt);
-            Assert.IsTrue(supply.Locked);supply.SampleLever(0,true,true);supply.SampleLever(.085f,true,true);supply.SampleLever(0,true,true);
+            Assert.IsTrue(supply.Locked);supply.SampleLever(0,true,true);supply.SampleLever(.08f,true,true);supply.SampleLever(0,true,true);
             Assert.That(game.Run.SuppliedWater,Is.EqualTo(12).Within(.001f));float supplied=game.Run.SuppliedWater;
             Sample(230);Assert.That(game.Run.Water,Is.EqualTo(12).Within(.001f));Assert.Zero(game.Run.RecoveredWater);
             supply.Disconnect();game.Run.Tick(.01f,false);Sample(29);Assert.That(game.Run.Water,Is.EqualTo(12).Within(.001f));

@@ -218,7 +218,7 @@ namespace FireRescue.Tests
             game.Run.CancelTrigger();Assert.Zero(game.Run.Water);Clear(game.Run);
             var supply=game.Run.Supply;
             for(int i=0;i<4;i++)supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.1f);
-            Assert.IsTrue(supply.Locked);supply.SampleLever(0,true,true);supply.SampleLever(.085f,true,true);
+            Assert.IsTrue(supply.Locked);supply.SampleLever(0,true,true);supply.SampleLever(.08f,true,true);
             Assert.IsTrue(supply.LeverReturnRequired);game.Refresh();
             int coins=game.Run.Coins;float water=game.Run.Water,supplied=game.Run.SuppliedWater;
             var far=FreePalm;var shop=Button("Gear shop");Assert.IsTrue(shop.Interactable);
@@ -421,13 +421,13 @@ namespace FireRescue.Tests
             game.Run.Tick(.1f,false);for(int i=0;i<100 && game.Run.Water>0;i++)game.Run.Tick(.1f,true);
             game.Run.CancelTrigger();var supply=game.Run.Supply;
             for(int i=0;i<4;i++)supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.1f);
-            supply.SampleLever(0,true,true);supply.SampleLever(.085f,true,true);Assert.IsTrue(supply.LeverReturnRequired);
+            supply.SampleLever(0,true,true);supply.SampleLever(.08f,true,true);Assert.IsTrue(supply.LeverReturnRequired);
             game.Refresh();var button=Button("Next incident");LookAtButton(button);
             var at=game.HydrantStation.Lever.position;var owner=PhysicalAt(game.HeldTool.Grip.position);
             float water=game.Run.Water;
             for(int i=0;i<10;i++)
             {
-                var physical=PhysicalAt(at+(i%2==0?Vector3.zero:Vector3.down*.085f),Closed);
+                var physical=PhysicalAt(at+(i%2==0?Vector3.zero:Vector3.down*.08f),Closed);
                 Assert.IsFalse(PointWithPhysical(0,physical,owner,button));RefillWithPhysical(0,physical,owner);
                 Assert.IsTrue(supply.Locked);Assert.IsFalse(supply.LeverReturnRequired);Assert.IsFalse(game.RefillInteraction.OwnsControl);
                 Assert.AreEqual(water,game.Run.Water);Assert.IsFalse(supply.Assisted);
@@ -444,7 +444,7 @@ namespace FireRescue.Tests
             for(int i=0;i<6;i++)game.ProcessRefillHands(PhysicalAt(home),owner,Dt);
             game.ProcessRefillHands(PhysicalAt(home,Closed),owner,Dt);Assert.AreEqual(0,game.RefillInteraction.OperatingHand);
             game.Refresh();var button=Button("Next incident");LookAtButton(button);float water=game.Run.Water;
-            var down=PhysicalAt(home+Vector3.down*.085f,Closed);var uiOwner=PhysicalAt(owner.Palm.position,Closed);
+            var down=PhysicalAt(home+Vector3.down*.08f,Closed);var uiOwner=PhysicalAt(owner.Palm.position,Closed);
             Assert.IsFalse(PointWithPhysical(1,uiOwner,down,button));RefillWithPhysical(1,uiOwner,down);
             Assert.IsTrue(game.MenuInput.HasTarget(1));Assert.IsTrue(supply.Locked);Assert.IsTrue(supply.LeverReturnRequired);
             Assert.AreEqual(0,game.RefillInteraction.OperatingHand);

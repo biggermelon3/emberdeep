@@ -109,7 +109,7 @@ namespace FireRescue.Tests
             var run=Dry();Wait(run);Recover(run,20);float recovered=run.RecoveredWater;
             Dock(run);Assert.AreEqual(3,run.RecoveryDelayRemaining);Stroke(run);
             for(int i=0;i<60;i++)Assert.Zero(run.TickRecovery(.1f,true,false));
-            Assert.AreEqual(12,run.SuppliedWater);Assert.AreEqual(recovered,run.RecoveredWater);
+            Assert.AreEqual(12.75f,run.SuppliedWater);Assert.AreEqual(recovered,run.RecoveredWater);
             run.Supply.Disconnect();Assert.AreEqual(3,run.RecoveryDelayRemaining);Wait(run);
             Assert.That(run.TickRecovery(.1f,true,false),Is.EqualTo(.025f).Within(.000001f));Balanced(run);
         }

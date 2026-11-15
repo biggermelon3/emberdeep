@@ -32,7 +32,8 @@ namespace FireRescue
 
         bool RecoveryTriggerHeld(bool gestureTrigger,float pinch)
         {
-            if(Player.IsXR)return gestureTrigger || (grip.Held && pinch<.035f);
+            if(Player.IsXR)return gestureTrigger || (grip.Held && toolManipulation.Region==FireToolRegion.Trigger
+                && toolHands[grip.Hand].Usable && toolHands[grip.Hand].Closure>=EmberdeepSqueeze.Fire);
             return gestureTrigger || (Mouse.current!=null && Mouse.current.leftButton.isPressed);
         }
 

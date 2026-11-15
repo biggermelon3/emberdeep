@@ -203,7 +203,7 @@ namespace FireRescue.Tests
             LeverSample(hand,palm,1,4);Assert.IsFalse(game.Run.Supply.ValveOpen);
             for(int stroke=0;stroke<5;stroke++)
             {
-                palm.position=lever-station.transform.up*.085f;
+                palm.position=lever-station.transform.up*.08f;
                 LeverSample(hand,palm,1);
                 Assert.That(game.Run.Water,Is.EqualTo(stroke*12).Within(.001f),"Downstroke alone cannot credit water");
                 palm.position=lever;LeverSample(hand,palm,1);

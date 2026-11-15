@@ -1,0 +1,121 @@
+{
+  "version": "0.2.17",
+  "android_version_code": 20,
+  "date": "2026-11-12",
+  "status": "IMPLEMENTED_CANDIDATE; 415 tests passed; Quest APK audited; physical headset acceptance pending",
+  "source": "ErgonomicGripAndMaterialAA.json",
+  "tests": {
+    "EditMode": {
+      "total": 215,
+      "passed": 215,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepErgonomics/FinalSupportAcceptance/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 200,
+      "passed": 200,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepErgonomics/FinalSupportAcceptance/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "sha256": "5fc0f64ac1bb9871957d8e5d665793e0dba2afa0a8495eae2aa79ea858ca3de3",
+      "signatureVerified": true,
+      "settingsRestored": true,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "version": "0.2.17",
+      "sceneWhitelistPassed": true,
+      "bytes": 105594497,
+      "versionCode": 20,
+      "target": "Quest",
+      "errors": 0,
+      "warnings": 8
+    }
+  },
+  "source_integrity": {
+    "unchanged_after_verification": true,
+    "file_count": 116
+  },
+  "restored_settings_count": 28,
+  "installation": {
+    "date": "2026-11-12",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "package": "com.metahackathon2026.emberdeep",
+    "version": "0.2.17",
+    "versionCode": 20,
+    "installedVersionVerified": true,
+    "installation": "Replace existing application, preserve data",
+    "apkSha256": "5fc0f64ac1bb9871957d8e5d665793e0dba2afa0a8495eae2aa79ea858ca3de3",
+    "headsetInteractionAcceptance": "Pending user worn-headset test of canonical poses, retained hold, proportional lever and material AA",
+    "appInfo": {
+      "package": "com.metahackathon2026.emberdeep",
+      "version_name": "0.2.17",
+      "version_code": "20",
+      "install_path": "/data/app/~~9akLaNgiIWEJP-6y5zugiQ==/com.metahackathon2026.emberdeep-QzIObbKiMLUm4Iq-OzRE8g==",
+      "is_system": false,
+      "first_install_time": "2026-11-06 13:30:58",
+      "last_update_time": "2026-11-13 10:21:03",
+      "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+    }
+  },
+  "pico": "Shared source updated; no 0.2.17 PICO APK built in this iteration",
+  "visual_review": {
+    "capture": "Deliverables/Emberdeep/Emberdeep-0.2.17-Grasp-Atlas.png",
+    "scope": "Actual SDK skinned hands and production tools, synthetic inputs. Left/right pairs for all 11 grasp kinds.",
+    "order": [
+      "Extinguisher top",
+      "Pistol",
+      "Cannon",
+      "Well lever",
+      "Valve rim",
+      "Button",
+      "Intake",
+      "Cannon side pump",
+      "Body/bottom",
+      "Nozzle",
+      "Forward support"
+    ]
+  },
+  "material_aa": {
+    "baselineShiftDifference": 0.006283383871670122,
+    "filteredShiftDifference": 0.002034637548778423,
+    "changeRatio": 0.32381239000087014,
+    "context": "Editor GPU render, 480x320, 1x samples to isolate shader aliasing, fixed time, 3 mm camera shift, distant water crop; not headset performance"
+  },
+  "limits": [
+    "Headset comfort, occluded optical tracking and frame timing require worn-device testing.",
+    "Display contact uses part OBB proxies; authored display joints never feed physical input.",
+    "Creek pull-pump mechanic remains unchanged; proportional travel applies to the well lever and its empty outlet."
+  ],
+  "input_contract": {
+    "supersedes": "The automatic open-hand park and dual-open drop in 0.2.15/0.2.16 are replaced by retained ownership. Rack-open return and explicit return operations remain.",
+    "hold": "A held tool follows the valid owner palm even at zero closure. Tracking loss freezes it and cancels actions. Full opening cancels charge but arms the next deliberate squeeze.",
+    "return": "Move away from rack, then back within 0.18 m, touch rack volume and fully open owner hand for 0.35 seconds.",
+    "thresholds": {
+      "grab": 0.4,
+      "fire": 0.76,
+      "stop_fire": 0.52,
+      "open": 0.2
+    },
+    "canonical_frames": "Physical palm and displayed grip share fixed per-hand contact offsets. Nozzle has transverse wrap; body/support and wheel rim no longer choose arbitrary surface normals.",
+    "well": {
+      "maximum_vertical_metres": 0.16,
+      "lever_arm_metres": 0.22,
+      "minimum_down_metres": 0.012,
+      "reversal_deadband_metres": 0.008,
+      "water_per_return_metre": 150
+    },
+    "material_aa": "4x MSAA retained. Derivative-based procedural filtering for creek/moss/glints, silhouette widths and wet normal variance.",
+    "sources": [
+      "https://docs.unity.com/en-us/engine/6000.5/manual/render-pipelines/universal-render-pipeline/anti-aliasing",
+      "https://docs.unity.com/en-us/engine/6000.3/manual/render-pipelines/universal-render-pipeline/urp-reference/universalrp-asset"
+    ]
+  }
+}

@@ -148,6 +148,41 @@ namespace CloudGarden.Integration
             if(!portableSpace)portableSpace=Player.XRRig.GetComponentInChildren<Oculus.Interaction.TransformTrackingToWorldTransformer>(true);
             return portableHands.TryRead(left,portableSpace?portableSpace.Transform:null,out sample);
         }
+        public bool TryReadPortableGrip(bool left,out float strength,out Vector3 contact)
+        {
+            strength=0;contact=default;
+            if(!UnityXRRig || !IndependentPortableAim || !HeadReady || !Active || SystemOwnsHand(left)
+                || !ReadPortable(left,out var sample) || !sample.GripAvailable)return false;
+            strength=sample.GripStrength;contact=sample.GripContact;return true;
+        }
+        public bool UsesPortableGrip=>UnityXRRig && IndependentPortableAim;
+        public bool TryReadPortableGripFrame(bool left,out Quaternion rotation)
+        {
+            rotation=Quaternion.identity;
+            if(!UsesPortableGrip || !HeadReady || !Active || SystemOwnsHand(left)
+                || !ReadPortable(left,out var sample) || !sample.GripAvailable)return false;
+            rotation=sample.GripRotation;return true;
+        }
+        // Object grips do not depend on the hand's UI pointer being available.
+        public bool ReadObjectPose(bool left,out Pose palm,out float pinch,out bool pinchAvailable)
+        {
+            palm=default;pinch=float.PositiveInfinity;pinchAvailable=false;
+            if(!HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy || SystemOwnsHand(left))return false;
+            if(UsesPortableGrip)
+            {
+                if(!ReadPortable(left,out var native))return false;
+                palm=native.Wrist;pinchAvailable=native.PinchAvailable;if(pinchAvailable)pinch=native.Pinch;return true;
+            }
+            var hand=Tracked(left);if(!TryReadObjectRoot(hand,out palm))return false;
+            pinchAvailable=TryReadPinch(hand,out pinch);return true;
+        }
+        public static bool TryReadObjectRoot(IHand hand,out Pose pose)
+        {
+            pose=default;
+            if(hand==null || !hand.IsConnected || !hand.IsTrackedDataValid || !hand.GetRootPose(out pose))return false;
+            var q=pose.rotation;float length=Quaternion.Dot(q,q);
+            return float.IsFinite(pose.position.sqrMagnitude) && float.IsFinite(length) && length>.5f && length<1.5f;
+        }
         public static bool TryReadPinch(IHand hand,out float pinch)
         {
             pinch=float.PositiveInfinity;

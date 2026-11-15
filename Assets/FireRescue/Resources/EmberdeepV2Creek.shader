@@ -11,6 +11,7 @@ Shader "Emberdeep/V2 Shallow Creek"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.0
             #pragma multi_compile_instancing
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             CBUFFER_START(UnityPerMaterial)
@@ -23,10 +24,18 @@ Shader "Emberdeep/V2 Shallow Creek"
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
                 float2 p=i.world.xz*_WaveScale;float t=_Time.y*_FlowSpeed;
-                float waves=sin(p.x*5+t*6+sin(p.y*3-t*2))*.5+.5;
-                float cross=sin(p.y*11-p.x*2-t*5)*.5+.5;
-                half crest=smoothstep(.86,.98,waves)*(.2+.8*cross);
-                half caustic=pow(saturate(sin(p.x*7+p.y*5+t)+cos(p.y*8-t)),6)*.025;
+                // Filter in phase space: MSAA alone cannot sample procedural
+                // ripples within a pixel, especially at grazing VR angles.
+                float wavePhase=p.x*5+t*6+sin(p.y*3-t*2);
+                float crossPhase=p.y*11-p.x*2-t*5;
+                float waveFilter=1-smoothstep(.75,3.14,fwidth(wavePhase));
+                float crossFilter=1-smoothstep(.75,3.14,fwidth(crossPhase));
+                float waves=sin(wavePhase)*.5+.5;
+                float cross=sin(crossPhase)*.5*crossFilter+.5;
+                float crestWidth=max(.06,fwidth(waves));
+                half crest=lerp(.12,smoothstep(.92-crestWidth,.92+crestWidth,waves),waveFilter)*(.2+.8*cross);
+                float causticFilter=1-smoothstep(.5,2.5,max(fwidth(p.x*7+p.y*5),fwidth(p.y*8)));
+                half caustic=lerp(.18,pow(saturate(sin(p.x*7+p.y*5+t)+cos(p.y*8-t)),6),causticFilter)*.025;
                 half rim=pow(1-saturate(dot(half3(0,1,0),GetWorldSpaceNormalizeViewDir(i.world))),3);
                 return half4(lerp(_BaseColor.rgb,_FoamColor.rgb,crest*.5+rim*.18)+caustic,1);
             }

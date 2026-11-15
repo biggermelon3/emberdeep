@@ -6,16 +6,26 @@ namespace FireRescue
     public enum EmberdeepHandPoseKind
     {
         Free, ExtinguisherGrip, PistolGrip, CannonGrip, LeverGrip, ValveGrip,
-        ButtonPress, IntakeGrip, CannonPump
+        ButtonPress, IntakeGrip, CannonPump, BodyGrip, NozzleGrip, ForwardSupport
     }
 
-    // Display-only values. Neither these curls nor the display anchor are fed to
-    // IHand, interaction hit testing, pinch detection, or the held object's pose.
+    // Contact frames are shared by carrying and presentation. Finger curls are
+    // display-only and never feed IHand, gesture detection or trigger input.
     public static class EmberdeepHandPose
     {
         public const float ContactAcquireSeconds=.16f;
         public const float ContactReleaseSeconds=.12f;
         public const float MaximumContactReach=.18f;
+        public const float MaximumContactAngle=85f;
+        public static bool CanAlignPalm(Quaternion tracked,Quaternion target)
+            =>Quaternion.Angle(tracked,target)<=MaximumContactAngle;
+
+        // The physical palm and the displayed palm use exactly the same frame.
+        public static Pose ObjectFromPalm(Pose palm,Pose contact)
+        {
+            var rotation=palm.rotation*Quaternion.Inverse(contact.rotation);
+            return new Pose(palm.position-rotation*contact.position,rotation);
+        }
 
         // Anchor convention: +Z follows the tool/lever, +X the transverse handle
         // axis. This is a palm-centre frame, with forward toward the fingers and
@@ -26,9 +36,11 @@ namespace FireRescue
             switch(kind)
             {
                 case EmberdeepHandPoseKind.ExtinguisherGrip:
-                    // Handle top is 26mm above Grip. Keep the solid palm above
-                    // it; the wrist-side shift seats the curled fingers beside it.
-                    return new Pose(new Vector3(side*.012f,.045f,-.006f),Quaternion.LookRotation(Vector3.left*side,Vector3.down));
+                    // Approach the rear carrying handle from the matching side.
+                    // A 15-degree relaxed wrist lets all fingers wrap under the
+                    // fixed bar while the heel of the palm operates the upper lever.
+                    return new Pose(new Vector3(side*.018f,.035f,-.004f),
+                        Quaternion.LookRotation(new Vector3(-side*.966f,-.259f,0),new Vector3(side*.259f,-.966f,0)));
                 case EmberdeepHandPoseKind.PistolGrip:
                     return new Pose(new Vector3(side*.026f,-.006f,-.008f),
                         Quaternion.LookRotation(Quaternion.Euler(-12,0,0)*Vector3.forward,Vector3.left*side));
@@ -36,16 +48,26 @@ namespace FireRescue
                     return new Pose(new Vector3(side*.028f,-.008f,-.01f),
                         Quaternion.LookRotation(Quaternion.Euler(-6,0,0)*Vector3.forward,Vector3.left*side));
                 case EmberdeepHandPoseKind.ValveGrip:
-                    return new Pose(new Vector3(side*.022f,.018f,-.022f),
-                        Quaternion.LookRotation(new Vector3(-side*.15f,1,0),Vector3.forward));
+                    // At nine/three o'clock the wrists approach from below,
+                    // fingers point up and each thumb points toward the wheel.
+                    return new Pose(new Vector3(side*.006f,-.02f,-.025f),
+                        Quaternion.LookRotation(Vector3.up,Vector3.forward));
                 case EmberdeepHandPoseKind.LeverGrip:
-                    return new Pose(new Vector3(side*.004f,.022f,-.008f),
-                        Quaternion.LookRotation(Quaternion.Euler(0,-side*8,0)*Vector3.forward,Vector3.down));
+                    return new Pose(new Vector3(side*.012f,.03f,-.012f),
+                        Quaternion.LookRotation(Vector3.forward,Vector3.down));
                 case EmberdeepHandPoseKind.CannonPump:
                     return new Pose(new Vector3(side*.009f,.023f,-.005f),
                         Quaternion.LookRotation(Quaternion.Euler(0,-side*12,0)*Vector3.forward,Vector3.down));
                 case EmberdeepHandPoseKind.IntakeGrip:
                     return new Pose(new Vector3(side*.005f,.027f,-.004f),Quaternion.LookRotation(Vector3.forward,Vector3.down));
+                case EmberdeepHandPoseKind.BodyGrip:
+                    return new Pose(new Vector3(side*.065f,0,0),Quaternion.LookRotation(Vector3.forward,Vector3.left*side));
+                case EmberdeepHandPoseKind.NozzleGrip:
+                    // Fingers cross the horn, thumb toward its forward end. A
+                    // lengthwise finger frame made the hand look like a pointer.
+                    return new Pose(new Vector3(side*.012f,.03f,.035f),Quaternion.LookRotation(Vector3.left*side,Vector3.down));
+                case EmberdeepHandPoseKind.ForwardSupport:
+                    return new Pose(new Vector3(side*.035f,-.015f,0),Quaternion.LookRotation(Vector3.forward,Vector3.left*side));
                 default:return Pose.identity;
             }
         }
@@ -67,7 +89,8 @@ namespace FireRescue
             switch(kind)
             {
                 case EmberdeepHandPoseKind.ExtinguisherGrip:
-                    return finger==HandFinger.Thumb?.72f:finger==HandFinger.Index?.32f+.35f*amount:.82f;
+                    return finger==HandFinger.Thumb?.60f+.10f*amount:finger==HandFinger.Index?.58f+.12f*amount:
+                        finger==HandFinger.Middle?.64f+.12f*amount:finger==HandFinger.Ring?.68f+.10f*amount:.73f+.08f*amount;
                 case EmberdeepHandPoseKind.PistolGrip:
                     return finger==HandFinger.Thumb?.84f:finger==HandFinger.Index?.15f+.58f*amount:.94f;
                 case EmberdeepHandPoseKind.CannonGrip:
@@ -82,6 +105,12 @@ namespace FireRescue
                     return finger==HandFinger.Thumb?.68f:finger==HandFinger.Index?.71f:.6f;
                 case EmberdeepHandPoseKind.CannonPump:
                     return finger==HandFinger.Thumb?.9f:.91f-.16f*amount;
+                case EmberdeepHandPoseKind.BodyGrip:
+                    return finger==HandFinger.Thumb?.48f:finger==HandFinger.Index?.46f:.42f;
+                case EmberdeepHandPoseKind.NozzleGrip:
+                    return finger==HandFinger.Thumb?.78f:finger==HandFinger.Index?.86f:.89f;
+                case EmberdeepHandPoseKind.ForwardSupport:
+                    return finger==HandFinger.Thumb?.62f:finger==HandFinger.Index?.57f:.75f;
                 default:return 0;
             }
         }
