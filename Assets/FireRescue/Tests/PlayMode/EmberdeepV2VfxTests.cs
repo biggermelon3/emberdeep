@@ -17,10 +17,12 @@ namespace FireRescue.Tests
             try
             {
                 var effects=root.AddComponent<FireRescueVfx>();effects.Initialize();effects.Initialize();
-                var emitters=root.GetComponentsInChildren<ParticleSystem>();Assert.AreEqual(7,emitters.Length);
-                int[] budgets={1024,384,160,256,384,768,84};int total=0;
+                var emitters=root.GetComponentsInChildren<ParticleSystem>();Assert.AreEqual(9,emitters.Length);
+                // The eighth pool is the forest celebration and the ninth the contact ripples:
+                // one bounded system each, reused for every clear and every splash.
+                int[] budgets={1024,384,160,256,384,768,84,512,96};int total=0;
                 for(int i=0;i<emitters.Length;i++){Assert.AreEqual(budgets[i],emitters[i].main.maxParticles);total+=emitters[i].main.maxParticles;}
-                Assert.AreEqual(3060,total);Assert.AreEqual(8,root.GetComponentsInChildren<Renderer>().Length);
+                Assert.AreEqual(3668,total);Assert.AreEqual(10,root.GetComponentsInChildren<Renderer>().Length);
                 var jet=new WaterJet();var run=new FireRun();
                 for(int i=0;i<16;i++)
                 {

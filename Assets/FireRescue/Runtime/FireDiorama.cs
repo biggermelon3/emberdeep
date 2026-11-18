@@ -6,7 +6,7 @@ namespace FireRescue
     // Rebuilt only between incidents; all interaction still comes from the shared water simulation.
     public sealed class FireDiorama : MonoBehaviour
     {
-        sealed class PropView { public Transform Fill, Rotor, Root; public Renderer Body; public TextMesh Label; public Renderer[] Authored; }
+        sealed class PropView { public Transform Fill, Rotor, Root; public Renderer Body; public TextMesh Label; public Renderer[] Authored; public bool AuthoredTank; }
         PropView[] views=System.Array.Empty<PropView>();
         Transform scenery;
         Material foliage,bark,water,panel;
@@ -44,6 +44,18 @@ namespace FireRescue
         void BuildReservoir(PropView view,float height)
         {
             var root=view.Root;
+            // Authored enamel tank on a timber frame; the live gauge, rotor and label stay procedural.
+            var tower=art?art.Create("Reservoir",root,Vector3.zero):null;
+            var tankBody=tower?tower.Find("Tank"):null;
+            if(tankBody)
+            {
+                view.AuthoredTank=true;view.Body=tankBody.GetComponent<Renderer>();
+                Part("Fill gauge surround",PrimitiveType.Cube,root,new Vector3(0,height+.02f,-.36f),new Vector3(.2f,.5f,.03f),new Color(.03f,.17f,.22f),panel);
+                view.Fill=Part("Water level",PrimitiveType.Cube,root,new Vector3(0,height-.22f,-.38f),new Vector3(.14f,.01f,.025f),Color.cyan,water).transform;
+                view.Rotor=Part("Rotating sprinkler",PrimitiveType.Cube,root,new Vector3(0,height+.45f,0),new Vector3(.85f,.06f,.08f),new Color(.80f,.60f,.22f),panel).transform;
+                view.Label=Label(root,"FILL TO RAIN",new Vector3(0,height+.75f,0),.17f,new Color(.5f,.93f,1));
+                return;
+            }
             Part("Sprinkler footing",PrimitiveType.Cylinder,root,new Vector3(0,.03f,0),new Vector3(.85f,.04f,.85f),new Color(.26f,.35f,.36f),panel);
             for(int i=-1;i<=1;i+=2)Part("Tower legs",PrimitiveType.Cube,root,new Vector3(i*.22f,(height-.32f)*.5f,0),new Vector3(.075f,height-.32f,.1f),new Color(.65f,.7f,.71f),panel);
             view.Body=Part("Blue pressure tank",PrimitiveType.Cylinder,root,new Vector3(0,height,0),new Vector3(.69f,.32f,.69f),new Color(.08f,.42f,.65f),foliage).GetComponent<Renderer>();
@@ -52,6 +64,7 @@ namespace FireRescue
             view.Fill=Part("Water level",PrimitiveType.Cube,root,new Vector3(0,height-.22f,-.38f),new Vector3(.14f,.01f,.025f),Color.cyan,water).transform;
             view.Rotor=Part("Rotating sprinkler",PrimitiveType.Cube,root,new Vector3(0,height+.43f,0),new Vector3(.85f,.07f,.09f),new Color(.7f,.92f,1),panel).transform;
             view.Label=Label(root,"FILL TO RAIN",new Vector3(0,height+.75f,0),.17f,new Color(.5f,.93f,1));
+            EmberdeepCraftDetails.Reservoir(root,height);
         }
         void BuildCabin(PropView view)
         {
@@ -86,7 +99,7 @@ namespace FireRescue
                     v.Fill.localScale=new Vector3(.14f,Mathf.Max(.01f,amount*.48f),.025f);v.Fill.localPosition=new Vector3(0,p.Position.y-.22f+amount*.24f,-.38f);
                     v.Rotor.Rotate(0,p.ActiveRemaining>0?dt*420:0,0,Space.Self);
                     v.Label.text=p.ActiveRemaining>0?"RAIN!":p.Used?"EMPTY":$"FILL {p.Charge01:P0}";
-                    Tint(v.Body,p.Used?new Color(.2f,.35f,.37f):new Color(.08f,.42f,.65f));
+                    Tint(v.Body,v.AuthoredTank?(p.Used?new Color(.22f,.30f,.30f):new Color(.03f,.36f,.36f)):p.Used?new Color(.2f,.35f,.37f):new Color(.08f,.42f,.65f));
                 }
                 else
                 {

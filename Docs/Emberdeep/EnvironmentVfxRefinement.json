@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-15",
+  "status": "SUPERSEDED_SOURCE_ITERATION",
+  "based_on_release": "0.2.18 / code 21",
+  "retained_source_patch": "XRBackdropRefinement.json",
+  "changes": [
+    "Add a small two-tier cascade at the rear creek source, supported by seven grounded authored slate-rock instances.",
+    "Add downhill streaks, landing ripples, eight splash droplets and eight low-opacity mist patches; vary streak density and brightness to avoid uniform stripes.",
+    "Anchor creek shading to arena space, deepen its centre and add broken shoreline foam and 14 moving foam wisps.",
+    "Add 40 sparse warm dust motes and three tapered breeze ribbons above the rear grove; all motion stays with the miniature when recentered.",
+    "Use one reusable mesh/material for the decorative effects, with a clamped pause-aware clock and coverage-correct alpha blending."
+  ],
+  "budget": {
+    "effect_renderers": 1,
+    "effect_triangles": 224,
+    "maximum_triangles": 320,
+    "dust_motes": 40,
+    "wind_ribbons": 3,
+    "mist_patches": 8,
+    "splash_droplets": 8,
+    "creek_foam_wisps": 14,
+    "impact_rings": 3,
+    "authored_rock_instances": 7
+  },
+  "xr_contract": "No surrounding fog, fullscreen particles, lights, refraction or depth copies. Effects stay behind the interaction area in arena-local bounds. The previous finite sky and transparent outer view are retained.",
+  "interaction_contract": "Presentation only; no changes to water amounts, fire damage, input, grabs or physics colliders.",
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 215,
+        "passed": 215,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepEnvironmentVfx/Acceptance4/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 213,
+        "passed": 213,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepEnvironmentVfx/Acceptance4/PlayMode-results.json"
+      }
+    },
+    "checks": [
+      "Bounded geometry and renderer count",
+      "Mesh reuse and repeat initialization",
+      "Pause/NaN input handling",
+      "Arena-local recenter behavior",
+      "Shader support and compiler errors",
+      "Actual rendered water colour and frame-to-frame motion",
+      "Transparent rear view",
+      "Scene teardown"
+    ],
+    "captures": [
+      "Deliverables/Emberdeep/Emberdeep-Environment-2026-11-15-01-Creek-Before.png",
+      "Deliverables/Emberdeep/Emberdeep-Environment-2026-11-15-02-Forest-Atmosphere.png",
+      "Deliverables/Emberdeep/Emberdeep-Environment-2026-11-15-03-Cascade.png",
+      "Deliverables/Emberdeep/Emberdeep-Environment-2026-11-15-04-Cascade-Moving.png",
+      "Deliverables/Emberdeep/Emberdeep-Environment-2026-11-15-05-Rear-Transparent.png"
+    ],
+    "capture_scope": "Actual Unity scene with live frame advancement; HUD hidden and camera repositioned for art review. Before capture hides the new effect object; it is not a historical APK baseline. Not a headset compositor or performance capture."
+  },
+  "delivery": "Source and previews only; no new APK, device installation or Git push this iteration.",
+  "source_sha256": {
+    "Assets/FireRescue/Runtime/EmberdeepEnvironmentVfx.cs": "c82c3cd36e4030495e46bf2ba199de86b52bb5ba5b7fa03966aec99632508520",
+    "Assets/FireRescue/Resources/EmberdeepEnvironmentFx.shader": "9ecd18c1cf72ad18dff1ea904fe2769675b99823943a3a05921ba537aef4403f",
+    "Assets/FireRescue/Resources/EmberdeepV2Creek.shader": "f6b86badfc8cbc1961d6123340e4e6677d6e4954ede9cce05bd3f32b2fbd6280",
+    "Assets/FireRescue/Runtime/FireRescueGame.cs": "a99e8362364364e5ca0044048a672fb8fb6e8b41a9db167ff2800b5a1ea3deba",
+    "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs": "e04d4f5ad317d8067f523e4042df3db7a95ec6c929afc99554c97cc8d9531bbc",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepEnvironmentVfxTests.cs": "4556a1cb3344011c72faaea644372d08c702938a267d9fcca8f6d58d78b957f4"
+  },
+  "superseded_by": "ViewRelativeSkyAndRiver.json",
+  "historical_scope": "Prior source-only iteration; captures, test results and hashes below describe that iteration, not current source or the installed APK."
+}

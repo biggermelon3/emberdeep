@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace FireRescue
 {
-    public enum FirePhase { Ready, Fighting, Cleared, Lost, Won }
+    public enum FirePhase { Ready, Fighting, Cleared, Lost, Won, Preparing }
     public enum TreeState { Safe, Burning, Saved, Burnt }
     public enum FirePropKind { Reservoir, Cabin }
 
     // All economy and fire simulation live here so desktop and hands share the same rules.
-    public sealed class FireRun
+    public sealed partial class FireRun
     {
         public sealed class Tree
         {
@@ -44,16 +44,16 @@ namespace FireRescue
             "Use cannon splashes on clusters and towers on separate fronts."
         };
         public Prop[] Props { get; private set; } = Array.Empty<Prop>();
-        public string Objective => Objectives[Stage];
-        public string Hint => Hints[Stage];
+        public string Objective => IsPalmLesson?(Stage==0?"GODDESS HAND: extinguish the single tree with your palms.":"PALM RESCUE: cool the grove and protect the sheep."):$"RESCUE {Animals.Length} SHEEP - clear their escape paths. Spray to protect.";
+        public string Hint => IsPalmLesson?"Open left palm: aim. Touch its back with any right fingertip: water.":GoddessTutorial && Stage==3 && !SpellMode?"Right hand: gold handle. Left hand: nozzle. Squeeze to spray.":Hints[IncidentIndex];
         public int Combo { get; private set; }
         public int BestCombo { get; private set; }
         public int Score { get; private set; }
         public int Stars { get; private set; }
         public int StageBonus { get; private set; }
         public float Elapsed { get; private set; }
-        public float ParTime => ParTimes[Stage];
-        public int[] IncidentStars { get; } = new int[5];
+        public float ParTime => ParTimes[IncidentIndex];
+        public int[] IncidentStars { get; } = new int[8];
         public int CabinsSaved { get { int count=0; foreach(var prop in Props) if(prop.Kind==FirePropKind.Cabin && prop.Health01>0) count++; return count; } }
         public int CabinsTotal { get { int count=0; foreach(var prop in Props) if(prop.Kind==FirePropKind.Cabin) count++; return count; } }
         float comboRemaining;
@@ -69,11 +69,12 @@ namespace FireRescue
         public int Coins { get; private set; }
         public WaterStationTier StationTier { get; private set; }=WaterStationTier.LeverWell;
         public int StationUpgradeCost=>StationTier==WaterStationTier.LeverWell?100:StationTier==WaterStationTier.RotaryHydrant?200:0;
-        public bool CanUpgradeStation=>InSupply && !Supply.Locked && StationUpgradeCost>0 && Coins>=StationUpgradeCost;
+        // The mandatory first magic upgrade comes before any other spending.
+        public bool CanUpgradeStation=>StationOpen && !NeedsMagicUpgrade && InSupply && !Supply.Locked && StationUpgradeCost>0 && Coins>=StationUpgradeCost;
         public bool BuyStationUpgrade()
         {
             if(!CanUpgradeStation)return false;
-            Coins-=StationUpgradeCost;StationTier=(WaterStationTier)((int)StationTier+1);ResetRecovery();return true;
+            Coins-=StationUpgradeCost;StationTier=(WaterStationTier)((int)StationTier+1);BasinFlowing=false;ResetRecovery();return true;
         }
         readonly bool[] owned={true,false,false,false};
         readonly int[] upgrades=new int[4];
@@ -98,25 +99,26 @@ namespace FireRescue
             public FireEquipmentId Equipped;
             public float Supplied, Consumed;
             public double Recovered;
-            public int Coins, Score, Rescued, BestCombo, Assisted;
+            public int Coins, Score, Rescued, BestCombo, Assisted, MagicLevel;
+            public float MagicConsumed;
         }
-        public FireRun(){Supply=new EmberdeepWaterSupply(this);}
+        public FireRun(bool goddessTutorial=false){GoddessTutorial=goddessTutorial;Supply=new EmberdeepWaterSupply(this);}
         public float WaterFor(FireEquipmentId id)=>Owns(id)?tanks[(int)id]:0;
         public float CapacityFor(FireEquipmentId id)=>FireEquipment.Get(id).Capacity+upgrades[(int)id]*25;
         public FireEquipmentId Equipped { get; private set; }
         public FireEquipment Equipment => FireEquipment.Get(Equipped);
         public int Upgrade => upgrades[(int)Equipped];
         public int ClearedIncidents => Stage+(Phase==FirePhase.Cleared || Phase==FirePhase.Won?1:0);
-        public bool InSupply => Phase==FirePhase.Ready || Phase==FirePhase.Cleared;
+        public bool InSupply => Phase==FirePhase.Ready || Phase==FirePhase.Cleared || Phase==FirePhase.Preparing;
         public float Charge01 { get; private set; }
         float cooldown;
         bool wasTrigger;
         float triggerChargeSeconds;
         bool chargeReady;
         public bool Owns(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && owned[(int)id];
-        public bool CanBuy(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && !Supply.Locked && InSupply && !Owns(id) && ClearedIncidents>=FireEquipment.Get(id).Unlock && Coins>=FireEquipment.Get(id).Price;
+        public bool CanBuy(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && !Supply.Locked && InSupply && !Owns(id) && EquipmentIncidents>=FireEquipment.Get(id).Unlock && Coins>=FireEquipment.Get(id).Price;
         public bool BuyEquipment(FireEquipmentId id)
-        {if(!CanBuy(id))return false;Coins-=FireEquipment.Get(id).Price;owned[(int)id]=true;ResetRecovery();return true;}
+        {if(!CanBuy(id))return false;Coins-=FireEquipment.Get(id).Price;owned[(int)id]=true;if(SpellMode)tanks[(int)id]=CapacityFor(id);ResetRecovery();return true;}
         public bool Equip(FireEquipmentId id)
         {if(!Owns(id) || Supply.Locked)return false;CancelTrigger();Equipped=id;ResetRecovery();return true;}
         public void CancelTrigger(){Charge01=0;wasTrigger=false;SprayAmount=0;triggerChargeSeconds=0;chargeReady=false;}
@@ -141,6 +143,8 @@ namespace FireRescue
             float actual=Mathf.Min(requested,Mathf.Max(0,Capacity-Water));
             ResetRecovery();
             tanks[(int)Equipped]+=actual;SuppliedWater+=actual;
+            if(actual>0)Learn(Supply.Kind==WaterSourceKind.Creek?EmberdeepInteractionDemo.Action.Pump:
+                StationTier==WaterStationTier.LeverWell?EmberdeepInteractionDemo.Action.Lever:StationTier==WaterStationTier.RotaryHydrant?EmberdeepInteractionDemo.Action.Valve:EmberdeepInteractionDemo.Action.Button);
             return actual;
         }
         internal void CancelSupplyInput(){CancelTrigger();triggerNeedsOpen=true;ResetRecovery();}
@@ -183,58 +187,72 @@ namespace FireRescue
         public int BurnLimit => Mathf.Max(1, Mathf.CeilToInt(Trees.Length * .3f));
         public int Burnt { get { int n=0; foreach(var t in Trees) if(t.State==TreeState.Burnt)n++; return n; } }
         public int Burning { get { int n=0; foreach(var t in Trees) if(t.State==TreeState.Burning)n++; return n; } }
-        public bool CanUpgrade => !Supply.Locked && InSupply && Upgrade < Prices.Length && Coins >= UpgradeCost;
+        public bool CanUpgrade => !IsPalmLesson && !Supply.Locked && InSupply && Upgrade < Prices.Length && Coins >= UpgradeCost;
         float spreadTime;
         public event Action<int> Extinguished;
 
-        public bool StartStage()
+        public bool StartStage(bool prepare=false)
         {
-            if(Phase!=FirePhase.Ready && Phase!=FirePhase.Cleared) return false;
+            if(NeedsMagicUpgrade || (Phase!=FirePhase.Ready && Phase!=FirePhase.Cleared)) return false;
+            if(Phase==FirePhase.Cleared)EvacuateSafeAnimals();
             Supply.Interrupt("Sector changed");
             ResetRecovery();
             if(Phase==FirePhase.Cleared) Stage++;
             entryCheckpoint=new EntryCheckpoint{Tanks=(float[])tanks.Clone(),Owned=(bool[])owned.Clone(),Upgrades=(int[])upgrades.Clone(),StationTier=StationTier,Equipped=Equipped,Supplied=SuppliedWater,Consumed=ConsumedWater,Recovered=recoveredWater,
-                Coins=Coins,Score=Score,Rescued=Rescued,BestCombo=BestCombo,Assisted=AssistedRefills};
-            int count=Counts[Stage], columns=Stage==0?3:Stage==1?3:Stage==4?7:6;
+                Coins=Coins,Score=Score,Rescued=Rescued,BestCombo=BestCombo,Assisted=AssistedRefills,MagicLevel=MagicLevel,MagicConsumed=MagicConsumed};
+            MagicWater=MagicCapacity;BeginSpellStage();
+            int incident=IncidentIndex;
+            int count=IsPalmLesson?new[]{1,3,5}[Stage]:Counts[incident], columns=IsPalmLesson?(Stage==0?1:3):incident<2?3:incident==4?7:6;
             Trees=new Tree[count];
             for(int i=0;i<count;i++)
             {
                 float x=(i%columns-(columns-1)*.5f)*1.18f;
                 float z=3+(i/columns)*1.15f;
                 // Later incidents have two groves separated by an access lane.
-                if(Stage>=2 && columns%2==0)x+=Mathf.Sign(x)*.24f;
-                if(Stage==4)z+=Mathf.Sin((i%columns)*1.2f)*.16f;
+                if(incident>=2 && columns%2==0)x+=Mathf.Sign(x)*.24f;
+                if(incident==4)z+=Mathf.Sin((i%columns)*1.2f)*.16f;
                 Trees[i]=new Tree { Position=new Vector3(x,.7f,z), State=TreeState.Safe };
             }
             // Distribute the initial fires throughout the forest, deterministically.
-            for(int i=0;i<Starts[Stage];i++) { var tree=Trees[i*count/Starts[Stage]]; tree.State=TreeState.Burning; tree.Heat=100; }
+            int starts=IsPalmLesson?Stage+1:Starts[incident];
+            for(int i=0;i<starts;i++) { var tree=Trees[i*count/starts]; tree.State=TreeState.Burning; tree.Heat=IsPalmLesson?60+Stage*12:100; }
             BuildProps();
+            BuildAnimals();
             Combo=Stars=StageBonus=0;Elapsed=comboRemaining=0;
-            Phase=FirePhase.Fighting; spreadTime=0;CancelTrigger();cooldown=0; return true;
+            CountdownRemaining=-1;Phase=prepare?FirePhase.Preparing:FirePhase.Fighting; spreadTime=0;CancelTrigger();cooldown=0; return true;
         }
-        // Retry rewinds the whole attempt's accounting, never just its danger or its tank.
-        public bool RetryStage()
+        // Production replay retains earnings and upgrades. Historical equipment
+        // fixtures keep checkpoint rollback for their isolated accounting tests.
+        public bool RetryStage(bool prepare=false)
         {
+            if(GoddessTutorial)
+            {
+                if(Trees.Length==0)return false;
+                EvacuateSafeAnimals();Supply.Interrupt("Replay incident");
+                for(int i=0;i<tanks.Length;i++)if(owned[i])tanks[i]=CapacityFor((FireEquipmentId)i);
+                Phase=FirePhase.Ready;return StartStage(prepare);
+            }
             if(entryCheckpoint==null || (Phase!=FirePhase.Fighting && Phase!=FirePhase.Lost))return false;
             Supply.Interrupt("Retry checkpoint");
             Array.Copy(entryCheckpoint.Tanks,tanks,tanks.Length);
             Array.Copy(entryCheckpoint.Owned,owned,owned.Length);
             Array.Copy(entryCheckpoint.Upgrades,upgrades,upgrades.Length);
-            StationTier=entryCheckpoint.StationTier;
+            StationTier=entryCheckpoint.StationTier;MagicLevel=entryCheckpoint.MagicLevel;MagicConsumed=entryCheckpoint.MagicConsumed;
             Equipped=entryCheckpoint.Equipped;
             SuppliedWater=entryCheckpoint.Supplied;ConsumedWater=entryCheckpoint.Consumed;
             recoveredWater=entryCheckpoint.Recovered;
             Coins=entryCheckpoint.Coins;Score=entryCheckpoint.Score;Rescued=entryCheckpoint.Rescued;
             BestCombo=entryCheckpoint.BestCombo;AssistedRefills=entryCheckpoint.Assisted;
             Phase=FirePhase.Ready;
-            return StartStage();
+            return StartStage(prepare);
         }
         void BuildProps()
         {
-            if(Stage==0){Props=Array.Empty<Prop>();return;}
-            if(Stage==1){Props=new[]{Reservoir(-.59f,3.575f)};return;}
-            if(Stage==2){Props=new[]{Reservoir(-2.6f,3.575f),Cabin(4.25f,4.15f)};return;}
-            if(Stage==3){Props=new[]{Reservoir(-2.6f,3.575f),Reservoir(2.6f,5.875f),Cabin(4.25f,5.3f)};return;}
+            int incident=IncidentIndex;
+            if(incident==0){Props=Array.Empty<Prop>();return;}
+            if(incident==1){Props=new[]{Reservoir(-.59f,3.575f)};return;}
+            if(incident==2){Props=new[]{Reservoir(-2.6f,3.575f),Cabin(4.25f,4.15f)};return;}
+            if(incident==3){Props=new[]{Reservoir(-2.6f,3.575f),Reservoir(2.6f,5.875f),Cabin(4.25f,5.3f)};return;}
             Props=new[]{Reservoir(-2.95f,3.65f),Reservoir(2.95f,5.915f),Reservoir(.59f,8.1f),Cabin(-4.7f,5.3f),Cabin(4.7f,7.6f)};
         }
         // Elevated tanks are visible and hittable above the front tree collision targets.
@@ -248,10 +266,13 @@ namespace FireRescue
         public void Restart()
         {
             Supply.Interrupt("New expedition");entryCheckpoint=null;SuppliedWater=ConsumedWater=0;recoveredWater=0;ResetRecovery();AssistedRefills=0;triggerNeedsOpen=false;
+            MagicLevel=0;MagicWater=30;MagicConsumed=0;PalmTutorialComplete=false;Array.Clear(LearnedActions,0,LearnedActions.Length);
             Stage=Coins=Rescued=0;Equipped=FireEquipmentId.Extinguisher;StationTier=WaterStationTier.LeverWell;
             for(int i=0;i<4;i++){owned[i]=i==0;upgrades[i]=0;tanks[i]=i==0?60:0;}
             Trees=Array.Empty<Tree>();Phase=FirePhase.Ready;spreadTime=cooldown=0;CancelTrigger();
             Props=Array.Empty<Prop>();Combo=BestCombo=Score=Stars=StageBonus=0;Elapsed=comboRemaining=0;Array.Clear(IncidentStars,0,IncidentStars.Length);
+            Animals=Array.Empty<Animal>();
+            BasinWater=0;BasinFlowing=false;if(playtestAllSpells)GrantAllSpells();
         }
         public float SprayAmount { get; private set; }
         public bool Tick(float dt, bool spraying, bool manualCharge=false)
@@ -260,7 +281,7 @@ namespace FireRescue
             if(spraying || manualCharge || Supply.Locked)ResetRecovery();
             if(float.IsNaN(dt) || float.IsInfinity(dt) || dt<=0)return false;
             dt=Mathf.Min(dt,.1f); // No catch-up burst after a pause or lost focus.
-            if(Phase!=FirePhase.Fighting)return false;
+            if(Phase!=FirePhase.Fighting){if(Phase==FirePhase.Cleared || Phase==FirePhase.Won)TickAnimals(dt);return false;}
             if(Supply.Locked && Supply.Assisted){CancelTrigger();return false;}
             if(Supply.Locked){CancelTrigger();spraying=false;}
             else if(triggerNeedsOpen){if(!spraying)triggerNeedsOpen=false;CancelTrigger();spraying=false;}
@@ -295,12 +316,13 @@ namespace FireRescue
             {
                 tree.Wetness=Mathf.Max(0,tree.Wetness-dt*.7f);
                 if(tree.State!=TreeState.Burning)continue;
-                tree.Fuel-=dt*(.8f+Stage*.15f);
+                if(!(IsPalmLesson && Stage==0))tree.Fuel-=dt*(.8f+IncidentIndex*.15f);
                 if(tree.Fuel<=0)tree.State=TreeState.Burnt;
             }
             spreadTime+=dt;
-            if(spreadTime>=10-Stage) { spreadTime=0; Spread(); }
+            if(!(IsPalmLesson && Stage==0) && spreadTime>=10-IncidentIndex) { spreadTime=0; Spread(); }
             TickProps(dt);
+            TickAnimals(dt);
             CheckOutcome();
             return Phase==FirePhase.Fighting && SprayAmount>0;
         }
@@ -308,14 +330,14 @@ namespace FireRescue
         {
             if(Phase!=FirePhase.Fighting)return;
             if(Burnt>=BurnLimit){Phase=FirePhase.Lost;CancelTrigger();}
-            else if(Burning==0)
+            else if(Burning==0 && AnimalsOnFire==0)
             {
                 StageBonus=CabinsSaved*CabinReward;
-                Coins+=25*(Stage+1)+StageBonus;
+                Coins+=25*(IncidentIndex+1)+StageBonus;
                 Stars=1+(Burnt==0?1:0)+(CabinsSaved==CabinsTotal && Elapsed<=ParTime?1:0);
                 IncidentStars[Stage]=Stars;
                 Score+=Stars*250+CabinsSaved*200;
-                Phase=Stage==Names.Length-1?FirePhase.Won:FirePhase.Cleared;
+                Phase=Stage==StageCount-1?FirePhase.Won:FirePhase.Cleared;
                 CancelTrigger();
             }
             if(Phase!=FirePhase.Fighting){ResetRecovery();foreach(var prop in Props)prop.ActiveRemaining=0;}
@@ -331,11 +353,12 @@ namespace FireRescue
                 if(tree.State!=TreeState.Burning)continue;
                 tree.Heat=Mathf.Max(0,tree.Heat-amount);
                 if(tree.Heat>0)continue;
-                tree.State=TreeState.Saved;Coins+=25;Rescued++;
+                tree.State=TreeState.Saved;Rescued++;
                 Combo++;BestCombo=Mathf.Max(BestCombo,Combo);comboRemaining=3;
                 Score+=100+Mathf.Min(Combo-1,9)*20;
                 Extinguished?.Invoke(i);
             }
+            ApplyAnimalWater(point,amount,radius);
             CheckOutcome();
         }
         // Only a direct projectile collision fills a tower. Area water still affects trees,

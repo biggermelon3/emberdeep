@@ -24,6 +24,7 @@ namespace FireRescue
             public Material[][] Materials;
             public bool[] RenderingOff;
             public EmberdeepHandPresentation Presentation;
+            public Transform Cuff;
         }
         struct HiddenRenderer { public Renderer Renderer; public bool ForcedOff; }
         struct DisabledVisual { public Behaviour Component; public bool Enabled; }
@@ -42,6 +43,8 @@ namespace FireRescue
         public EmberdeepHandContact Contacts {get;}=new();
         public Material RuntimeMaterial=>material;
         public int BoundVisualCount=>visuals.Count;
+        public int CuffCount {get{int count=0;foreach(var item in visuals)if(item.Cuff)count++;return count;}}
+        public int VisibleCuffCount {get{int count=0;foreach(var item in visuals)if(item.Cuff && item.Cuff.gameObject.activeSelf)count++;return count;}}
         public int FrozenHandCount
         {get{int count=0;foreach(var item in visuals)if(item.Presentation!=null && item.Presentation.Frozen)count++;return count;}}
 
@@ -62,6 +65,7 @@ namespace FireRescue
             var shader=Resources.Load<Shader>("EmberdeepTrackedHand");
             if(!shader){Debug.LogError("Emberdeep tracked-hand shader missing.",this);return;}
             material=new Material(shader){name="Emberdeep tracked hands (scene instance)"};
+            var art=EmberdeepArtLibrary.Load();
             // Reuse the existing SDK mesh and selected skeleton. Display copies
             // contain transforms/renderers only, never another hand/input provider.
             foreach(var hand in rig.GetComponentsInChildren<HandVisual>(true))
@@ -86,6 +90,18 @@ namespace FireRescue
                     renderers[i].sharedMaterials=replacement;
                 }
                 item.Presentation=new EmberdeepHandPresentation(hand,material);
+                // Leather-strapped fleece cuff from the Blender kit closes the open wrist of the SDK mesh.
+                item.Cuff=art?art.Create("GloveCuff",transform,Vector3.zero):null;
+                if(item.Cuff)
+                {
+                    item.Cuff.name="Guardian glove cuff";item.Cuff.gameObject.SetActive(false);
+                    foreach(var r in item.Cuff.GetComponentsInChildren<Renderer>(true))
+                    {
+                        r.gameObject.layer=hand.gameObject.layer;r.receiveShadows=false;
+                        // The sleeve is the same suede as the hand, lit by the same shader.
+                        if(r.name.StartsWith("Sleeve")){var mats=r.sharedMaterials;for(int m=0;m<mats.Length;m++)mats[m]=material;r.sharedMaterials=mats;}
+                    }
+                }
                 visuals.Add(item);
             }
             SuppressNativeRayVisuals(rig);
@@ -126,6 +142,20 @@ namespace FireRescue
             }
             material.SetMatrixArray(MatricesId,matrices);material.SetVectorArray(ExtentsId,extents);
         }
+        public bool TryDisplayPalm(bool left,out Pose pose)
+        {
+            pose=default;
+            foreach(var item in visuals)
+            {
+                if(!item.Hand || item.Hand.Hand==null || (item.Hand.Hand.Handedness==Handedness.Left)!=left || item.Presentation==null || !item.Presentation.HasPose)continue;
+                var wrist=item.Presentation.DisplayJoint(HandJointId.HandWristRoot);var middle=item.Presentation.DisplayJoint(HandJointId.HandMiddle1);
+                if(!wrist || !middle)continue;
+                var distal=middle.position-wrist.position;var palmar=wrist.rotation*(left?Constants.LeftPalmar:Constants.RightPalmar);
+                if(Vector3.Cross(distal,palmar).sqrMagnitude<.000001f)continue;
+                pose=new Pose((wrist.position+middle.position)*.5f,Quaternion.LookRotation(distal,palmar));return true;
+            }
+            return false;
+        }
         void LateUpdate(){ApplyOcclusion();Contacts.Prepare();UpdateVisibility();}
         void UpdateVisibility()
         {
@@ -150,6 +180,17 @@ namespace FireRescue
                 // used. SDK updates and visibility decisions remain untouched.
                 for(int i=0;i<item.Renderers.Length;i++)if(item.Renderers[i])
                     item.Renderers[i].forceRenderingOff=item.RenderingOff[i] || !show || (item.Presentation!=null && item.Presentation.SkinCount>0);
+                if(item.Cuff)
+                {
+                    bool worn=item.Presentation!=null && item.Presentation.Showing;
+                    if(item.Cuff.gameObject.activeSelf!=worn)item.Cuff.gameObject.SetActive(worn);
+                    // A held snapshot keeps its cuff where the hand froze.
+                    if(worn && !item.Presentation.Frozen && item.Presentation.TryGetWristFrame(out var wrist))
+                    {
+                        item.Cuff.SetPositionAndRotation(wrist.position,wrist.rotation);
+                        var root=item.Presentation.DisplayRoot;if(root)item.Cuff.localScale=Vector3.one*Mathf.Abs(root.lossyScale.x)/Mathf.Max(1e-5f,Mathf.Abs(transform.lossyScale.x));
+                    }
+                }
             }
             foreach(var entry in nativeRays)if(entry.Renderer)entry.Renderer.forceRenderingOff=true;
         }
@@ -186,6 +227,7 @@ namespace FireRescue
             foreach(var item in visuals)
             {
                 item.Presentation?.Dispose();
+                if(item.Cuff){item.Cuff.gameObject.SetActive(false);if(Application.isPlaying)Destroy(item.Cuff.gameObject);else DestroyImmediate(item.Cuff.gameObject);}
                 for(int i=0;i<item.Renderers.Length;i++)if(item.Renderers[i])
                 {item.Renderers[i].sharedMaterials=item.Materials[i];item.Renderers[i].forceRenderingOff=item.RenderingOff[i];}
             }

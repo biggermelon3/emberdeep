@@ -52,9 +52,10 @@ namespace FireRescue.Tests
                 Assert.IsTrue(game.GetComponentsInChildren<WorkshopButton>().Any(b=>b.Command=="Return to camp"));
                 game.SendMessage("OnApplicationFocus",true);yield return new WaitForSeconds(.3f);
                 Capture(game.Player.ViewCamera,"Logs/Emberdeep-FirstResponse.png");game.enabled=false;
+                for(int lesson=0;lesson<3;lesson++){Assert.True(game.Run.IsPalmLesson);Clear(game.Run);if(game.Run.NeedsMagicUpgrade)Assert.True(game.Run.BuyMagicUpgrade());game.StartNext();}
                 Clear(game.Run);Assert.IsTrue(game.Run.BuyEquipment(FireEquipmentId.PulsePistol));
-                game.Run.Equip(FireEquipmentId.PulsePistol);game.StartNext();
-                Assert.Zero(game.Run.Water,"Purchased pistol starts empty");
+                game.Run.Equip(FireEquipmentId.PulsePistol);game.StartNext();EmberdeepTestFlow.StartPrepared(game.Run);
+                Assert.AreEqual(game.Run.Capacity,game.Run.Water,"A purchased spell arrives with a full crystal");
                 var supply=game.Run.Supply;
                 for(int i=0;i<6;i++)supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.05f);
                 Assert.AreEqual(WaterStationTier.LeverWell,game.Run.StationTier);
@@ -68,15 +69,15 @@ namespace FireRescue.Tests
                 camp=Object.FindFirstObjectByType<EmberdeepCamp>();camp.SendMessage("OnApplicationFocus",true);
                 yield return WaitPlaced(camp);camp.EnterFireground();yield return WaitScene(EmberdeepSession.FireScene);
                 game=Object.FindFirstObjectByType<FireRescueGame>();game.enabled=false;OnePlayer();
-                Assert.AreSame(run,game.Run);Assert.AreEqual(1,run.Stage);Assert.AreEqual(coins,run.Coins);Assert.AreEqual(FireEquipmentId.PulsePistol,run.Equipped);
+                Assert.AreSame(run,game.Run);Assert.AreEqual(4,run.Stage);Assert.AreEqual(coins,run.Coins);Assert.AreEqual(FireEquipmentId.PulsePistol,run.Equipped);
                 // Scene transitions preserve partial water exactly; waiting cannot refill it.
                 Assert.AreEqual(water,run.Water);Assert.LessOrEqual(run.Trees[0].Fuel,fuel);Assert.Greater(run.Trees[0].Fuel,fuel-2);
-                for(int stage=1;stage<5;stage++)
+                for(int stage=4;stage<8;stage++)
                 {
-                    Assert.AreEqual(stage,run.Stage);Assert.AreEqual(new[]{3,9,18,30,42}[stage],run.Trees.Length);
-                    if(stage==4){game.enabled=true;game.SendMessage("OnApplicationFocus",true);yield return new WaitForSeconds(.3f);Capture(game.Player.ViewCamera,"Logs/Emberdeep-Forest.png");game.enabled=false;}
-                    Clear(run);game.Refresh();Assert.AreEqual(stage==4?FirePhase.Won:FirePhase.Cleared,run.Phase);
-                    if(stage<4){game.StartNext();yield return null;}
+                    Assert.AreEqual(stage,run.Stage);Assert.AreEqual(new[]{3,9,18,30,42}[stage-3],run.Trees.Length);
+                    if(stage==7){game.enabled=true;game.SendMessage("OnApplicationFocus",true);yield return new WaitForSeconds(.3f);Capture(game.Player.ViewCamera,"Logs/Emberdeep-Forest.png");game.enabled=false;}
+                    Clear(run);game.Refresh();Assert.AreEqual(stage==7?FirePhase.Won:FirePhase.Cleared,run.Phase);
+                    if(stage<7){game.StartNext();yield return null;}
                 }
                 game.ReturnToMenu();yield return WaitScene(EmberdeepSession.CampScene);OnePlayer();
                 camp=Object.FindFirstObjectByType<EmberdeepCamp>();
@@ -87,14 +88,14 @@ namespace FireRescue.Tests
                 Assert.AreNotSame(run,EmberdeepSession.Run);
                 yield return WaitScene(EmberdeepSession.FireScene);
                 game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);OnePlayer();
-                Assert.AreSame(EmberdeepSession.Run,game.Run);Assert.AreEqual(FirePhase.Fighting,game.Run.Phase);
+                Assert.AreSame(EmberdeepSession.Run,game.Run);Assert.AreEqual(FirePhase.Preparing,game.Run.Phase);
                 Assert.Zero(game.Run.Stage);Assert.Zero(game.Run.Coins);Assert.Zero(game.Run.Rescued);
                 Assert.AreEqual(FireEquipmentId.Extinguisher,game.Run.Equipped);
             }
             finally{InputSystem.RemoveDevice(mouse);InputSystem.settings.backgroundBehavior=background;InputSystem.settings.editorInputBehaviorInPlayMode=editor;}
         }
         static void Clear(FireRun run)
-        {for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);}
+        {EmberdeepTestFlow.StartPrepared(run);for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);run.EvacuateSafeAnimals();}
         static void OnePlayer()=>Assert.AreEqual(1,Object.FindObjectsByType<MetaPlayerRig>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length);
         static IEnumerator WaitScene(string name)
         {float deadline=Time.realtimeSinceStartup+15;while(SceneManager.GetActiveScene().name!=name && Time.realtimeSinceStartup<deadline)yield return null;Assert.AreEqual(name,SceneManager.GetActiveScene().name);yield return null;yield return null;}

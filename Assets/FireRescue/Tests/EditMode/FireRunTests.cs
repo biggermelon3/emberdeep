@@ -93,11 +93,12 @@ namespace FireRescue.Tests
                 Hit(run,i);
             }
             Assert.AreEqual(TreeState.Saved,run.Trees[i].State);
+            run.EvacuateSafeAnimals();
         }
-        [Test] public void ExtinguishingPaysExactlyOnce()
+        [Test] public void ExtinguishingScoresOnceWithoutTreeCash()
         {
-            var run=new FireRun();run.StartStage();PutOut(run,0);Assert.AreEqual(25,run.Coins);Assert.AreEqual(1,run.Rescued);
-            for(int i=0;i<10;i++)Hit(run,0);Assert.AreEqual(25,run.Coins);
+            var run=new FireRun();run.StartStage();run.ApplyWater(run.Trees[0].Position,100,.1f);Assert.Zero(run.Coins);Assert.AreEqual(1,run.Rescued);
+            for(int i=0;i<10;i++)run.ApplyWater(run.Trees[0].Position,100,.1f);Assert.Zero(run.Coins);Assert.AreEqual(100,run.Score);
         }
         [Test] public void MissingAndOutOfRangeSpraysConsumeWaterButDoNotDamage()
         {
@@ -130,6 +131,12 @@ namespace FireRescue.Tests
                 for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)PutOut(run,i);
                 // A spread may ignite an earlier tree while later rows are being extinguished.
                 for(int pass=0;pass<5 && run.Phase==FirePhase.Fighting;pass++)for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)PutOut(run,i);
+                foreach(var a in run.Animals)
+                    for(int frame=0;frame<80 && a.OnFire;frame++)
+                    {
+                        if(run.Water<1)ManualWaterTestSupport.Fill(run);
+                        run.Tick(.05f,true);run.ApplyWater(a.Position+Vector3.up*FireRun.AnimalHeight,run.SprayAmount,.25f);
+                    }
                 Assert.AreEqual(stage==4?FirePhase.Won:FirePhase.Cleared,run.Phase,"Stage "+stage);
                 while(run.CanUpgrade)run.BuyUpgrade();
                 if(stage<4)Assert.IsTrue(run.StartStage());

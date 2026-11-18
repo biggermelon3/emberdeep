@@ -162,63 +162,38 @@ namespace FireRescue.Tests
             Assert.IsTrue(gameHands.ContainsOcclusionPoint(game.Arena.TransformPoint(new Vector3(0,-.12f,6))));
             Assert.AreSame(game.Player.ViewCamera,game.MenuInput.ViewCamera);
             game.enabled=false;game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
-            Assert.IsTrue(game.TakeEquipment(hand));game.Refresh();Physics.SyncTransforms();
+            Assert.True(game.Run.IsPalmLesson);Assert.False(game.TakeEquipment(hand));
+            for(int stage=0;stage<3;stage++)
+            {EmberdeepTestFlow.StartPrepared(game.Run);game.Run.ApplyWater(Vector3.zero,10000,100);game.Run.EvacuateSafeAnimals();if(game.Run.NeedsMagicUpgrade)Assert.True(game.Run.BuyMagicUpgrade());game.StartNext();}
+            EmberdeepTestFlow.StartPrepared(game.Run);game.Refresh();Physics.SyncTransforms();
+            // Spell mode retires the hand-held tools: nothing to pick up or dock.
+            // The same tracked lever stroke now pours into the altar basin.
+            Assert.IsFalse(game.Run.IsPalmLesson);Assert.IsFalse(game.TakeEquipment(hand));Assert.IsFalse(game.HoldingEquipment);
+            Assert.IsFalse(game.transform.Find("Equipment rack").gameObject.activeSelf);
+            Assert.IsFalse(Button(game,"Return equipment").gameObject.activeSelf);
+            Assert.IsTrue(game.Run.StationOpen);Assert.IsTrue(game.Basin.gameObject.activeInHierarchy);Assert.Zero(game.Run.BasinWater);
             if(hand==1)Capture(game.Player.ViewCamera,"Editor-synthetic-Fireground-overview");
-            Assert.IsTrue(gameHands.ContainsOcclusionPoint(game.HeldTool.transform.TransformPoint(new Vector3(0,-.045f,0))),"Equipping registers the held extinguisher's interior");
-            var returnButton=Button(game,"Return equipment");var ui=Point(game.Player.ViewCamera,returnButton,Open);
-            for(int i=0;i<8;i++)Assert.IsFalse(GameSample(hand,ui));
-            Assert.AreSame(returnButton,game.MenuInput.HoveredButton);Assert.IsTrue(game.MenuInput.RayVisible(hand));
-            miss=new EmberdeepHandRay.Sample(true,new Ray(ui.Ray.origin,Vector3.up),Open);
-            GameSample(hand,miss);Assert.IsFalse(game.MenuInput.RayVisible(hand));
-            game.Run.Tick(Dt,false);
-            for(int i=0;i<100 && game.Run.Water>0;i++)game.Run.Tick(.1f,true);
-            game.Run.CancelTrigger();Assert.Zero(game.Run.Water);CheckStationRefresh("EMPTY");
-            var tool=game.HeldTool;var station=game.HydrantStation;
-            var rotation=station.Socket.rotation*Quaternion.Euler(0,180,0)*Quaternion.Inverse(tool.RefillPort.localRotation);
-            var dockingGrip=station.Socket.position+rotation*(tool.Grip.localPosition-tool.RefillPort.localPosition);
-            var palm=new Pose(dockingGrip+station.Socket.right*.14f,Quaternion.Euler(80,45,110));
-            for(int i=0;i<12;i++)
-            {
-                Assert.IsTrue(EmberdeepRefillInteraction.TryGuideHeldTool(tool,palm,station,game.CreekStation));
-                RefillSample(hand,palm,Open,palm.position);
-            }
-            Assert.IsFalse(game.Run.Supply.Locked);Assert.Zero(game.Run.Water);
-            palm.position=dockingGrip+station.Socket.right*.055f;
-            for(int i=0;i<12;i++)
-            {
-                if(!game.Run.Supply.Locked)EmberdeepRefillInteraction.TryGuideHeldTool(tool,palm,station,game.CreekStation);
-                RefillSample(hand,palm,Open,palm.position);
-            }
-            Assert.IsTrue(game.Run.Supply.Locked);Assert.IsFalse(game.Run.Supply.ValveOpen);Assert.Zero(game.Run.Water);
-            CheckStationRefresh("EMPTY");Physics.SyncTransforms();
-            if(hand==1)CaptureStation("Editor-detail-synthetic-Hydrant-docked");
-            ui=Point(game.Player.ViewCamera,returnButton,Open);
-            for(int i=0;i<8;i++)Assert.IsFalse(GameSample(hand,ui));
-            ui.Pinch=Closed;Assert.IsFalse(GameSample(hand,ui));Assert.IsFalse(game.MenuInput.RayVisible(hand));
-            Assert.IsTrue(game.Run.Supply.Locked,"A blocked HUD action must not detach the supply owner");
-            Assert.AreEqual(WaterStationTier.LeverWell,game.Run.StationTier);
+            var station=game.HydrantStation;Assert.AreEqual(WaterStationTier.LeverWell,game.Run.StationTier);
+            Assert.IsFalse(game.Basin.Contains(station.Lever.position),"Working the lever must not count as a hand in the basin");
+            Assert.IsTrue(game.Basin.Contains(game.Basin.Center));
             var lever=station.Lever.position;
-            palm=new Pose(lever,station.Lever.rotation);
+            var palm=new Pose(lever,station.Lever.rotation);
             LeverSample(hand,palm,0,6);
-            LeverSample(hand,palm,1,4);Assert.IsFalse(game.Run.Supply.ValveOpen);
-            for(int stroke=0;stroke<5;stroke++)
+            LeverSample(hand,palm,1,4);
+            for(int stroke=0;stroke<3;stroke++)
             {
+                float before=game.Run.BasinWater;
                 palm.position=lever-station.transform.up*.08f;
                 LeverSample(hand,palm,1);
-                Assert.That(game.Run.Water,Is.EqualTo(stroke*12).Within(.001f),"Downstroke alone cannot credit water");
+                Assert.AreEqual(before,game.Run.BasinWater,"Downstroke alone cannot fill the basin");
                 palm.position=lever;LeverSample(hand,palm,1);
-                CheckStationRefresh(stroke==4?"FULL":"WATER");
+                Assert.That(game.Run.BasinWater,Is.EqualTo(before+18).Within(.01f),"A returned 8 cm stroke pours 18 units into the basin");
             }
             LeverSample(hand,palm,0,4);
-            Assert.AreEqual(game.Run.Capacity,game.Run.Water);Assert.IsFalse(game.Run.Supply.ValveOpen);CheckStationRefresh("FULL");
-            if(hand==1)CaptureStation("Editor-detail-synthetic-Hydrant-full");
-            float full=game.Run.Water,supplied=game.Run.SuppliedWater;var grip=tool.Grip.position;
-            palm.position=grip+Vector3.up*.15f;
-            for(int i=0;i<6;i++)RefillSample(hand,palm,Open,grip);
-            RefillSample(hand,palm,Closed,grip);
-            Assert.IsFalse(game.Run.Supply.Locked);Assert.IsTrue(game.HoldingEquipment);Assert.AreEqual(hand==0,game.LeftHanded);
-            Assert.AreEqual(full,game.Run.Water);Assert.AreEqual(supplied,game.Run.SuppliedWater);Assert.Zero(game.Run.Charge01);
-            CheckStationRefresh("FULL");yield return null;
+            Assert.AreEqual(54,game.Run.BasinWater,.01f);Assert.IsFalse(game.Run.Supply.Locked);Assert.AreEqual(60,game.Run.Water,"The retired tool tank receives nothing");
+            game.Refresh();
+            if(hand==1)CaptureStation("Editor-detail-synthetic-Basin-filled");
+            yield return null;
         }
     }
 }

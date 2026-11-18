@@ -1,0 +1,97 @@
+{
+  "version": "0.2.21",
+  "date": "2026-11-15",
+  "status": "Implemented, Quest installed; worn-headset acceptance pending",
+  "supersedes": [
+    "GameplaySections.json GD-RESCUE-01/02: old optional post-fire carrying proposal",
+    "DirectorDetailSections.json GD-UI-02: old animal count and reward proposal",
+    "InteractionUsabilityAndSky.json: photographic sky and pickup acquisition; retained trigger/regrip/handoff rules"
+  ],
+  "level_roster": [
+    {
+      "level": 1,
+      "sheep": 3,
+      "coins_per_rescue": 25
+    },
+    {
+      "level": 2,
+      "sheep": 4,
+      "coins_per_rescue": 40
+    },
+    {
+      "level": 3,
+      "sheep": 5,
+      "coins_per_rescue": 55
+    },
+    {
+      "level": 4,
+      "sheep": 6,
+      "coins_per_rescue": 65
+    },
+    {
+      "level": 5,
+      "sheep": 8,
+      "coins_per_rescue": 80
+    }
+  ],
+  "rules": [
+    "Small sheep wait behind the forest in authored inter-column lanes. Their corridor is clear only if no burning tree lies within 1.05 arena units of the route to the front refuge.",
+    "Once clear, sheep run at 1.25 arena units/second, queue behind others in the same lane, and celebrate for 1.15 seconds before awarding coins exactly once. Arrival shows a gold coin and uses the existing rescue chime.",
+    "Only nearby burning trees (radius 1.9 arena units) damage sheep. Initial grace period: 8 seconds. Hidden health starts at 1, damage is 0.012/second per threat, capped at two threats. No health bars or animal interaction UI.",
+    "Direct water impacts and splash protect sheep through the same production water-impact route as fire. Wetness lasts at most 6 seconds and blocks damage; water restores a small amount of health. Invalid/negative samples cannot grant protection or rewards.",
+    "Zero health means Lost. Lost sheep shrink away with a brief topple; no blood or repeated distress audio. Lost animals never pay and cannot be revived for currency.",
+    "Tree suppression grants score/combo but no cash. Retain base clear reward 25*(stage+1) and cabin reward. Fully rescued first sector yields 100 coins; ideal first-three-sector income permits all three additional tools with 185 coins left.",
+    "Pause/focus loss and shop input retain existing simulation suspension. Retry rewinds entry money and rebuilds sheep; lost-stage simulation cannot grant new animal rewards.",
+    "Next sector or camp departure after containment safely evacuates any remaining living sheep and pays each once, so skipping their final animation never loses earned money."
+  ],
+  "art": [
+    "Original procedural sheep: cream scalloped wool, cocoa faces, white eyes with highlights, rosy cheeks, pink ear interiors and rounded hooves. Shared vertex-colour meshes and one simple instanced toon material; no rigidbodies, colliders, health bars or NavMesh agents.",
+    "Domain-clock animation: idle breathing/head movement, frightened tremble and drooping ears, water-induced head/body shake, alternating running legs and bounce, happy arrival jump, retreat/failure shrink and spinning rising coin.",
+    "Cartoon sky replaces the photographic panorama: blue/mint gradient, six rounded cloud groups with cream tops, layered green hills. Retain the world-oriented spherical sky, subject-centred circular coverage, 12-degree feather, transparent exterior, stereo macros and upward reveal.",
+    "Original Poly Haven photo is archived at Assets/FireRescue/ArtV2/EmberdeepSky-Photographic.jpg outside Resources, preserving its GUID and CC0 provenance without shipping the unused sky texture."
+  ],
+  "grab_changes": [
+    "Pickup requires stable physical proximity and closure for 100 ms; an already closed hand can approach slowly without a fresh-grasp deadline. Pickup itself never fires.",
+    "A deliberate closed-hand contact on the rack tool now wins over a menu ray even before pickup; open-hand distant menus retain their prior policy.",
+    "Broaden extinguisher top/shoulder acquisition; gold carrying handle and cyan nozzle sleeve identify the two functional contacts. Lower body remains carry-only.",
+    "Remove stale PINCH GRIP rack instruction. If a tightly closed pickup has not armed firing, explicitly ask the primary hand to relax once then squeeze, while preserving tool ownership.",
+    "Retain 0.2.20 mirrored nozzle direction, slow nozzle acquisition, nearby-tool UI priority, body-to-top regrip, primary hand transfer and explicit rack return."
+  ],
+  "tests": {
+    "EditMode": {
+      "total": 225,
+      "passed": 225,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepSheep/Acceptance10/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 240,
+      "passed": 240,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepSheep/Acceptance10/PlayMode-results.json"
+    }
+  },
+  "scene_checks": [
+    "Logs/EmberdeepSheep/SceneImpact.json",
+    "Logs/EmberdeepSheep/SceneArrival.json"
+  ],
+  "preview_scope": "Unity rendered frames. Portrait is injected animation sampling; rescue capture uses live game frames with scripted suppression. Not headset footage.",
+  "limits": [
+    "Real-hand comfort and tracking still require Quest/PICO testing.",
+    "No new bleat audio or authored skeletal animation clips; the sheep animation is procedural.",
+    "M2 loot, physical animal carrying, durable saves and broader search/settlement remain unimplemented.",
+    "No PICO 0.2.21 build or measured headset GPU budget."
+  ],
+  "source_hashes": {
+    "Assets/FireRescue/Runtime/FireRun.cs": "e9935d953db854e5e8e78b1550e4c472a351c9ddc8cf19e2aa0616f1633c0de2",
+    "Assets/FireRescue/Runtime/FireRun.Animals.cs": "bb6ea98dd6202a737f9f3f452a707eef842293b22eb449c5bdfb0fc54ba0616b",
+    "Assets/FireRescue/Runtime/EmberdeepSheepView.cs": "6f2ff677bb4f92787572d4be4a5be82c9dfedbfe43ed88e6bae52f397d5f7439",
+    "Assets/FireRescue/Resources/EmberdeepSheep.shader": "da9eb22ae6e7eda38a884be0d79eaf13d6dbd88a4dd2f692177fef5de16df896",
+    "Assets/FireRescue/Resources/EmberdeepImmersiveSky.shader": "a429dece13f3d295aa571e0db96a72e0bbc1f1d1d52cabef0a7d3096a7a4a0ec",
+    "Assets/FireRescue/Runtime/FireToolManipulation.cs": "e9e4492a293f39411b5f15bb5dea502f2fd12f597dfaf9562ed7ca6e17b3a26e"
+  }
+}

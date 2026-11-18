@@ -1,0 +1,82 @@
+{
+  "version": "0.2.21",
+  "android_version_code": 24,
+  "date": "2026-11-15",
+  "status": "QUEST_BUILT_AND_INSTALLED; 465 tests passed; animal rescue, cartoon sky and grasp refinements await worn-headset acceptance",
+  "source": "Release-0.2.21.json",
+  "changes": [
+    "AnimalRescueAndCartoonSky.json"
+  ],
+  "changelist": "Changelist-0.2.21.txt",
+  "tests": {
+    "EditMode": {
+      "total": 225,
+      "passed": 225,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepSheep/Acceptance10/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 240,
+      "passed": 240,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepSheep/Acceptance10/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "target": "Quest",
+      "versionCode": 24,
+      "signatureVerified": true,
+      "sceneWhitelistPassed": true,
+      "settingsRestored": true,
+      "version": "0.2.21",
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "sha256": "d3b621e830e0e627b529b7c4a7690ef6b9cc43bb00a43f2366b6f60a04b5659f",
+      "bytes": 105636093,
+      "errors": 0,
+      "warnings": 8
+    }
+  },
+  "source_integrity": {
+    "unchanged_during_build": true,
+    "file_count": 124
+  },
+  "installation": {
+    "date": "2026-11-15",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "version": "0.2.21",
+    "versionCode": 24,
+    "installedVersionVerified": true,
+    "installation": "Replacement install, preserve data",
+    "apkSha256": "d3b621e830e0e627b529b7c4a7690ef6b9cc43bb00a43f2366b6f60a04b5659f",
+    "appInfo": {
+      "verified_via": "ADB dumpsys package",
+      "version_name": "0.2.21",
+      "launch": "Launch requested; no app process observed; physical acceptance pending",
+      "installation": "Streamed install -r returned Success",
+      "package": "com.metahackathon2026.emberdeep",
+      "version_code": "24",
+      "power": "mWakefulness=Asleep"
+    },
+    "headset_acceptance": "Pending user test"
+  },
+  "pico": "Shared source only; no PICO 0.2.21 APK",
+  "preview": "Deliverables/Emberdeep/Emberdeep-0.2.21-Sheep.mp4",
+  "limits": [
+    "Real-hand comfort and tracking still require Quest/PICO testing.",
+    "No new bleat audio or authored skeletal animation clips; the sheep animation is procedural.",
+    "M2 loot, physical animal carrying, durable saves and broader search/settlement remain unimplemented.",
+    "No PICO 0.2.21 build or measured headset GPU budget."
+  ],
+  "build_environment": {
+    "bee_build_threads": 4,
+    "first_attempt": "Interrupted by Windows paging-file/commit exhaustion (1455); no APK produced. Exact pre-build settings restored, then rebuilt with lower compilation concurrency.",
+    "successful_log": "Logs/EmberdeepRelease021/QuestBuild-Retry.log"
+  }
+}

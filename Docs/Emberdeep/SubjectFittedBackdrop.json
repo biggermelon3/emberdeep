@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-15",
+  "status": "RELEASED_IN_0.2.19; ORIGINAL_SOURCE_VERIFICATION_RETAINED",
+  "based_on_release": "0.2.18 / code 21",
+  "supersedes_background": "ViewRelativeSkyAndRiver.json",
+  "retained_river_and_atmosphere": "ViewRelativeSkyAndRiver.json",
+  "requirement": "Background must extend lower and cover the nearby tools, refill equipment and forest according to their shape from the player viewpoint, instead of a circular forest-only aperture.",
+  "implementation": [
+    "Project the eight corners of each visible subject group bounds into camera-centred azimuth/elevation coordinates. Groups: arena/forest, tool rack, held equipment, hydrant and creek station.",
+    "Use twelve support planes to enclose the projected groups with a soft polygon outline. Add a narrower crown above the forest, four degrees of opaque padding around subjects, five extra degrees below, and a six-degree transparent feather.",
+    "Recompute projected bounds every frame for head movement and tool movement. Cache mesh renderer lists and refresh hierarchy every half second or immediately when subject roots change. Reuse lists and shader arrays.",
+    "Exclude text, guide plates, aim markers and transparent effects from subject bounds. Hands and HUD are not registered as subjects. Disabled/inactive renderers do not extend coverage.",
+    "Keep the world-oriented spherical cloud environment, lower distant scenery, transparent outer directions, pause-aware four-second upward reveal and scene-exit camera restoration."
+  ],
+  "scope": "A conservative envelope of grouped renderer bounds, not per-pixel depth silhouettes. Small gaps between subjects intentionally share background. Objects behind the camera-to-forest forward hemisphere do not extend this front scene envelope.",
+  "rendering_budget": "One existing sky draw, twelve constant edge tests per pixel. No additional camera, depth texture, fullscreen capture or render texture at runtime. No changes to river/ambient effect budgets.",
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 215,
+        "passed": 215,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepSubjectSky/Acceptance4/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 226,
+        "passed": 226,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepSubjectSky/Acceptance4/PlayMode-results.json"
+      }
+    },
+    "checks": [
+      "Rendered alpha behind and around all eight corners of a near-left/right tool at multiple head yaws",
+      "Moved held-tool coverage updates on the next tick; hidden tool no longer extends the outline",
+      "Orbit/head-turn forest coverage, outside transparency, foreground visibility, reveal/pause/recenter and teardown regression checks",
+      "Live scene captures at left/front/right viewpoints and a wider view showing the boundary"
+    ],
+    "captures": [
+      "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15-Left.png",
+      "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15-Front.png",
+      "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15-Right.png",
+      "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15-Wide.png"
+    ],
+    "video": "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15.mp4",
+    "animated_preview": "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15.gif",
+    "capture_scope": "Actual Unity scene with advancing frames and scripted desktop camera. HUD/guides hidden for art review. PNG alpha retained; black in video/GIF represents transparent areas. Not headset compositor footage.",
+    "settings": "Scene list/setup and runInBackground restored by the test runner."
+  },
+  "delivery": "Included in Quest 0.2.19, with background supersession as noted. Installed version verified. No PICO build.",
+  "remaining_acceptance": [
+    "Worn Quest/PICO stereo and passthrough edge appearance",
+    "Device frame timing during hand interaction and fire effects"
+  ],
+  "source_sha256": {
+    "Assets/FireRescue/Runtime/EmberdeepImmersiveSky.cs": "4aec7fc349b9d30745e985a0db5f19666c0260264e6149dd54a89ee93fdaa1c4",
+    "Assets/FireRescue/Resources/EmberdeepImmersiveSky.shader": "af22a40677545e9ad82707e54860388ce14eec97af06ced435164306c0358052",
+    "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs": "4ef011de66ebf491a04e0220edac197e2214bab6beb390d7b39942b1d3a7e234",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepImmersiveSkyTests.cs": "b6f6898a1be5180efa3e5f5471452fb64ea5c587e621ef44a4e72314da183e2d"
+  },
+  "released_in": "0.2.19 / code 22",
+  "release_evidence": "Release-0.2.19.json",
+  "superseded_in": "0.2.20; see InteractionUsabilityAndSky.json. Original release evidence retained."
+}

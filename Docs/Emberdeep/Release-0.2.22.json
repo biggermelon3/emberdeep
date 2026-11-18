@@ -1,0 +1,106 @@
+{
+  "version": "0.2.22",
+  "android_version_code": 25,
+  "date": "2026-11-16",
+  "status": "QUEST_BUILT_AND_INSTALLED; 232 EditMode + 228 PlayMode passed; final 8 visual regressions passed; worn-headset acceptance pending",
+  "source": "Release-0.2.22.json",
+  "changes": [
+    "GoddessHand.json",
+    "InteractionAndLocalization022.json"
+  ],
+  "changelist": "Changelist-0.2.22.txt",
+  "tests": {
+    "EditMode": {
+      "total": 232,
+      "passed": 232,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/Emberdeep022/Acceptance10/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 228,
+      "passed": 228,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/Emberdeep022/Acceptance10/PlayMode-results.json"
+    },
+    "final_visual_regressions": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/Emberdeep022/VisualFinal2/PlayMode-results.json",
+      "scope": "8 selected tests repeated after final caption/layout and crystal presentation changes; not additional unique tests"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "settingsRestored": true,
+      "sha256": "ba684188945dbd4f55d548eee128e00df02090d23a5bba7e311f1bc9ec636259",
+      "signatureVerified": true,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "target": "Quest",
+      "versionCode": 25,
+      "sceneWhitelistPassed": true,
+      "bytes": 122083054,
+      "version": "0.2.22",
+      "errors": 0,
+      "warnings": 9
+    }
+  },
+  "source_integrity": {
+    "unchanged_during_build": true,
+    "file_count": 390
+  },
+  "installation": {
+    "date": "2026-11-16",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "version": "0.2.22",
+    "versionCode": 25,
+    "installedVersionVerified": true,
+    "installation": "Replacement install; preserve data",
+    "apkSha256": "ba684188945dbd4f55d548eee128e00df02090d23a5bba7e311f1bc9ec636259",
+    "appInfo": {
+      "launch": "Launch requested; no app process observed; physical acceptance pending",
+      "version_code": "25",
+      "package": "com.metahackathon2026.emberdeep",
+      "verified_via": "ADB dumpsys package",
+      "version_name": "0.2.22",
+      "installation": "Streamed install -r returned Success",
+      "power": "mWakefulness=Asleep"
+    },
+    "headset_acceptance": "Pending user test"
+  },
+  "pico": "Shared OpenXR source and five-finger gesture reader; no PICO 0.2.22 APK or device test",
+  "build_environment": {
+    "bee_build_threads": 4,
+    "log": "Logs/Emberdeep022/QuestBuild.log"
+  },
+  "limits": [
+    "Two-hand occlusion and comfort need worn-headset testing.",
+    "New magic progression balance needs playtesting.",
+    "No measured Quest/PICO GPU budget.",
+    "No durable save system; closing app resets expedition as stated in quit modal."
+  ],
+  "localization_packaging": {
+    "offline_english_chinese_fonts_and_tables": true,
+    "bundles": [
+      "assets/aa/Android/localization-asset-tables-en_assets_all_35efce2d2ec7d09c8221eadacf232305.bundle",
+      "assets/aa/Android/localization-asset-tables-zh-hans_assets_all_5b6ee87be86c7f6a01ace4ee119b5e1d.bundle",
+      "assets/aa/Android/localization-assets-en_assets_all_5e6331dc53473e68f55f6efcea49142b.bundle",
+      "assets/aa/Android/localization-assets-shared_assets_all_f148a5907cac00e521bf75d1ac17715e.bundle",
+      "assets/aa/Android/localization-assets-zh-hans_assets_all_6f842bed570b57f88338c79e03bab013.bundle",
+      "assets/aa/Android/localization-locales_assets_all_0c8e3618c3d4971575a0792bbc9e74e8.bundle",
+      "assets/aa/Android/localization-string-tables-en_assets_all_a691f1d88d9d657484835230ee46c330.bundle",
+      "assets/aa/Android/localization-string-tables-zh-hans_assets_all_3a3866a7e25683f5eca3acd4a10615ef.bundle"
+    ],
+    "zip_crc_valid": true,
+    "verified_source_count": 390,
+    "sources_unchanged": true
+  }
+}

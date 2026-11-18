@@ -1,0 +1,71 @@
+{
+  "release": "0.2.22",
+  "status": "QUEST_BUILT_AND_INSTALLED; 232 EditMode + 228 PlayMode passed; final 8 visual regressions passed; worn-headset acceptance pending",
+  "interaction": {
+    "grab_closure": 0.4,
+    "fully_open_closure": 0.2,
+    "fire_closure": 0.76,
+    "stop_fire_closure": 0.52,
+    "pickup_dwell_seconds": 0.05,
+    "release_dwell_seconds": 0.1,
+    "align_seconds": 0.16,
+    "hover_warning_seconds": 3,
+    "hover_return_seconds": 5,
+    "return_shrink_seconds": 0.35,
+    "primary_contacts": "left body / right body / right top trigger",
+    "aim": "left wrist to middle knuckle forward; palm roll does not reverse nozzle",
+    "regrip": "left nozzle remains held while right cylinder floats and regrips the top",
+    "tracking_loss": "cancel spraying; never infer a drop from missing joints"
+  },
+  "animals": {
+    "scale": 0.65,
+    "idle": "bounded wandering with individual pauses",
+    "burning": "visible pooled fire particles, bounded panic running and faster higher bleats",
+    "water": "extinguishes, protects for up to six seconds, brief happy shake",
+    "progression": "tree fires plus surviving burning animals must be extinguished before the incident clears; no health bars"
+  },
+  "tutorials": [
+    "extinguisher two hands",
+    "pistol/fan",
+    "cannon",
+    "lever down/up",
+    "wheel turn",
+    "button press",
+    "dock blue rings",
+    "place intake",
+    "pull/return creek pump"
+  ],
+  "presentation": {
+    "sky": "available from main menu; menu-only angular aperture; animated world-oriented clouds",
+    "wind": "larger, lower foreground ribbons; up to four rising streams at burning trees; capped at 256 triangles"
+  },
+  "localization": {
+    "framework": "Unity Localization, English and Simplified Chinese String Tables and Font Asset Tables",
+    "startup": "Chinese/ChineseSimplified/ChineseTraditional -> zh-Hans; other system languages -> en",
+    "adapter": "procedural TextMesh strings, longest phrase matching preserves live numeric values and button command IDs",
+    "font_sources": [
+      {
+        "file": "Assets/FireRescue/Localization/Fonts/NotoSansCJKsc-Regular.otf",
+        "source": "https://github.com/notofonts/noto-cjk/blob/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf",
+        "license": "SIL Open Font License 1.1",
+        "license_file": "Assets/FireRescue/Localization/Fonts/OFL.txt"
+      },
+      {
+        "file": "Assets/FireRescue/Localization/Fonts/LiberationSans.ttf",
+        "source": "existing project TMP Essential Resources Liberation Sans font",
+        "license": "SIL Open Font License 1.1"
+      }
+    ],
+    "string_count": 280
+  },
+  "audio": {
+    "file": "Assets/FireRescue/Resources/EmberdeepSheepBleat.ogg",
+    "author": "Eviatar Bach",
+    "source": "https://commons.wikimedia.org/wiki/File:Sheep_bleat.ogg",
+    "license": "CC0 1.0",
+    "sha1": "5432bbb6d9ca4a11cd72f3648686e444cdf13340",
+    "mix": "spatial audio, at most two voices, master sound setting and simulation pause respected"
+  },
+  "validation_scope": "Editor deterministic input, live scene rendering and automated regressions; physical Quest/PICO acceptance remains separate",
+  "magic": "GoddessHand.json"
+}

@@ -63,9 +63,10 @@ namespace FireRescue
                 case EmberdeepHandPoseKind.BodyGrip:
                     return new Pose(new Vector3(side*.065f,0,0),Quaternion.LookRotation(Vector3.forward,Vector3.left*side));
                 case EmberdeepHandPoseKind.NozzleGrip:
-                    // Fingers cross the horn, thumb toward its forward end. A
-                    // lengthwise finger frame made the hand look like a pointer.
-                    return new Pose(new Vector3(side*.012f,.03f,.035f),Quaternion.LookRotation(Vector3.left*side,Vector3.down));
+                    // Barrel follows wrist-to-knuckles; palm faces the horn from
+                    // the matching side. Curl provides the wrap, not a 90-degree
+                    // rotation of the anatomical palm frame.
+                    return new Pose(new Vector3(side*.032f,.004f,.025f),Quaternion.LookRotation(Vector3.forward,Vector3.left*side));
                 case EmberdeepHandPoseKind.ForwardSupport:
                     return new Pose(new Vector3(side*.035f,-.015f,0),Quaternion.LookRotation(Vector3.forward,Vector3.left*side));
                 default:return Pose.identity;

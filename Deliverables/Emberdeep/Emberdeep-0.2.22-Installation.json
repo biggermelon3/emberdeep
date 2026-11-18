@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-16",
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "version": "0.2.22",
+  "versionCode": 25,
+  "installedVersionVerified": true,
+  "installation": "Replacement install; preserve data",
+  "apkSha256": "ba684188945dbd4f55d548eee128e00df02090d23a5bba7e311f1bc9ec636259",
+  "appInfo": {
+    "launch": "Launch requested; no app process observed; physical acceptance pending",
+    "version_code": "25",
+    "package": "com.metahackathon2026.emberdeep",
+    "verified_via": "ADB dumpsys package",
+    "version_name": "0.2.22",
+    "installation": "Streamed install -r returned Success",
+    "power": "mWakefulness=Asleep"
+  },
+  "headset_acceptance": "Pending user test"
+}

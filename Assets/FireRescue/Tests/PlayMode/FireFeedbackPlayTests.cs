@@ -40,7 +40,7 @@ namespace FireRescue.Tests
             try
             {
                 var effects=root.AddComponent<FireRescueVfx>();effects.Initialize();effects.Initialize();
-                Assert.AreEqual(7,root.GetComponentsInChildren<ParticleSystem>().Length);
+                Assert.AreEqual(9,root.GetComponentsInChildren<ParticleSystem>().Length);
                 for(int i=0;i<50;i++)
                 {
                     effects.Launch(Vector3.zero,Vector3.forward,1);
@@ -50,7 +50,7 @@ namespace FireRescue.Tests
                     effects.Impact(new WaterJet.Impact{Point=Vector3.zero,Normal=Vector3.up,Tree=43},true);
                 }
                 var emitters=root.GetComponentsInChildren<ParticleSystem>();
-                Assert.AreEqual(7,emitters.Length);
+                Assert.AreEqual(9,emitters.Length);
                 Assert.Greater(effects.VisibleSplash,0);
                 foreach(var emitter in emitters)Assert.LessOrEqual(emitter.particleCount,emitter.main.maxParticles);
                 effects.Clear();foreach(var emitter in emitters)Assert.Zero(emitter.particleCount);

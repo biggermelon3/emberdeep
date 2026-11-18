@@ -17,17 +17,58 @@ namespace FireRescue
         public static readonly Vector3 FrameSize=new Vector3(.79f,.61f,.60f);
         string key;
         MaterialPropertyBlock properties;
+        readonly System.Collections.Generic.List<Object> ownedDetails=new();
+        void ReleaseDetails(){foreach(var item in ownedDetails)if(item)Dispose(item);ownedDetails.Clear();}
+        void OnDestroy()=>ReleaseDetails();
 
         public void ShowTool(string itemId,FireEquipmentId id,Material body,Material dark,Material accent)
             =>Show(itemId,id,null,body,dark,accent);
         public void ShowStation(string itemId,WaterStationTier tier,Material body,Material dark,Material accent)
             =>Show(itemId,null,tier,body,dark,accent);
 
+        public void ShowMagic(string itemId)
+        {
+            if(key==itemId && PreviewRoot)return;
+            ReleaseDetails();
+            key=ItemId=itemId;Generation++;DisplayedEquipment=null;DisplayedStationTier=null;IsFallback=false;
+            if(PreviewRoot){PreviewRoot.gameObject.SetActive(false);Dispose(PreviewRoot.gameObject);}
+            PreviewRoot=new GameObject("PreviewPivot / "+itemId).transform;PreviewRoot.SetParent(transform,false);
+            var demo=PreviewRoot.gameObject.AddComponent<EmberdeepInteractionDemo>();demo.Show(EmberdeepInteractionDemo.Action.Goddess);
+            demo.SetCaptionVisible(false);
+            PreviewRoot.localScale=Vector3.one*1.6f;
+        }
+        // A spell has no tool to display: the preview shows its crystal, charged and in its own
+        // colour, beside the looping gesture demonstration.
+        public void ShowSpell(string itemId,FireEquipmentId id,Color tint)
+        {
+            string next="spell/"+itemId;
+            if(key==next && PreviewRoot)return;
+            ReleaseDetails();
+            key=next;ItemId=itemId;Generation++;DisplayedEquipment=id;DisplayedStationTier=null;IsFallback=false;
+            if(PreviewRoot){PreviewRoot.gameObject.SetActive(false);Dispose(PreviewRoot.gameObject);}
+            PreviewRoot=new GameObject("PreviewPivot / "+itemId).transform;PreviewRoot.SetParent(transform,false);
+            var lesson=new GameObject("Gesture demonstration").transform;lesson.SetParent(PreviewRoot,false);
+            lesson.localPosition=new Vector3(-.06f,-.035f,0);lesson.localScale=Vector3.one*1.55f;
+            var demo=lesson.gameObject.AddComponent<EmberdeepInteractionDemo>();
+            demo.Show(id==FireEquipmentId.PulsePistol?EmberdeepInteractionDemo.Action.Bolt:id==FireEquipmentId.RainFan?EmberdeepInteractionDemo.Action.Fan:
+                id==FireEquipmentId.PressureCannon?EmberdeepInteractionDemo.Action.Orb:EmberdeepInteractionDemo.Action.Goddess);
+            demo.SetCaptionVisible(false);
+            var gem=new GameObject("Spell crystal").AddComponent<EmberdeepManaCrystal>();gem.transform.SetParent(PreviewRoot,false);
+            // The setting's face looks out of the panel; the stone stands upright.
+            gem.transform.localPosition=new Vector3(.175f,-.075f,-.03f);
+            gem.transform.localRotation=Quaternion.Euler(0,0,-14)*Quaternion.LookRotation(Vector3.up,Vector3.forward);
+            gem.transform.localScale=Vector3.one*1.9f;
+            if(id!=FireEquipmentId.Extinguisher)gem.SetTint(tint);
+            gem.SetFill(1);
+            PreviewRoot.localScale=Vector3.one*1.6f;
+            ModelBounds=BoundsIn(transform);
+        }
         void Show(string itemId,FireEquipmentId? equipment,WaterStationTier? station,Material body,Material dark,Material accent)
         {
             properties??=new MaterialPropertyBlock();
             string next=itemId+"/"+equipment+"/"+station+"/"+ForceFallback;
             if(key==next && PreviewRoot)return;
+            ReleaseDetails();
             key=next;ItemId=itemId;DisplayedEquipment=equipment;DisplayedStationTier=station;Generation++;
             if(PreviewRoot){PreviewRoot.gameObject.SetActive(false);Dispose(PreviewRoot.gameObject);}
             PreviewRoot=new GameObject("PreviewPivot / "+itemId).transform;PreviewRoot.SetParent(transform,false);
@@ -91,8 +132,17 @@ namespace FireRescue
                 var mesh=child.GetComponent<MeshFilter>();var original=child.GetComponent<MeshRenderer>();
                 if(mesh && mesh.sharedMesh && original && original.enabled)
                 {
-                    copy.gameObject.AddComponent<MeshFilter>().sharedMesh=mesh.sharedMesh;
-                    var renderer=copy.gameObject.AddComponent<MeshRenderer>();renderer.sharedMaterials=original.sharedMaterials;
+                    var displayMesh=mesh.sharedMesh;var displayMaterials=original.sharedMaterials;
+                    // Staging destroys its generated details after this frame. The
+                    // passive preview owns independent copies, with no behavior component.
+                    if(child.GetComponent<EmberdeepCraftDetails>())
+                    {
+                        displayMesh=Instantiate(displayMesh);ownedDetails.Add(displayMesh);
+                        for(int i=0;i<displayMaterials.Length;i++)
+                        {displayMaterials[i]=Instantiate(displayMaterials[i]);ownedDetails.Add(displayMaterials[i]);}
+                    }
+                    copy.gameObject.AddComponent<MeshFilter>().sharedMesh=displayMesh;
+                    var renderer=copy.gameObject.AddComponent<MeshRenderer>();renderer.sharedMaterials=displayMaterials;
                     original.GetPropertyBlock(properties);renderer.SetPropertyBlock(properties);
                     renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;renderer.receiveShadows=false;
                 }

@@ -17,7 +17,7 @@ namespace FireRescue.Tests
         const float Dt=.1f;
         [UnitySetUp] public IEnumerator Load()
         {
-            EmberdeepSession.NewExpedition();
+            EmberdeepSession.BeginEquipmentTestRun();
             yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);yield return null;yield return null;
             game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);game.enabled=false;
             game.SendMessage("OnApplicationPause",false);game.SendMessage("OnApplicationFocus",true);
@@ -28,7 +28,7 @@ namespace FireRescue.Tests
         void Sample(int frames,bool tracking=true,bool trigger=false)
         {for(int i=0;i<frames;i++)game.ProcessWaterRecovery(Dt,tracking,trigger);}
         static void Clear(FireRun run)
-        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);}
+        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);run.EvacuateSafeAnimals();}
         void Field(string name,object value)
         {
             var field=typeof(FireRescueGame).GetField(name,BindingFlags.Instance|BindingFlags.NonPublic);

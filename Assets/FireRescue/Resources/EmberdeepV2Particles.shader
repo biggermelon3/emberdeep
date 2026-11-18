@@ -3,7 +3,7 @@ Shader "Emberdeep/V2/Particles"
     Properties
     {
         _DstBlend("Destination blend", Float)=10
-        _Style("Mist 0 / Flame 1 / Glow 2 / Water 3 / Strand 4", Float)=0
+        _Style("Mist 0 / Flame 1 / Glow 2 / Water 3 / Strand 4 / Ripple 5", Float)=0
         _Tint("Tint", Color)=(1,1,1,1)
         _Opacity("Opacity", Range(0,1))=1
         _FoamAmount("Foam", Range(0,1))=0
@@ -72,25 +72,37 @@ Shader "Emberdeep/V2/Particles"
                 // World-space phase is identical for both eyes. No camera-depth sampling,
                 // refraction or view-dependent noise is needed for the tabletop effects.
                 float phase=_Time.y*6.2+input.world.x*19+input.world.z*13;
-                if(_Style>3.5)
+                if(_Style>4.5)
+                {
+                    // Contact ripple: one crisp ring and a fainter inner one on a flat billboard.
+                    float r=sqrt(r2);
+                    float ringWidth=max(fwidth(r),.02);
+                    float ring=smoothstep(.70-ringWidth,.70+ringWidth,r)*(1-smoothstep(.90-ringWidth,.90+ringWidth,r));
+                    float inner=smoothstep(.36-ringWidth,.36+ringWidth,r)*(1-smoothstep(.47-ringWidth,.47+ringWidth,r));
+                    alpha=saturate(ring+inner*.45);
+                    color=lerp(color,half3(.92,1,.98),ring*.35);
+                }
+                else if(_Style>3.5)
                 {
                     // Closed four-sided mesh strands; the seam repeats at u=0/1.
                     float roundLight=.5+.5*cos(input.uv.x*6.28318-.7);
                     float narrow=lerp(.16,pow(saturate(roundLight),12),1-smoothstep(.4,2,strandWidth));
                     float glint=.82+.18*sin(glintPhase)*glintFilter;
-                    color=lerp(color*.7,color,roundLight)+half3(.35,.48,.49)*narrow*_Highlight*glint;
-                    alpha=.66+.18*roundLight;
+                    // Darker teal flanks and a pale core band: a painted ribbon of water.
+                    color=lerp(color*.52,color*1.08,smoothstep(.15,.75,roundLight))+half3(.42,.52,.52)*narrow*_Highlight*glint;
+                    alpha=.74+.18*roundLight;
                 }
                 else if(_Style>2.5)
                 {
-                    // Opaque-looking core, soft edge and one offset glint read as liquid,
+                    // Painted droplet: deeper rim, clear body and one offset glint,
                     // including a cannon particle with zero velocity.
-                    alpha=1-smoothstep(1-max(_EdgeSoftness,pixelWidth),1,r2);
+                    alpha=1-smoothstep(1-max(_EdgeSoftness*.55,pixelWidth),1,r2);
                     float bead=sqrt(saturate(1-r2));
                     float highlight=pow(saturate(1-dot(p-float2(-.26,.3),p-float2(-.26,.3))*3.4),3);
-                    color=color*lerp(.6,1,bead)+half3(.65,.73,.75)*highlight*_Highlight;
+                    float rim=1-smoothstep(.30,.62,bead);
+                    color=lerp(color*1.06,color*half3(.30,.52,.62),rim)+half3(.70,.78,.80)*highlight*_Highlight;
                     color=lerp(color,half3(.88,.96,.94),_FoamAmount*.65);
-                    alpha*=.55+.35*bead;
+                    alpha*=.72+.26*bead;
                 }
                 else if(_Style>1.5)
                 {
@@ -99,9 +111,10 @@ Shader "Emberdeep/V2/Particles"
                 }
                 else if(_Style>.5)
                 {
-                    // Start from FireRescue/SoftParticles: a squared soft alpha field,
-                    // lifetime-driven colour and small wind distortion. V2's thresholded
-                    // silhouette/forked shoulders produced opaque triangular spikes.
+                    // The accepted soft flame: a squared alpha field with a graded contour and small
+                    // wind distortion (a thresholded silhouette read as an opaque triangular spike).
+                    // Only the colour is new: a cream core, amber body and red-orange fringe blend
+                    // smoothly across that same field. Vertex green is the particle's remaining heat.
                     float height=saturate(input.uv.y);
                     float flamePhase=_Time.y*9+input.world.x*23+input.world.z*19;
                     float bend=sin(p.y*6-flamePhase)*.13*height+sin(p.y*13-flamePhase*1.4)*.045;
@@ -110,14 +123,28 @@ Shader "Emberdeep/V2/Particles"
                     float core=saturate(1-abs(x)/width);
                     alpha=core*core*smoothstep(-1,-.7,p.y)*(1-smoothstep(.55,1,p.y));
                     alpha*=.8+.2*sin(p.y*15+x*7-flamePhase);
-                    color*=lerp(.85,1.12,soft);
+                    float heat=saturate(input.color.g*1.15);
+                    float ramp=core*(1.1-height*.5)*lerp(.6,1,heat);
+                    half3 layered=lerp(half3(.95,.21,.03),half3(1,.55,.07),smoothstep(.10,.50,ramp));
+                    layered=lerp(layered,half3(1,.86,.34),smoothstep(.45,.80,ramp));
+                    layered=lerp(layered,half3(1,.97,.80),smoothstep(.78,1,ramp)*heat);
+                    color=lerp(color,layered,.7)*lerp(.85,1.12,soft);
                 }
                 else
                 {
-                    // Restrained rolling lobes instead of uniform grey circles.
-                    float lobes=.83+.17*sin(p.x*4.3+p.y*2.6+phase*.3)*sin(p.y*3.7-phase*.22);
-                    alpha=soft*soft*lobes;
-                    color*=.83+.17*soft;
+                    // Cauliflower puff: five overlapping lobes with a lit crown and a shaded
+                    // belly, instead of a uniform soft disc.
+                    float puff=1-length(p)/.58;
+                    for(int lobe=0;lobe<5;lobe++)
+                    {
+                        float angle=lobe*1.2566+.4;
+                        float2 centre=float2(cos(angle),sin(angle))*.44;
+                        puff=max(puff,1-length(p-centre)/(.40+.05*sin(lobe*2.1)));
+                    }
+                    float puffEdge=max(fwidth(puff)*1.5,.24);
+                    alpha=smoothstep(0,puffEdge,puff);
+                    float lit=smoothstep(-.45,.55,p.y*.7-p.x*.35+puff*.35);
+                    color*=lerp(.70,1.10,lit);
                 }
                 return half4(color,input.color.a*alpha*_Opacity);
             }

@@ -14,7 +14,7 @@ namespace FireRescue.Tests
         [UnityTest] public IEnumerator RightEmptyPinchDrivesOutletWithoutGripDataWaterOrSameHandUI()=>Run(1);
         IEnumerator Run(int hand)
         {
-            EmberdeepSession.NewExpedition();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
+            EmberdeepSession.BeginEquipmentTestRun();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
             yield return null;yield return null;
             var game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);game.enabled=false;
             game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);

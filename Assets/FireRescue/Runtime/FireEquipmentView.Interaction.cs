@@ -9,6 +9,19 @@ namespace FireRescue
         public Transform SurfaceGrip { get; private set; }
         public Transform SupportGrip { get; private set; }
         MeshFilter[] grabMeshes;
+        public bool TryPrimaryGrab(Vector3 contact,int hand,out FireToolRegion region,out Vector3 point)
+        {
+            if(Id!=FireEquipmentId.Extinguisher)return TryGrabRegion(contact,out region,out point)
+                && region!=FireToolRegion.Nozzle && region!=FireToolRegion.Pump;
+            region=FireToolRegion.Body;point=default;
+            if(!gameObject.activeInHierarchy || !float.IsFinite(contact.sqrMagnitude))return false;
+            var p=transform.InverseTransformPoint(contact);
+            if(hand==1 && Vector3.Distance(p,Grip.localPosition)<.105f)
+            {region=FireToolRegion.Trigger;point=Grip.localPosition;return true;}
+            // Distinct side contacts, separated from the left-hand nozzle.
+            point=new Vector3(hand==0?-.055f:.055f,-.07f,0);
+            return Vector3.Distance(p,point)<.095f && (hand==0?p.x<.015f:p.x>-.015f);
+        }
         public void CaptureGrip(FireToolRegion region,Vector3 contact,bool left=false)
         {if(region==FireToolRegion.Body)SurfaceGrip=CaptureSurface(SurfaceGrip,"Body hand contact",new Vector3(0,Id==FireEquipmentId.Extinguisher?-.09f:.015f,.0f));}
         public void CaptureSupport(Vector3 contact)
@@ -31,7 +44,14 @@ namespace FireRescue
                 Quaternion.Inverse(transform.rotation)*frame.rotation*contact.rotation);
         }
         LineRenderer flexibleHose;
-        readonly Vector3 nozzleRest=new(.035f,.015f,.12f);
+        Vector3 nozzleRest=new(-.10f,.015f,.12f);
+        public bool NearNozzle(Vector3 point,float radius=.10f)
+        {
+            if(!Nozzle || !float.IsFinite(point.sqrMagnitude))return false;
+            var a=Nozzle.position;var segment=Muzzle.position-a;
+            var t=segment.sqrMagnitude>1e-6f?Mathf.Clamp01(Vector3.Dot(point-a,segment)/segment.sqrMagnitude):0;
+            return Vector3.Distance(point,a+segment*t)<radius;
+        }
         public Vector3 MuzzleOffset=>transform.InverseTransformPoint(Muzzle.position)-Grip.localPosition;
         void BuildHoseNozzle()
         {
@@ -39,6 +59,10 @@ namespace FireRescue
             Nozzle.localPosition=nozzleRest;
             var horn=Tube("Discharge horn",nozzleRest,nozzleRest+Vector3.forward*.07f,.022f,trim);
             horn.transform.SetParent(Nozzle,true);
+            var sleeve=Part("Cyan nozzle grasp sleeve",PrimitiveType.Cylinder,nozzleRest+Vector3.forward*.025f,new Vector3(.048f,.023f,.048f),new Color(.18f,.86f,.8f));
+            sleeve.transform.localRotation=Quaternion.Euler(90,0,0);sleeve.transform.SetParent(Nozzle,true);
+            var dot=Part("Grab dot - left nozzle",PrimitiveType.Sphere,nozzleRest+new Vector3(-.032f,.018f,.025f),Vector3.one*.014f,new Color(.25f,.9f,1),bright);
+            dot.transform.SetParent(Nozzle,true);
             Muzzle.SetParent(Nozzle,false);Muzzle.localPosition=Vector3.forward*.075f;
             flexibleHose=new GameObject("Flexible extinguisher hose").AddComponent<LineRenderer>();
             flexibleHose.transform.SetParent(transform,false);flexibleHose.useWorldSpace=true;flexibleHose.positionCount=9;
@@ -69,14 +93,14 @@ namespace FireRescue
             if(!includeHidden && !gameObject.activeInHierarchy)return false;
             var gripPoint=transform.InverseTransformPoint(contact);
             bool atHandle=Id==FireEquipmentId.Extinguisher
-                ?Mathf.Abs(gripPoint.x)<.075f && gripPoint.y>.06f && gripPoint.y<.18f && gripPoint.z>-.145f && gripPoint.z<.05f
+                ?Mathf.Abs(gripPoint.x)<.085f && gripPoint.y>.025f && gripPoint.y<.20f && gripPoint.z>-.16f && gripPoint.z<.065f
                 :gripPoint.y<-.005f && gripPoint.z<.055f && Vector3.Distance(contact,Grip.position)<.075f;
             if(atHandle){region=FireToolRegion.Trigger;localPoint=Grip.localPosition;return true;}
             float closest=.065f;Vector3 point=default;bool found=false;
             grabMeshes??=GetComponentsInChildren<MeshFilter>(true);
             foreach(var mesh in grabMeshes)
             {
-                if(!mesh.sharedMesh || (!includeHidden && !mesh.gameObject.activeInHierarchy))continue;
+                if(mesh.name.StartsWith("Grab dot") || !mesh.sharedMesh || (!includeHidden && !mesh.gameObject.activeInHierarchy))continue;
                 var at=mesh.transform.TransformPoint(mesh.sharedMesh.bounds.ClosestPoint(mesh.transform.InverseTransformPoint(contact)));
                 float distance=Vector3.Distance(contact,at);
                 if(distance>closest)continue;
@@ -84,7 +108,7 @@ namespace FireRescue
             }
             if(!found)return false;
             localPoint=transform.InverseTransformPoint(point);
-            if(Nozzle && Vector3.Distance(contact,Nozzle.position)<.065f)region=FireToolRegion.Nozzle;
+            if(NearNozzle(contact,.075f))region=FireToolRegion.Nozzle;
             else if(PumpGrip && Vector3.Distance(contact,PumpGrip.position)<.055f)region=FireToolRegion.Pump;
             return true;
         }

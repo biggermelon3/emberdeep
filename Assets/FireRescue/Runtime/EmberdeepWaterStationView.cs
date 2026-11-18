@@ -41,6 +41,7 @@ namespace FireRescue
         LineRenderer hose, tutorialLine;
         Transform tutorialPlate, tutorialMarker;
         Renderer tutorialMarkerRenderer;
+        EmberdeepInteractionDemo visualTutorial;
         public EmberdeepRefillTutorial.Cue TutorialCue { get; private set; }
         bool built, wasIntakePlaced, leftHanded;
         float lastTravel;
@@ -142,6 +143,8 @@ namespace FireRescue
             tutorialLabel=Label("Refill step",transform,new Vector3(0,.34f,.055f),"1  BRING THE TOOL HERE\nMatch the two blue rings",.009f,Cream);
             tutorialPlate=Part("Refill step plate",PrimitiveType.Cube,transform,new Vector3(0,.34f,.064f),
                 new Vector3(.36f,.065f,.012f),Charcoal,darkMaterial).transform;
+            // Both prompt plates share the interface's pill shape and brass lip.
+            EmberdeepForestUi.Apply(instructionPlate.gameObject,true);EmberdeepForestUi.Apply(tutorialPlate.gameObject,true);
             tutorialLabel.gameObject.SetActive(false);tutorialPlate.gameObject.SetActive(false);
             tutorialMarker=Part("Refill next action marker",PrimitiveType.Sphere,transform,Vector3.zero,Vector3.one*.018f,Mint,waterMaterial).transform;
             tutorialMarkerRenderer=tutorialMarker.GetComponent<Renderer>();tutorialMarker.gameObject.SetActive(false);
@@ -151,6 +154,7 @@ namespace FireRescue
             tutorialLine.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;tutorialLine.receiveShadows=false;tutorialLine.enabled=false;
 
             intakeArea = Anchor("Creek intake area", transform, Vector3.zero);
+            EmberdeepCraftDetails.Station(transform);
             intakeRest = Anchor("Intake rest", intakeArea, new Vector3(.135f, .055f, .075f));
             IntakeSocket = Anchor("IntakeSocket", intakeArea, new Vector3(.12f, .018f, -.075f));
             Part("Marked shallow water", PrimitiveType.Cube, intakeArea, new Vector3(.12f, .006f, -.055f),
@@ -206,13 +210,62 @@ namespace FireRescue
             if(!model)return;
             // Blender supplies the shell; accepted gameplay anchors own moving controls.
             foreach(var r in model.GetComponentsInChildren<Renderer>())
-                if(IsCreek?(r.name.Contains("Handle") || r.name.Contains("Pipe") || r.name.Contains("Strainer")):
-                    (r.name.Contains("Coupling") || r.name.Contains("Valve")))r.gameObject.SetActive(false);
+                if(IsCreek && (r.name.Contains("Handle") || r.name.Contains("Pipe") || r.name.Contains("Strainer")))r.gameObject.SetActive(false);
             if(!IsCreek)
             {
                 hydrantBody.Find("Hydrant pressure body").gameObject.SetActive(false);
                 hydrantBody.Find("Hydrant cap").gameObject.SetActive(false);
+                ApplyAuthoredWell(art);ApplyAuthoredControls(art);
             }
+        }
+        // Wheel and push-button tiers: the turning wheel and the pressed cap are separate
+        // kit meshes under the animated anchors; their pedestals stay still.
+        void ApplyAuthoredControls(EmberdeepArtLibrary art)
+        {
+            if(art.Find("ValveWheel") && art.Find("ValveMount"))
+            {
+                Hide(valveVisual);Hide(controls.Find("Valve pipe"));
+                art.Create("ValveWheel",valveVisual,Vector3.zero);art.Create("ValveMount",Valve,Vector3.zero);
+                AuthoredValve=true;
+            }
+            if(art.Find("ButtonStation") && art.Find("ButtonPost") && art.Find("PushButton"))
+            {
+                Hide(buttonBody);Hide(Button);
+                art.Create("ButtonStation",buttonBody,new Vector3(0,0,.075f));
+                art.Create("ButtonPost",Button,Vector3.zero);art.Create("PushButton",ButtonVisual,Vector3.zero);
+                AuthoredButton=true;
+            }
+        }
+        public bool AuthoredValve {get;private set;}
+        public bool AuthoredButton {get;private set;}
+        // Lever well: an enamel pump on a fieldstone plinth with a wooden handle. The
+        // blockout primitives stay as named anchors; only their renderers are switched off.
+        void ApplyAuthoredWell(EmberdeepArtLibrary art)
+        {
+            var pump=art.Create("WellPump",wellBody,Vector3.zero);
+            if(pump)
+            {
+                foreach(var name in new[]{"Well plinth","Well pump casing","Well pump cap"})Hide(wellBody.Find(name));
+                Hide(leverStand);
+            }
+            var handle=art.Create("PumpLever",leverPivot,Vector3.zero);
+            if(handle)
+            {
+                Hide(leverPivot.Find("Well lever arm"));Hide(leverPivot.Find("Well lever hinge"));
+                Hide(LeverVisual.Find("Well broad lever grip"));
+            }
+            AuthoredWell=pump && handle;
+        }
+        public bool AuthoredWell {get;private set;}
+        static void Hide(Transform part)
+        {if(part)foreach(var r in part.GetComponentsInChildren<Renderer>(true))r.enabled=false;}
+        // Spell mode has nothing to dock: the coupling socket, tank gauge and blockout
+        // base give way to the stone plinth and the altar basin.
+        public void SetSpellSkin()
+        {
+            if(!built || IsCreek || !AuthoredWell)return;
+            foreach(var name in new[]{"Stable supply base","Port support","Tank gauge frame","Tank gauge fill","Flow indicator","Tank status"})Hide(transform.Find(name));
+            Hide(Socket);Hide(transform.Find("Crafted station fittings"));
         }
 
         public void SetTier(WaterStationTier tier)
@@ -388,11 +441,39 @@ namespace FireRescue
             bool emptyOutlet=false,bool emptyReturnRequired=false)
         {
             if(!built)return;
+            leverInstruction.gameObject.SetActive(!run.IsPalmLesson && Tier==WaterStationTier.LeverWell && !IsCreek && run.NeedsTutorial(EmberdeepInteractionDemo.Action.Lever));
+            buttonInstruction.gameObject.SetActive(!run.IsPalmLesson && Tier==WaterStationTier.PushButton && !IsCreek && run.NeedsTutorial(EmberdeepInteractionDemo.Action.Button));
             TutorialCue=EmberdeepRefillTutorial.Describe(run,IsCreek,held,available,carryingIntake,emptyOutlet,emptyReturnRequired);
             tutorialLabel.text=TutorialCue.Text;
             // One small instruction panel per source, not stacked status/tutorial
             // boards obscuring the forest. Desktop keeps its keyboard instructions.
-            tutorialLabel.gameObject.SetActive(available);tutorialPlate.gameObject.SetActive(available);
+            tutorialLabel.gameObject.SetActive(available && IsCreek && !run.Supply.Locked);tutorialPlate.gameObject.SetActive(false);
+            if(available && IsCreek && !run.Supply.Locked)tutorialLabel.text="OPTIONAL CREEK REFILL";
+            if(!visualTutorial)
+            {
+                var demo=new GameObject("Blue hand operation tutorial");demo.transform.SetParent(transform,false);
+                demo.transform.localPosition=new Vector3(0,.43f,.015f);visualTutorial=demo.AddComponent<EmberdeepInteractionDemo>();
+            }
+            visualTutorial.gameObject.SetActive(available);
+            if(available)
+            {
+                var action=TutorialCue.Focus switch {
+                    EmberdeepRefillTutorial.Target.Lever=>EmberdeepInteractionDemo.Action.Lever,
+                    EmberdeepRefillTutorial.Target.Valve=>EmberdeepInteractionDemo.Action.Valve,
+                    EmberdeepRefillTutorial.Target.Button=>EmberdeepInteractionDemo.Action.Button,
+                    EmberdeepRefillTutorial.Target.Pump=>EmberdeepInteractionDemo.Action.Pump,
+                    EmberdeepRefillTutorial.Target.Socket=>EmberdeepInteractionDemo.Action.Dock,
+                    EmberdeepRefillTutorial.Target.Intake or EmberdeepRefillTutorial.Target.IntakeSocket=>EmberdeepInteractionDemo.Action.Intake,
+                    _=>EmberdeepInteractionDemo.Action.Extinguisher};
+                // The left guide first teaches the weapon. Refill steps take over
+                // when a station is connected or the tank needs water.
+                if(!IsCreek && !run.Supply.Locked && run.Supply.Alignment01<=0 && run.Water>run.Capacity*.25f && !emptyOutlet)
+                    action=run.Equipped==FireEquipmentId.Extinguisher?EmberdeepInteractionDemo.Action.Extinguisher:
+                        run.Equipped==FireEquipmentId.PressureCannon?EmberdeepInteractionDemo.Action.Cannon:EmberdeepInteractionDemo.Action.Gun;
+                if(!run.NeedsTutorial(action))
+                {visualTutorial.gameObject.SetActive(false);tutorialLabel.gameObject.SetActive(false);tutorialMarker.gameObject.SetActive(false);tutorialLine.enabled=false;return;}
+                visualTutorial.Show(action);
+            }
             stateLabel.gameObject.SetActive(!available);instructionPlate.gameObject.SetActive(!available);
             Transform target=TutorialCue.Focus switch {
                 EmberdeepRefillTutorial.Target.Pickup=>pickupGrip,
@@ -427,6 +508,7 @@ namespace FireRescue
             instructionPlate.rotation=rotation;instructionPlate.position=stateLabel.transform.position+rotation*Vector3.forward*.009f;
             quantityLabel.transform.rotation=rotation;
             tutorialLabel.transform.rotation=rotation;
+            if(visualTutorial)visualTutorial.transform.rotation=rotation;
             tutorialPlate.rotation=rotation;tutorialPlate.position=tutorialLabel.transform.position+rotation*Vector3.forward*.009f;
         }
 
@@ -448,6 +530,7 @@ namespace FireRescue
             go.transform.SetParent(parent, false); go.transform.localPosition = position; go.transform.localScale = scale;
             var collider = go.GetComponent<Collider>(); collider.enabled = false;
             Destroy(collider);
+            if(type==PrimitiveType.Cube && !name.Contains("gauge") && !name.Contains("Water level"))go.GetComponent<MeshFilter>().sharedMesh=EmberdeepCraftDetails.SoftBox;
             var renderer = go.GetComponent<Renderer>(); renderer.sharedMaterial = material;
             renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
             Tint(renderer, color); return go;

@@ -18,7 +18,7 @@ namespace FireRescue.Tests
 
         [UnitySetUp] public IEnumerator Load()
         {
-            EmberdeepSession.NewExpedition();
+            EmberdeepSession.BeginEquipmentTestRun();
             yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
             yield return null;yield return null;
             game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);
@@ -86,7 +86,7 @@ namespace FireRescue.Tests
             for(int i=0;i<run.Trees.Length;i++)
                 if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);
             Assert.AreEqual(FirePhase.Cleared,run.Phase);
-        }
+        run.EvacuateSafeAnimals();}
 
         Transform Hud=>game.transform.Find("Rescue station");
         static Pose WorldPose(Transform value)=>new Pose(value.position,value.rotation);

@@ -9,7 +9,7 @@ namespace FireRescue.Tests
         {
             foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);
             Assert.AreEqual(FirePhase.Cleared,run.Phase);
-        }
+        run.EvacuateSafeAnimals();}
         static FireRun AtTier(WaterStationTier tier)
         {
             var run=new FireRun();
@@ -133,7 +133,7 @@ namespace FireRescue.Tests
             while(run.Coins<250){run.StartStage();Clear(run);}
             Assert.IsTrue(run.BuyEquipment(FireEquipmentId.PulsePistol));Assert.IsTrue(run.BuyUpgrade());
             int coins=run.Coins,upgrade=run.Upgrade;float water=run.Water;
-            run.StartStage();var tree=run.Trees[0];run.ApplyWater(tree.Position,100,.1f);Assert.Greater(run.Coins,coins);
+            run.StartStage();var tree=run.Trees[0];run.ApplyWater(tree.Position,100,.1f);Assert.AreEqual(coins,run.Coins,"Only rescued animals grant suppression-related cash");
             Assert.IsTrue(run.RetryStage());Assert.AreEqual(coins,run.Coins);Assert.AreEqual(water,run.Water);
             Assert.IsTrue(run.Owns(FireEquipmentId.PulsePistol));Assert.AreEqual(upgrade,run.Upgrade);
             Assert.AreEqual(WaterStationTier.RotaryHydrant,run.StationTier);

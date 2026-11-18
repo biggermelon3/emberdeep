@@ -1,0 +1,42 @@
+{
+  "release": "0.2.24",
+  "supersedes": "Palm input in GoddessHand.json; automatic stage starts and checkpoint-style production retry in prior releases. PalmProgression023.json level order, balance and layout remain.",
+  "palm_water": {
+    "aim": "Open left palm, tracked palmar normal aimed at miniature ground",
+    "activate": "Any individually valid right fingertip touching the back of the left hand; right-hand closure and right-palm alignment are not required",
+    "dwell_seconds": 0.1,
+    "contact_local_metres": {"x_abs": 0.042, "z_abs": 0.048, "palmar_y_min": -0.042, "palmar_y_max": -0.004},
+    "hold_margin_metres": 0.012,
+    "tracking": "Quest checks individual fingertip validity/confidence; portable OpenXR preserves a per-tip validity mask and transforms all five tips into world space",
+    "stop": "Finger lifts, left palm closes, invalid current tracking, tool/sheep ownership, menus or gameplay pause. No stale pose firing.",
+    "tutorial": "Left hand stays open; right index finger points from the side, other right fingers curl. Palm stays clear of the left hand. Any right finger is accepted in actual input."
+  },
+  "replay": {
+    "scope": "Production eight-level expedition; editor-only historical equipment fixtures retain old checkpoint tests",
+    "allowed": "Current stage in preparation, fighting, cleared, lost or won state",
+    "retained": ["earned coins", "owned equipment", "upgrades", "magic upgrades", "learned tutorials", "cumulative accounting"],
+    "reset": ["current forest and animals", "attempt timer", "weapon tanks to capacity", "magic to capacity", "input and transient effects"],
+    "reward": "Fresh rescue earns fresh reward; repeated retry clicks without rescue earn nothing; each animal pays once per attempt",
+    "next_level": "Replay preserves current level index; next-level button remains separate"
+  },
+  "preparation": {
+    "route": "Enter level -> preview and ready button -> explicit click -> 3 seconds -> fight",
+    "preview": ["level name", "initial fires", "sheep count", "available palm/tools"],
+    "frozen": ["fire simulation", "animal damage", "water spending", "level timer"],
+    "available": ["view scene", "pet and hold sheep", "pick up unlocked tools", "shop before countdown"],
+    "pause": "Focus loss, app pause and blocking panels stop countdown; delta clamped to prevent background catch-up",
+    "repeat": "New Game, next level and retry all prepare. Returning from camp resumes existing phase."
+  },
+  "sheep_interaction": {
+    "grab": "Near palm within 6.5 cm; first observe open hand then closure >= 0.42 for 0.08 seconds",
+    "release": "Tracked closure below 0.20; holding follows smoothly and never awards currency directly",
+    "pet": "Open hand or fingertip within 4.3 cm for 0.18 seconds; affection for 1.5 seconds, 2-second feedback cooldown",
+    "feedback": "Happy head/ear/body motion, pink heart, shared bounded bleat voices",
+    "tracking_loss": "Freeze briefly; release after 0.35 seconds of missing individual hand samples. Global pause/menu/recenter resets interaction.",
+    "landing": "Return smoothly to the nearest valid island landing point if released outside terrain",
+    "ownership": "One sheep per hand; a sheep cannot belong to both hands; held sheep do not block the evacuation queue",
+    "fire": "Carried burning sheep still need water. Petting grants neither money nor fire immunity."
+  },
+  "localization_entries": 302,
+  "validation": {"release_evidence": "Release-0.2.24.json", "headset_acceptance": "Pending user test"}
+}

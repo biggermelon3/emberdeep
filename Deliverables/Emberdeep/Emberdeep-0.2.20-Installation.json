@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-15",
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "package": "com.metahackathon2026.emberdeep",
+  "version": "0.2.20",
+  "versionCode": 23,
+  "installedVersionVerified": true,
+  "installation": "Replace existing application; preserve data",
+  "apkSha256": "8740328994c369a269f4fe0f34a2d1b0bb49269be2decf6d79a7f9f728968cd7",
+  "appInfo": {
+    "verified_via": "ADB dumpsys package",
+    "package": "com.metahackathon2026.emberdeep",
+    "version_name": "0.2.20",
+    "launch": "Launch requested; no app process observed; physical acceptance pending",
+    "version_code": "23",
+    "installation": "Streamed install -r returned Success",
+    "power": "mWakefulness=Asleep"
+  },
+  "headset_acceptance": "Pending user test of nozzle aiming, regrip, handoff, round cloud coverage and closer creek/effects"
+}

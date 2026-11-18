@@ -1,0 +1,359 @@
+E M B E R D E E P	余烬深林
+A MINIATURE FIRE EXPEDITION	微缩森林灭火冒险
+Continue	继续游戏
+New Game	开始新游戏
+Settings	设置
+Quit Emberdeep?	退出《余烬深林》？
+This showcase does not save after closing.	此演示版关闭后不会保存进度。
+Yes, Quit	确认退出
+Cancel	取消
+Quit	退出
+Back	返回
+Sound: On	声音：开
+Sound: Off	声音：关
+Recenter Menu	重置菜单位置
+AIM YOUR HAND AT A BUTTON  -  PINCH	用手指向按钮，再捏合确认
+Use either hand. Open your fingers before each pinch.	左右手均可操作，每次捏合前请先张开手指。
+SHOW AN OPEN HAND TO BEGIN	伸出张开的手，开始操作
+BUTTON FOUND  -  PINCH WITH THE POINTING HAND	已选中按钮，用指向它的那只手捏合
+Look ahead\nFinding your headset position...	请看向前方\n正在定位头显……
+E M B E R D E E P  /  FIRE EXPEDITION	余烬深林 / 森林营救
+F I R E   R E S C U E  /  MINI WORLD	森林消防 / 微缩世界
+FIRST RESPONSE	初次出动
+QUIT APP	退出游戏
+YES, QUIT	确认退出
+RECENTER	重置位置
+RETRY SECTOR	重试本关
+FIRE CAMP	返回营地
+MAIN MENU	主菜单
+< TOOL	< 工具
+TOOL >	工具 >
+NEXT INCIDENT >	下一关 >
+CONTAIN THE FIRE	扑灭火焰
+REFILL ASSIST ON	补水辅助已开启
+REFILL ASSIST	补水辅助
+GEAR SHOP >	装备商店 >
+SHOP CLOSED	商店已关闭
+SHOP AFTER ROUND	过关后进入商店
+RETURN TOOL	放回工具
+TAKE OWNED TOOL	拿起工具
+Spend your reward, then take on the next fire.	购买装备，然后挑战下一片火场。
+Forest saved. Return to camp.	森林获救！返回营地吧。
+Too many trees burned. Retry and keep your earned coins.	烧毁的树太多了。重试本关会保留已获得的金币。
+EMPTY - dock at the free cyan water source	水已用完：前往蓝色补水设备补水
+EMPTY - dock the cyan coupling at the free water source	水已用完：将蓝色接口对准补水设备
+Grip the handle; squeeze to fire.	握住把手，握紧喷水。
+Mouse: spray | H: water station | C: creek | B: shop	鼠标：喷水 | H：补水站 | C：小河 | B：商店
+GRASP the gold top handle / other hand: cyan nozzle.	右手握住金色顶部把手，左手抓蓝色喷嘴。
+SQUEEZE grip to charge / or grasp cyan pump, pull, release.	握紧蓄力，或抓住蓝色泵把拉动后松开。
+TAKE OWNED TOOL below. B: shop between incidents. 1-4: owned gear.	点击下方拿起工具。B：商店；1—4：已拥有的装备。
+REFILL - cannon needs at least 8 water	请补水：水炮至少需要 8 单位水
+GRASP the top handle to spray / GRASP with the other hand to transfer	右手抓顶部把手；另一只手可抓瓶身换手
+OPEN this hand, then GRASP the top handle / other hand: GRASP to transfer	张开手让瓶身悬浮，再抓顶部；也可换手抓瓶身
+GRASP the nozzle with your other hand to aim	左手抓住喷嘴，用拳头朝向瞄准
+RELAX the top hand once, then SQUEEZE to spray. Your tool stays held.	先半松右手，再握紧喷水；半松不会放下工具。
+SQUEEZE to spray / RELAX to stop / OPEN PALM to float / re-grasp within 5 seconds	握紧喷水 / 半松停水 / 张掌悬浮 / 5 秒内可重新抓取
+CHARGING	蓄力中
+release to launch	松开后发射
+CHARGE	蓄力
+LIMIT	上限
+COST	耗水
+RELEASE TO LAUNCH	松开发射
+NOZZLE UPGRADED	喷嘴升级成功
+PATH CLEAR	道路已畅通
+CHAIN	连击
+SHEEP SAFE!	小羊获救！
+RAIN ACTIVATED	喷淋已启动
+CABIN LOST - SAVE THE OTHERS	小屋已毁，请保护其他小屋
+CABIN LOST	小屋已毁
+SLOW RECOVERY  +0.25/s	缓慢恢复 +0.25/秒
+RECOVERY  Waiting	恢复等待中
+Slowly recovering / Refill at the pump for faster water	正在缓慢恢复，使用水泵可更快补水
+F I R E H O U S E   /   G E A R	消防装备商店
+DISPLAY ONLY	装备预览
+< PREVIOUS	< 上一件
+NEXT >	下一件 >
+BACK / PICK UP	返回 / 拿起
+< TOOLS	< 装备
+VIEW TUNING	查看强化
+VIEW WATER	查看补水设备
+CURRENT STATION / COMPARISON	当前补水设备 / 对比
+NEXT WATER STATION	下一级补水设备
+ALL STATION TIERS OWNED	已拥有全部补水设备
+FULLY UPGRADED	已升至最高级
+MAX TIER	最高等级
+CURRENT	当前设备
+SHOW RESULT >	查看升级结果 >
+< COMPARE CURRENT	< 对比当前设备
+NUMERIC TUNING / SAME MODEL	装备强化 / 外观不变
+No new mesh / same firing mode	提升性能，外观和喷水方式不变
+OWN TOOL FIRST	请先购买此装备
+MAX TUNING	已强化至最高级
+CLEAR INCIDENT	请先通过关卡
+OWNED	已拥有
+PREVIEW UNAVAILABLE	暂无预览
+Preview unavailable	暂无预览
+GRASP HANDLE TO TAKE	握住把手拿起
+SELECT IN SHOP	请在商店选择
+LEVER WELL	杠杆水泵
+ROTARY HYDRANT	旋转阀门补水站
+PUSH BUTTON	按钮补水站
+Grasp lever: down + return\nLonger strokes collect more water	握住杠杆，下压后抬起\n行程越长，补水越多
+Turn the gold wheel 45 degrees\nContinuous fill; turn back to stop	转动金色阀门 45 度\n持续补水，反向转回停止
+Press the gold button to fill\nPress again to stop	按下金色按钮补水\n再次按下停止
+Right grip: squeeze to spray\nLeft nozzle: aim the foam	右手握紧喷水\n左手握喷嘴瞄准
+Tap: accurate water pulse\nHold: repeat bursts	握紧：精准脉冲水弹\n持续握紧：连续发射
+Hold: sweep five water streams\nWide cover; uses more water	握紧：五股水流扫射\n范围更广，耗水更多
+Hold: charge / release: splash\nOffhand pump adds charge	握紧蓄力，半松发射\n辅助手拉泵可增加蓄力
+FOAM EXTINGUISHER	泡沫灭火器
+PULSE WATER PISTOL	脉冲水枪
+RAIN FAN	雨扇
+PRESSURE CANNON	高压水炮
+Short sweep / foam slows fire spread	近距离扫射，泡沫减缓火势蔓延
+Accurate bursts / longer reach	精准水弹，射程更远
+Five streams / wide cover / thirsty	五股水流，范围广、耗水多
+Charge a water bomb / area splash	蓄力水弹，范围灭火
+HOLD nozzle / SQUEEZE top handle: foam	左手握喷嘴，右手握紧顶部喷射泡沫
+SQUEEZE grip: bursts / RELAX: stop	握紧发射水弹，半松停止
+SQUEEZE grip: fan / RELAX: stop	握紧扇形喷水，半松停止
+SQUEEZE grip: charge / RELAX: launch	握紧蓄力，半松发射
+FOAM SWEEP	泡沫扫射
+PULSE BURSTS	脉冲水弹
+WIDE FAN	扇形喷水
+CHARGED SPLASH	蓄力水弹
+GRASP THE GOLD HANDLE	右手握住金色把手
+LEFT HAND: AIM NOZZLE	左手握喷嘴瞄准
+SQUEEZE: WATER	握紧：喷水
+HALF OPEN: STOP	半松：停水
+OPEN PALM: FLOAT	张掌：悬浮放下
+POINT THE BARREL	枪口指向目标
+SQUEEZE: CHARGE / RELAX: LAUNCH	握紧蓄力 / 半松发射
+GRASP / PULL / PUSH BACK	握住 / 拉出 / 推回
+GRASP RIM / TURN	握住轮缘 / 转动
+INDEX FINGER: PRESS	伸出食指按下
+GRASP / PLACE IN WATER / OPEN	握住 / 放入水中 / 松手
+ALIGN BLUE RINGS / HOLD STILL	对齐蓝色接口 / 保持不动
+LIFT: COLLECT WATER	抬起：补水
+PRESS DOWN	下压
+GRASP	握住
+GRASP RIM + TURN 45	握住轮缘，转动 45 度
+PULL + RETURN	拉出后推回
+GRASP / LOWER + RETURN	握住，下压后抬起
+PRESS TO FILL	按下补水
+INTAKE	进水口
+CREEK / OPTIONAL REFILL	小河 / 可选补水
+HYDRANT / DOCK TOOL	补水站 / 对接工具
+Tank full - grasp the tool to disconnect	水箱已满，握住工具取下
+Source busy - disconnect the docked tool first	水源使用中，请先取下已连接的工具
+Move the refill port into the cyan socket	将补水接口移到蓝色插座
+Align the port arrow with the socket arrow	将接口箭头与插座箭头对齐
+Hold aligned to connect	对齐并保持，等待连接
+Connected - place the intake in the marked water socket	已连接，请将进水口放入标记水域
+Connected - press down and lift; larger strokes collect more water	已连接，下压再抬起；行程越长补水越多
+Connected - rotate the valve 45 degrees	已连接，请将阀门旋转 45 度
+Connected - press the button to fill	已连接，按下按钮补水
+Filling - press again to stop	补水中，再按一次停止
+Flow stopped - press the button to fill	已停止，按下按钮继续补水
+Filling - turn back or disconnect to stop	补水中，转回阀门或取下工具停止
+Valve closed - turn to fill	阀门已关闭，转动开始补水
+Lever position invalid - return to the upper rest	请将杠杆抬回初始位置
+Return the lever upwards to transfer water	向上抬起杠杆收集水
+Lower the lever, then return it upwards	下压杠杆，再向上抬起
+Stroke accepted - lower and return the lever again	补水成功，可继续下压再抬起
+Intake removed - reconnect it before pumping	进水口已移开，请重新放入水中
+Primed - pull 8 cm, then return the pump	已就绪，拉出约 8 厘米再推回
+Pump position invalid - release and start at the detent	请松手，将泵把推回初始位置
+Start the pump at its home detent	请从泵把初始位置开始
+Return the handle to transfer water	推回把手以收集水
+Stroke accepted - pull and return again	补水成功，可继续拉出再推回
+Disconnected - open your hand before firing	已断开，先半松手再握紧喷水
+FILL TO RAIN	注水启动喷淋
+RAIN!	喷淋中！
+PROTECT	保护
+FULL	已满
+EMPTY	已空
+WATER	水量
+TANK	容量
+POWER	强度
+REACH	射程
+WIDTH	范围
+SPEED	流速
+TUNING	强化
+CASH	金币
+PRICE	价格
+BUY	购买
+TUNE	强化
+TOOL	装备
+STARS	星级
+CABIN BONUS	小屋奖励
+CABINS	小屋
+SCORE	分数
+PAR	目标时间
+SHEEP	小羊
+RESCUE	营救
+clear their escape paths. Spray to protect.	打通逃生道路，喷水保护它们。
+FIGHTING	灭火中
+Fighting	灭火中
+CLEARED	已过关
+Cleared	已过关
+Won	全部获救
+Lost	挑战失败
+Ready	准备出发
+FILL	注水
+FIRST SPARK	初起火苗
+PARK PATROL	公园巡护
+THE GROVE	林间营救
+FOREST FRONT	森林前线
+FOREST INFERNO	烈焰森林
+FOREST SAVED!	森林获救！
+FOREST LOST - TRY AGAIN	森林失守，请再试一次
+INCIDENT CONTAINED	火情已控制
+Refill interrupted	补水已中断
+Refill stopped - reconnect deliberately	补水已停止，请重新对接
+Tracking lost - reconnect to resume	手部追踪中断，请重新对接
+Tracking lost - unfinished stroke cancelled	追踪中断，本次未完成的动作已取消
+Tool or sector unavailable	工具或关卡暂不可用
+Invalid hand sample time - reconnect deliberately	手部数据暂不可用，请重新对接
+Tool connected - release, then grasp the lever	工具已连接，松手后握住杠杆
+Empty outlet - dock a tool to collect water	请对接工具后收集水
+Relax trigger before docking	对接前请半松握持手
+Docked. Open your hand, then operate the cyan control	已对接，张开手再操作蓝色控制器
+Turn the coupling to match the socket arrow	转动接口，与插座箭头对齐
+Hold aligned until the socket clicks	保持对齐，等待接口确认连接
+Hand tracking lost - dock again	手部追踪中断，请重新对接
+Disconnected. Open hand before firing	已断开，先半松手再握紧喷水
+Lever released - release, then grasp again	杠杆已松开，请张掌后重新抓取
+Dock a tool to collect water, or grasp the lever to try it	对接工具收集水，或直接握杠杆试用
+Raise the lever to splash water from the empty outlet	抬起杠杆，可从出水口放水
+Lower and return the lever - dock a tool to collect water	下压再抬起杠杆，对接工具后可收集水
+Align the cyan refill coupling with the socket	将蓝色补水接口与插座对齐
+Sector changed	关卡已切换
+Retry checkpoint	重新开始本关
+New expedition	新的营救行动
+Keep the landing dot on the fire until it turns green.	让落点保持在火焰上，直到它变绿。
+Spray the blue tank: a full tank rains for four seconds.	向蓝色水箱喷水，注满后会喷淋四秒。
+Clear nearby flames or cool the cabin directly. Save it for $50.	扑灭附近火焰或直接给小屋降温，保护它可获得 50 金币。
+Fill a tower, then fight another pocket while it rains.	注满水塔，让它喷淋，同时扑灭别处的火。
+Use cannon splashes on clusters and towers on separate fronts.	水炮扑灭密集火焰，用水塔照顾其他区域。
+OPTIONAL CREEK REFILL	小河补水（可选）
+HANDS PAUSED\nShow your hands to continue	操作已暂停\n请让双手进入追踪范围
+OTHER SOURCE CONNECTED\nTake the tool before changing source	已连接其他水源\n取下工具后再切换水源
+RETURN THE LEVER\nRaise the handle to release a small splash\nDock a tool to collect the water	抬起杠杆\n抬起把手可放出少量水\n对接工具后可收集水
+PRESS THE HANDLE DOWN\nKeep your grasp, then raise\nDock a tool to collect the water	下压把手\n保持握持，然后抬起\n对接工具后可收集水
+TRY THE PUMP\nGrasp handle; hold, lower + return\nDock a tool to collect the water	试试水泵\n握住把手，下压再抬起\n对接工具后可收集水
+Pick up a tool to try it	拿起工具即可试用
+TAKE YOUR TOOL\nOpen hand, then grasp the tool	拿起工具\n先张开手，再握住工具
+HOLD STILL\nKeep the blue rings together	保持不动\n让两个蓝色接口保持对齐
+Relax your grip; match the blue rings	半松握持手，对齐蓝色接口
+RELAX YOUR GRIP TO DOCK\nBring the two blue rings together	半松握持手，准备对接\n将两个蓝色接口靠在一起
+FULL - TAKE YOUR TOOL\nOpen hand, then grasp the tool	水箱已满，取下工具\n张开手后重新抓取
+RETURN THE LEVER\nLift to collect water; longer strokes give more	抬起杠杆\n抬起收集水，行程越长水越多
+GRASP THE LEVER\nHold with a relaxed fist\nPress down, then lift; longer strokes give more	握住杠杆\n半握拳保持抓取\n下压再抬起，行程越长水越多
+FILLING\nPress again to stop early	补水中\n再次按下可提前停止
+PRESS THE BLUE BUTTON\nPush inward once to fill	按下蓝色按钮\n向内按一次开始补水
+FILLING\nGrip + turn back 45 degrees to stop	补水中\n握住阀门转回 45 度即可停止
+GRIP + TURN THE WHEEL\nMove around the rim by 45 degrees	握住阀门并转动\n沿轮缘转动 45 度
+PUT STRAINER IN WATER\nRelease it on the green ring	将进水口放入水中\n在绿色圆环处松手
+PICK UP THE STRAINER\nGrasp, move to green ring, release	拿起进水口\n握住，移到绿色圆环，然后松手
+PUSH BACK TO FINISH\nReturn the handle for one refill	推回完成补水\n将把手推回原位
+PULL THE BLUE HANDLE\nGrasp, pull 8 cm, then push back	拉动蓝色把手\n握住，拉出约 8 厘米，再推回
+BRING THE TOOL HERE\nMatch the two blue rings	把工具移到这里\n对齐两个蓝色接口
+H: dock water station	H：对接补水站
+dock tool	对接工具
+try pump	试用水泵
+GODDESS HAND	女神之手
+GODDESS HAND: extinguish the single tree with your palms.	女神之手：用掌心水扑灭这棵树的火。
+Open left palm: aim. Touch its back with any right fingertip: water.	张开左掌瞄准，用右手任意指尖触碰左手手背喷水。
+Right hand: gold handle. Left hand: nozzle. Squeeze to spray.	右手握金色把手，左手抓喷嘴；握紧右手喷水。
+Lift your fingertip to stop. Crystal refills over time.	抬起指尖停止喷水，晶石会随时间恢复。
+Mouse: aim / hold SPACE: palm water	鼠标瞄准 / 按住空格：掌心水
+Touch the back of your left hand with any right fingertip. Lift to stop.	用右手任意指尖触碰左手手背，抬起即停。
+MANA EMPTY - let the crystal recharge	魔力耗尽——等待晶石恢复
+OPEN LEFT PALM: AIM	张开左掌：瞄准
+TOUCH LEFT HAND BACK: WATER	指尖触碰左手手背：喷水
+LIFT FINGER: STOP / RECHARGE	抬起指尖：停止／恢复魔力
+VIEW MAGIC	查看魔力
+TIME-RECHARGED ABILITY	随时间恢复的能力
+Open left palm: aim / right fingertip on its back: water\nOnly time restores mana	张开左掌瞄准／右手指尖触碰手背喷水\n魔力只能随时间恢复
+MANA	魔力
+DURATION	持续时间
+RECHARGE	恢复速度
+GROWING MAGIC	成长的魔力
+PALM RESCUE	掌心救援
+PALM RESCUE: cool the grove and protect the sheep.	掌心救援：扑灭林间火焰，保护小羊。
+WATER STATION / EQUIPMENT FROM LEVEL 4	补水站 / 第四关开放装备
+EQUIPMENT FROM LEVEL 4	第四关开放装备
+PALM WATER READY	掌心水已就绪
+FULL RECHARGE	回满时间
+UPGRADE YOUR MAGIC >	升级你的魔力 >
+Visit the shop and buy your first magic upgrade.	进入商店，购买第一次魔力升级。
+1. BUY YOUR FIRST MAGIC UPGRADE	第一步：购买首次魔力升级
+FIRST UPGRADE / MORE PALM WATER	首次升级 / 更多掌心水
+UPGRADE	升级
+More water for your next rescue.\nAim at the gold button and pinch.	为下一次救援增加水量。\n瞄准金色按钮并捏合购买。
+GET READY / RESCUE PREVIEW	准备阶段／查看救援目标
+PALM WATER / Protect the sheep	本关使用掌心水／保护小羊
+TOOLS + PALM WATER / Protect the sheep	本关开放装备和掌心水／保护小羊
+Get comfortable. The fire starts after the countdown.	调整好姿势，倒计时结束后正式开始。
+Look around, pet the sheep, then press START.	先熟悉场景、摸摸小羊，准备好后点击开始。
+GET READY	准备开始
+START INCIDENT >	开始本关 >
+STARTING IN	距离开始还有
+FIRES	处火情
+WATER BOLT	水枪
+WATER ORB	水球
+PALM	掌心水
+BOLT	水枪
+FAN	雨扇
+ORB	水球
+Open left palm at the fire.	左手张开，掌心对准火焰。
+Right fingertip on its back: spray.	右手指尖碰左手手背：喷水。
+Left hand points at the fire.	左手指向火焰。
+Right fist: charge. Open: fire.	右手握拳蓄力，张开发射。
+Push both open palms forward	双手张开，掌心向前推
+for 1 second. Close hands: stop.	保持 1 秒开始喷洒；握拳停止。
+Left palm up, right fingers under it.	左手掌心向上，右手手指放到它下方。
+Flip the palm down and open: drop.	左手翻转朝下并张开：投下水球。
+ORB GROWING - move your right hand away to hold it	水球成长中——移开右手即可托住
+Aim your palm at the forest, then open your hand	掌心对准森林，再张开手掌
+ORB READY - turn your left palm down and open your hand to drop it	水球就绪——左手翻转朝下并张开，投下水球
+RAIN FAN spraying - close your hands to stop	雨扇喷洒中——握拳停止
+RAIN FAN - hold both palms forward	雨扇准备中——保持双掌向前
+CHARGING - open your right hand to fire	蓄力中——张开右手发射
+ABSORBING WATER	正在吸水
+WATER BOLT - make a right fist to charge, open it to fire	水枪——右手握拳蓄力，张开发射
+A crystal is empty - pump the well, then dip a hand in the basin	有晶石空了——去打水，再把手放进水盆吸水
+Cast with your hands. The board on the right shows each gesture.	用双手施法。右侧的法术板列出了每个手势。
+SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: pump | E: absorb	空格：掌心水 | 2：水枪 | 3：雨扇 | 4：水球 | R：打水 | E：吸水
+WATER STATION / OPENS AFTER THE FIRST LESSON	补水站 / 第一关后开放
+PUMP THE LEVER	摇动杠杆打水
+Water fills the basin	水会流进水盆
+FILLING THE BASIN	正在给水盆注水
+TWIST THE WHEEL	握住阀轮拧动
+The basin keeps filling	水盆会持续注水
+FAST FILL	快速注水中
+AUTO FILL	自动补水
+Press the button for a fast fill	按下按钮可快速注满
+BASIN	水盆
+DIP A HAND TO ABSORB	把手放进水盆吸水
+Pump the lever: each stroke fills the basin	摇动杠杆：每次打水都会注入水盆
+Dip a hand in the basin to absorb	把手放进水盆即可吸水
+Twist the wheel once: the basin keeps filling	拧一下阀轮：水盆持续注水
+The basin refills slowly by itself	水盆会自动缓慢补水
+SPELLS / Protect the sheep	本关使用法术／保护小羊
+PALM WATER	掌心水
+LEFT HAND: POINT AT THE FIRE	左手指向火焰
+RIGHT FIST: CHARGE	右手握拳：蓄力
+OPEN RIGHT HAND: FIRE	张开右手：发射
+BOTH OPEN PALMS FORWARD	双手张开，掌心向前
+HOLD FOR 1 SECOND	保持 1 秒
+WIDE SPRAY	大范围喷洒
+CLOSE YOUR HANDS: STOP	握拳：停止
+LEFT PALM UP	左手掌心向上
+RIGHT FINGERS UNDER IT: GROW	右手手指放到下方：蓄力
+MOVE RIGHT HAND AWAY: HOLD	移开右手：托住水球
+FLIP AND OPEN: DROP	翻手张开：投下
+LIFT THE LEVER BACK UP	把杠杆抬回去
+PUSH THE LEVER DOWN	向下压杠杆
+CLOSE YOUR HAND ON THE LEVER	握住杠杆
+WATER ORB - left palm up, right fingers under it	水球——左手掌心向上，右手手指放到下方

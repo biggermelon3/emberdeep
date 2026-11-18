@@ -21,7 +21,8 @@ namespace FireRescue.Tests
             Assert.IsTrue(run.Supply.Locked);
         }
         static void Clear(FireRun run)
-        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);}
+        {
+            foreach(var a in run.Animals)run.ApplyAnimalWater(a.Position,100,.6f);foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);run.EvacuateSafeAnimals();}
         static float Stroke(EmberdeepWaterSupply supply)
         {
             supply.SamplePump(0,true,true);supply.SamplePump(.08f,true,true);
@@ -150,7 +151,7 @@ namespace FireRescue.Tests
             float entryWater=run.Water;int entryCoins=run.Coins;float entrySpent=run.ConsumedWater;
             run.ApplyWater(run.Trees[0].Position,100,.1f);run.Tick(.1f,true);
             Dock(run);run.Supply.SetValveOpen(true);run.Supply.Tick(.1f,true);
-            Assert.Greater(run.Coins,entryCoins);Assert.Greater(run.SuppliedWater,0);
+            Assert.AreEqual(entryCoins,run.Coins,"Tree suppression no longer grants cash; animal payout rollback is tested separately");Assert.Greater(run.SuppliedWater,0);
             Assert.IsTrue(run.RetryStage());Assert.AreEqual(1,run.Stage);Assert.AreEqual(entryCoins,run.Coins);
             Assert.AreEqual(entryWater,run.Water);Assert.Zero(run.SuppliedWater);Assert.AreEqual(entrySpent,run.ConsumedWater);
             Assert.IsFalse(run.Supply.Locked);Assert.AreEqual(5,run.Burning);

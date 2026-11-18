@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-15",
+  "status": "SUPERSEDED_SOURCE_ITERATION",
+  "based_on_release": "0.2.18 / code 21",
+  "requirement": "Keep XR passthrough visible outside the miniature; place clouds and sky only behind the fireground from the initial player-facing placement.",
+  "changes": [
+    "Replace the camera-centred enclosing sphere with one bounded, front-facing quad attached to the arena rear.",
+    "Use stationary cloud banks, a muted blue/teal sky, warm horizon light and two distant forest layers; soften the arched outline into zero alpha.",
+    "Follow arena placement and recentering, never head rotation or translation. The reverse side is culled.",
+    "Retain the four-second bottom-to-top reveal, focus/pause gating, foreground visibility and restoration of camera state on scene exit."
+  ],
+  "geometry": {
+    "arena_local_center": [
+      0,
+      6.6,
+      14
+    ],
+    "arena_local_size": [
+      17.6,
+      14.4,
+      1
+    ],
+    "arena_scale": 0.08,
+    "world_width_metres": 1.408,
+    "world_height_metres": 1.152
+  },
+  "alpha_contract": "Camera clears to RGBA 0; only the bounded rear patch adds coverage. Existing opaque game objects keep their own coverage. Empty side/rear/up/down views write no sky RGB or alpha.",
+  "platform_contract": "PICO see-through remains enabled by PicoPassthrough; the PICO rig already clears transparent. Quest uses its existing underlay. No SDK/platform settings changed.",
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 215,
+        "passed": 215,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepXRBackdrop/Acceptance3/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 211,
+        "passed": 211,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepXRBackdrop/Acceptance3/PlayMode-results.json"
+      }
+    },
+    "captures": [
+      {
+        "path": "Deliverables/Emberdeep/Emberdeep-XR-Backdrop-2026-11-15-03-Local-Backdrop.png",
+        "zero_alpha_pixels": 738389,
+        "total_pixels": 1600000
+      },
+      {
+        "path": "Deliverables/Emberdeep/Emberdeep-XR-Backdrop-2026-11-15-04-Level-View.png",
+        "zero_alpha_pixels": 1086711,
+        "total_pixels": 1600000
+      },
+      {
+        "path": "Deliverables/Emberdeep/Emberdeep-XR-Backdrop-2026-11-15-05-Side-Transparent.png",
+        "zero_alpha_pixels": 1592602,
+        "total_pixels": 1600000
+      },
+      {
+        "path": "Deliverables/Emberdeep/Emberdeep-XR-Backdrop-2026-11-15-06-Behind-Transparent.png",
+        "zero_alpha_pixels": 1600000,
+        "total_pixels": 1600000
+      },
+      {
+        "path": "Deliverables/Emberdeep/Emberdeep-XR-Backdrop-2026-11-15-Isolated-Alpha.png",
+        "zero_alpha_pixels": 24400,
+        "total_pixels": 65536
+      }
+    ],
+    "checks": [
+      "Bottom-to-top alpha reveal",
+      "Front patch opaque after reveal",
+      "Empty directions RGBA zero",
+      "Reverse face transparent",
+      "Foreground visible",
+      "No enabled colliders",
+      "Head movement does not move backdrop",
+      "Arena recenter moves backdrop without resetting reveal",
+      "Camp exit restores camera"
+    ],
+    "scope": "Actual scene and production shader rendered in Unity with live frame advancement. Not a PICO or Quest passthrough compositor capture."
+  },
+  "delivery": "Source only; no new APK, device installation or Git push in this iteration.",
+  "source_sha256": {
+    "Assets/FireRescue/Resources/EmberdeepImmersiveSky.shader": "1f38c947be7c1d1adf0149703927a7759da55cc520f75a96a0a9d7a61a45f5e3",
+    "Assets/FireRescue/Runtime/EmberdeepImmersiveSky.cs": "d811c58fce49fac35ff9a915e4543845065f53397be7e66f262adee986779c87",
+    "Assets/FireRescue/Runtime/FireRescueGame.cs": "6d3de35e21dde09cb28cf72eb7f0b54e673f3a0e36e4719bc0d685c3fbb1e9b0",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepImmersiveSkyTests.cs": "97fd7a0424e6282bcdcfd2625d9ac4f603b2d4248f4a33bfd671f37c9c0ba7cf"
+  },
+  "superseded_by": "ViewRelativeSkyAndRiver.json",
+  "historical_scope": "Prior source-only iteration; captures, test results and hashes below describe that iteration, not current source or the installed APK."
+}

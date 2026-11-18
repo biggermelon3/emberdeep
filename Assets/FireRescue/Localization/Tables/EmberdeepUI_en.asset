@@ -1,0 +1,1571 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: EmberdeepUI_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: daa425b726f67db45b20035db118080f, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 1061715968
+    m_Localized: E M B E R D E E P
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1099464704
+    m_Localized: A MINIATURE FIRE EXPEDITION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1099464705
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1099464706
+    m_Localized: New Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659008
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659009
+    m_Localized: Quit Emberdeep?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659010
+    m_Localized: This showcase does not save after closing.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659011
+    m_Localized: Yes, Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659012
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659013
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659014
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659015
+    m_Localized: 'Sound: On'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659016
+    m_Localized: 'Sound: Off'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659017
+    m_Localized: Recenter Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659018
+    m_Localized: AIM YOUR HAND AT A BUTTON  -  PINCH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659019
+    m_Localized: Use either hand. Open your fingers before each pinch.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659020
+    m_Localized: SHOW AN OPEN HAND TO BEGIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659021
+    m_Localized: BUTTON FOUND  -  PINCH WITH THE POINTING HAND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659022
+    m_Localized: 'Look ahead
+
+      Finding your headset position...'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659023
+    m_Localized: E M B E R D E E P  /  FIRE EXPEDITION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659024
+    m_Localized: F I R E   R E S C U E  /  MINI WORLD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659025
+    m_Localized: FIRST RESPONSE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659026
+    m_Localized: QUIT APP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659027
+    m_Localized: YES, QUIT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659028
+    m_Localized: RECENTER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659029
+    m_Localized: RETRY SECTOR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659030
+    m_Localized: FIRE CAMP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659031
+    m_Localized: MAIN MENU
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659032
+    m_Localized: < TOOL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659033
+    m_Localized: TOOL >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659034
+    m_Localized: NEXT INCIDENT >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659035
+    m_Localized: CONTAIN THE FIRE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659036
+    m_Localized: REFILL ASSIST ON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659037
+    m_Localized: REFILL ASSIST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659038
+    m_Localized: GEAR SHOP >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659039
+    m_Localized: SHOP CLOSED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659040
+    m_Localized: SHOP AFTER ROUND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659041
+    m_Localized: RETURN TOOL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659042
+    m_Localized: TAKE OWNED TOOL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659043
+    m_Localized: Spend your reward, then take on the next fire.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659044
+    m_Localized: Forest saved. Return to camp.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659045
+    m_Localized: Too many trees burned. RETRY SECTOR restores its checkpoint.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659046
+    m_Localized: EMPTY - dock at the free cyan water source
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659047
+    m_Localized: EMPTY - dock the cyan coupling at the free water source
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659048
+    m_Localized: Grip the handle; squeeze to fire.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659049
+    m_Localized: 'Mouse: spray | H: water station | C: creek | B: shop'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659050
+    m_Localized: 'GRASP the gold top handle / other hand: cyan nozzle.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659051
+    m_Localized: SQUEEZE grip to charge / or grasp cyan pump, pull, release.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659052
+    m_Localized: 'TAKE OWNED TOOL below. B: shop between incidents. 1-4: owned gear.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659053
+    m_Localized: REFILL - cannon needs at least 8 water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659054
+    m_Localized: GRASP the top handle to spray / GRASP with the other hand to transfer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659055
+    m_Localized: 'OPEN this hand, then GRASP the top handle / other hand: GRASP to
+      transfer'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659056
+    m_Localized: GRASP the nozzle with your other hand to aim
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659057
+    m_Localized: RELAX the top hand once, then SQUEEZE to spray. Your tool stays
+      held.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659058
+    m_Localized: SQUEEZE to spray / RELAX to stop / OPEN PALM to float / re-grasp
+      within 5 seconds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659059
+    m_Localized: CHARGING
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659060
+    m_Localized: release to launch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659061
+    m_Localized: CHARGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659062
+    m_Localized: LIMIT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1103659063
+    m_Localized: COST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853312
+    m_Localized: RELEASE TO LAUNCH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853313
+    m_Localized: NOZZLE UPGRADED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853314
+    m_Localized: PATH CLEAR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853315
+    m_Localized: CHAIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853316
+    m_Localized: SHEEP SAFE!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853317
+    m_Localized: RAIN ACTIVATED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853318
+    m_Localized: CABIN LOST - SAVE THE OTHERS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853319
+    m_Localized: CABIN LOST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853320
+    m_Localized: SLOW RECOVERY  +0.25/s
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853321
+    m_Localized: RECOVERY  Waiting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853322
+    m_Localized: Slowly recovering / Refill at the pump for faster water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853323
+    m_Localized: F I R E H O U S E   /   G E A R
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853324
+    m_Localized: DISPLAY ONLY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853325
+    m_Localized: < PREVIOUS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853326
+    m_Localized: NEXT >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853327
+    m_Localized: BACK / PICK UP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853328
+    m_Localized: < TOOLS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853329
+    m_Localized: VIEW TUNING
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853330
+    m_Localized: VIEW WATER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853331
+    m_Localized: CURRENT STATION / COMPARISON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853332
+    m_Localized: NEXT WATER STATION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853333
+    m_Localized: ALL STATION TIERS OWNED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853334
+    m_Localized: FULLY UPGRADED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853335
+    m_Localized: MAX TIER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853336
+    m_Localized: CURRENT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853337
+    m_Localized: SHOW RESULT >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853338
+    m_Localized: < COMPARE CURRENT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853339
+    m_Localized: NUMERIC TUNING / SAME MODEL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853340
+    m_Localized: No new mesh / same firing mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853341
+    m_Localized: OWN TOOL FIRST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853342
+    m_Localized: MAX TUNING
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853343
+    m_Localized: CLEAR INCIDENT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853344
+    m_Localized: OWNED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853345
+    m_Localized: PREVIEW UNAVAILABLE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853346
+    m_Localized: Preview unavailable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853347
+    m_Localized: GRASP HANDLE TO TAKE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853348
+    m_Localized: SELECT IN SHOP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853349
+    m_Localized: LEVER WELL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853350
+    m_Localized: ROTARY HYDRANT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853351
+    m_Localized: PUSH BUTTON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853352
+    m_Localized: 'Grasp lever: down + return
+
+      Longer strokes collect more water'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853353
+    m_Localized: 'Turn the gold wheel 45 degrees
+
+      Continuous fill; turn back
+      to stop'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853354
+    m_Localized: 'Press the gold button to fill
+
+      Press again to stop'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853355
+    m_Localized: 'Right grip: squeeze to spray
+
+      Left nozzle: aim the foam'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853356
+    m_Localized: 'Tap: accurate water pulse
+
+      Hold: repeat bursts'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853357
+    m_Localized: 'Hold: sweep five water streams
+
+      Wide cover; uses more water'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853358
+    m_Localized: 'Hold: charge / release: splash
+
+      Offhand pump adds charge'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853359
+    m_Localized: FOAM EXTINGUISHER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853360
+    m_Localized: PULSE WATER PISTOL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853361
+    m_Localized: RAIN FAN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853362
+    m_Localized: PRESSURE CANNON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853363
+    m_Localized: Short sweep / foam slows fire spread
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853364
+    m_Localized: Accurate bursts / longer reach
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853365
+    m_Localized: Five streams / wide cover / thirsty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853366
+    m_Localized: Charge a water bomb / area splash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853367
+    m_Localized: 'HOLD nozzle / SQUEEZE top handle: foam'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853368
+    m_Localized: 'SQUEEZE grip: bursts / RELAX: stop'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853369
+    m_Localized: 'SQUEEZE grip: fan / RELAX: stop'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853370
+    m_Localized: 'SQUEEZE grip: charge / RELAX: launch'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853371
+    m_Localized: FOAM SWEEP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853372
+    m_Localized: PULSE BURSTS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853373
+    m_Localized: WIDE FAN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853374
+    m_Localized: CHARGED SPLASH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853375
+    m_Localized: GRASP THE GOLD HANDLE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853376
+    m_Localized: 'LEFT HAND: AIM NOZZLE'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853377
+    m_Localized: 'SQUEEZE: WATER'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853378
+    m_Localized: 'HALF OPEN: STOP'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853379
+    m_Localized: 'OPEN PALM: FLOAT'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853380
+    m_Localized: POINT THE BARREL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853381
+    m_Localized: 'SQUEEZE: CHARGE / RELAX: LAUNCH'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853382
+    m_Localized: GRASP / PULL / PUSH BACK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853383
+    m_Localized: GRASP RIM / TURN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853384
+    m_Localized: 'INDEX FINGER: PRESS'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853385
+    m_Localized: GRASP / PLACE IN WATER / OPEN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853386
+    m_Localized: ALIGN BLUE RINGS / HOLD STILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853387
+    m_Localized: 'LIFT: COLLECT WATER'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853388
+    m_Localized: PRESS DOWN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853389
+    m_Localized: GRASP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853390
+    m_Localized: GRASP RIM + TURN 45
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853391
+    m_Localized: PULL + RETURN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853392
+    m_Localized: GRASP / LOWER + RETURN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853393
+    m_Localized: PRESS TO FILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853394
+    m_Localized: INTAKE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853395
+    m_Localized: CREEK / OPTIONAL REFILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853396
+    m_Localized: HYDRANT / DOCK TOOL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853397
+    m_Localized: Tank full - grasp the tool to disconnect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853398
+    m_Localized: Source busy - disconnect the docked tool first
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853399
+    m_Localized: Move the refill port into the cyan socket
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853400
+    m_Localized: Align the port arrow with the socket arrow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853401
+    m_Localized: Hold aligned to connect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853402
+    m_Localized: Connected - place the intake in the marked water socket
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853403
+    m_Localized: Connected - press down and lift; larger strokes collect more water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853404
+    m_Localized: Connected - rotate the valve 45 degrees
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853405
+    m_Localized: Connected - press the button to fill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853406
+    m_Localized: Filling - press again to stop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853407
+    m_Localized: Flow stopped - press the button to fill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853408
+    m_Localized: Filling - turn back or disconnect to stop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853409
+    m_Localized: Valve closed - turn to fill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853410
+    m_Localized: Lever position invalid - return to the upper rest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853411
+    m_Localized: Return the lever upwards to transfer water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853412
+    m_Localized: Lower the lever, then return it upwards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853413
+    m_Localized: Stroke accepted - lower and return the lever again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853414
+    m_Localized: Intake removed - reconnect it before pumping
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853415
+    m_Localized: Primed - pull 8 cm, then return the pump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853416
+    m_Localized: Pump position invalid - release and start at the detent
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853417
+    m_Localized: Start the pump at its home detent
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853418
+    m_Localized: Return the handle to transfer water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853419
+    m_Localized: Stroke accepted - pull and return again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853420
+    m_Localized: Disconnected - open your hand before firing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853421
+    m_Localized: FILL TO RAIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853422
+    m_Localized: RAIN!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853423
+    m_Localized: PROTECT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853424
+    m_Localized: FULL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853425
+    m_Localized: EMPTY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853426
+    m_Localized: WATER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853427
+    m_Localized: TANK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853428
+    m_Localized: POWER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853429
+    m_Localized: REACH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853430
+    m_Localized: WIDTH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853431
+    m_Localized: SPEED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853432
+    m_Localized: TUNING
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853433
+    m_Localized: CASH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853434
+    m_Localized: PRICE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853435
+    m_Localized: BUY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853436
+    m_Localized: TUNE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853437
+    m_Localized: TOOL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853438
+    m_Localized: STARS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853439
+    m_Localized: CABIN BONUS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853440
+    m_Localized: CABINS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853441
+    m_Localized: SCORE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853442
+    m_Localized: PAR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853443
+    m_Localized: SHEEP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853444
+    m_Localized: RESCUE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853445
+    m_Localized: clear their escape paths. Spray to protect.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853446
+    m_Localized: FIGHTING
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853447
+    m_Localized: Fighting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853448
+    m_Localized: CLEARED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853449
+    m_Localized: Cleared
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853450
+    m_Localized: Won
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853451
+    m_Localized: Lost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853452
+    m_Localized: Ready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853453
+    m_Localized: FILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853454
+    m_Localized: FIRST SPARK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853455
+    m_Localized: PARK PATROL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853456
+    m_Localized: THE GROVE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853457
+    m_Localized: FOREST FRONT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853458
+    m_Localized: FOREST INFERNO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853459
+    m_Localized: FOREST SAVED!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853460
+    m_Localized: FOREST LOST - TRY AGAIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853461
+    m_Localized: INCIDENT CONTAINED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853462
+    m_Localized: Refill interrupted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853463
+    m_Localized: Refill stopped - reconnect deliberately
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853464
+    m_Localized: Tracking lost - reconnect to resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853465
+    m_Localized: Tracking lost - unfinished stroke cancelled
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853466
+    m_Localized: Tool or sector unavailable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853467
+    m_Localized: Invalid hand sample time - reconnect deliberately
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853468
+    m_Localized: Tool connected - release, then grasp the lever
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853469
+    m_Localized: Empty outlet - dock a tool to collect water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853470
+    m_Localized: Relax trigger before docking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853471
+    m_Localized: Docked. Open your hand, then operate the cyan control
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853472
+    m_Localized: Turn the coupling to match the socket arrow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853473
+    m_Localized: Hold aligned until the socket clicks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853474
+    m_Localized: Hand tracking lost - dock again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853475
+    m_Localized: Disconnected. Open hand before firing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853476
+    m_Localized: Lever released - release, then grasp again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853477
+    m_Localized: Dock a tool to collect water, or grasp the lever to try it
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853478
+    m_Localized: Raise the lever to splash water from the empty outlet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853479
+    m_Localized: Lower and return the lever - dock a tool to collect water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853480
+    m_Localized: Align the cyan refill coupling with the socket
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853481
+    m_Localized: Sector changed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853482
+    m_Localized: Retry checkpoint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853483
+    m_Localized: New expedition
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853484
+    m_Localized: Keep the landing dot on the fire until it turns green.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853485
+    m_Localized: 'Spray the blue tank: a full tank rains for four seconds.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853486
+    m_Localized: Clear nearby flames or cool the cabin directly. Save it for $50.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853487
+    m_Localized: Fill a tower, then fight another pocket while it rains.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1107853488
+    m_Localized: Use cannon splashes on clusters and towers on separate fronts.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795647442944
+    m_Localized: OPTIONAL CREEK REFILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191680
+    m_Localized: 'HANDS PAUSED
+
+      Show your hands to continue'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191681
+    m_Localized: 'OTHER SOURCE CONNECTED
+
+      Take the tool before changing source'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191682
+    m_Localized: 'RETURN THE LEVER
+
+      Raise the handle to release a small splash
+
+      Dock
+      a tool to collect the water'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191683
+    m_Localized: 'PRESS THE HANDLE DOWN
+
+      Keep your grasp, then raise
+
+      Dock
+      a tool to collect the water'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191684
+    m_Localized: 'TRY THE PUMP
+
+      Grasp handle; hold, lower + return
+
+      Dock
+      a tool to collect the water'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191685
+    m_Localized: Pick up a tool to try it
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191686
+    m_Localized: 'TAKE YOUR TOOL
+
+      Open hand, then grasp the tool'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191687
+    m_Localized: 'HOLD STILL
+
+      Keep the blue rings together'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191688
+    m_Localized: Relax your grip; match the blue rings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191689
+    m_Localized: 'RELAX YOUR GRIP TO DOCK
+
+      Bring the two blue rings together'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191690
+    m_Localized: 'FULL - TAKE YOUR TOOL
+
+      Open hand, then grasp the tool'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191691
+    m_Localized: 'RETURN THE LEVER
+
+      Lift to collect water; longer strokes give
+      more'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191692
+    m_Localized: 'GRASP THE LEVER
+
+      Hold with a relaxed fist
+
+      Press down,
+      then lift; longer strokes give more'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191693
+    m_Localized: 'FILLING
+
+      Press again to stop early'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191694
+    m_Localized: 'PRESS THE BLUE BUTTON
+
+      Push inward once to fill'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191695
+    m_Localized: 'FILLING
+
+      Grip + turn back 45 degrees to stop'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191696
+    m_Localized: 'GRIP + TURN THE WHEEL
+
+      Move around the rim by 45 degrees'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191697
+    m_Localized: 'PUT STRAINER IN WATER
+
+      Release it on the green ring'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191698
+    m_Localized: 'PICK UP THE STRAINER
+
+      Grasp, move to green ring, release'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191699
+    m_Localized: 'PUSH BACK TO FINISH
+
+      Return the handle for one refill'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191700
+    m_Localized: 'PULL THE BLUE HANDLE
+
+      Grasp, pull 8 cm, then push back'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 795685191701
+    m_Localized: 'BRING THE TOOL HERE
+
+      Match the two blue rings'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2191608283136
+    m_Localized: 'H: dock water station'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2191641837568
+    m_Localized: dock tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2191641837569
+    m_Localized: try pump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8770994864128
+    m_Localized: GODDESS HAND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612864
+    m_Localized: 'GODDESS HAND: extinguish the single tree with your palms.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612865
+    m_Localized: 'Open left palm: aim. Stack right hand: water.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612866
+    m_Localized: 'Right hand: gold handle. Left hand: nozzle. Squeeze to spray.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612867
+    m_Localized: Lift right hand to stop. Crystal refills over time.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612868
+    m_Localized: 'Mouse: aim / hold SPACE: palm water'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612869
+    m_Localized: Stack right hand over left wrist to spray. Lift to stop.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612870
+    m_Localized: MANA EMPTY - let the crystal recharge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612871
+    m_Localized: 'OPEN LEFT PALM: AIM'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612872
+    m_Localized: 'STACK RIGHT HAND: WATER'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612873
+    m_Localized: 'LIFT RIGHT HAND: STOP / RECHARGE'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612874
+    m_Localized: VIEW MAGIC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612875
+    m_Localized: TIME-RECHARGED ABILITY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612876
+    m_Localized: 'Open left palm: aim / stack right hand: water
+
+      Only time
+      restores mana'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612877
+    m_Localized: MANA
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612878
+    m_Localized: DURATION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8771032612879
+    m_Localized: RECHARGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811381366784
+    m_Localized: GROWING MAGIC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309824
+    m_Localized: PALM RESCUE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309825
+    m_Localized: 'PALM RESCUE: cool the grove and protect the sheep.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309826
+    m_Localized: WATER STATION / EQUIPMENT FROM LEVEL 4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309827
+    m_Localized: EQUIPMENT FROM LEVEL 4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309828
+    m_Localized: PALM WATER READY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309829
+    m_Localized: FULL RECHARGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309830
+    m_Localized: UPGRADE YOUR MAGIC >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309831
+    m_Localized: Visit the shop and buy your first magic upgrade.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309832
+    m_Localized: 1. BUY YOUR FIRST MAGIC UPGRADE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309833
+    m_Localized: FIRST UPGRADE / MORE PALM WATER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309834
+    m_Localized: UPGRADE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22811423309835
+    m_Localized: 'More water for your next rescue.
+
+      Aim at the gold button
+      and pinch.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43986996199424
+    m_Localized: Too many trees burned. Retry and keep your earned coins.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336768
+    m_Localized: 'Open left palm: aim. Touch its back with any right fingertip: water.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336769
+    m_Localized: Lift your fingertip to stop. Crystal refills over time.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336770
+    m_Localized: Touch the back of your left hand with any right fingertip. Lift
+      to stop.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336771
+    m_Localized: 'TOUCH LEFT HAND BACK: WATER'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336772
+    m_Localized: 'LIFT FINGER: STOP / RECHARGE'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336773
+    m_Localized: 'Open left palm: aim / right fingertip on its back: water
+
+      Only
+      time restores mana'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336774
+    m_Localized: GET READY / RESCUE PREVIEW
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336775
+    m_Localized: PALM WATER / Protect the sheep
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336776
+    m_Localized: TOOLS + PALM WATER / Protect the sheep
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336777
+    m_Localized: Get comfortable. The fire starts after the countdown.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336778
+    m_Localized: Look around, pet the sheep, then press START.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987042336779
+    m_Localized: GET READY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987050725376
+    m_Localized: START INCIDENT >
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987050725377
+    m_Localized: STARTING IN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 43987050725378
+    m_Localized: FIRES
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918861139968
+    m_Localized: WATER BOLT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860224
+    m_Localized: WATER ORB
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860225
+    m_Localized: PALM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860226
+    m_Localized: BOLT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860227
+    m_Localized: FAN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860228
+    m_Localized: ORB
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860229
+    m_Localized: Open left palm at the fire.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860230
+    m_Localized: 'Right fingertip on its back: spray.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860231
+    m_Localized: Left hand points at the fire.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860232
+    m_Localized: 'Right fist: charge. Open: fire.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860233
+    m_Localized: Push both open palms forward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860234
+    m_Localized: 'for 1 second. Close hands: stop.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860235
+    m_Localized: Left palm up, right fingers under it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860236
+    m_Localized: 'Flip the palm down and open: drop.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860237
+    m_Localized: ORB GROWING - move your right hand away to hold it
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860238
+    m_Localized: Aim your palm at the forest, then open your hand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860239
+    m_Localized: ORB READY - turn your left palm down and open your hand to drop
+      it
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860240
+    m_Localized: RAIN FAN spraying - close your hands to stop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860241
+    m_Localized: RAIN FAN - hold both palms forward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860242
+    m_Localized: CHARGING - open your right hand to fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860243
+    m_Localized: ABSORBING WATER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860244
+    m_Localized: WATER BOLT - make a right fist to charge, open it to fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860245
+    m_Localized: A crystal is empty - pump the well, then dip a hand in the basin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860246
+    m_Localized: Cast with your hands. The board on the right shows each gesture.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860247
+    m_Localized: 'SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: pump | E: absorb'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860248
+    m_Localized: WATER STATION / OPENS AFTER THE FIRST LESSON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860249
+    m_Localized: PUMP THE LEVER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860250
+    m_Localized: Water fills the basin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860251
+    m_Localized: FILLING THE BASIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860252
+    m_Localized: TWIST THE WHEEL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860253
+    m_Localized: The basin keeps filling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860254
+    m_Localized: FAST FILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860255
+    m_Localized: AUTO FILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860256
+    m_Localized: Press the button for a fast fill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860257
+    m_Localized: BASIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860258
+    m_Localized: DIP A HAND TO ABSORB
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860259
+    m_Localized: 'Pump the lever: each stroke fills the basin'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860260
+    m_Localized: Dip a hand in the basin to absorb
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860261
+    m_Localized: 'Twist the wheel once: the basin keeps filling'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860262
+    m_Localized: The basin refills slowly by itself
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860263
+    m_Localized: SPELLS / Protect the sheep
+    m_Metadata:
+      m_Items: []
+  - m_Id: 595918919860264
+    m_Localized: PALM WATER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026479230976
+    m_Localized: 'LEFT HAND: POINT AT THE FIRE'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756928
+    m_Localized: 'RIGHT FIST: CHARGE'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756929
+    m_Localized: 'OPEN RIGHT HAND: FIRE'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756930
+    m_Localized: BOTH OPEN PALMS FORWARD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756931
+    m_Localized: HOLD FOR 1 SECOND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756932
+    m_Localized: WIDE SPRAY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756933
+    m_Localized: 'CLOSE YOUR HANDS: STOP'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756934
+    m_Localized: LEFT PALM UP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756935
+    m_Localized: 'RIGHT FINGERS UNDER IT: GROW'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756936
+    m_Localized: 'MOVE RIGHT HAND AWAY: HOLD'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756937
+    m_Localized: 'FLIP AND OPEN: DROP'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756938
+    m_Localized: LIFT THE LEVER BACK UP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756939
+    m_Localized: PUSH THE LEVER DOWN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756940
+    m_Localized: CLOSE YOUR HAND ON THE LEVER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632026533756941
+    m_Localized: WATER ORB - left palm up, right fingers under it
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -7,10 +7,17 @@ namespace FireRescue
     // Shared, capped emitters for the entire miniature: no per-tree lights or particle renderers.
     public sealed class FireRescueVfx : MonoBehaviour
     {
-        ParticleSystem flames, smoke, embers, steam, splash, water, glow;
+        ParticleSystem flames, smoke, embers, steam, splash, water, glow, sparks, ripples;
+        Vector3[] celebrationCrowns=System.Array.Empty<Vector3>();
+        Vector3 celebrationUp=Vector3.up;
+        float celebrationRemaining,celebrationBurstClock,celebrationDriftClock;
+        int celebrationPattern;
+        static readonly Color[] Festive={new Color(1,.84f,.25f),new Color(1,.45f,.62f),new Color(.45f,1,.62f),new Color(.4f,.82f,1),new Color(1,1,.9f),new Color(.78f,.55f,1)};
+        public bool Celebrating=>celebrationRemaining>0;
+        public int VisibleCelebration=>sparks?sparks.particleCount:0;
         ParticleSystemRenderer waterRenderer;
         ParticleSystem[] emitters;
-        Material fireMaterial, mistMaterial, glowMaterial, waterMaterial, strandMaterial;
+        Material fireMaterial, mistMaterial, glowMaterial, waterMaterial, strandMaterial, rippleMaterial;
         public const int MaximumStreamLinks=192;
         Mesh strandMesh;
         MeshRenderer strandRenderer;
@@ -31,21 +38,23 @@ namespace FireRescue
         readonly float[] sprinklerClocks=new float[4];
         readonly bool[] sprinklerSlots=new bool[4];
         int sprinklerPattern;
-        float glowClock;
+        float glowClock,rippleReadyAt;
         public int VisibleStreamLinks { get; private set; }
         public int StreamTriangleCount=>strandIndices.Count/3;
         public int VisibleWater => water ? water.particleCount : 0;
         public int VisibleFlames => flames ? flames.particleCount : 0;
         public int VisibleSteam => steam ? steam.particleCount : 0;
         public int VisibleSplash => splash ? splash.particleCount : 0;
+        public int VisibleRipples => ripples ? ripples.particleCount : 0;
         public void Initialize()
         {
             if(flames)return;
             var shader=Resources.Load<Shader>("EmberdeepV2Particles");
             if(!shader)throw new System.InvalidOperationException("EmberdeepV2Particles shader missing.");
-            // Restore the original soft additive particle layering, rather than V2's
-            // almost opaque, narrow flame silhouettes. Water retains its alpha blend.
-            fireMaterial=new Material(shader){name="Emberdeep soft baseline flame"};fireMaterial.SetFloat("_Style",1);fireMaterial.SetFloat("_DstBlend",1);
+            // Keep the original soft additive particle layering, rather than V2's almost
+            // opaque, narrow flame silhouettes; the shader now grades the colour in layers.
+            fireMaterial=new Material(shader){name="Emberdeep soft layered flame"};fireMaterial.SetFloat("_Style",1);fireMaterial.SetFloat("_DstBlend",1);
+            rippleMaterial=new Material(shader){name="Emberdeep contact ripples"};rippleMaterial.SetFloat("_Style",5);
             glowMaterial=new Material(shader){name="Emberdeep V2 ember glow"};glowMaterial.SetFloat("_Style",2);glowMaterial.SetFloat("_DstBlend",1);
             mistMaterial=new Material(shader){name="Emberdeep V2 restrained smoke and steam"};
             waterMaterial=new Material(shader){name="Emberdeep V2 liquid droplets"};waterMaterial.SetFloat("_Style",3);
@@ -54,16 +63,21 @@ namespace FireRescue
             Gradient(flames,new Color(1,.94f,.55f),new Color(1,.38f,.025f),new Color(.8f,.045f,.006f),.6f);
             var noise=flames.noise;noise.enabled=true;noise.strength=.02f;noise.frequency=11;noise.scrollSpeed=.65f;noise.quality=ParticleSystemNoiseQuality.Low;
             smoke=Emitter("Rolling smoke",384,mistMaterial,1.3f);
-            Gradient(smoke,new Color(.17f,.18f,.16f),new Color(.25f,.28f,.26f),new Color(.36f,.4f,.38f),.22f);
+            Gradient(smoke,new Color(.20f,.19f,.18f),new Color(.33f,.32f,.31f),new Color(.50f,.50f,.49f),.34f);
             Grow(smoke,.55f,1.5f);
             embers=Emitter("Rising embers",160,glowMaterial,.65f);Gradient(embers,new Color(1,.8f,.25f),new Color(1,.3f,.02f),new Color(.7f,.05f,0),1);
-            steam=Emitter("Cooling steam",256,mistMaterial,.8f);Gradient(steam,new Color(.8f,.94f,1),new Color(.7f,.85f,.9f),Color.white,.28f);Grow(steam,.4f,1.6f);
+            steam=Emitter("Cooling steam",256,mistMaterial,.8f);Gradient(steam,new Color(.86f,.96f,1),new Color(.80f,.92f,.96f),Color.white,.40f);Grow(steam,.4f,1.6f);
             splash=Emitter("Impact droplets",384,waterMaterial,.32f);Gradient(splash,new Color(.75f,.95f,1),new Color(.3f,.75f,1),new Color(.2f,.6f,.8f),.85f);
             var gravity=splash.main;gravity.gravityModifier=1;
             water=Emitter("Ballistic water droplets",768,waterMaterial,2);
             waterRenderer=water.GetComponent<ParticleSystemRenderer>();waterRenderer.renderMode=ParticleSystemRenderMode.Stretch;waterRenderer.velocityScale=.012f;waterRenderer.lengthScale=1.1f;
             glow=Emitter("Fire ground glow",84,glowMaterial,.11f);glow.GetComponent<ParticleSystemRenderer>().renderMode=ParticleSystemRenderMode.HorizontalBillboard;
-            emitters=new[]{flames,smoke,embers,steam,splash,water,glow};
+            sparks=Emitter("Forest celebration sparks",512,glowMaterial,1);Gradient(sparks,Color.white,Color.white,Color.white,1);
+            var festiveGravity=sparks.main;festiveGravity.gravityModifier=.05f;
+            var flutter=sparks.noise;flutter.enabled=true;flutter.strength=.03f;flutter.frequency=3;flutter.quality=ParticleSystemNoiseQuality.Low;
+            ripples=Emitter("Water contact ripples",96,rippleMaterial,.5f);ripples.GetComponent<ParticleSystemRenderer>().renderMode=ParticleSystemRenderMode.HorizontalBillboard;
+            Gradient(ripples,Color.white,Color.white,Color.white,.9f);Grow(ripples,.25f,1);
+            emitters=new[]{flames,smoke,embers,steam,splash,water,glow,sparks,ripples};
             var strands=new GameObject("Bounded ballistic water strands");strands.transform.SetParent(transform,false);
             strandMesh=new Mesh{name="Emberdeep V2 reusable water mesh"};strandMesh.MarkDynamic();
             strands.AddComponent<MeshFilter>().sharedMesh=strandMesh;strandRenderer=strands.AddComponent<MeshRenderer>();
@@ -92,6 +106,7 @@ namespace FireRescue
             if(!flames || run==null || !arena || jet==null)return;
             if(float.IsNaN(dt) || float.IsInfinity(dt) || dt<0)dt=0;
             dt=Mathf.Min(dt,.1f);
+            TickCelebration(dt);
             for(int i=0;i<steamClock.Length;i++)steamClock[i]=Mathf.Max(0,steamClock[i]-dt);
             glowClock+=dt;bool emitGlow=glowClock>=.08f;if(emitGlow)glowClock=0;
             for(int i=0;i<Mathf.Min(run.Trees.Length,flameClock.Length);i++)
@@ -104,12 +119,21 @@ namespace FireRescue
                 flameClock[i]+=dt*(18+16*intensity)*(1-.7f*wet);
                 while(flameClock[i]>=1)
                 {
-                    flameClock[i]--;float scale=Random.Range(.75f,1.2f)*(.25f+.75f*intensity)*(1-.4f*wet);
-                    var offset=Random.insideUnitCircle*.025f;
-                    // Original 2:1 billboard proportion; V2's 3.5:1 tongues looked like spikes.
-                    Emit(flames,at+new Vector3(offset.x,Random.Range(0,.045f),offset.y),
-                        new Vector3(Random.Range(-.03f,.03f),Random.Range(.09f,.17f),Random.Range(-.025f,.025f)),
-                        new Vector3(.065f,.13f,.065f)*scale,Color.white,Random.Range(.32f,.65f),(uint)(i+1));
+                    flameClock[i]--;float scale=Random.Range(.7f,1.15f)*(.4f+.6f*intensity)*(1-.4f*wet);
+                    var offset=Random.insideUnitCircle*.024f;
+                    // Soft tongues lick up from the trunk foot and out of the boughs, so the whole
+                    // tree reads as alight instead of carrying one column of fire over its crown.
+                    float lift=Random.value<.4f?Random.Range(0,.02f):Random.Range(.025f,.095f);
+                    // Bough flames sit on the viewer's side of the canopy; at the trunk axis the
+                    // foliage would hide them.
+                    if(lift>.02f)
+                    {
+                        var eye=Camera.main;var outward=eye?Vector3.ProjectOnPlane(eye.transform.position-at,Vector3.up):new Vector3(offset.x,0,offset.y);
+                        if(outward.sqrMagnitude>1e-6f){outward=outward.normalized*Random.Range(.030f,.046f);offset+=new Vector2(outward.x,outward.z);}
+                    }
+                    Emit(flames,at+new Vector3(offset.x,lift,offset.y),
+                        new Vector3(Random.Range(-.02f,.02f),Random.Range(.045f,.09f),Random.Range(-.02f,.02f)),
+                        new Vector3(.058f,.108f,.058f)*scale,Color.white,Random.Range(.32f,.6f),(uint)(i+1));
                 }
                 smokeClock[i]+=dt*2.2f*intensity*(1-wet);
                 if(smokeClock[i]>=1){smokeClock[i]--;Emit(smoke,at+Vector3.up*.115f,new Vector3(.012f,.075f,.006f),Vector3.one*Random.Range(.045f,.07f),Color.white,Random.Range(.65f,1.1f));}
@@ -117,10 +141,27 @@ namespace FireRescue
                 if(emberClock[i]>=1){emberClock[i]--;Emit(embers,at+Vector3.up*.05f,new Vector3(Random.Range(-.05f,.05f),Random.Range(.14f,.28f),Random.Range(-.05f,.05f)),Vector3.one*.006f,Color.white,Random.Range(.35f,.8f));}
                 if(emitGlow)Emit(glow,arena.TransformPoint(tree.Position-Vector3.up*.68f),Vector3.zero,Vector3.one*(.10f+.04f*intensity),new Color(1,.22f,.015f,.1f*intensity*(1-.7f*wet)),.11f);
             }
+            // Reuse the capped flame/steam pool. Sheep carry a separate seed range
+            // so watering a tree cannot erase an animal's fire by accident.
+            for(int i=0;i<run.Animals.Length;i++)
+            {
+                var a=run.Animals[i];if(!emitGlow)continue;
+                var at=arena.TransformPoint(a.Position+Vector3.up*FireRun.AnimalHeight);
+                if(a.OnFire)
+                    for(int j=0;j<3;j++)
+                    {
+                        var offset=arena.TransformVector(new Vector3(Mathf.Sin(a.AnimationTime*7+j*2)*.18f,.06f,(j-1)*.18f));
+                        Emit(flames,at+offset,arena.up*.085f,new Vector3(.035f,.07f,.035f),Color.white,.3f,(uint)(1000+i));
+                    }
+                else if(a.WaterReaction>.3f)Emit(steam,at,arena.up*.045f,Vector3.one*.03f,Color.white,.4f);
+            }
             // Water suppresses existing flame tongues too, not only newly emitted particles.
             int count=flames.GetParticles(buffer);
             for(int i=0;i<count;i++)
             {
+                int animal=(int)buffer[i].randomSeed-1000;
+                if(animal>=0 && animal<run.Animals.Length)
+                {if(!run.Animals[animal].OnFire)buffer[i].remainingLifetime=Mathf.Min(buffer[i].remainingLifetime,.08f);continue;}
                 int tree=(int)buffer[i].randomSeed-1;if(tree<0 || tree>=run.Trees.Length)continue;
                 var data=run.Trees[tree];
                 if(data.Wetness>.1f || data.State!=TreeState.Burning)
@@ -279,6 +320,49 @@ namespace FireRescue
                 Vector3 offset=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius*.4f;
                 Emit(steam,worldPoint+offset+Vector3.up*.02f,Vector3.up*.13f,Vector3.one*.05f,new Color(.75f,.9f,1,.65f),.45f);
             }
+            // Two rings spread across the soaked footprint after the crown falls back.
+            if(ripples)
+            {
+                Emit(ripples,worldPoint+Vector3.up*.004f,Vector3.zero,Vector3.one*radius*2.1f,new Color(.62f,.93f,1,.9f),.55f);
+                Emit(ripples,worldPoint+Vector3.up*.005f,Vector3.zero,Vector3.one*radius*1.2f,new Color(.85f,1,1,.8f),.38f);
+            }
+        }
+        // Every fire is out. Firework-like pops rise above the saved crowns while
+        // bright motes drift up through the whole grove. Presentation only.
+        public void Celebrate(Vector3[] crowns,Vector3 up,float seconds)
+        {
+            if(!sparks || crowns==null || crowns.Length==0 || !float.IsFinite(seconds) || seconds<=0)return;
+            celebrationCrowns=crowns;celebrationUp=up.sqrMagnitude>.01f?up.normalized:Vector3.up;
+            celebrationRemaining=Mathf.Min(seconds,12);celebrationBurstClock=1;celebrationDriftClock=0;
+        }
+        void TickCelebration(float dt)
+        {
+            if(celebrationRemaining<=0 || dt<=0)return;
+            celebrationRemaining=Mathf.Max(0,celebrationRemaining-dt);
+            celebrationBurstClock+=dt*3.2f;
+            while(celebrationBurstClock>=1)
+            {
+                celebrationBurstClock--;
+                var crown=celebrationCrowns[(celebrationPattern*7+3)%celebrationCrowns.Length];
+                var centre=crown+celebrationUp*(.10f+.05f*(celebrationPattern%3));
+                var color=Festive[celebrationPattern%Festive.Length];celebrationPattern++;
+                for(int i=0;i<18;i++)
+                {
+                    // An even shell of sparks, like a small firework over the tree.
+                    float y=1-(i+.5f)/9f,ring=Mathf.Sqrt(Mathf.Max(0,1-y*y)),angle=i*2.399963f;
+                    var direction=new Vector3(Mathf.Cos(angle)*ring,y*.7f+.3f,Mathf.Sin(angle)*ring);
+                    Emit(sparks,centre,direction*Random.Range(.16f,.26f),Vector3.one*Random.Range(.008f,.013f),color,Random.Range(.65f,1f));
+                }
+            }
+            celebrationDriftClock+=dt*46;
+            while(celebrationDriftClock>=1)
+            {
+                celebrationDriftClock--;
+                var crown=celebrationCrowns[Random.Range(0,celebrationCrowns.Length)];
+                var offset=Random.insideUnitSphere*.05f;
+                Emit(sparks,crown+offset,celebrationUp*Random.Range(.07f,.16f)+Random.insideUnitSphere*.03f,Vector3.one*Random.Range(.004f,.008f),
+                    Festive[Random.Range(0,Festive.Length)],Random.Range(.8f,1.3f));
+            }
         }
         public void Rescue(Vector3 point,int combo)
         {
@@ -325,12 +409,18 @@ namespace FireRescue
             }
             // A small surface pulse marks wet contact without pretending to be another hit.
             if(hit.Tree<0 && glow)Emit(glow,hit.Point+hit.Normal*.002f,Vector3.zero,Vector3.one*.035f,new Color(.35f,.8f,.9f,.18f),.16f);
+            // One ring every few packets: a steady stream leaves a gentle pulse, not a row of plates.
+            if(hit.Tree<0 && ripples && hit.Normal.y>.6f && Time.unscaledTime>=rippleReadyAt)
+            {
+                rippleReadyAt=Time.unscaledTime+.16f;
+                Emit(ripples,hit.Point+hit.Normal*.003f,Vector3.zero,Vector3.one*Random.Range(.026f,.038f),new Color(.70f,.95f,1,.7f),Random.Range(.30f,.42f));
+            }
         }
         public void Clear()
         {
             if(emitters!=null)foreach(var p in emitters)if(p)p.Clear();
             System.Array.Clear(flameClock,0,42);System.Array.Clear(smokeClock,0,42);System.Array.Clear(emberClock,0,42);System.Array.Clear(steamClock,0,42);glowClock=0;
-            System.Array.Clear(sprinklerClocks,0,4);System.Array.Clear(sprinklerSlots,0,4);sprinklerPattern=0;
+            System.Array.Clear(sprinklerClocks,0,4);System.Array.Clear(sprinklerSlots,0,4);sprinklerPattern=0;celebrationRemaining=0;rippleReadyAt=0;
             VisibleStreamLinks=0;strandVertices.Clear();strandUvs.Clear();strandColors.Clear();strandIndices.Clear();
             streamClock=0;System.Array.Clear(streamBreakCounts,0,2);System.Array.Clear(streamBreakCursors,0,2);System.Array.Clear(streamWasEmitting,0,2);
             if(strandMesh)strandMesh.Clear(false);if(strandRenderer)strandRenderer.enabled=false;
@@ -338,7 +428,7 @@ namespace FireRescue
         void OnDestroy()
         {
             if(fireMaterial)Destroy(fireMaterial);if(mistMaterial)Destroy(mistMaterial);if(glowMaterial)Destroy(glowMaterial);
-            if(waterMaterial)Destroy(waterMaterial);if(strandMaterial)Destroy(strandMaterial);if(strandMesh)Destroy(strandMesh);
+            if(waterMaterial)Destroy(waterMaterial);if(strandMaterial)Destroy(strandMaterial);if(strandMesh)Destroy(strandMesh);if(rippleMaterial)Destroy(rippleMaterial);
         }
     }
 }

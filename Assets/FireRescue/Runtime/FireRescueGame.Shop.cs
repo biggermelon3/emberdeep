@@ -3,7 +3,7 @@ using PhysicalAssembly;
 
 namespace FireRescue
 {
-    public enum EmberdeepShopPage { Equipment, Tuning, Station }
+    public enum EmberdeepShopPage { Equipment, Tuning, Station, Magic }
 
     public sealed partial class FireRescueGame
     {
@@ -19,6 +19,7 @@ namespace FireRescue
 
         public void ShowShopPage(EmberdeepShopPage page)
         {
+            if(Run.NeedsMagicUpgrade)page=EmberdeepShopPage.Magic;
             ShopPage=page;ShopShowingCurrentStation=false;
             handMenu?.ResetInput();RefreshShop();
         }
@@ -43,6 +44,7 @@ namespace FireRescue
                 if(!Run.Equip(SelectedEquipment))return false;
                 try{bought=BuyUpgrade();}finally{Run.Equip(equipped);}
             }
+            else if(ShopPage==EmberdeepShopPage.Magic)bought=ShopItemId==$"magic:{Run.MagicLevel+1}" && ShopPrice==Run.MagicUpgradeCost && Run.BuyMagicUpgrade();
             else bought=BuyStationUpgrade();
             RefreshShop();return bought;
         }
@@ -55,7 +57,7 @@ namespace FireRescue
         void BuildShop()
         {
             shop=new GameObject("Equipment shop").transform;shop.SetParent(hud,false);
-            Shape("Shop panel",PrimitiveType.Cube,shop,new Vector3(0,-.2f,.02f),new Vector3(2.85f,1.43f,.035f),PanelMaterial);
+            Shape("Shop panel",PrimitiveType.Cube,shop,new Vector3(0,-.30f,.025f),new Vector3(3.05f,1.62f,.06f),PanelMaterial);
             Text(shop,"F I R E H O U S E   /   G E A R",new Vector3(0,.40f,-.025f),.042f,new Color(1,.75f,.35f));
             // One portrait window sits beside the item facts, clear of every ray
             // target. No display mesh has a collider or owns hand input.
@@ -74,7 +76,8 @@ namespace FireRescue
             shopUpgrade=Button("Tune gear",new Vector3(-.88f,-.61f,0),()=>ShowShopPage(ShopPage==EmberdeepShopPage.Tuning?EmberdeepShopPage.Equipment:EmberdeepShopPage.Tuning),out shopUpgradeText,shop);
             stationUpgrade=Button("Upgrade water station",new Vector3(0,-.61f,0),()=>ShowShopPage(ShopPage==EmberdeepShopPage.Station?EmberdeepShopPage.Equipment:EmberdeepShopPage.Station),out stationUpgradeText,shop);
             Button("Leave shop",new Vector3(.88f,-.61f,0),CloseShop,out var back,shop);back.text="BACK / PICK UP";
-            shopCompare=Button("Compare station",new Vector3(0,-.80f,0),()=>ShowStationComparison(!ShopShowingCurrentStation),out shopCompareText,shop);
+            Button("View magic",new Vector3(-.88f,-.80f,0),()=>ShowShopPage(EmberdeepShopPage.Magic),out var magicText,shop);magicText.text="VIEW MAGIC";
+            shopCompare=Button("Compare station",new Vector3(.44f,-.80f,0),()=>ShowStationComparison(!ShopShowingCurrentStation),out shopCompareText,shop);
             shopCompare.transform.localScale=new Vector3(1.52f,.14f,.055f);
             shop.gameObject.SetActive(false);
         }
@@ -86,11 +89,22 @@ namespace FireRescue
             int ownedCount=0;for(int n=0;n<4;n++)if(Run.Owns((FireEquipmentId)n))ownedCount++;
             rackControls.gameObject.SetActive(!ShopOpen && ownedCount>1);previousOwned.Interactable=nextOwned.Interactable=ownedCount>1;
             shopCompare.gameObject.SetActive(ShopPage==EmberdeepShopPage.Station);shopCompareText.gameObject.SetActive(ShopPage==EmberdeepShopPage.Station);
-            shopPrevious.Interactable=shopNext.Interactable=ShopPage!=EmberdeepShopPage.Station;
-            shopUpgrade.Interactable=stationUpgrade.Interactable=true;
+            shopPrevious.Interactable=shopNext.Interactable=ShopPage==EmberdeepShopPage.Equipment || ShopPage==EmberdeepShopPage.Tuning;
+            shopUpgrade.Interactable=!Run.IsPalmLesson;stationUpgrade.Interactable=Run.StationOpen;
             shopUpgradeText.text=ShopPage==EmberdeepShopPage.Tuning?"< TOOLS":"VIEW TUNING";
             stationUpgradeText.text=ShopPage==EmberdeepShopPage.Station?"< TOOLS":"VIEW WATER";
-            if(ShopPage==EmberdeepShopPage.Station)
+            if(ShopPage==EmberdeepShopPage.Magic)
+            {
+                ShopItemId=$"magic:{Run.MagicLevel+1}";ShopPrice=Run.MagicUpgradeCost;ShopCanBuy=Run.CanUpgradeMagic;
+                shopPageText.text="TIME-RECHARGED ABILITY";shopName.text=$"GODDESS HAND +{Run.MagicLevel}";
+                shopDescription.text="Open left palm: aim / right fingertip on its back: water\nOnly time restores mana";
+                int next=ShopPrice>0?1:0;
+                shopStats.text=$"MANA {Run.MagicCapacity:0} > {Run.MagicCapacity+next*20:0}\nDURATION {Run.MagicCapacity/FireRun.MagicFlow:0.0}s > {(Run.MagicCapacity+next*20)/FireRun.MagicFlow:0.0}s\nPOWER {Run.MagicPower:0} > {Run.MagicPower+next*18:0}\nFULL RECHARGE {Run.MagicFillSeconds:0}s > {(next>0?Run.NextMagicFillSeconds:Run.MagicFillSeconds):0}s";
+                shopState.text=$"CASH $ {Run.Coins}  |  "+(ShopPrice>0?$"PRICE $ {ShopPrice}":"FULLY UPGRADED");
+                shopBuyText.text=ShopPrice>0?$"BUY $ {ShopPrice}":"MAX TIER";
+                ShopPreview.ShowMagic(ShopItemId);
+            }
+            else if(ShopPage==EmberdeepShopPage.Station)
             {
                 var current=Run.StationTier;var target=current==WaterStationTier.PushButton?current:(WaterStationTier)((int)current+1);
                 ShopItemId="station:"+target;ShopPrice=Run.StationUpgradeCost;
@@ -98,7 +112,7 @@ namespace FireRescue
                 var shown=ShopShowingCurrentStation?current:target;
                 shopPageText.text=ShopShowingCurrentStation?"CURRENT STATION / COMPARISON":"NEXT WATER STATION";
                 shopName.text=StationName(shown);
-                shopDescription.text=StationAction(shown);
+                shopDescription.text=Run.SpellMode?BasinAction(shown):StationAction(shown);
                 shopStats.text=current==target?"ALL STATION TIERS OWNED":StationName(current)+"\n  >  "+StationName(target);
                 shopState.text=$"CASH $ {Run.Coins}  |  "+(ShopPrice==0?"FULLY UPGRADED":$"PRICE $ {ShopPrice}");
                 shopBuyText.text=ShopShowingCurrentStation?"CURRENT":ShopPrice==0?"MAX TIER":$"BUY $ {ShopPrice}";
@@ -111,27 +125,30 @@ namespace FireRescue
                 bool tuning=ShopPage==EmberdeepShopPage.Tuning;
                 ShopItemId=tuning?$"tune:{SelectedEquipment}:{level+1}":"tool:"+SelectedEquipment;
                 ShopPrice=tuning?Run.UpgradeCostFor(SelectedEquipment):item.Price;
-                ShopCanBuy=tuning?owned && Run.InSupply && !Run.Supply.Locked && ShopPrice>0 && Run.Coins>=ShopPrice:Run.CanBuy(SelectedEquipment);
+                ShopCanBuy=tuning?!Run.IsPalmLesson && owned && Run.InSupply && !Run.Supply.Locked && ShopPrice>0 && Run.Coins>=ShopPrice:
+                    (Run.SpellMode || !Run.IsPalmLesson) && Run.CanBuy(SelectedEquipment);
                 shopPageText.text=tuning?"NUMERIC TUNING / SAME MODEL":$"TOOL {(int)SelectedEquipment+1} / 4";
-                shopName.text=item.Name;
-                shopDescription.text=tuning?"No new mesh / same firing mode":ShortControls(SelectedEquipment);
+                shopName.text=Run.SpellMode?EmberdeepSpellText.Name(SelectedEquipment):item.Name;
+                shopDescription.text=tuning?"No new mesh / same firing mode":Run.SpellMode?EmberdeepSpellText.Controls(SelectedEquipment):ShortControls(SelectedEquipment);
                 shopStats.text=tuning?TuningComparison(item,level,ShopPrice>0):$"TANK {Run.CapacityFor(SelectedEquipment):0}  |  REACH {(item.Range+level*2.5f)*.08f:0.00}m\nTUNING +{level}  |  {DeliveryName(item.Delivery)}";
                 string state=tuning?(!owned?"OWN TOOL FIRST":ShopPrice==0?"MAX TUNING":$"PRICE $ {ShopPrice}"):
-                    owned?"OWNED":Run.ClearedIncidents<item.Unlock?$"CLEAR INCIDENT {item.Unlock}":$"PRICE $ {item.Price}";
+                    owned?"OWNED":Run.EquipmentIncidents<item.Unlock?$"CLEAR INCIDENT {item.Unlock+(Run.GoddessTutorial?2:0)}":$"PRICE $ {item.Price}";
                 shopState.text=$"CASH $ {Run.Coins}  |  {state}";
                 shopBuyText.text=tuning?(ShopPrice==0?"MAX TUNING":$"TUNE $ {ShopPrice}"):owned?"OWNED":$"BUY $ {ShopPrice}";
-                ShopPreview.ShowTool(ShopItemId,SelectedEquipment,FoliageMaterial,PanelMaterial,WaterMaterial);
+                if(Run.SpellMode)ShopPreview.ShowSpell(ShopItemId,SelectedEquipment,EmberdeepSpellText.Tint(SelectedEquipment));
+                else ShopPreview.ShowTool(ShopItemId,SelectedEquipment,FoliageMaterial,PanelMaterial,WaterMaterial);
             }
-            shopBuy.Interactable=ShopCanBuy;
+            RefreshShopLesson();shopBuy.Interactable=ShopCanBuy;
             shopPreviewNote.text=ShopPreview.IsFallback?"PREVIEW UNAVAILABLE":"DISPLAY ONLY";
             if(ShopPreview.IsFallback)shopDescription.text="Preview unavailable\n"+shopDescription.text;
-            FitShopText(shopName,1.72f,.039f);FitShopText(shopDescription,1.72f,.026f);FitShopText(shopStats,1.75f,.027f);FitShopText(shopState,1.75f,.027f);
-            if(rackLabel){rackLabel.gameObject.SetActive(!grip.Held && !ShopOpen);rackLabel.text=owned?"PINCH GRIP TO TAKE":"SELECT IN SHOP";rackLabel.transform.localPosition=new Vector3(0,-.27f,-.34f);if(Player)rackLabel.transform.rotation=Player.ViewCamera.transform.rotation;}
+            FitShopText(shopName,1.72f,.039f,.065f);FitShopText(shopDescription,1.72f,.026f,.095f);FitShopText(shopStats,1.75f,.027f,.19f);FitShopText(shopState,1.75f,.027f,.055f);
+            if(rackLabel){rackLabel.gameObject.SetActive(!grip.Held && !ShopOpen);rackLabel.text=owned?"GRASP HANDLE TO TAKE":"SELECT IN SHOP";rackLabel.transform.localPosition=new Vector3(0,-.27f,-.34f);if(Player)rackLabel.transform.rotation=Player.ViewCamera.transform.rotation;}
         }
         static string StationName(WaterStationTier tier)=>tier==WaterStationTier.LeverWell?"LEVER WELL":tier==WaterStationTier.RotaryHydrant?"ROTARY HYDRANT":"PUSH BUTTON";
-        static string StationAction(WaterStationTier tier)=>tier==WaterStationTier.LeverWell?"Pinch lever: down + return\n12 water per complete stroke":tier==WaterStationTier.RotaryHydrant?"Turn the gold wheel 45 degrees\nContinuous fill; turn back to stop":"Press the gold button to fill\nPress again to stop";
+        static string StationAction(WaterStationTier tier)=>tier==WaterStationTier.LeverWell?"Grasp lever: down + return\nLonger strokes collect more water":tier==WaterStationTier.RotaryHydrant?"Turn the gold wheel 45 degrees\nContinuous fill; turn back to stop":"Press the gold button to fill\nPress again to stop";
+        static string BasinAction(WaterStationTier tier)=>tier==WaterStationTier.LeverWell?"Pump the lever: each stroke fills the basin\nDip a hand in the basin to absorb":tier==WaterStationTier.RotaryHydrant?"Twist the wheel once: the basin keeps filling\nDip a hand in the basin to absorb":"The basin refills slowly by itself\nPress the button for a fast fill";
         static string DeliveryName(FireDelivery delivery)=>delivery==FireDelivery.Foam?"FOAM SWEEP":delivery==FireDelivery.Pulse?"PULSE BURSTS":delivery==FireDelivery.Fan?"WIDE FAN":"CHARGED SPLASH";
-        static string ShortControls(FireEquipmentId id)=>id==FireEquipmentId.Extinguisher?"Hold pinch: short foam sweep\nSlows fire spread":id==FireEquipmentId.PulsePistol?"Tap: accurate water pulse\nHold: repeat bursts":id==FireEquipmentId.RainFan?"Hold: sweep five water streams\nWide cover; uses more water":"Hold: charge / release: splash\nOffhand pump adds charge";
+        static string ShortControls(FireEquipmentId id)=>id==FireEquipmentId.Extinguisher?"Right grip: squeeze to spray\nLeft nozzle: aim the foam":id==FireEquipmentId.PulsePistol?"Tap: accurate water pulse\nHold: repeat bursts":id==FireEquipmentId.RainFan?"Hold: sweep five water streams\nWide cover; uses more water":"Hold: charge / release: splash\nOffhand pump adds charge";
         static string TuningComparison(FireEquipment item,int level,bool more)
         {
             int next=more?level+1:level;
@@ -140,11 +157,13 @@ namespace FireRescue
                 +$"WIDTH {(item.Width+level*.16f)*.08f:0.000} > {(item.Width+next*.16f)*.08f:0.000}m\n"
                 +$"SPEED {item.Speed+level*.2f:0.0} > {item.Speed+next*.2f:0.0}m/s";
         }
-        static void FitShopText(TextMesh label,float maxWidth,float size)
+        static void FitShopText(TextMesh label,float maxWidth,float size,float maxHeight)
         {
+            var fit=label.GetComponent<EmberdeepTextBounds>();if(!fit)fit=label.gameObject.AddComponent<EmberdeepTextBounds>();fit.Width=maxWidth;fit.Height=maxHeight;
             label.characterSize=size*20/64;
             float width=label.GetComponent<Renderer>().localBounds.size.x;
             if(width>maxWidth)label.characterSize*=maxWidth/width;
+            fit.Fit();
         }
     }
 }

@@ -1,0 +1,18 @@
+{
+  "bytes": 103806748,
+  "version": "0.2.24",
+  "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+  "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+  "settingsRestored": true,
+  "versionCode": 27,
+  "target": "Pico",
+  "signatureVerified": true,
+  "sha256": "e97c7673022725c8692d1413aa8e8c45c2689c3c1519d7cc017051fffd65487d",
+  "sceneWhitelistPassed": true,
+  "errors": 0,
+  "warnings": 13,
+  "apk": "Deliverables/Emberdeep/Emberdeep-0.2.24-Pico.apk",
+  "signing": "Existing Android Debug certificate; colleague testing build",
+  "hardware_acceptance": "Pending PICO device testing",
+  "content_audit": "Logs/Emberdeep024Pico/Pico-ContentAudit.json"
+}

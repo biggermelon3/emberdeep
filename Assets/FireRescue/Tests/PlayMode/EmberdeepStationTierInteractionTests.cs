@@ -19,7 +19,7 @@ namespace FireRescue.Tests
 
         [TearDown] public void Cleanup(){if(root)Object.Destroy(root);if(material)Object.Destroy(material);}
         static void Clear(FireRun run)
-        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);}
+        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);run.EvacuateSafeAnimals();}
         void Setup(WaterStationTier tier,int hand)
         {
             run=new FireRun();

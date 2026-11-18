@@ -1,0 +1,1537 @@
+{
+  "kit": "Emberdeep Art V5 rounded miniature forest, characters, gloves, interface and camp",
+  "generator": "Tools/BuildEmberdeepArtV4.py",
+  "seed": 40117,
+  "source": "ArtSource/EmberdeepV3/Emberdeep-ArtV4.blend",
+  "concepts": "ArtSource/EmberdeepV3/Concepts",
+  "provenance": "Original procedural meshes authored for this project; no downloaded mesh or texture assets.",
+  "vertex_colour": "ArtTint RGB = baked ambient occlusion x height tone (linear); A = foliage sway weight.",
+  "contracts": "Front z<1.6 flat; CreekSurface centred near z 2.1; tree lanes z 3..10 free of baked trees; station props in real metres.",
+  "total_unique_triangles": 79133,
+  "assets": [
+    {
+      "asset": "EDV2_Cedar",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Cedar.fbx",
+      "triangles": 1350,
+      "bounds_unity": {
+        "min": [
+          -0.5406,
+          0.0,
+          -0.585
+        ],
+        "max": [
+          0.6,
+          2.1775,
+          0.585
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Trunk",
+          "triangles": 270,
+          "materials": [
+            "Bark"
+          ]
+        },
+        {
+          "name": "Canopy",
+          "triangles": 1080,
+          "materials": [
+            "Cedar",
+            "CedarLight"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Broadleaf",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Broadleaf.fbx",
+      "triangles": 2720,
+      "bounds_unity": {
+        "min": [
+          -0.6189,
+          0.0,
+          -0.5498
+        ],
+        "max": [
+          0.5591,
+          1.9558,
+          0.5603
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Trunk.001",
+          "triangles": 480,
+          "materials": [
+            "Bark"
+          ]
+        },
+        {
+          "name": "Canopy.001",
+          "triangles": 2240,
+          "materials": [
+            "Leaf",
+            "LeafLight"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Fern",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Fern.fbx",
+      "triangles": 240,
+      "bounds_unity": {
+        "min": [
+          -0.239,
+          0.0,
+          -0.2722
+        ],
+        "max": [
+          0.2126,
+          0.2062,
+          0.2299
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Fern",
+          "triangles": 240,
+          "materials": [
+            "LeafLight",
+            "Fern"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Rock",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Rock.fbx",
+      "triangles": 240,
+      "bounds_unity": {
+        "min": [
+          -0.3238,
+          0.0,
+          -0.2482
+        ],
+        "max": [
+          0.3655,
+          0.3754,
+          0.2651
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Stone",
+          "triangles": 160,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Moss",
+          "triangles": 80,
+          "materials": [
+            "Moss"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Log",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Log.fbx",
+      "triangles": 1001,
+      "bounds_unity": {
+        "min": [
+          -0.4175,
+          0.0,
+          -0.1329
+        ],
+        "max": [
+          0.4182,
+          0.3808,
+          0.1374
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Bark",
+          "triangles": 276,
+          "materials": [
+            "Bark"
+          ]
+        },
+        {
+          "name": "Endgrain",
+          "triangles": 192,
+          "materials": [
+            "BarkLight",
+            "WoodLight"
+          ]
+        },
+        {
+          "name": "Moss.001",
+          "triangles": 533,
+          "materials": [
+            "Moss",
+            "Cream",
+            "Mushroom"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Terrain",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Terrain.fbx",
+      "triangles": 21530,
+      "bounds_unity": {
+        "min": [
+          -5.5394,
+          -0.8132,
+          -0.5476
+        ],
+        "max": [
+          5.5689,
+          1.184,
+          12.4489
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Moss.002",
+          "triangles": 1024,
+          "materials": [
+            "Moss",
+            "Soil",
+            "Path"
+          ]
+        },
+        {
+          "name": "Soil",
+          "triangles": 288,
+          "materials": [
+            "Soil"
+          ]
+        },
+        {
+          "name": "Slate",
+          "triangles": 3240,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "BorderRocks",
+          "triangles": 5000,
+          "materials": [
+            "Slate",
+            "Stone",
+            "Moss"
+          ]
+        },
+        {
+          "name": "CreekSurface",
+          "triangles": 2,
+          "materials": [
+            "CreekWater"
+          ]
+        },
+        {
+          "name": "CreekFoam",
+          "triangles": 336,
+          "materials": [
+            "Foam"
+          ]
+        },
+        {
+          "name": "Path",
+          "triangles": 600,
+          "materials": [
+            "Stone",
+            "Path"
+          ]
+        },
+        {
+          "name": "RimGrowth",
+          "triangles": 10700,
+          "materials": [
+            "LeafLight",
+            "Fern",
+            "Moss",
+            "MossLight",
+            "Petal",
+            "WindowGlow",
+            "Cream",
+            "Mushroom",
+            "PetalPink"
+          ]
+        },
+        {
+          "name": "Lantern",
+          "triangles": 276,
+          "materials": [
+            "Bark",
+            "Brass"
+          ]
+        },
+        {
+          "name": "LanternGlow",
+          "triangles": 64,
+          "materials": [
+            "WindowGlow"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_WellPump",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_WellPump.fbx",
+      "triangles": 1806,
+      "bounds_unity": {
+        "min": [
+          -0.237,
+          -0.0048,
+          -0.0976
+        ],
+        "max": [
+          0.1524,
+          0.215,
+          0.1545
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Base",
+          "triangles": 480,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Body",
+          "triangles": 306,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware",
+          "triangles": 812,
+          "materials": [
+            "Brass",
+            "Cream"
+          ]
+        },
+        {
+          "name": "Gauge",
+          "triangles": 108,
+          "materials": [
+            "Cyan"
+          ]
+        },
+        {
+          "name": "Spout",
+          "triangles": 100,
+          "materials": [
+            "Teal"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_PumpLever",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_PumpLever.fbx",
+      "triangles": 320,
+      "bounds_unity": {
+        "min": [
+          -0.0136,
+          -0.0145,
+          -0.2446
+        ],
+        "max": [
+          0.0136,
+          0.0345,
+          0.0385
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Lever",
+          "triangles": 320,
+          "materials": [
+            "WoodLight",
+            "Brass"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Basin",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Basin.fbx",
+      "triangles": 632,
+      "bounds_unity": {
+        "min": [
+          -0.0825,
+          0.0,
+          -0.0825
+        ],
+        "max": [
+          0.0825,
+          0.0575,
+          0.0825
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Stone.001",
+          "triangles": 380,
+          "materials": [
+            "Stone"
+          ]
+        },
+        {
+          "name": "Hardware.001",
+          "triangles": 152,
+          "materials": [
+            "Brass",
+            "Cream"
+          ]
+        },
+        {
+          "name": "Moss.003",
+          "triangles": 100,
+          "materials": [
+            "Moss"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Reservoir",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Reservoir.fbx",
+      "triangles": 1124,
+      "bounds_unity": {
+        "min": [
+          -0.4454,
+          0.0,
+          -0.4009
+        ],
+        "max": [
+          0.4873,
+          1.929,
+          0.3848
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Footing",
+          "triangles": 320,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Legs",
+          "triangles": 308,
+          "materials": [
+            "Wood",
+            "WoodLight"
+          ]
+        },
+        {
+          "name": "Tank",
+          "triangles": 198,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.002",
+          "triangles": 298,
+          "materials": [
+            "Brass",
+            "Cream"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_CreekPump",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_CreekPump.fbx",
+      "triangles": 644,
+      "bounds_unity": {
+        "min": [
+          -0.0964,
+          -0.008,
+          -0.1248
+        ],
+        "max": [
+          0.0978,
+          0.2264,
+          0.0827
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Base.001",
+          "triangles": 80,
+          "materials": [
+            "Stone"
+          ]
+        },
+        {
+          "name": "Body.001",
+          "triangles": 60,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.003",
+          "triangles": 32,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Handle",
+          "triangles": 104,
+          "materials": [
+            "Teal",
+            "Cyan"
+          ]
+        },
+        {
+          "name": "Pipe",
+          "triangles": 80,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Strainer",
+          "triangles": 288,
+          "materials": [
+            "Rubber",
+            "Brass"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_GloveCuff",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_GloveCuff.fbx",
+      "triangles": 1696,
+      "bounds_unity": {
+        "min": [
+          -0.054,
+          -0.0461,
+          -0.0687
+        ],
+        "max": [
+          0.055,
+          0.048,
+          0.0171
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Sleeve",
+          "triangles": 120,
+          "materials": [
+            "GloveGreen"
+          ]
+        },
+        {
+          "name": "Strap",
+          "triangles": 120,
+          "materials": [
+            "Leather"
+          ]
+        },
+        {
+          "name": "Trim",
+          "triangles": 1160,
+          "materials": [
+            "Leather",
+            "Cream"
+          ]
+        },
+        {
+          "name": "Hardware.004",
+          "triangles": 296,
+          "materials": [
+            "Brass"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Crystal",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Crystal.fbx",
+      "triangles": 488,
+      "bounds_unity": {
+        "min": [
+          -0.0245,
+          -0.0125,
+          -0.0445
+        ],
+        "max": [
+          0.0245,
+          0.0036,
+          0.0428
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Gem",
+          "triangles": 36,
+          "materials": [
+            "Gem"
+          ]
+        },
+        {
+          "name": "Setting",
+          "triangles": 200,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Plate",
+          "triangles": 252,
+          "materials": [
+            "Cream",
+            "Leather"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Sheep",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Sheep.fbx",
+      "triangles": 3920,
+      "bounds_unity": {
+        "min": [
+          -0.4926,
+          0.0388,
+          -0.663
+        ],
+        "max": [
+          0.4138,
+          1.1931,
+          0.5878
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Body.002",
+          "triangles": 1760,
+          "materials": [
+            "Wool",
+            "WoolLight"
+          ]
+        },
+        {
+          "name": "Head",
+          "triangles": 1504,
+          "materials": [
+            "Cocoa",
+            "CocoaLight",
+            "EyeWhite",
+            "Hoof",
+            "PetalPink",
+            "Wool",
+            "WoolLight"
+          ]
+        },
+        {
+          "name": "Ear",
+          "triangles": 160,
+          "materials": [
+            "Cocoa",
+            "PetalPink"
+          ]
+        },
+        {
+          "name": "Leg",
+          "triangles": 128,
+          "materials": [
+            "Cocoa",
+            "Hoof"
+          ]
+        },
+        {
+          "name": "Heart",
+          "triangles": 144,
+          "materials": [
+            "PetalPink"
+          ]
+        },
+        {
+          "name": "Coin",
+          "triangles": 224,
+          "materials": [
+            "Brass",
+            "Petal"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Cabin",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Cabin.fbx",
+      "triangles": 15038,
+      "bounds_unity": {
+        "min": [
+          -0.7091,
+          0.0,
+          -0.7829
+        ],
+        "max": [
+          0.8701,
+          1.5557,
+          0.625
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Body.003",
+          "triangles": 1068,
+          "materials": [
+            "Bark",
+            "WoodLight",
+            "Wood"
+          ]
+        },
+        {
+          "name": "Roof",
+          "triangles": 8058,
+          "materials": [
+            "Bark",
+            "TerracottaLight",
+            "Terracotta"
+          ]
+        },
+        {
+          "name": "Moss.004",
+          "triangles": 320,
+          "materials": [
+            "Moss"
+          ]
+        },
+        {
+          "name": "Chimney",
+          "triangles": 1816,
+          "materials": [
+            "Slate",
+            "Stone",
+            "Hoof"
+          ]
+        },
+        {
+          "name": "Door",
+          "triangles": 754,
+          "materials": [
+            "Wood",
+            "Bark",
+            "WoodLight"
+          ]
+        },
+        {
+          "name": "Hardware.005",
+          "triangles": 232,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Path.001",
+          "triangles": 45,
+          "materials": [
+            "Stone"
+          ]
+        },
+        {
+          "name": "WindowGlow",
+          "triangles": 356,
+          "materials": [
+            "WindowGlow"
+          ]
+        },
+        {
+          "name": "Foundation",
+          "triangles": 1440,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Woodpile",
+          "triangles": 408,
+          "materials": [
+            "Bark",
+            "WoodLight",
+            "BarkLight"
+          ]
+        },
+        {
+          "name": "Growth",
+          "triangles": 541,
+          "materials": [
+            "Moss",
+            "MossLight",
+            "Fern",
+            "Petal",
+            "WindowGlow",
+            "PetalPink",
+            "Cream",
+            "Mushroom"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Hydrant",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Hydrant.fbx",
+      "triangles": 2300,
+      "bounds_unity": {
+        "min": [
+          -0.0978,
+          -0.0044,
+          -0.1045
+        ],
+        "max": [
+          0.1087,
+          0.267,
+          0.1096
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Base.002",
+          "triangles": 480,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Moss.005",
+          "triangles": 60,
+          "materials": [
+            "Moss"
+          ]
+        },
+        {
+          "name": "Body.004",
+          "triangles": 360,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.006",
+          "triangles": 1172,
+          "materials": [
+            "Brass",
+            "Cyan",
+            "Cream"
+          ]
+        },
+        {
+          "name": "LanternGlow.001",
+          "triangles": 40,
+          "materials": [
+            "WindowGlow"
+          ]
+        },
+        {
+          "name": "Gauge.001",
+          "triangles": 36,
+          "materials": [
+            "Cyan"
+          ]
+        },
+        {
+          "name": "Spout.001",
+          "triangles": 152,
+          "materials": [
+            "Brass",
+            "Cyan"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_ValveWheel",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_ValveWheel.fbx",
+      "triangles": 948,
+      "bounds_unity": {
+        "min": [
+          -0.0523,
+          -0.0523,
+          -0.0155
+        ],
+        "max": [
+          0.0523,
+          0.0535,
+          0.0068
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Wheel",
+          "triangles": 840,
+          "materials": [
+            "Cyan"
+          ]
+        },
+        {
+          "name": "Hub",
+          "triangles": 108,
+          "materials": [
+            "Brass",
+            "Cream"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_ValveMount",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_ValveMount.fbx",
+      "triangles": 848,
+      "bounds_unity": {
+        "min": [
+          -0.0649,
+          -0.1768,
+          -0.0249
+        ],
+        "max": [
+          0.0736,
+          0.0362,
+          0.1256
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Body.005",
+          "triangles": 300,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.007",
+          "triangles": 228,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Base.003",
+          "triangles": 320,
+          "materials": [
+            "Stone",
+            "Slate"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_ButtonStation",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_ButtonStation.fbx",
+      "triangles": 1698,
+      "bounds_unity": {
+        "min": [
+          -0.1061,
+          -0.0038,
+          -0.103
+        ],
+        "max": [
+          0.105,
+          0.2295,
+          0.0996
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Base.004",
+          "triangles": 428,
+          "materials": [
+            "Wood",
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Moss.006",
+          "triangles": 120,
+          "materials": [
+            "Moss"
+          ]
+        },
+        {
+          "name": "Body.006",
+          "triangles": 160,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.008",
+          "triangles": 354,
+          "materials": [
+            "Brass",
+            "Cream"
+          ]
+        },
+        {
+          "name": "Tank.001",
+          "triangles": 144,
+          "materials": [
+            "Cyan",
+            "Glass"
+          ]
+        },
+        {
+          "name": "Roof.001",
+          "triangles": 312,
+          "materials": [
+            "Wood",
+            "WoodLight"
+          ]
+        },
+        {
+          "name": "Gauge.002",
+          "triangles": 28,
+          "materials": [
+            "Cream",
+            "EnamelRed"
+          ]
+        },
+        {
+          "name": "Spout.002",
+          "triangles": 152,
+          "materials": [
+            "Brass",
+            "Cyan"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_ButtonPost",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_ButtonPost.fbx",
+      "triangles": 880,
+      "bounds_unity": {
+        "min": [
+          -0.0658,
+          -0.1763,
+          -0.0219
+        ],
+        "max": [
+          0.0711,
+          0.0414,
+          0.1239
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Body.007",
+          "triangles": 320,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.009",
+          "triangles": 240,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Base.005",
+          "triangles": 320,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_PushButton",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_PushButton.fbx",
+      "triangles": 222,
+      "bounds_unity": {
+        "min": [
+          -0.0285,
+          -0.0281,
+          -0.0118
+        ],
+        "max": [
+          0.0285,
+          0.0281,
+          0.01
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Cap",
+          "triangles": 222,
+          "materials": [
+            "Cream",
+            "Cyan"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignRail",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignRail.fbx",
+      "triangles": 64,
+      "bounds_unity": {
+        "min": [
+          -0.5001,
+          -0.0113,
+          -0.011
+        ],
+        "max": [
+          0.5,
+          0.0117,
+          0.0111
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Rail",
+          "triangles": 64,
+          "materials": [
+            "Wood"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignCorner",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignCorner.fbx",
+      "triangles": 136,
+      "bounds_unity": {
+        "min": [
+          -0.05,
+          -0.05,
+          -0.0191
+        ],
+        "max": [
+          0.0182,
+          0.0183,
+          0.0151
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Knot",
+          "triangles": 80,
+          "materials": [
+            "WoodLight"
+          ]
+        },
+        {
+          "name": "Leaf",
+          "triangles": 56,
+          "materials": [
+            "Brass"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignCrest",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignCrest.fbx",
+      "triangles": 346,
+      "bounds_unity": {
+        "min": [
+          -0.1046,
+          -0.014,
+          -0.0146
+        ],
+        "max": [
+          0.1008,
+          0.0523,
+          0.0148
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Plaque",
+          "triangles": 98,
+          "materials": [
+            "Wood",
+            "Brass"
+          ]
+        },
+        {
+          "name": "Ember",
+          "triangles": 72,
+          "materials": [
+            "Ember"
+          ]
+        },
+        {
+          "name": "Leaf.001",
+          "triangles": 48,
+          "materials": [
+            "Brass"
+          ]
+        },
+        {
+          "name": "Moss.007",
+          "triangles": 128,
+          "materials": [
+            "Moss",
+            "LeafLight",
+            "Leaf"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignLantern",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignLantern.fbx",
+      "triangles": 200,
+      "bounds_unity": {
+        "min": [
+          -0.0031,
+          -0.0668,
+          -0.0248
+        ],
+        "max": [
+          0.0848,
+          0.0245,
+          0.0248
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Bracket",
+          "triangles": 168,
+          "materials": [
+            "Bark",
+            "Brass"
+          ]
+        },
+        {
+          "name": "Glow",
+          "triangles": 32,
+          "materials": [
+            "WindowGlow"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignMoss",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignMoss.fbx",
+      "triangles": 188,
+      "bounds_unity": {
+        "min": [
+          -0.0384,
+          -0.0109,
+          -0.0171
+        ],
+        "max": [
+          0.0396,
+          0.0239,
+          0.0082
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Moss.008",
+          "triangles": 188,
+          "materials": [
+            "Moss",
+            "LeafLight",
+            "Fern",
+            "Petal",
+            "WindowGlow"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_CampGround",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_CampGround.fbx",
+      "triangles": 15814,
+      "bounds_unity": {
+        "min": [
+          -2.5952,
+          -0.72,
+          -2.9288
+        ],
+        "max": [
+          2.4978,
+          0.3249,
+          2.0763
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Moss.009",
+          "triangles": 1608,
+          "materials": [
+            "Moss"
+          ]
+        },
+        {
+          "name": "Soil.001",
+          "triangles": 224,
+          "materials": [
+            "Soil"
+          ]
+        },
+        {
+          "name": "Slate.001",
+          "triangles": 2520,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Path.002",
+          "triangles": 270,
+          "materials": [
+            "Stone",
+            "Path"
+          ]
+        },
+        {
+          "name": "Rocks",
+          "triangles": 1440,
+          "materials": [
+            "Stone",
+            "Bark",
+            "Slate"
+          ]
+        },
+        {
+          "name": "Growth.001",
+          "triangles": 9752,
+          "materials": [
+            "LeafLight",
+            "Fern",
+            "Moss",
+            "MossLight",
+            "Petal",
+            "WindowGlow",
+            "Cream",
+            "Mushroom",
+            "PetalPink"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignPost",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignPost.fbx",
+      "triangles": 48,
+      "bounds_unity": {
+        "min": [
+          -0.04,
+          -0.0005,
+          -0.04
+        ],
+        "max": [
+          0.04,
+          1.0004,
+          0.04
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Post",
+          "triangles": 48,
+          "materials": [
+            "Wood"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_SignPostCap",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_SignPostCap.fbx",
+      "triangles": 160,
+      "bounds_unity": {
+        "min": [
+          -0.0457,
+          -0.01,
+          -0.046
+        ],
+        "max": [
+          0.0457,
+          0.0479,
+          0.0442
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Cap.001",
+          "triangles": 56,
+          "materials": [
+            "WoodLight"
+          ]
+        },
+        {
+          "name": "Moss.010",
+          "triangles": 104,
+          "materials": [
+            "Moss",
+            "LeafLight"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Tent",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Tent.fbx",
+      "triangles": 654,
+      "bounds_unity": {
+        "min": [
+          -0.791,
+          0.0,
+          -0.9096
+        ],
+        "max": [
+          0.791,
+          1.1448,
+          0.831
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Canvas",
+          "triangles": 256,
+          "materials": [
+            "Canvas",
+            "CanvasDark"
+          ]
+        },
+        {
+          "name": "Poles",
+          "triangles": 286,
+          "materials": [
+            "Wood",
+            "Bark",
+            "Brass"
+          ]
+        },
+        {
+          "name": "Bedroll",
+          "triangles": 80,
+          "materials": [
+            "Cedar",
+            "Cream"
+          ]
+        },
+        {
+          "name": "Glow.001",
+          "triangles": 32,
+          "materials": [
+            "WindowGlow"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_Campfire",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_Campfire.fbx",
+      "triangles": 1226,
+      "bounds_unity": {
+        "min": [
+          -0.3322,
+          0.0,
+          -0.3434
+        ],
+        "max": [
+          0.3567,
+          0.4746,
+          0.3362
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Stones",
+          "triangles": 720,
+          "materials": [
+            "Slate",
+            "Stone"
+          ]
+        },
+        {
+          "name": "Embers",
+          "triangles": 80,
+          "materials": [
+            "Ember"
+          ]
+        },
+        {
+          "name": "Logs",
+          "triangles": 210,
+          "materials": [
+            "BarkLight",
+            "Bark"
+          ]
+        },
+        {
+          "name": "Flame",
+          "triangles": 216,
+          "materials": [
+            "Flame"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "EDV2_CampCrate",
+      "file": "Assets/FireRescue/ArtV2/Models/EDV2_CampCrate.fbx",
+      "triangles": 652,
+      "bounds_unity": {
+        "min": [
+          -0.265,
+          0.0,
+          -0.1884
+        ],
+        "max": [
+          0.265,
+          0.3754,
+          0.1884
+        ]
+      },
+      "meshes": [
+        {
+          "name": "Chest",
+          "triangles": 164,
+          "materials": [
+            "Teal"
+          ]
+        },
+        {
+          "name": "Hardware.010",
+          "triangles": 488,
+          "materials": [
+            "Brass",
+            "Cream"
+          ]
+        }
+      ]
+    }
+  ]
+}

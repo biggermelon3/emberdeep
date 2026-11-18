@@ -86,7 +86,9 @@ namespace FireRescue.Tests
                 if(game.Run.SprayAmount>0)
                     game.Run.ApplyWater(fire.Position,game.Run.SprayAmount,game.Run.ShotRadius,game.Run.ShotWetness);
             }
-            game.Run.CancelTrigger();game.Refresh();
+            game.Run.CancelTrigger();
+            for(int frame=0;frame<200;frame++)game.Run.Tick(.05f,false);
+            game.Refresh();
             Assert.AreEqual(FirePhase.Cleared,game.Run.Phase,"Earn shop currency by extinguishing paid-for fire samples");
             Assert.Greater(game.Run.ConsumedWater,0);
         }
@@ -128,14 +130,17 @@ namespace FireRescue.Tests
 
         [UnityTest] public IEnumerator EarnedCoinsUpgradeProductionStationFromLeverThroughRotaryToButton()
         {
-            EmberdeepSession.NewExpedition();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
+            EmberdeepSession.BeginEquipmentTestRun();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
             yield return null;yield return null;
             game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);game.enabled=false;
             game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
             Assert.IsTrue(game.TakeEquipment(1));Assert.AreEqual(WaterStationTier.LeverWell,game.Run.StationTier);
             Assert.Zero(game.Run.Coins);Assert.IsFalse(game.Run.CanUpgradeStation);
+            // Deliberate misses require a real refill, independently of weapon balance.
+            for(int i=0;i<100 && game.Run.Water>0;i++)game.Run.Tick(.1f,true);
+            game.Run.CancelTrigger();Assert.Zero(game.Run.Water);
             FightCurrentIncident();
-            Assert.Greater(game.Run.SuppliedWater,0,"The starter tank cannot clear all three isolated fires without a lever refill");
+            Assert.Greater(game.Run.SuppliedWater,0,"An empty starter tank must receive a real lever refill");
             Assert.GreaterOrEqual(game.Run.Coins,100);yield return BuyNextStationThroughShop();
             Assert.IsFalse(game.HydrantStation.LeverVisual.gameObject.activeInHierarchy);Assert.IsTrue(game.HydrantStation.Valve.gameObject.activeInHierarchy);
             float beforeRotary=game.Run.SuppliedWater;

@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-15",
+  "status": "RELEASED_IN_0.2.19; ORIGINAL_SOURCE_VERIFICATION_RETAINED",
+  "based_on_release": "0.2.18 / code 21",
+  "supersedes": [
+    "XRBackdropRefinement.json",
+    "EnvironmentVfxRefinement.json"
+  ],
+  "changes": [
+    "Remove the cascade, its seven rock supports, landing rings, splash droplets and mist.",
+    "Replace the stationary rear quad with a distant spherical sky environment. Recompute the soft angular aperture from the camera-to-forest direction and projected arena size each frame. Sky remains behind the forest when viewing from another side.",
+    "Keep clouds world-oriented while the sphere follows camera translation. Head rotation naturally changes the visible part of the environment. Preserve transparent coverage outside the forest aperture and the four-second bottom-to-top reveal.",
+    "Rework the creek with travelling filtered wave normals, deeper centre/shallow-bank colours, view-dependent sky reflection, soft highlights and subtle caustics. Remove the authored static white foam bars; keep seven sparse moving foam wisps.",
+    "Retain 40 warm dust motes and three delicate wind ribbons, with arena-local positioning and pause-aware animation."
+  ],
+  "xr_contract": {
+    "background": "Distant inward-facing sphere; no fixed scenery quad. Soft aperture centred on the forest direction, independent of head yaw. Looking away from the subject leaves empty regions transparent.",
+    "alpha": "Transparent camera clear; sky clips outside its angular coverage; separate RGB/alpha blending preserves compositor coverage.",
+    "stereo": "Shaders retain Unity instanced stereo macros and use per-eye world view direction. Worn-headset stereo/compositor acceptance is still pending.",
+    "platforms": "Existing Quest underlay and PICO passthrough settings retained. No SDK or input changes."
+  },
+  "budget": {
+    "effect_renderers": 1,
+    "effect_triangles": 154,
+    "maximum_effect_triangles": 192,
+    "dust_motes": 40,
+    "wind_ribbons": 3,
+    "creek_foam_wisps": 7,
+    "cascade_rock_instances": 0,
+    "additional_sky_renderer": 1,
+    "screen_or_depth_copies": 0
+  },
+  "interaction_contract": "Presentation only. No changes to grabbing, trigger thresholds, refill amounts, fire damage or interaction colliders.",
+  "verification": {
+    "tests": {
+      "EditMode": {
+        "total": 215,
+        "passed": 215,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepViewSky/Acceptance2/EditMode-results.json"
+      },
+      "PlayMode": {
+        "total": 222,
+        "passed": 222,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0,
+        "path": "Logs/EmberdeepViewSky/Acceptance2/PlayMode-results.json"
+      }
+    },
+    "checks": [
+      "Rendered sky behind the forest at orbit angles -80, 0 and 80 degrees with head yaw -25, 0 and 25 degrees, plus a rear orbit at 180 degrees",
+      "Empty side/rear/up/down view alpha remains zero",
+      "Bottom-to-top reveal, pause/recenter, foreground visibility and camera restoration",
+      "No cascade child objects; bounded reused effects mesh",
+      "Actual rendered creek colour and frame-to-frame motion",
+      "Shader compilation/support and scene teardown"
+    ],
+    "captures": [
+      "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15-Left.png",
+      "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15-Front.png",
+      "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15-Right.png",
+      "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15-River.png",
+      "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15-Transparent.png"
+    ],
+    "video": "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15.mp4",
+    "animated_preview": "Deliverables/Emberdeep/Emberdeep-View-Sky-2026-11-15.gif",
+    "capture_scope": "Actual Unity scene with live frame advancement, scripted camera orbit followed by a head-yaw sweep. HUD/interaction guides hidden for art review. Black areas in the MP4/GIF represent transparent background; PNG captures retain alpha. Desktop render, not headset footage or performance measurement.",
+    "settings": "Test runner restored Editor scene list, scene setup and background execution settings."
+  },
+  "delivery": "Included in Quest 0.2.19, with background supersession as noted. Installed version verified. No PICO build.",
+  "remaining_acceptance": [
+    "Quest/PICO worn-headset stereo and passthrough edge appearance",
+    "Device GPU/frame timing under fire and effects load"
+  ],
+  "source_sha256": {
+    "Assets/FireRescue/Runtime/EmberdeepImmersiveSky.cs": "644ed85f5a8659ee84bcf775932d56aaf04a34cf6ea394fba96f60d7de00341c",
+    "Assets/FireRescue/Runtime/EmberdeepEnvironmentVfx.cs": "e1db1dd09efca5381824d8d64c106bcd96e2af100c1589ff1587ad2836591cba",
+    "Assets/FireRescue/Resources/EmberdeepImmersiveSky.shader": "5ae1dfdfb98d4a221e9ee5bce3f6bdcf0b2620d32325ef9c083dc343b16e90f8",
+    "Assets/FireRescue/Resources/EmberdeepV2Creek.shader": "50e8ca514af63372710c82f25303bef5375e43ba4e4cbb9a8db24db9e056cc02",
+    "Assets/FireRescue/Resources/EmberdeepEnvironmentFx.shader": "b30f53f645d8c355dda4d9b33f33eac3df6e8b4268ef3c0702c93a10bdbc01b5",
+    "Assets/FireRescue/Runtime/FireRescueGame.cs": "eeb044b4991bfe74cc1c3064579c2ce87d794c6c6ad263f0586dacdfe0122527",
+    "Assets/FireRescue/Runtime/FireRescueGame.Hands.cs": "e04d4f5ad317d8067f523e4042df3db7a95ec6c929afc99554c97cc8d9531bbc",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepImmersiveSkyTests.cs": "a3ad1a70aa76a4dfc3479283ca139c01ae34284844728f1e0612b0bae33df9b7",
+    "Assets/FireRescue/Tests/PlayMode/EmberdeepEnvironmentVfxTests.cs": "e90318e8694157839c6ae3cb568995e8ec3933993f1cb39e36b319f6bcad4dfe"
+  },
+  "background_superseded_by": "SubjectFittedBackdrop.json",
+  "historical_scope": "The circular angular background mask, source hashes and captures describe the prior source iteration. River, waterfall removal and ambient effects remain current; the fitted background is defined by SubjectFittedBackdrop.json.",
+  "released_in": "0.2.19 / code 22",
+  "release_evidence": "Release-0.2.19.json",
+  "superseded_in": "0.2.20; see InteractionUsabilityAndSky.json. Original release evidence retained."
+}

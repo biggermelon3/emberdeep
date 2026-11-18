@@ -35,7 +35,7 @@ namespace FireRescue.Tests
                     InputSystem.QueueStateEvent(mouse,new MouseState{position=new Vector2(p.x,p.y),buttons=1});yield return null;
                 }
                 Capture(game.Player.ViewCamera,"Logs/FireRescue-InputDiagnostic.png");
-                Assert.AreEqual(TreeState.Saved,game.Run.Trees[1].State,$"water={game.Run.Water} heat={game.Run.Trees[1].Heat} spraying={game.Spraying} point={p} mouse={Mouse.current.position.ReadValue()} screen={Screen.width}x{Screen.height} focus={Application.isFocused}");Assert.GreaterOrEqual(game.Run.Coins,25);
+                Assert.AreEqual(TreeState.Saved,game.Run.Trees[1].State,$"water={game.Run.Water} heat={game.Run.Trees[1].Heat} spraying={game.Spraying} point={p} mouse={Mouse.current.position.ReadValue()} screen={Screen.width}x{Screen.height} focus={Application.isFocused}");Assert.Greater(game.Run.Score,0,"Water hit earns suppression score; cash belongs to rescued animals");
                 float water=game.Run.Water;
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=new Vector2(p.x,p.y)});yield return new WaitForSeconds(.5f);
                 Assert.Greater(game.Run.Water,water);Assert.IsFalse(game.Spraying);

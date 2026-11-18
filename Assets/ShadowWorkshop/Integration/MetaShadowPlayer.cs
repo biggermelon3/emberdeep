@@ -155,7 +155,27 @@ namespace CloudGarden.Integration
                 || !ReadPortable(left,out var sample) || !sample.GripAvailable)return false;
             strength=sample.GripStrength;contact=sample.GripContact;return true;
         }
+        // Raw native sample for gesture spells: per-finger curls and joint points.
+        public bool TryReadPortableSample(bool left,out PortableXRHandInput.Sample sample)
+        {
+            sample=default;
+            return UsesPortableGrip && HeadReady && Active && !SystemOwnsHand(left) && ReadPortable(left,out sample);
+        }
+        public bool IsPortablePalmOpen(bool left)=>UsesPortableGrip && HeadReady && Active && !SystemOwnsHand(left)
+            && ReadPortable(left,out var sample) && sample.OpenPalm;
         public bool UsesPortableGrip=>UnityXRRig && IndependentPortableAim;
+        static readonly HandJointId[] fingerTips={HandJointId.HandThumbTip,HandJointId.HandIndexTip,HandJointId.HandMiddleTip,HandJointId.HandRingTip,HandJointId.HandPinkyTip};
+        // Independent finger validity: a touch does not require a full right-hand fist sample.
+        public bool TryReadFingertip(bool left,int finger,out Vector3 point)
+        {
+            point=default;
+            if(finger<0 || finger>=5 || !HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy || SystemOwnsHand(left))return false;
+            if(UsesPortableGrip)return ReadPortable(left,out var sample) && sample.TryTip(finger,out point);
+            var hand=Tracked(left);
+            if(!hand || !hand.IsConnected || !hand.IsTrackedDataValid || !hand.GetFingerIsHighConfidence((Oculus.Interaction.Input.HandFinger)finger)
+                || !hand.GetJointPose(fingerTips[finger],out var pose))return false;
+            point=pose.position;return float.IsFinite(point.sqrMagnitude);
+        }
         public bool TryReadPortableGripFrame(bool left,out Quaternion rotation)
         {
             rotation=Quaternion.identity;

@@ -16,7 +16,7 @@ namespace FireRescue.Tests
         FireRescueGame game;
         [UnitySetUp] public IEnumerator Load()
         {
-            EmberdeepSession.NewExpedition();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
+            EmberdeepSession.BeginEquipmentTestRun();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
             yield return null;yield return null;
             game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);game.enabled=false;
             game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
@@ -24,7 +24,7 @@ namespace FireRescue.Tests
             game.MenuInput.ViewCamera=game.Player.ViewCamera;
         }
         void Clear()
-        {foreach(var tree in game.Run.Trees)if(tree.State==TreeState.Burning)game.Run.ApplyWater(tree.Position,100,.1f);}
+        {foreach(var tree in game.Run.Trees)if(tree.State==TreeState.Burning)game.Run.ApplyWater(tree.Position,100,.1f);game.Run.EvacuateSafeAnimals();}
         WorkshopButton Button(string command)=>game.GetComponentsInChildren<WorkshopButton>(true).Single(x=>x.Command==command);
         void Look(WorkshopButton button)
         {

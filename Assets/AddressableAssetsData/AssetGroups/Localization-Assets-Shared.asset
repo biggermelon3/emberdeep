@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: 4bf4dfdce38a018459dc12bfb9aabb46
+  m_SerializeEntries:
+  - m_GUID: a4e252f040424284c8494c708d8ae58c
+    m_Address: Assets/FireRescue/Localization/Tables/EmberdeepFonts Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daa425b726f67db45b20035db118080f
+    m_Address: Assets/FireRescue/Localization/Tables/EmberdeepUI Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: d70a78b59eacb89408e05b8322a51be0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 38cf2adc0b5313e47a91fd10e584de4a, type: 2}
+    - {fileID: 11400000, guid: 7c451bdf377e7644e8dc5d61b16679fd, type: 2}
+    - {fileID: 11400000, guid: 4909460d9b9aa434698df6907c7633bf, type: 2}

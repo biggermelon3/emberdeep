@@ -1,10 +1,10 @@
 {
-  "revision": "0.2.18",
-  "date": "2026-11-14",
+  "revision": "0.2.24",
+  "date": "2026-11-16",
   "candidate": {
-    "version": "0.2.18",
-    "android_version_code": 21,
-    "status": "QUEST_BUILT_AND_INSTALLED; 420 tests passed; physical headset acceptance pending"
+    "version": "0.2.24",
+    "android_version_code": 27,
+    "status": "QUEST_BUILT_AND_INSTALLED; PICO_BUILT_AND_AUDITED_FOR_COLLEAGUE_TESTING; 245 EditMode + 234 PlayMode passed; worn-headset acceptance pending"
   },
   "historical_delivery": {
     "version": "0.1.1",
@@ -13,10 +13,10 @@
   },
   "milestones": {
     "M0": "Hand aim and fresh pinch remain for menus. Physical tool/station interactions use independent object poses and tracked closure, with hand ownership isolated from UI.",
-    "M1": "Retained holds, canonical hand contacts, refined extinguisher handle and proportional well travel; 215 EditMode + 205 PlayMode passed. Quest installed; physical acceptance pending.",
-    "M2": "PROPOSED: safe search, loot, optional animals, pending ledger, durable saves",
+    "M1": "Fingertip-on-left-hand-back magic, repeatable rewarded replay, grabbable/pettable sheep and explicit preparation/countdown. See Release-0.2.24.json.",
+    "M2": "PARTIAL: automatic sheep rescue, water protection, hidden health and rescue cash implemented. Safe searching, loot and durable saves remain PROPOSED; old physical-carry rescue proposal superseded.",
     "M3": "PROPOSED: authored teaching progression, sidegrades and measured feedback",
-    "M4": "QUEST_BUILT_AND_INSTALLED; 420 tests passed; physical headset acceptance pending"
+    "M4": "QUEST_BUILT_AND_INSTALLED; PICO_BUILT_AND_AUDITED_FOR_COLLEAGUE_TESTING; 245 EditMode + 234 PlayMode passed; worn-headset acceptance pending"
   },
   "evidence": {
     "version_scope": "Historical 0.2.0 / code 3 only; current evidence is in current_iteration.",
@@ -61,84 +61,119 @@
     "device_checklist": "Docs/Emberdeep/M1DeviceAcceptance.json"
   },
   "current_iteration": {
-    "version": "0.2.18",
-    "android_version_code": 21,
-    "date": "2026-11-14",
-    "status": "QUEST_BUILT_AND_INSTALLED; 420 tests passed; physical headset acceptance pending",
-    "source": "Release-0.2.18.json",
+    "version": "0.2.24",
+    "android_version_code": 27,
+    "date": "2026-11-16",
+    "status": "QUEST_BUILT_AND_INSTALLED; PICO_BUILT_AND_AUDITED_FOR_COLLEAGUE_TESTING; 245 EditMode + 234 PlayMode passed; worn-headset acceptance pending",
+    "source": "Release-0.2.24.json",
     "changes": [
-      "HandednessPoseAudit.json",
-      "ExtinguisherGripRefinement.json"
+      "TouchReplayAndPreparation024.json"
     ],
-    "retained_contract": "ErgonomicGripAndMaterialAA.json",
-    "changelist": "Changelist-0.2.18.txt",
+    "changelist": "Changelist-0.2.24.txt",
     "tests": {
       "EditMode": {
-        "total": 215,
-        "passed": 215,
+        "total": 245,
+        "passed": 245,
         "failed": 0,
         "skipped": 0,
         "inconclusive": 0,
-        "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/EditMode-results.json"
+        "path": "Logs/Emberdeep024/Acceptance3/EditMode-results.json"
       },
       "PlayMode": {
-        "total": 205,
-        "passed": 205,
+        "total": 234,
+        "passed": 234,
         "failed": 0,
         "skipped": 0,
         "inconclusive": 0,
-        "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/PlayMode-results.json"
+        "path": "Logs/Emberdeep024/Acceptance3/PlayMode-results.json"
       }
     },
     "builds": {
       "Quest": {
-        "target": "Quest",
-        "sceneWhitelistPassed": true,
-        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
-        "bytes": 105591357,
-        "versionCode": 21,
         "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
-        "sha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
+        "target": "Quest",
         "signatureVerified": true,
-        "version": "0.2.18",
+        "bytes": 122100852,
+        "sha256": "e49bb00332ab54d0e931e353b10021e43512b02f1a9c075b3b5208d884f78ee6",
         "settingsRestored": true,
+        "sceneWhitelistPassed": true,
+        "version": "0.2.24",
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "versionCode": 27,
         "errors": 0,
-        "warnings": 8
+        "warnings": 9
+      },
+      "Pico": {
+        "bytes": 103806748,
+        "version": "0.2.24",
+        "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+        "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+        "settingsRestored": true,
+        "versionCode": 27,
+        "target": "Pico",
+        "signatureVerified": true,
+        "sha256": "e97c7673022725c8692d1413aa8e8c45c2689c3c1519d7cc017051fffd65487d",
+        "sceneWhitelistPassed": true,
+        "errors": 0,
+        "warnings": 13,
+        "apk": "Deliverables/Emberdeep/Emberdeep-0.2.24-Pico.apk",
+        "signing": "Existing Android Debug certificate; colleague testing build",
+        "hardware_acceptance": "Pending PICO device testing",
+        "content_audit": "Logs/Emberdeep024Pico/Pico-ContentAudit.json"
       }
     },
     "source_integrity": {
       "unchanged_during_build": true,
-      "file_count": 116,
-      "verified_interaction_sources_match_tests": true
+      "file_count": 418
     },
-    "restored_settings_count": 28,
     "installation": {
-      "date": "2026-11-14",
+      "date": "2026-11-16",
       "device": "Quest 3",
       "serial": "2G0YC1ZG42020Y",
-      "package": "com.metahackathon2026.emberdeep",
-      "version": "0.2.18",
-      "versionCode": 21,
+      "version": "0.2.24",
+      "versionCode": 27,
       "installedVersionVerified": true,
-      "installation": "Replace existing application, preserve data",
-      "apkSha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
-      "headsetInteractionAcceptance": "Pending user worn-headset test of refined extinguisher handle and handedness guard",
+      "installation": "Replacement install; preserve data",
+      "apkSha256": "e49bb00332ab54d0e931e353b10021e43512b02f1a9c075b3b5208d884f78ee6",
       "appInfo": {
+        "version_name": "0.2.24",
+        "verified_via": "ADB dumpsys package",
+        "installation": "Streamed install -r returned Success",
+        "launch": "Launch requested; no app process observed; physical acceptance pending",
+        "version_code": "27",
         "package": "com.metahackathon2026.emberdeep",
-        "version_name": "0.2.18",
-        "version_code": "21",
-        "install_path": "/data/app/~~gwYZOXK6qtvrlsdkLOcReg==/com.metahackathon2026.emberdeep-ZP72cCHM0Qjl1212e-iJLA==",
-        "is_system": false,
-        "first_install_time": "2026-11-06 13:30:58",
-        "last_update_time": "2026-11-15 12:23:37",
-        "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
-      }
+        "power": "mWakefulness=Asleep"
+      },
+      "headset_acceptance": "Pending user test"
     },
-    "preview": "Deliverables/Emberdeep/Emberdeep-0.2.18-Extinguisher-Grip.png",
-    "pico": "Shared source updated; no 0.2.18 PICO APK built",
+    "pico": "PICO 0.2.24 / code 27 APK built and audited with dedicated OpenXR player in Camp and Fireground, offline English/Chinese assets and existing Android Debug signing; PICO hardware acceptance pending.",
+    "build_environment": {
+      "bee_build_threads": 4,
+      "log": "Logs/Emberdeep024/QuestBuild.log",
+      "pico_log": "Logs/Emberdeep024Pico/PicoBuild.log"
+    },
     "limits": [
-      "Synthetic Editor tests and SDK hand previews do not establish worn-headset comfort or optical tracking quality."
-    ]
+      "Fingertip contact ergonomics and occlusion need worn-headset testing.",
+      "Replay economy and sheep carrying balance need playtesting.",
+      "No measured Quest/PICO GPU budget.",
+      "No durable save system; closing app resets expedition as stated in quit modal."
+    ],
+    "localization_packaging": {
+      "offline_english_chinese_fonts_and_tables": true,
+      "bundles": [
+        "assets/aa/Android/localization-asset-tables-en_assets_all_35efce2d2ec7d09c8221eadacf232305.bundle",
+        "assets/aa/Android/localization-asset-tables-zh-hans_assets_all_5b6ee87be86c7f6a01ace4ee119b5e1d.bundle",
+        "assets/aa/Android/localization-assets-en_assets_all_5e6331dc53473e68f55f6efcea49142b.bundle",
+        "assets/aa/Android/localization-assets-shared_assets_all_cad6e24b6d36e37b90db90213074fa44.bundle",
+        "assets/aa/Android/localization-assets-zh-hans_assets_all_6f842bed570b57f88338c79e03bab013.bundle",
+        "assets/aa/Android/localization-locales_assets_all_0c8e3618c3d4971575a0792bbc9e74e8.bundle",
+        "assets/aa/Android/localization-string-tables-en_assets_all_29254aeab6692f59024c4eb6bf16d600.bundle",
+        "assets/aa/Android/localization-string-tables-zh-hans_assets_all_be7a214f08fd9093be60525afac0b987.bundle"
+      ],
+      "zip_crc_valid": true,
+      "verified_source_count": 418,
+      "sources_unchanged": true
+    }
   },
   "requirements": [
     {
@@ -3227,9 +3262,530 @@
         "Display contact uses part OBB proxies; authored display joints never feed physical input.",
         "Creek pull-pump mechanic remains unchanged; proportional travel applies to the well lever and its empty outlet."
       ]
+    },
+    {
+      "version": "0.2.18",
+      "android_version_code": 21,
+      "date": "2026-11-14",
+      "status": "QUEST_BUILT_AND_INSTALLED; 420 tests passed; physical headset acceptance pending",
+      "source": "Release-0.2.18.json",
+      "changes": [
+        "HandednessPoseAudit.json",
+        "ExtinguisherGripRefinement.json"
+      ],
+      "retained_contract": "ErgonomicGripAndMaterialAA.json",
+      "changelist": "Changelist-0.2.18.txt",
+      "tests": {
+        "EditMode": {
+          "total": 215,
+          "passed": 215,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 205,
+          "passed": 205,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepExtinguisherGrip/Acceptance1/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "target": "Quest",
+          "sceneWhitelistPassed": true,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "bytes": 105591357,
+          "versionCode": 21,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "sha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
+          "signatureVerified": true,
+          "version": "0.2.18",
+          "settingsRestored": true,
+          "errors": 0,
+          "warnings": 8
+        }
+      },
+      "source_integrity": {
+        "unchanged_during_build": true,
+        "file_count": 116,
+        "verified_interaction_sources_match_tests": true
+      },
+      "restored_settings_count": 28,
+      "installation": {
+        "date": "2026-11-14",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.18",
+        "versionCode": 21,
+        "installedVersionVerified": true,
+        "installation": "Replace existing application, preserve data",
+        "apkSha256": "b1cd91a6ada39c14c4a8c5e4f837f67ed2e06b8c60dd20b816cb265b81188a60",
+        "headsetInteractionAcceptance": "Pending user worn-headset test of refined extinguisher handle and handedness guard",
+        "appInfo": {
+          "package": "com.metahackathon2026.emberdeep",
+          "version_name": "0.2.18",
+          "version_code": "21",
+          "install_path": "/data/app/~~gwYZOXK6qtvrlsdkLOcReg==/com.metahackathon2026.emberdeep-ZP72cCHM0Qjl1212e-iJLA==",
+          "is_system": false,
+          "first_install_time": "2026-11-06 13:30:58",
+          "last_update_time": "2026-11-15 12:23:37",
+          "data_dir": "/data/user/0/com.metahackathon2026.emberdeep"
+        }
+      },
+      "preview": "Deliverables/Emberdeep/Emberdeep-0.2.18-Extinguisher-Grip.png",
+      "pico": "Shared source updated; no 0.2.18 PICO APK built",
+      "limits": [
+        "Synthetic Editor tests and SDK hand previews do not establish worn-headset comfort or optical tracking quality."
+      ]
+    },
+    {
+      "version": "0.2.19",
+      "android_version_code": 22,
+      "date": "2026-11-15",
+      "status": "QUEST_BUILT_AND_INSTALLED; 441 tests passed; worn-headset visual acceptance pending",
+      "source": "Release-0.2.19.json",
+      "changes": [
+        "SubjectFittedBackdrop.json",
+        "ViewRelativeSkyAndRiver.json"
+      ],
+      "retained_interaction_release": "Release-0.2.18.json",
+      "changelist": "Changelist-0.2.19.txt",
+      "tests": {
+        "EditMode": {
+          "total": 215,
+          "passed": 215,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepSubjectSky/Acceptance4/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 226,
+          "passed": 226,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepSubjectSky/Acceptance4/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "bytes": 105620363,
+          "sceneWhitelistPassed": true,
+          "versionCode": 22,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "target": "Quest",
+          "version": "0.2.19",
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "signatureVerified": true,
+          "settingsRestored": true,
+          "sha256": "597640795d2a64d78b9dd9271fef21d50ed47d8ef47c14ce7d71f354041542fd",
+          "errors": 0,
+          "warnings": 8
+        }
+      },
+      "source_integrity": {
+        "unchanged_during_build": true,
+        "file_count": 119,
+        "runtime_sources_match_tested_contract": true
+      },
+      "restored_settings_count": 28,
+      "installation": {
+        "date": "2026-11-15",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.19",
+        "versionCode": 22,
+        "installedVersionVerified": true,
+        "installation": "Replace existing application; preserve data",
+        "apkSha256": "597640795d2a64d78b9dd9271fef21d50ed47d8ef47c14ce7d71f354041542fd",
+        "appInfo": {
+          "version_name": "0.2.19",
+          "version_code": "22",
+          "verified_via": "ADB dumpsys package",
+          "launch": "Launch requested; headset asleep, foreground acceptance not verified",
+          "installation": "Streamed install -r returned Success",
+          "package": "com.metahackathon2026.emberdeep"
+        },
+        "headset_visual_acceptance": "Pending user test of fitted background, river and transparency"
+      },
+      "preview": "Deliverables/Emberdeep/Emberdeep-Subject-Sky-2026-11-15.mp4",
+      "pico": "Shared source only; no 0.2.19 PICO APK built",
+      "limits": [
+        "Desktop render tests do not establish worn-headset stereo, passthrough edge appearance or GPU frame timing."
+      ]
+    },
+    {
+      "version": "0.2.20",
+      "android_version_code": 23,
+      "date": "2026-11-15",
+      "status": "QUEST_BUILT_AND_INSTALLED; 451 tests passed; worn-headset interaction and visual acceptance pending",
+      "source": "Release-0.2.20.json",
+      "changes": [
+        "InteractionUsabilityAndSky.json",
+        "SkyAssetProvenance.json"
+      ],
+      "changelist": "Changelist-0.2.20.txt",
+      "tests": {
+        "EditMode": {
+          "total": 215,
+          "passed": 215,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepUsability/Acceptance2/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 236,
+          "passed": 236,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepUsability/Acceptance2/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "versionCode": 23,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "bytes": 106717253,
+          "settingsRestored": true,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "version": "0.2.20",
+          "target": "Quest",
+          "sha256": "8740328994c369a269f4fe0f34a2d1b0bb49269be2decf6d79a7f9f728968cd7",
+          "sceneWhitelistPassed": true,
+          "signatureVerified": true,
+          "errors": 0,
+          "warnings": 8
+        }
+      },
+      "source_integrity": {
+        "unchanged_during_build": true,
+        "file_count": 119
+      },
+      "restored_settings_count": 28,
+      "installation": {
+        "date": "2026-11-15",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "package": "com.metahackathon2026.emberdeep",
+        "version": "0.2.20",
+        "versionCode": 23,
+        "installedVersionVerified": true,
+        "installation": "Replace existing application; preserve data",
+        "apkSha256": "8740328994c369a269f4fe0f34a2d1b0bb49269be2decf6d79a7f9f728968cd7",
+        "appInfo": {
+          "verified_via": "ADB dumpsys package",
+          "package": "com.metahackathon2026.emberdeep",
+          "version_name": "0.2.20",
+          "launch": "Launch requested; no app process observed; physical acceptance pending",
+          "version_code": "23",
+          "installation": "Streamed install -r returned Success",
+          "power": "mWakefulness=Asleep"
+        },
+        "headset_acceptance": "Pending user test of nozzle aiming, regrip, handoff, round cloud coverage and closer creek/effects"
+      },
+      "preview": "Deliverables/Emberdeep/Emberdeep-0.2.20-Sky-River.mp4",
+      "pico": "Shared source only; no 0.2.20 PICO APK built",
+      "limits": [
+        "Injected hand samples do not establish optical tracking reliability or real-hand comfort.",
+        "Desktop alpha and angle tests do not establish binocular passthrough edges or headset GPU frame timing.",
+        "PICO shares the changed source; no 0.2.20 PICO APK or hardware acceptance."
+      ]
+    },
+    {
+      "version": "0.2.21",
+      "android_version_code": 24,
+      "date": "2026-11-15",
+      "status": "QUEST_BUILT_AND_INSTALLED; 465 tests passed; animal rescue, cartoon sky and grasp refinements await worn-headset acceptance",
+      "source": "Release-0.2.21.json",
+      "changes": [
+        "AnimalRescueAndCartoonSky.json"
+      ],
+      "changelist": "Changelist-0.2.21.txt",
+      "tests": {
+        "EditMode": {
+          "total": 225,
+          "passed": 225,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepSheep/Acceptance10/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 240,
+          "passed": 240,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/EmberdeepSheep/Acceptance10/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "target": "Quest",
+          "versionCode": 24,
+          "signatureVerified": true,
+          "sceneWhitelistPassed": true,
+          "settingsRestored": true,
+          "version": "0.2.21",
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "sha256": "d3b621e830e0e627b529b7c4a7690ef6b9cc43bb00a43f2366b6f60a04b5659f",
+          "bytes": 105636093,
+          "errors": 0,
+          "warnings": 8
+        }
+      },
+      "source_integrity": {
+        "unchanged_during_build": true,
+        "file_count": 124
+      },
+      "installation": {
+        "date": "2026-11-15",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "version": "0.2.21",
+        "versionCode": 24,
+        "installedVersionVerified": true,
+        "installation": "Replacement install, preserve data",
+        "apkSha256": "d3b621e830e0e627b529b7c4a7690ef6b9cc43bb00a43f2366b6f60a04b5659f",
+        "appInfo": {
+          "verified_via": "ADB dumpsys package",
+          "version_name": "0.2.21",
+          "launch": "Launch requested; no app process observed; physical acceptance pending",
+          "installation": "Streamed install -r returned Success",
+          "package": "com.metahackathon2026.emberdeep",
+          "version_code": "24",
+          "power": "mWakefulness=Asleep"
+        },
+        "headset_acceptance": "Pending user test"
+      },
+      "pico": "Shared source only; no PICO 0.2.21 APK",
+      "preview": "Deliverables/Emberdeep/Emberdeep-0.2.21-Sheep.mp4",
+      "limits": [
+        "Real-hand comfort and tracking still require Quest/PICO testing.",
+        "No new bleat audio or authored skeletal animation clips; the sheep animation is procedural.",
+        "M2 loot, physical animal carrying, durable saves and broader search/settlement remain unimplemented.",
+        "No PICO 0.2.21 build or measured headset GPU budget."
+      ],
+      "build_environment": {
+        "bee_build_threads": 4,
+        "first_attempt": "Interrupted by Windows paging-file/commit exhaustion (1455); no APK produced. Exact pre-build settings restored, then rebuilt with lower compilation concurrency.",
+        "successful_log": "Logs/EmberdeepRelease021/QuestBuild-Retry.log"
+      }
+    },
+    {
+      "version": "0.2.22",
+      "android_version_code": 25,
+      "date": "2026-11-16",
+      "status": "QUEST_BUILT_AND_INSTALLED; 232 EditMode + 228 PlayMode passed; final 8 visual regressions passed; worn-headset acceptance pending",
+      "source": "Release-0.2.22.json",
+      "changes": [
+        "GoddessHand.json",
+        "InteractionAndLocalization022.json"
+      ],
+      "changelist": "Changelist-0.2.22.txt",
+      "tests": {
+        "EditMode": {
+          "total": 232,
+          "passed": 232,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/Emberdeep022/Acceptance10/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 228,
+          "passed": 228,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/Emberdeep022/Acceptance10/PlayMode-results.json"
+        },
+        "final_visual_regressions": {
+          "total": 8,
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/Emberdeep022/VisualFinal2/PlayMode-results.json",
+          "scope": "8 selected tests repeated after final caption/layout and crystal presentation changes; not additional unique tests"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "settingsRestored": true,
+          "sha256": "ba684188945dbd4f55d548eee128e00df02090d23a5bba7e311f1bc9ec636259",
+          "signatureVerified": true,
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "target": "Quest",
+          "versionCode": 25,
+          "sceneWhitelistPassed": true,
+          "bytes": 122083054,
+          "version": "0.2.22",
+          "errors": 0,
+          "warnings": 9
+        }
+      },
+      "source_integrity": {
+        "unchanged_during_build": true,
+        "file_count": 390
+      },
+      "installation": {
+        "date": "2026-11-16",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "version": "0.2.22",
+        "versionCode": 25,
+        "installedVersionVerified": true,
+        "installation": "Replacement install; preserve data",
+        "apkSha256": "ba684188945dbd4f55d548eee128e00df02090d23a5bba7e311f1bc9ec636259",
+        "appInfo": {
+          "launch": "Launch requested; no app process observed; physical acceptance pending",
+          "version_code": "25",
+          "package": "com.metahackathon2026.emberdeep",
+          "verified_via": "ADB dumpsys package",
+          "version_name": "0.2.22",
+          "installation": "Streamed install -r returned Success",
+          "power": "mWakefulness=Asleep"
+        },
+        "headset_acceptance": "Pending user test"
+      },
+      "pico": "Shared OpenXR source and five-finger gesture reader; no PICO 0.2.22 APK or device test",
+      "build_environment": {
+        "bee_build_threads": 4,
+        "log": "Logs/Emberdeep022/QuestBuild.log"
+      },
+      "limits": [
+        "Two-hand occlusion and comfort need worn-headset testing.",
+        "New magic progression balance needs playtesting.",
+        "No measured Quest/PICO GPU budget.",
+        "No durable save system; closing app resets expedition as stated in quit modal."
+      ],
+      "localization_packaging": {
+        "offline_english_chinese_fonts_and_tables": true,
+        "bundles": [
+          "assets/aa/Android/localization-asset-tables-en_assets_all_35efce2d2ec7d09c8221eadacf232305.bundle",
+          "assets/aa/Android/localization-asset-tables-zh-hans_assets_all_5b6ee87be86c7f6a01ace4ee119b5e1d.bundle",
+          "assets/aa/Android/localization-assets-en_assets_all_5e6331dc53473e68f55f6efcea49142b.bundle",
+          "assets/aa/Android/localization-assets-shared_assets_all_f148a5907cac00e521bf75d1ac17715e.bundle",
+          "assets/aa/Android/localization-assets-zh-hans_assets_all_6f842bed570b57f88338c79e03bab013.bundle",
+          "assets/aa/Android/localization-locales_assets_all_0c8e3618c3d4971575a0792bbc9e74e8.bundle",
+          "assets/aa/Android/localization-string-tables-en_assets_all_a691f1d88d9d657484835230ee46c330.bundle",
+          "assets/aa/Android/localization-string-tables-zh-hans_assets_all_3a3866a7e25683f5eca3acd4a10615ef.bundle"
+        ],
+        "zip_crc_valid": true,
+        "verified_source_count": 390,
+        "sources_unchanged": true
+      }
+    },
+    {
+      "version": "0.2.23",
+      "android_version_code": 26,
+      "date": "2026-11-16",
+      "status": "QUEST_BUILT_AND_INSTALLED; 236 EditMode + 231 PlayMode passed; worn-headset acceptance pending",
+      "source": "Release-0.2.23.json",
+      "changes": [
+        "PalmProgression023.json"
+      ],
+      "changelist": "Changelist-0.2.23.txt",
+      "tests": {
+        "EditMode": {
+          "total": 236,
+          "passed": 236,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/Emberdeep023/Acceptance3/EditMode-results.json"
+        },
+        "PlayMode": {
+          "total": 231,
+          "passed": 231,
+          "failed": 0,
+          "skipped": 0,
+          "inconclusive": 0,
+          "path": "Logs/Emberdeep023/Acceptance3/PlayMode-results.json"
+        }
+      },
+      "builds": {
+        "Quest": {
+          "target": "Quest",
+          "settingsRestored": true,
+          "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+          "bytes": 122083684,
+          "signatureVerified": true,
+          "version": "0.2.23",
+          "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+          "sceneWhitelistPassed": true,
+          "versionCode": 26,
+          "sha256": "608092910d66e6cdd8a4b6574fc19136e2380fb0e3d3b86e7f691a45be787bd6",
+          "errors": 0,
+          "warnings": 9
+        }
+      },
+      "source_integrity": {
+        "unchanged_during_build": true,
+        "file_count": 404
+      },
+      "installation": {
+        "date": "2026-11-16",
+        "device": "Quest 3",
+        "serial": "2G0YC1ZG42020Y",
+        "version": "0.2.23",
+        "versionCode": 26,
+        "installedVersionVerified": true,
+        "installation": "Replacement install; preserve data",
+        "apkSha256": "608092910d66e6cdd8a4b6574fc19136e2380fb0e3d3b86e7f691a45be787bd6",
+        "appInfo": {
+          "version_name": "0.2.23",
+          "verified_via": "ADB dumpsys package",
+          "package": "com.metahackathon2026.emberdeep",
+          "version_code": "26",
+          "launch": "Launch requested; no app process observed; physical acceptance pending",
+          "installation": "Streamed install -r returned Success",
+          "power": "mWakefulness=Asleep"
+        },
+        "headset_acceptance": "Pending user test"
+      },
+      "pico": "Shared OpenXR source; no PICO 0.2.23 APK or device test",
+      "build_environment": {
+        "bee_build_threads": 4,
+        "log": "Logs/Emberdeep023/QuestBuild.log"
+      },
+      "limits": [
+        "Two-hand occlusion and comfort need worn-headset testing.",
+        "Eight-level progression and new refill balance need playtesting.",
+        "No measured Quest/PICO GPU budget.",
+        "No durable save system; closing app resets expedition as stated in quit modal."
+      ],
+      "localization_packaging": {
+        "offline_english_chinese_fonts_and_tables": true,
+        "bundles": [
+          "assets/aa/Android/localization-asset-tables-en_assets_all_35efce2d2ec7d09c8221eadacf232305.bundle",
+          "assets/aa/Android/localization-asset-tables-zh-hans_assets_all_5b6ee87be86c7f6a01ace4ee119b5e1d.bundle",
+          "assets/aa/Android/localization-assets-en_assets_all_5e6331dc53473e68f55f6efcea49142b.bundle",
+          "assets/aa/Android/localization-assets-shared_assets_all_b2862957ade655079e5df71a370618bd.bundle",
+          "assets/aa/Android/localization-assets-zh-hans_assets_all_6f842bed570b57f88338c79e03bab013.bundle",
+          "assets/aa/Android/localization-locales_assets_all_0c8e3618c3d4971575a0792bbc9e74e8.bundle",
+          "assets/aa/Android/localization-string-tables-en_assets_all_7b7aaeb66913abfcd15a70bc904b4fea.bundle",
+          "assets/aa/Android/localization-string-tables-zh-hans_assets_all_d2b321ea52bd1da1b68f5f63e87b4b4f.bundle"
+        ],
+        "zip_crc_valid": true,
+        "verified_source_count": 404,
+        "sources_unchanged": true
+      }
     }
   ],
-  "historical_scope": "Prior evidence is version-scoped. Current candidate is 0.2.18; see current_iteration.",
+  "historical_scope": "Prior evidence is version-scoped; current release is 0.2.24.",
   "design_revision": "0.13",
   "planned_design_updates": {
     "status": "SUPERSEDED_BY_0.13_IMPLEMENTATION_CANDIDATE",
@@ -3313,7 +3869,7 @@
       "evidence": "Design-source and generated Word content checks only. Existing 0.2.10 tests, captures, APKs and deferred device acceptance remain historical runtime evidence."
     }
   ],
-  "current_runtime_override": "Release-0.2.18.json",
-  "generated_pages_scope": "Generated Word/pages retain the 0.2.11 baseline. Current runtime: Release-0.2.18.json plus retained ErgonomicGripAndMaterialAA.json contract.",
+  "current_runtime_override": "Release-0.2.24.json",
+  "generated_pages_scope": "Generated Word/pages retain 0.2.11 baseline; current runtime: Release-0.2.24.json.",
   "retained_hand_input_contract": "PicoHandTrackingFix.json"
 }

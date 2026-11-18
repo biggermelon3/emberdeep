@@ -18,12 +18,12 @@ namespace FireRescue.Editor
         public const string CampScenePath="Assets/FireRescue/Scenes/EmberdeepCamp.unity";
         public const string ShowcaseScenePath="Assets/FireRescue/Scenes/EmberdeepFireground.unity";
         public const string ShowcasePackageId="com.metahackathon2026.emberdeep";
-        public const string ShowcaseVersion="0.2.18";
-        public const int ShowcaseVersionCode=21;
+        public const string ShowcaseVersion="0.2.28";
+        public const int ShowcaseVersionCode=31;
         public const string ShowcaseIconPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png";
         const string ShowcaseIconBackgroundPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Icon-Background.png";
-        public const string ShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.18.apk";
-        public const string PicoShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.18-Pico.apk";
+        public const string ShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.28.apk";
+        public const string PicoShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.28-Pico.apk";
         // Return a fresh whitelist so callers cannot accidentally mutate a future build.
         public static string[] ShowcaseScenes=>new[]{CampScenePath,ShowcaseScenePath};
 
@@ -200,6 +200,9 @@ namespace FireRescue.Editor
                     iconSource=ShowcaseIconPath,iconSha256=FileSha256(ShowcaseIconPath),
                     createdUtc=DateTime.UtcNow.ToString("O"),result="Building",apkPath=output,requestedScenes=ShowcaseScenes,headset=pico?"PICO 4":"Quest"
                 },true));
+                // Localization tables and CJK fonts must ship offline in the APK.
+                UnityEditor.AddressableAssets.Settings.AddressableAssetSettings.BuildPlayerContent(out var localizedContent);
+                if(!string.IsNullOrEmpty(localizedContent.Error))throw new InvalidOperationException("Localization content build failed: "+localizedContent.Error);
                 var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
                     scenes=ShowcaseScenes,target=BuildTarget.Android,targetGroup=BuildTargetGroup.Android,
                     // Cached player data can produce an empty packedAssets scene

@@ -1,0 +1,53 @@
+{
+  "release": "0.2.23",
+  "supersedes": "GoddessHand.json progression, recharge, tutorial presentation and starter balance; remaining input contract retained",
+  "levels": [
+    {"number": 1, "name": "GODDESS HAND", "trees": 1, "initial_fires": 1, "tree_heat": 60, "tools": false, "forgiving": true},
+    {"number": 2, "name": "GROWING MAGIC", "trees": 3, "initial_fires": 2, "tree_heat": 72, "tools": false},
+    {"number": 3, "name": "PALM RESCUE", "trees": 5, "initial_fires": 3, "tree_heat": 84, "tools": false},
+    {"number": 4, "original_forest_level": 1, "trees": 3, "tools": true},
+    {"number": 5, "original_forest_level": 2, "trees": 9, "tools": true},
+    {"number": 6, "original_forest_level": 3, "trees": 18, "tools": true},
+    {"number": 7, "original_forest_level": 4, "trees": 30, "tools": true},
+    {"number": 8, "original_forest_level": 5, "trees": 42, "tools": true}
+  ],
+  "layout": {
+    "left": "One water station, visible on every level; unlocked with equipment at level 4",
+    "right": "Equipment platform, visible on every level; tools start at level 4",
+    "hand_switch": "World positions do not mirror when changing holding hand",
+    "creek_device": "Inactive throughout production New Game. Retained only for editor-only historical equipment fixtures."
+  },
+  "shop_lesson": {
+    "trigger": "Level 1 cleared, first magic upgrade not purchased; open shop after 1.8 seconds",
+    "purchase": "First magic upgrade costs 75 coins. Safe sheep finish evacuation before opening, ensuring 100 first-level coins.",
+    "gate": "Cannot advance until purchase. Guide forces magic page and prevents unrelated weapon/station spending.",
+    "feedback": "Gold purchase button and localized instructions; hide guide after successful purchase"
+  },
+  "magic": {
+    "base_capacity": 30,
+    "first_upgraded_capacity": 50,
+    "base_empty_to_full_seconds": 5,
+    "upgraded_empty_to_full_seconds": 10,
+    "recovery_rule": "Capacity divided by fill duration. No recharge during casting, paused/menu state or tracking ineligibility; no wall-clock catch-up. Partial charges are usable.",
+    "flow_per_second": 14,
+    "first_upgraded_power_per_second": 63,
+    "first_upgraded_radius_forest_units": 0.94,
+    "manual_refill": false,
+    "sector_entry": "Full charge"
+  },
+  "starter_extinguisher": {"capacity": 60, "flow_per_second": 18, "power_per_second": 78, "radius_forest_units": 1.2, "range_forest_units": 18},
+  "tutorials": {
+    "palm": "Useful fire impact completes lesson; dry firing or missing does not",
+    "projectile_identity": "In-flight water packets retain magic-versus-weapon identity through impact",
+    "other_actions": "Successful weapon fire impact, docking, or actual station supply learns corresponding action",
+    "lifetime": "Learned actions persist through level changes and retries in the expedition; New Game resets them",
+    "demo": "Left fingers point right, right fingers point left. Left remains stationary; right approaches from right and stacks above it."
+  },
+  "presentation": {
+    "ui": "Rounded forest-green panels and warm wood edges; preserved colliders; gold first-upgrade feedback",
+    "aim": "18 bounded camera-facing water motes, 72 vertices, no colliders or gameplay authority; 5 mm ground ring",
+    "wind": "10 ribbons: 3 cover player foreground, 7 span forest; original 3.4-unit length and 0.054-unit full width retained",
+    "localization_entries": 293
+  },
+  "validation": {"editmode": 236, "playmode": 231, "results": "Logs/Emberdeep023/Acceptance3", "captures": "Logs/Emberdeep023/Captures", "headset_acceptance": "Pending user test", "release_evidence": "Release-0.2.23.json"}
+}

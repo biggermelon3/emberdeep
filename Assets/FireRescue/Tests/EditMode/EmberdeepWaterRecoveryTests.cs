@@ -14,7 +14,7 @@ namespace FireRescue.Tests
             run.Tick(.01f,false);Assert.Zero(run.Water);return run;
         }
         static void Clear(FireRun run)
-        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);}
+        {foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);run.EvacuateSafeAnimals();}
         static void Recover(FireRun run,int frames,float dt=.1f)
         {for(int i=0;i<frames;i++)run.TickRecovery(dt,true,false);}
         static void Wait(FireRun run)

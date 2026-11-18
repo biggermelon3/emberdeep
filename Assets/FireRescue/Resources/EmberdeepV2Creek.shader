@@ -16,6 +16,8 @@ Shader "Emberdeep/V2 Shallow Creek"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             CBUFFER_START(UnityPerMaterial)
             half4 _BaseColor,_FoamColor; float _FlowSpeed,_WaveScale;
+            float4x4 _WorldToCreek;
+            float _CreekFrameEnabled,_CreekTime;
             CBUFFER_END
             struct A { float4 positionOS:POSITION; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct V { float4 positionCS:SV_POSITION; float3 world:TEXCOORD0; UNITY_VERTEX_OUTPUT_STEREO };
@@ -23,21 +25,45 @@ Shader "Emberdeep/V2 Shallow Creek"
             half4 frag(V i):SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
-                float2 p=i.world.xz*_WaveScale;float t=_Time.y*_FlowSpeed;
-                // Filter in phase space: MSAA alone cannot sample procedural
-                // ripples within a pixel, especially at grazing VR angles.
-                float wavePhase=p.x*5+t*6+sin(p.y*3-t*2);
-                float crossPhase=p.y*11-p.x*2-t*5;
-                float waveFilter=1-smoothstep(.75,3.14,fwidth(wavePhase));
-                float crossFilter=1-smoothstep(.75,3.14,fwidth(crossPhase));
-                float waves=sin(wavePhase)*.5+.5;
-                float cross=sin(crossPhase)*.5*crossFilter+.5;
-                float crestWidth=max(.06,fwidth(waves));
-                half crest=lerp(.12,smoothstep(.92-crestWidth,.92+crestWidth,waves),waveFilter)*(.2+.8*cross);
-                float causticFilter=1-smoothstep(.5,2.5,max(fwidth(p.x*7+p.y*5),fwidth(p.y*8)));
-                half caustic=lerp(.18,pow(saturate(sin(p.x*7+p.y*5+t)+cos(p.y*8-t)),6),causticFilter)*.025;
-                half rim=pow(1-saturate(dot(half3(0,1,0),GetWorldSpaceNormalizeViewDir(i.world))),3);
-                return half4(lerp(_BaseColor.rgb,_FoamColor.rgb,crest*.5+rim*.18)+caustic,1);
+                float enabled=saturate(_CreekFrameEnabled);
+                float3 local=mul(_WorldToCreek,float4(i.world,1)).xyz;
+                float2 p=lerp(i.world.xz/.08,local.xz,enabled);
+                float t=lerp(_Time.y,_CreekTime,enabled)*_FlowSpeed;
+                float center=2.1+.035*sin((p.x+4.2)/.42*.8);
+                float cross=(p.y-center)/.5,shore=saturate(abs(cross));
+                // Two travelling wave families create small moving normals, not broad white bands.
+                float a=p.x*10.7+cross*4.3+t*10;
+                float b=p.x*17.1-cross*8.2+t*14.3+sin(p.x*1.8)*.7;
+                float fa=1-smoothstep(.65,2.5,fwidth(a)),fb=1-smoothstep(.65,2.5,fwidth(b));
+                float nx=cos(a)*.085*fa+cos(b)*.042*fb;
+                float nz=cos(a)*.09*fa-cos(b)*.07*fb;
+                float3 n=normalize(float3(-nx,1,-nz));
+                n=normalize(lerp(n,mul(transpose((float3x3)_WorldToCreek),n),enabled));
+                float3 view=GetWorldSpaceNormalizeViewDir(i.world);
+                float facing=saturate(dot(n,view));
+                float fresnel=.065+.58*pow(1-facing,3);
+                float3 reflection=reflect(-view,n);
+                half3 reflectedSky=lerp(half3(.30,.38,.36),half3(.09,.22,.29),saturate(reflection.y));
+                float cloudReflection=smoothstep(.1,.95,sin(reflection.x*8+reflection.z*5)+sin(reflection.z*9-reflection.y*4)*.5);
+                reflectedSky=lerp(reflectedSky,half3(.53,.61,.57),cloudReflection*.55);
+                half3 deep=lerp(_BaseColor.rgb*.28,half3(.025,.14,.16),.65);
+                half3 shallow=half3(.12,.28,.22);
+                half3 bed=lerp(deep,shallow,smoothstep(.32,1,shore));
+                float broad=sin(p.x*1.3+cross*2.1)+sin(p.x*2.6-cross*3.4);
+                bed*=.96+broad*.035;
+                float caustic=pow(saturate(.5+.5*sin(a*.72+sin(b*.44))),6)*fa;
+                bed+=half3(.12,.22,.15)*caustic*.12*(1-fresnel);
+                half3 color=lerp(bed,reflectedSky,fresnel);
+                float ripples=pow(saturate(sin(a)+sin(b)*.35-.65),2)*fa*fb;
+                color+=half3(.20,.35,.31)*ripples*.10;
+                float spec=saturate(dot(reflection,normalize(float3(.12,.65,.75))));
+                float specFilter=1/(1+length(fwidth(n))*60);
+                color+=half3(.66,.77,.69)*pow(spec,24)*.12*specFilter;
+                float bankWave=sin(p.x*5.3+t*3+cross*4);
+                float bankFilter=1-smoothstep(.6,2.4,fwidth(p.x*5.3+cross*4));
+                float bank=smoothstep(.82,.99,shore)*smoothstep(.35,.85,bankWave)*bankFilter;
+                color=lerp(color,_FoamColor.rgb,bank*.18);
+                return half4(color,1);
             }
             ENDHLSL
         }

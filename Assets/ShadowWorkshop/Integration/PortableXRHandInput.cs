@@ -13,12 +13,19 @@ namespace CloudGarden.Integration
         public struct Sample
         {
             public bool AimValid,PinchAvailable;
-            public bool GripAvailable;
+            public bool GripAvailable,OpenPalm;
             public float GripStrength;
             public Vector3 GripContact;
             public Quaternion GripRotation;
             public Pose Wrist;
             public Vector3 IndexBase,ThumbBase,IndexTip,ThumbTip;
+            public Vector3 MiddleTip,RingTip,LittleTip;
+            public int TipMask;
+            // Per-finger curl (index, middle, ring, little) for gesture spells.
+            public bool CurlsValid;
+            public float IndexCurl,MiddleCurl,RingCurl,LittleCurl;
+            public bool TryTip(int finger,out Vector3 tip)
+            {tip=finger switch{0=>ThumbTip,1=>IndexTip,2=>MiddleTip,3=>RingTip,4=>LittleTip,_=>default};return finger>=0 && finger<5 && (TipMask&(1<<finger))!=0 && Finite(tip);}
             public float Pinch=>Vector3.Distance(IndexTip,ThumbTip);
             public Sample ToWorld(Transform space)
             {
@@ -26,6 +33,7 @@ namespace CloudGarden.Integration
                 result.Wrist=new Pose(space.TransformPoint(Wrist.position),space.rotation*Wrist.rotation);
                 result.IndexBase=space.TransformPoint(IndexBase);result.ThumbBase=space.TransformPoint(ThumbBase);
                 result.IndexTip=space.TransformPoint(IndexTip);result.ThumbTip=space.TransformPoint(ThumbTip);
+                result.MiddleTip=space.TransformPoint(MiddleTip);result.RingTip=space.TransformPoint(RingTip);result.LittleTip=space.TransformPoint(LittleTip);
                 result.GripContact=space.TransformPoint(GripContact);
                 result.GripRotation=space.rotation*GripRotation;
                 return result;
@@ -61,11 +69,37 @@ namespace CloudGarden.Integration
             var sample=FromJoints(wristValid,wrist,indexValid,index.position,thumbValid,thumb.position,
                 indexTipValid,indexTip.position,thumbTipValid,thumbTip.position);
             sample.GripAvailable=sample.AimValid && TryGrip(hand,out sample.GripStrength,out sample.GripContact,out sample.GripRotation);
+            sample.OpenPalm=sample.GripAvailable && IsOpenPalm(hand);
+            sample.TipMask=(thumbTipValid?1:0)|(indexTipValid?2:0);
+            if(hand.GetJoint(XRHandJointID.MiddleTip).TryGetPose(out var middleTip)){sample.MiddleTip=middleTip.position;sample.TipMask|=4;}
+            if(hand.GetJoint(XRHandJointID.RingTip).TryGetPose(out var ringTip)){sample.RingTip=ringTip.position;sample.TipMask|=8;}
+            if(hand.GetJoint(XRHandJointID.LittleTip).TryGetPose(out var littleTip)){sample.LittleTip=littleTip.position;sample.TipMask|=16;}
+            sample.CurlsValid=TryCurl(hand,0,out sample.IndexCurl) & TryCurl(hand,1,out sample.MiddleCurl)
+                & TryCurl(hand,2,out sample.RingCurl) & TryCurl(hand,3,out sample.LittleCurl);
             return sample;
         }
         static readonly XRHandJointID[] roots=new[]{XRHandJointID.IndexProximal,XRHandJointID.MiddleProximal,XRHandJointID.RingProximal,XRHandJointID.LittleProximal};
         static readonly XRHandJointID[] mids=new[]{XRHandJointID.IndexIntermediate,XRHandJointID.MiddleIntermediate,XRHandJointID.RingIntermediate,XRHandJointID.LittleIntermediate};
         static readonly XRHandJointID[] tips=new[]{XRHandJointID.IndexTip,XRHandJointID.MiddleTip,XRHandJointID.RingTip,XRHandJointID.LittleTip};
+        static bool TryCurl(XRHand hand,int finger,out float curl)
+        {
+            curl=0;
+            if(!hand.GetJoint(roots[finger]).TryGetPose(out var a) || !hand.GetJoint(mids[finger]).TryGetPose(out var b)
+                || !hand.GetJoint(tips[finger]).TryGetPose(out var c) || !Finite(a.position) || !Finite(b.position) || !Finite(c.position)
+                || (b.position-a.position).sqrMagnitude<1e-8f || (c.position-b.position).sqrMagnitude<1e-8f)return false;
+            curl=PhysicalAssembly.GrabLatch.FingerCurl(a.position,b.position,c.position);return true;
+        }
+        static bool IsOpenPalm(XRHand hand)
+        {
+            for(int i=0;i<4;i++)
+                if(!hand.GetJoint(roots[i]).TryGetPose(out var a) || !hand.GetJoint(mids[i]).TryGetPose(out var b)
+                    || !hand.GetJoint(tips[i]).TryGetPose(out var c) || !Open(a.position,b.position,c.position,.24f))return false;
+            return hand.GetJoint(XRHandJointID.ThumbProximal).TryGetPose(out var ta)
+                && hand.GetJoint(XRHandJointID.ThumbDistal).TryGetPose(out var tb)
+                && hand.GetJoint(XRHandJointID.ThumbTip).TryGetPose(out var tc) && Open(ta.position,tb.position,tc.position,.3f);
+        }
+        static bool Open(Vector3 a,Vector3 b,Vector3 c,float limit)=>Finite(a) && Finite(b) && Finite(c)
+            && (b-a).sqrMagnitude>1e-8f && (c-b).sqrMagnitude>1e-8f && PhysicalAssembly.GrabLatch.FingerCurl(a,b,c)<limit;
         static bool TryGrip(XRHand hand,out float strength,out Vector3 contact,out Quaternion rotation)
         {
             strength=0;contact=default;rotation=Quaternion.identity;

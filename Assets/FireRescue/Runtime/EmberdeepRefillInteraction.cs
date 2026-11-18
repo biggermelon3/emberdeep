@@ -42,6 +42,9 @@ namespace FireRescue
         bool intakePlaced;
         public ActionKind CurrentAction=>operation;
         public bool OwnsControl=>operation!=ActionKind.None && operatingHand>=0;
+        // Spell-mode well: a wider reach, and a hand that is already closed may take the lever.
+        public float LeverReach=.10f;
+        public bool LeverAcceptsClosedHand;
         public bool EmptyOutlet { get; private set; }
         public bool EmptyLeverReturnRequired=>EmptyOutlet && outletStroke.ReturnRequired;
         public event Action<float> OutletStroke;
@@ -124,7 +127,8 @@ namespace FireRescue
                     for(int i=0;i<2;i++)
                     {
                         var free=i==0?left:right;
-                        if((held && holdingHand==i) || !free.Tracked || !gestures[i].Pressed || Vector3.Distance(free.Contact,hydrant.Lever.position)>.10f)continue;
+                        bool grasped=gestures[i].Pressed || (LeverAcceptsClosedHand && gestures[i].Closed);
+                        if((held && holdingHand==i) || !free.Tracked || !grasped || Vector3.Distance(free.Contact,hydrant.Lever.position)>LeverReach)continue;
                         supply.Interrupt("Empty outlet - dock a tool to collect water");
                         ActiveView=hydrant;EmptyOutlet=true;outletStroke.Reset();
                         BeginLever(run,free,i);

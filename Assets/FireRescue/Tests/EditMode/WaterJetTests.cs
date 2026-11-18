@@ -69,6 +69,18 @@ namespace FireRescue.Tests
                         jet.Step(.02f,origin,velocity,run.SprayAmount,run.Range*.08f,board.transform,targets,h=>run.ApplyWater(board.transform.InverseTransformPoint(h.Point),h.Amount));
                     }
                 }
+                // Aim from the same standing position at the smaller, moving sheep.
+                var rescueTargets=new Vector3[run.Trees.Length+run.Animals.Length];
+                for(int animal=0;animal<run.Animals.Length;animal++)
+                    for(int frame=0;frame<400 && run.Animals[animal].OnFire;frame++)
+                    {
+                        if(run.Water<1)ManualWaterTestSupport.Fill(run);
+                        for(int j=0;j<run.Trees.Length;j++)rescueTargets[j]=board.transform.TransformPoint(run.Trees[j].Position);
+                        for(int j=0;j<run.Animals.Length;j++)rescueTargets[run.Trees.Length+j]=board.transform.TransformPoint(run.Animals[j].Position+Vector3.up*FireRun.AnimalHeight);
+                        var velocity=WaterJet.AimVelocity(origin,rescueTargets[run.Trees.Length+animal],3.2f+run.Upgrade*.25f);
+                        run.Tick(.02f,true);
+                        jet.Step(.02f,origin,velocity,run.SprayAmount,run.Range*.08f,board.transform,rescueTargets,h=>run.ApplyWater(board.transform.InverseTransformPoint(h.Point),h.Amount));
+                    }
                 Assert.AreEqual(stage==4?FirePhase.Won:FirePhase.Cleared,run.Phase,"Ballistic stage "+stage);
                 while(run.CanUpgrade)run.BuyUpgrade();if(stage<4)run.StartStage();
             }

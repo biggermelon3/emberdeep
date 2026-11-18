@@ -13,8 +13,16 @@ namespace FireRescue
         // distance alone. Animated hands cannot drive the real input samples.
         void LateUpdate()
         {
-            if(ImmersiveSky)ImmersiveSky.Tick(Time.unscaledDeltaTime,Player && hands && focused && !paused
-                && hands.HeadReady && !acquiringPose && !returningToCamp && Arena && Arena.gameObject.activeInHierarchy);
+            if(EnvironmentVfx && Player)EnvironmentVfx.Tick(Time.unscaledDeltaTime,focused && !paused && hands && hands.HeadReady
+                && !acquiringPose && !returningToCamp && !QuitConfirmationOpen,Player.ViewCamera,Run);
+            if(ImmersiveSky)
+            {
+                ImmersiveSky.SetEquipmentSubjects(rack,heldView?heldView.transform:null,
+                    hydrantStation?hydrantStation.transform:null,creekStation?creekStation.transform:null);
+                ImmersiveSky.Tick(Time.unscaledDeltaTime,Player && hands && focused && !paused
+                    && hands.HeadReady && !acquiringPose && !returningToCamp && Arena && Arena.gameObject.activeInHierarchy);
+            }
+            RenderMagic();RenderSpells();AnimateCelebration();
             if(!handVisuals)return;
             handVisuals.ClearInteractionPoses();
             if(!Player || !hands || !focused || paused || ShopOpen || returningToCamp || acquiringPose)return;
@@ -96,6 +104,7 @@ namespace FireRescue
         }
         void ConfigureHandOcclusion()
         {
+            RenderMagic();
             if(!handVisuals)return;
             handVisuals.ClearOcclusionBoxes();
             handVisuals.Contacts.Clear();

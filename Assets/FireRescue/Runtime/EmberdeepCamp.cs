@@ -31,7 +31,12 @@ namespace FireRescue
         EmberdeepHandRayMenu menuInput;
         public EmberdeepHandRayMenu MenuInput=>menuInput;
         MetaShadowPlayer hands;
+        public EmberdeepImmersiveSky ImmersiveSky {get;private set;}
         Transform panel,mainPage,settingsPage,quitPage;
+        // The sign stands in a small forest camp: meadow, tent, campfire and a few trees from the Blender kit.
+        Transform campSet,campIsland;
+        public Transform CampSet=>campSet;
+        public Transform CampIsland=>campIsland;
         TextMesh instruction,waiting,soundLabel;
         Material boardMaterial,buttonMaterial,accentMaterial;
         bool focused=true,paused,wasReady;
@@ -43,6 +48,7 @@ namespace FireRescue
 
         void Start()
         {
+            gameObject.AddComponent<EmberdeepLocalizedText>();
             var instance=Instantiate(PlayerPrefab);Player=instance.GetComponentInChildren<MetaPlayerRig>(true);
             Player.Initialize(Player.XRRig,Player.DesktopCamera);
             hands=gameObject.AddComponent<MetaShadowPlayer>();hands.Player=Player;hands.IndependentPortableAim=true;
@@ -84,7 +90,64 @@ namespace FireRescue
                 Player.ViewCamera.fieldOfView=65;Player.ViewCamera.backgroundColor=new Color(.025f,.055f,.067f);
             }
             AudioListener.volume=SoundEnabled?1:0;
+            BuildCampSet();
+            ImmersiveSky=gameObject.AddComponent<EmberdeepImmersiveSky>();ImmersiveSky.InitializeMenu(Player.ViewCamera,panel);
+            // The sky window opens around the island as well as the sign.
+            if(campSet)ImmersiveSky.SetEquipmentSubjects(campSet,null,null,null);
             RefreshSound();ShowPage(MenuPage.Main);Recenter();
+        }
+        // The game is mixed reality with a miniature world, so the camp is a tabletop island
+        // floating under the sign: meadow, tent, campfire and trees at diorama scale, with
+        // the sign's two posts rising out of it.
+        public const float CampScale=.27f,CampDrop=.74f;
+        void BuildCampSet()
+        {
+            var art=EmberdeepArtLibrary.Load();if(!art || !art.Find("CampGround"))return;
+            campSet=new GameObject("Forest rescue camp set").transform;campSet.SetParent(transform,false);
+            campIsland=new GameObject("Miniature camp island").transform;campIsland.SetParent(campSet,false);
+            campIsland.localPosition=new Vector3(0,0,.22f);campIsland.localScale=Vector3.one*CampScale;
+            art.Create("CampGround",campIsland,Vector3.zero);
+            // Island space: -Z is the player's side. The front apron holds the camp, trees frame the sign.
+            Place(art,"Campfire",new Vector3(.55f,0,-1.55f),0,1);
+            Place(art,"Log",new Vector3(1.18f,0,-1.36f),62,1.4f);
+            Place(art,"Log",new Vector3(.12f,0,-2.02f),-14,1.25f);
+            Place(art,"Tent",new Vector3(-1.02f,0,-1.42f),-58,.92f);
+            Place(art,"CampCrate",new Vector3(-.78f,0,-2.02f),24,.9f);
+            Place(art,"Cedar",new Vector3(-2.10f,0,.10f),20,1.6f);
+            Place(art,"Cedar",new Vector3(2.15f,0,.0f),140,1.75f);
+            Place(art,"Cedar",new Vector3(-1.62f,0,.95f),250,1.3f);
+            Place(art,"Broadleaf",new Vector3(1.72f,0,.92f),70,1.4f);
+            Place(art,"Rock",new Vector3(1.55f,0,-.72f),30,1.1f);
+            Place(art,"Fern",new Vector3(-1.72f,0,-.62f),0,1.4f);
+            for(int side=0;side<2;side++)
+            {
+                float x=side==0?-.52f:.52f;
+                var post=art.Create("SignPost",campSet,new Vector3(x,0,.035f));
+                if(post){post.localRotation=Quaternion.Euler(0,side*90,0);post.localScale=new Vector3(1,CampDrop+.47f,1);}
+                var cap=art.Create("SignPostCap",campSet,new Vector3(x,CampDrop+.47f,.035f));
+                if(cap)cap.localRotation=Quaternion.Euler(0,side*90,0);
+            }
+            foreach(var r in campSet.GetComponentsInChildren<Renderer>(true))r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+            // The diorama shader takes its key light from the scene's directional light.
+            var lamp=new GameObject("Warm camp sun").AddComponent<Light>();lamp.transform.SetParent(campSet,false);
+            lamp.type=LightType.Directional;lamp.intensity=1.1f;lamp.color=new Color(1,.91f,.79f);lamp.shadows=LightShadows.None;
+            lamp.transform.localRotation=Quaternion.Euler(48,-35,0);
+            campSet.gameObject.SetActive(false);
+        }
+        void Place(EmberdeepArtLibrary art,string id,Vector3 at,float yaw,float scale)
+        {
+            var piece=art.Create(id,campIsland,at,scale);
+            if(piece)piece.localRotation=Quaternion.Euler(0,yaw,0);
+        }
+        void PlaceCampSet(Pose menu)
+        {
+            if(!campSet)return;
+            var forward=Vector3.ProjectOnPlane(menu.rotation*Vector3.forward,Vector3.up);
+            if(forward.sqrMagnitude<.01f)return;
+            // The meadow hangs a fixed drop below the board's centre and never sinks into the floor.
+            float top=Mathf.Max(Player.FloorHeight+.25f,menu.position.y-CampDrop);
+            campSet.SetPositionAndRotation(new Vector3(menu.position.x,top,menu.position.z),Quaternion.LookRotation(forward.normalized,Vector3.up));
+            campSet.gameObject.SetActive(true);
         }
         public void NewGame()
         {
@@ -108,6 +171,7 @@ namespace FireRescue
         {
             placement.RequestRecenter();menuInput?.ResetInput();ClearHover();
             if(panel)panel.gameObject.SetActive(false);
+            if(campSet)campSet.gameObject.SetActive(false);
             if(waiting)waiting.gameObject.SetActive(true);
         }
         void ToggleSound()
@@ -124,6 +188,7 @@ namespace FireRescue
         void LateUpdate()
         {
             if(!Player || !panel || Transitioning || QuitRequested)return;
+            ImmersiveSky?.Tick(Time.unscaledDeltaTime,true);
             ScanOrigins();var view=Player.ViewCamera.transform;
             if(!placement.IsPlaced)waiting.transform.SetPositionAndRotation(view.position+view.forward*.9f,view.rotation);
             bool ready=focused && !paused && hands.HeadReady && ValidHeadPose(view);
@@ -135,7 +200,7 @@ namespace FireRescue
             wasReady=true;
             if(placement.TryUpdate(ready,new Pose(view.position,view.rotation),Player.FloorHeight,Time.unscaledDeltaTime,out var pose))
             {
-                panel.SetPositionAndRotation(pose.position,pose.rotation);panel.gameObject.SetActive(true);
+                panel.SetPositionAndRotation(pose.position,pose.rotation);panel.gameObject.SetActive(true);PlaceCampSet(pose);
                 waiting.gameObject.SetActive(false);Physics.SyncTransforms();
                 Debug.Log($"EMBERDEEP_MENU_PLACED eyeY={view.position.y:F3} menuY={panel.position.y:F3} forward={view.forward}");
             }
@@ -213,6 +278,7 @@ namespace FireRescue
             var at=new Vector3(0,y,-.03f);
             var go=Shape(name,parent,at,new Vector3(.68f,.085f,.025f),buttonMaterial);
             var collider=go.AddComponent<BoxCollider>();collider.isTrigger=true;
+            EmberdeepForestUi.Apply(go,true);
             var button=go.AddComponent<WorkshopButton>();button.Command=name;button.Pressed=action;buttons.Add(button);
             var highlight=Shape(name+" ray outline",parent,at+Vector3.forward*.01f,new Vector3(.695f,.1f,.01f),accentMaterial);
             highlights.Add(button,highlight);highlight.SetActive(false);
@@ -222,6 +288,7 @@ namespace FireRescue
         {
             var go=GameObject.CreatePrimitive(type);go.name=name;go.transform.SetParent(parent,false);
             go.transform.localPosition=at;go.transform.localScale=size;go.GetComponent<Renderer>().sharedMaterial=material;
+            if(name=="Menu board")EmberdeepForestUi.Apply(go);
             var collider=go.GetComponent<Collider>();collider.enabled=false;Destroy(collider);return go;
         }
         TextMesh Text(Transform parent,string value,Vector3 at,float size,Color color)

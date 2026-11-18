@@ -10,7 +10,7 @@ namespace FireRescue.Tests
         {
             for(int i=0;i<run.Trees.Length;i++)
                 if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);
-        }
+        run.EvacuateSafeAnimals();}
         static FireRun Incident(int stage)
         {
             var run=new FireRun();run.StartStage();
@@ -73,10 +73,10 @@ namespace FireRescue.Tests
             Assert.Zero(run.StageBonus);
         }
 
-        [Test] public void ProtectedCabinPaysOnceAndDoesNotReplaceTreeRewards()
+        [Test] public void ProtectedCabinPaysOnceAlongsideAnimalRewards()
         {
             var run=Incident(2);int before=run.Coins;int fires=run.Burning;
-            Clear(run);Assert.AreEqual(before+fires*25+75+FireRun.CabinReward,run.Coins);
+            Clear(run);Assert.AreEqual(before+run.Animals.Length*run.AnimalReward+75+FireRun.CabinReward,run.Coins);
             Assert.AreEqual(FireRun.CabinReward,run.StageBonus);
             int paid=run.Coins;Clear(run);run.Tick(.1f,false);run.ApplyPropWater(0,1000);
             Assert.AreEqual(paid,run.Coins);Assert.AreEqual(3,run.Stars);Assert.AreEqual(3,run.IncidentStars[2]);
@@ -85,10 +85,10 @@ namespace FireRescue.Tests
         [Test] public void ComboRewardsTimingWithoutInflatingCashAndResetsAfterThreeSeconds()
         {
             var run=Incident(0);run.ApplyWater(run.Trees[0].Position,100,.1f);run.ApplyWater(run.Trees[1].Position,100,.1f);
-            Assert.AreEqual(2,run.Combo);Assert.AreEqual(2,run.BestCombo);Assert.AreEqual(50,run.Coins);Assert.AreEqual(220,run.Score);
+            Assert.AreEqual(2,run.Combo);Assert.AreEqual(2,run.BestCombo);Assert.Zero(run.Coins);Assert.AreEqual(220,run.Score);
             for(int i=0;i<31;i++)run.Tick(.1f,false);
             Assert.Zero(run.Combo);run.ApplyWater(run.Trees[2].Position,100,.1f);
-            Assert.AreEqual(1,run.Combo);Assert.AreEqual(2,run.BestCombo);Assert.AreEqual(100,run.Coins);Assert.AreEqual(1070,run.Score);
+            run.EvacuateSafeAnimals();Assert.AreEqual(1,run.Combo);Assert.AreEqual(2,run.BestCombo);Assert.AreEqual(100,run.Coins);Assert.AreEqual(1070,run.Score);
             run.StartStage();Assert.Zero(run.Combo);Assert.Zero(run.Stars);Assert.AreEqual(3,run.IncidentStars[0]);
             run.Restart();Assert.Zero(run.Score);Assert.Zero(run.BestCombo);Assert.IsEmpty(run.Props);
             Assert.That(run.IncidentStars,Is.All.Zero);

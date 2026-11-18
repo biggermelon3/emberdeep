@@ -6,7 +6,7 @@ namespace FireRescue.Tests
     public sealed class FireEquipmentTests
     {
         static void Clear(FireRun run)
-        {for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);}
+        {for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);run.EvacuateSafeAnimals();}
         static FireRun Supply(int rounds)
         {var run=new FireRun();for(int i=0;i<rounds;i++){run.StartStage();Clear(run);}return run;}
         [Test] public void ShopHasUnlocksAtomicCostsAndNoDuplicatePurchases()
@@ -23,7 +23,7 @@ namespace FireRescue.Tests
             var run=new FireRun();
             for(int i=0;i<3;i++)
             {run.StartStage();Clear(run);Assert.IsTrue(run.BuyEquipment((FireEquipmentId)(i+1)),"Purchase after round "+(i+1));}
-            Assert.AreEqual(75,run.Coins);for(int i=0;i<4;i++)Assert.IsTrue(run.Owns((FireEquipmentId)i));
+            Assert.AreEqual(185,run.Coins);for(int i=0;i<4;i++)Assert.IsTrue(run.Owns((FireEquipmentId)i));
         }
         [Test] public void SwitchingPreservesTankAndTuningAndCancelsCharge()
         {

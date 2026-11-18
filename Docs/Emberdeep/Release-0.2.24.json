@@ -1,0 +1,115 @@
+{
+  "version": "0.2.24",
+  "android_version_code": 27,
+  "date": "2026-11-16",
+  "status": "QUEST_BUILT_AND_INSTALLED; PICO_BUILT_AND_AUDITED_FOR_COLLEAGUE_TESTING; 245 EditMode + 234 PlayMode passed; worn-headset acceptance pending",
+  "source": "Release-0.2.24.json",
+  "changes": [
+    "TouchReplayAndPreparation024.json"
+  ],
+  "changelist": "Changelist-0.2.24.txt",
+  "tests": {
+    "EditMode": {
+      "total": 245,
+      "passed": 245,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/Emberdeep024/Acceptance3/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 234,
+      "passed": 234,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/Emberdeep024/Acceptance3/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "target": "Quest",
+      "signatureVerified": true,
+      "bytes": 122100852,
+      "sha256": "e49bb00332ab54d0e931e353b10021e43512b02f1a9c075b3b5208d884f78ee6",
+      "settingsRestored": true,
+      "sceneWhitelistPassed": true,
+      "version": "0.2.24",
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "versionCode": 27,
+      "errors": 0,
+      "warnings": 9
+    },
+    "Pico": {
+      "bytes": 103806748,
+      "version": "0.2.24",
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "settingsRestored": true,
+      "versionCode": 27,
+      "target": "Pico",
+      "signatureVerified": true,
+      "sha256": "e97c7673022725c8692d1413aa8e8c45c2689c3c1519d7cc017051fffd65487d",
+      "sceneWhitelistPassed": true,
+      "errors": 0,
+      "warnings": 13,
+      "apk": "Deliverables/Emberdeep/Emberdeep-0.2.24-Pico.apk",
+      "signing": "Existing Android Debug certificate; colleague testing build",
+      "hardware_acceptance": "Pending PICO device testing",
+      "content_audit": "Logs/Emberdeep024Pico/Pico-ContentAudit.json"
+    }
+  },
+  "source_integrity": {
+    "unchanged_during_build": true,
+    "file_count": 418
+  },
+  "installation": {
+    "date": "2026-11-16",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "version": "0.2.24",
+    "versionCode": 27,
+    "installedVersionVerified": true,
+    "installation": "Replacement install; preserve data",
+    "apkSha256": "e49bb00332ab54d0e931e353b10021e43512b02f1a9c075b3b5208d884f78ee6",
+    "appInfo": {
+      "version_name": "0.2.24",
+      "verified_via": "ADB dumpsys package",
+      "installation": "Streamed install -r returned Success",
+      "launch": "Launch requested; no app process observed; physical acceptance pending",
+      "version_code": "27",
+      "package": "com.metahackathon2026.emberdeep",
+      "power": "mWakefulness=Asleep"
+    },
+    "headset_acceptance": "Pending user test"
+  },
+  "pico": "PICO 0.2.24 / code 27 APK built and audited with dedicated OpenXR player in Camp and Fireground, offline English/Chinese assets and existing Android Debug signing; PICO hardware acceptance pending.",
+  "build_environment": {
+    "bee_build_threads": 4,
+    "log": "Logs/Emberdeep024/QuestBuild.log",
+    "pico_log": "Logs/Emberdeep024Pico/PicoBuild.log"
+  },
+  "limits": [
+    "Fingertip contact ergonomics and occlusion need worn-headset testing.",
+    "Replay economy and sheep carrying balance need playtesting.",
+    "No measured Quest/PICO GPU budget.",
+    "No durable save system; closing app resets expedition as stated in quit modal."
+  ],
+  "localization_packaging": {
+    "offline_english_chinese_fonts_and_tables": true,
+    "bundles": [
+      "assets/aa/Android/localization-asset-tables-en_assets_all_35efce2d2ec7d09c8221eadacf232305.bundle",
+      "assets/aa/Android/localization-asset-tables-zh-hans_assets_all_5b6ee87be86c7f6a01ace4ee119b5e1d.bundle",
+      "assets/aa/Android/localization-assets-en_assets_all_5e6331dc53473e68f55f6efcea49142b.bundle",
+      "assets/aa/Android/localization-assets-shared_assets_all_cad6e24b6d36e37b90db90213074fa44.bundle",
+      "assets/aa/Android/localization-assets-zh-hans_assets_all_6f842bed570b57f88338c79e03bab013.bundle",
+      "assets/aa/Android/localization-locales_assets_all_0c8e3618c3d4971575a0792bbc9e74e8.bundle",
+      "assets/aa/Android/localization-string-tables-en_assets_all_29254aeab6692f59024c4eb6bf16d600.bundle",
+      "assets/aa/Android/localization-string-tables-zh-hans_assets_all_be7a214f08fd9093be60525afac0b987.bundle"
+    ],
+    "zip_crc_valid": true,
+    "verified_source_count": 418,
+    "sources_unchanged": true
+  }
+}

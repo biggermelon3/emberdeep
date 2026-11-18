@@ -1,0 +1,79 @@
+{
+  "version": "0.2.20",
+  "android_version_code": 23,
+  "date": "2026-11-15",
+  "status": "QUEST_BUILT_AND_INSTALLED; 451 tests passed; worn-headset interaction and visual acceptance pending",
+  "source": "Release-0.2.20.json",
+  "changes": [
+    "InteractionUsabilityAndSky.json",
+    "SkyAssetProvenance.json"
+  ],
+  "changelist": "Changelist-0.2.20.txt",
+  "tests": {
+    "EditMode": {
+      "total": 215,
+      "passed": 215,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepUsability/Acceptance2/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 236,
+      "passed": 236,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepUsability/Acceptance2/PlayMode-results.json"
+    }
+  },
+  "builds": {
+    "Quest": {
+      "versionCode": 23,
+      "iconSha256": "ff15eae57c3a300c819e5a7c098b3df5d99b31b854a3c236912c9c99cd1371c1",
+      "bytes": 106717253,
+      "settingsRestored": true,
+      "iconSource": "Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png",
+      "version": "0.2.20",
+      "target": "Quest",
+      "sha256": "8740328994c369a269f4fe0f34a2d1b0bb49269be2decf6d79a7f9f728968cd7",
+      "sceneWhitelistPassed": true,
+      "signatureVerified": true,
+      "errors": 0,
+      "warnings": 8
+    }
+  },
+  "source_integrity": {
+    "unchanged_during_build": true,
+    "file_count": 119
+  },
+  "restored_settings_count": 28,
+  "installation": {
+    "date": "2026-11-15",
+    "device": "Quest 3",
+    "serial": "2G0YC1ZG42020Y",
+    "package": "com.metahackathon2026.emberdeep",
+    "version": "0.2.20",
+    "versionCode": 23,
+    "installedVersionVerified": true,
+    "installation": "Replace existing application; preserve data",
+    "apkSha256": "8740328994c369a269f4fe0f34a2d1b0bb49269be2decf6d79a7f9f728968cd7",
+    "appInfo": {
+      "verified_via": "ADB dumpsys package",
+      "package": "com.metahackathon2026.emberdeep",
+      "version_name": "0.2.20",
+      "launch": "Launch requested; no app process observed; physical acceptance pending",
+      "version_code": "23",
+      "installation": "Streamed install -r returned Success",
+      "power": "mWakefulness=Asleep"
+    },
+    "headset_acceptance": "Pending user test of nozzle aiming, regrip, handoff, round cloud coverage and closer creek/effects"
+  },
+  "preview": "Deliverables/Emberdeep/Emberdeep-0.2.20-Sky-River.mp4",
+  "pico": "Shared source only; no 0.2.20 PICO APK built",
+  "limits": [
+    "Injected hand samples do not establish optical tracking reliability or real-hand comfort.",
+    "Desktop alpha and angle tests do not establish binocular passthrough edges or headset GPU frame timing.",
+    "PICO shares the changed source; no 0.2.20 PICO APK or hardware acceptance."
+  ]
+}

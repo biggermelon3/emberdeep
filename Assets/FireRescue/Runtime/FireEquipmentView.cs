@@ -29,6 +29,7 @@ namespace FireRescue
             RefillPort.SetParent(transform,false);
             RefillPort.localPosition=new Vector3(0,-.09f,.055f);
             Part("Cyan refill coupling",PrimitiveType.Cylinder,RefillPort.localPosition,new Vector3(.04f,.012f,.04f),Color.cyan,bright).transform.localRotation=Quaternion.Euler(90,0,0);
+            EmberdeepCraftDetails.Tool(transform,id);
         }
         void Extinguisher()
         {
@@ -38,12 +39,15 @@ namespace FireRescue
             Part("Valve block",PrimitiveType.Cube,new Vector3(0,.085f,0),new Vector3(.04f,.035f,.04f),Color.gray,trim);
             // Separate the load-bearing bar from the moving squeeze lever, and
             // leave space behind the shoulder for real finger-sized contacts.
-            Part("Fixed carrying handle",PrimitiveType.Cube,new Vector3(0,.101f,-.068f),new Vector3(.028f,.014f,.108f),Color.gray,trim);
+            Part("Fixed carrying handle",PrimitiveType.Cube,new Vector3(0,.101f,-.068f),new Vector3(.032f,.018f,.108f),new Color(1,.72f,.22f));
             Tube("Handle hinge",new Vector3(-.022f,.116f,-.014f),new Vector3(.022f,.116f,-.014f),.009f,trim);
             squeezeHandleRest=new Vector3(0,.126f,-.068f);
             lever=Part("Squeeze handle",PrimitiveType.Cube,squeezeHandleRest,new Vector3(.032f,.012f,.108f),Color.gray,trim).transform;
             Part("Safety pin",PrimitiveType.Sphere,new Vector3(.035f,.086f,-.01f),new Vector3(.025f,.025f,.008f),new Color(1,.8f,.15f));
             BuildHoseNozzle();
+            Part("Grab dot - left body",PrimitiveType.Sphere,new Vector3(-.057f,-.07f,0),Vector3.one*.014f,new Color(.25f,.9f,1),bright);
+            Part("Grab dot - right body",PrimitiveType.Sphere,new Vector3(.057f,-.07f,0),Vector3.one*.014f,new Color(1,.78f,.3f),bright);
+            Part("Grab dot - right trigger",PrimitiveType.Sphere,new Vector3(.025f,.142f,-.075f),Vector3.one*.014f,new Color(1,.78f,.3f),bright);
             Part("Instruction band",PrimitiveType.Cube,new Vector3(0,-.045f,-.051f),new Vector3(.061f,.075f,.003f),new Color(.95f,.9f,.72f));
             Gauge(new Vector3(0,.065f,-.055f));Tank(new Vector3(.044f,-.05f,-.03f));
         }
@@ -110,6 +114,8 @@ namespace FireRescue
         public void AnimatePump(float pull){if(pumpSlide)pumpSlide.localPosition=Pump.localPosition+Vector3.back*(Mathf.Clamp01(pull)*.09f);}
         public void SetLeftHanded(bool left)
         {
+            // The extinguisher always has its aiming nozzle on the left.
+            if(Nozzle){nozzleRest.x=-.10f;ResetNozzle();}
             if(!Pump)return;
             var p=Pump.localPosition;p.x=left?.095f:-.095f;Pump.localPosition=p;
             p=pumpRail.localPosition;p.x=Pump.localPosition.x;pumpRail.localPosition=p;AnimatePump(0);
@@ -123,6 +129,7 @@ namespace FireRescue
         {
             var go=GameObject.CreatePrimitive(type);go.name=name;go.transform.SetParent(transform,false);go.transform.localPosition=at;go.transform.localScale=size;
             var collider=go.GetComponent<Collider>();collider.enabled=false;Destroy(collider);
+            if(type==PrimitiveType.Cube && name!="Pressure needle" && name!="Water gauge")go.GetComponent<MeshFilter>().sharedMesh=EmberdeepCraftDetails.SoftBox;
             var r=go.GetComponent<Renderer>();r.sharedMaterial=material?material:shell;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;Tint(r,color);return go;
         }
         void Tint(Renderer r,Color color){block.Clear();block.SetColor("_BaseColor",color);r.SetPropertyBlock(block);}

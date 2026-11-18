@@ -4,11 +4,12 @@ Run: blender --background --python Tools/BuildEmberdeepArtV2.py
 All authored dimensions below are Unity-style (X right, Y up, Z depth), in metres.
 Only this new kit is written; existing FireRescue art and scene files are untouched.
 """
-import bpy, bmesh, math, random, json, os, hashlib
+import bpy, bmesh, math, random, json, os, hashlib, sys
 from pathlib import Path
 from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[1]
+TERRAIN_ONLY = '--terrain-only' in sys.argv
 SOURCE = ROOT / 'ArtSource/EmberdeepV2'
 EXPORT = ROOT / 'Assets/FireRescue/ArtV2/Models'
 for p in [SOURCE, EXPORT]: p.mkdir(parents=True, exist_ok=True)
@@ -160,7 +161,7 @@ def bank_cap(limit,front):
     for i,a in enumerate(clipped):
         b=clipped[(i+1)%len(clipped)]
         mesh('Moss',[center,(a[0],0,a[1]),(b[0],0,b[1])],[(0,2,1)],'Moss')
-bank_cap(10.4,True);bank_cap(11.4,False)
+bank_cap(1.6,True);bank_cap(2.6,False)
 for i in range(64):
     x,z=outline[i];nx,nz=outline[(i+1)%64];cx=(x+nx)/2;cz=(z+nz)/2
     rock('Slate',(cx*.99,-.55,6+(cz-6)*.99),(.28,.31,.24),'Slate',i+42)
@@ -175,8 +176,8 @@ for side in [-1,1]:
         if i%3==0:rock('BorderRocks',(x,0,z),(.36,.22,.43),'Stone',100+i+(side+1)*10)
         if i%2==0:fern('RimGrowth',(x-side*.08,.006,z+.24),.75,seed=200+i)
 for i in range(20):
-    x=-4.2+i*.42;z=10.9+.035*math.sin(i*.8);width=.50
-    nx=-4.2+(i+1)*.42;nz=10.9+.035*math.sin((i+1)*.8);nw=.50
+    x=-4.2+i*.42;z=2.1+.035*math.sin(i*.8);width=.50
+    nx=-4.2+(i+1)*.42;nz=2.1+.035*math.sin((i+1)*.8);nw=.50
     mesh('CreekSurface',[(x,.008,z-width),(nx,.008,nz-nw),(nx,.008,nz+nw),(x,.008,z+width)],[(0,1,2,3)],'CreekWater')
     if i%3==0:
         rock('BorderRocks',(x,0,z+width+.15),(.33,.19,.25),'Stone',300+i)
@@ -329,6 +330,10 @@ for i in range(12):
     a=i*math.tau/12;x=math.cos(a)*.030;z=-.092+math.sin(a)*.030
     beam('Strainer',(x,.012,z),(x,.048,z),.0028,'Brass',4)
 
+# V3 refinement retains the original semantic groups and gameplay origins.
+if '--art-v3' in sys.argv:
+    exec(compile((ROOT/'Tools/RefineEmberdeepArtV3.py').read_text(encoding='utf-8'), 'RefineEmberdeepArtV3.py', 'exec'))
+
 # Build single named mesh per semantic group, retaining clear tint/animation boundaries.
 stats=[];allobjects=[]
 for name,buffers in groups.items():
@@ -346,9 +351,10 @@ for name,buffers in groups.items():
     for obj in objects:obj.select_set(True)
     bpy.context.view_layer.objects.active=objects[0]
     path=EXPORT/(name+'.fbx')
-    bpy.ops.export_scene.fbx(filepath=str(path),use_selection=True,object_types={'MESH','EMPTY'},global_scale=1,
-        apply_unit_scale=True,apply_scale_options='FBX_SCALE_UNITS',axis_forward='-Z',axis_up='Y',
-        bake_space_transform=True,use_mesh_modifiers=True,add_leaf_bones=False,bake_anim=False,path_mode='AUTO')
+    if not TERRAIN_ONLY or name=='EDV2_Terrain':
+        bpy.ops.export_scene.fbx(filepath=str(path),use_selection=True,object_types={'MESH','EMPTY'},global_scale=1,
+            apply_unit_scale=True,apply_scale_options='FBX_SCALE_UNITS',axis_forward='-Z',axis_up='Y',
+            bake_space_transform=True,use_mesh_modifiers=True,add_leaf_bones=False,bake_anim=False,path_mode='AUTO')
     verts=[v for buf in buffers.values() for v in buf.v]
     bounds={'min':[round(min(v[i] for v in verts),5) for i in range(3)],'max':[round(max(v[i] for v in verts),5) for i in range(3)]}
     triangles=sum(sum(len(f)-2 for f in buf.f) for buf in buffers.values())
@@ -358,6 +364,18 @@ for name,buffers in groups.items():
     col.hide_render=True;col.hide_viewport=True
 total=sum(s['triangles'] for s in stats)
 assert total<=40000, f'Kit triangle budget exceeded: {total}'
+if TERRAIN_ONLY:
+    manifest_path=SOURCE/'ArtV2-Manifest.json'
+    manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+    terrain=next(s for s in stats if s['asset']=='EDV2_Terrain')
+    manifest['assets']=[terrain if s['asset']=='EDV2_Terrain' else s for s in manifest['assets']]
+    manifest['total_unique_triangles']=sum(s['triangles'] for s in manifest['assets'])
+    manifest['terrain_contract']='Front creek and matching bank opening at z approximately 2.1; flat path below z1.6 and tree lanes z3..10 retained.'
+    manifest['terrain_revision']=2
+    manifest['terrain_source']='Tools/BuildEmberdeepArtV2.py --terrain-only; base blend retained as the original full-kit source'
+    manifest_path.write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+    print('EMBERDEEP_NEAR_CREEK_EXPORTED')
+    sys.exit(0)
 
 # Preview is an authored assembly only; no extra scenery is baked into exported terrain.
 preview=bpy.data.collections.new('00 Preview assembly - not exported');scene.collection.children.link(preview)
@@ -395,12 +413,14 @@ manifest={'kit':'Emberdeep V2 modular environment','revision':1,'generator':'Too
     'source':'ArtSource/EmberdeepV2/Emberdeep-ArtV2.blend','concept':'ArtSource/EmberdeepV2/Concepts/Emberdeep-ArtV2-Concept.png',
     'provenance':'Original procedural meshes authored for this project from its generated concept; no downloaded mesh or texture assets.',
     'coordinates':'Authored Unity X/Y/Z in metres; Blender stores X/-Z/Y, FBX exported -Z forward and Y up. Unity-imported bounds must match bounds_unity_metres.',
-    'terrain_contract':'Front z<1.6 has only flat ground/path; dynamic tree lanes z3..10 are free of baked trees. CreekSurface is independently named at z approximately 10.9.',
+    'terrain_contract':'Front z<1.6 has only flat ground/path; dynamic tree lanes z3..10 are free of baked trees. CreekSurface is independently named at z approximately 2.1.',
     'performance':'Geometry budget only; not a measured headset performance result. No textures, alpha foliage or skinned meshes.',
     'total_unique_triangles':total,'assets':stats,
     'material_color_encoding':'Palette values are authored linear RGB in Blender diffuse_color and Principled Base Color. FBX importer color-space conversion may change displayed inspector values.',
     'materials':[{'name':n,'base_color_linear':list(c)+[1],'roughness':mats[n].node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value,'metallic':mats[n].node_tree.nodes.get('Principled BSDF').inputs['Metallic'].default_value} for n,c in palette.items()]}
+if '--art-v3' in sys.argv:
+    manifest.update(revision=3, refinement='Tools/RefineEmberdeepArtV3.py', concept_catalog='Docs/Emberdeep/ArtV3/AssetCatalog.json')
 (SOURCE/'ArtV2-Manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
 bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE/'Emberdeep-ArtV2.blend'))
-bpy.ops.render.render(write_still=True)
+if '--no-preview' not in sys.argv:bpy.ops.render.render(write_still=True)
 print('EMBERDEEP_ART_V2_COMPLETE '+json.dumps({'triangles':total,'assets':len(stats),'source':str(SOURCE),'export':str(EXPORT)}))

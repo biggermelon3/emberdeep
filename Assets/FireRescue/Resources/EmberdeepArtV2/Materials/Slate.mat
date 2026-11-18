@@ -27,13 +27,13 @@ Material:
     m_Floats:
     - _GroundDetail: 0
     - _Heat: 0
-    - _Roughness: 0.75
+    - _Roughness: 0.78
     - _Scorch: 0
     - _Wetness: 0
-    - _Wind: 0
+    - _Wind: 1
     m_Colors:
-    - _BaseColor: {r: 0.5168809, g: 0.57032305, b: 0.5748709, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseColor: {r: 0.5370987, g: 0.5748709, b: 0.58383137, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _WetColor: {r: 0.12999997, g: 0.35999998, b: 0.35999998, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

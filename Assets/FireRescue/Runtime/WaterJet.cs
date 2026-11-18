@@ -6,8 +6,8 @@ namespace FireRescue
     // World-space SI units. Rendered droplets and damage use these same moving packets.
     public sealed class WaterJet
     {
-        public struct Packet { public Vector3 Position, Velocity; public float Amount, Age, Distance, Range, Radius, Wetness; public FireDelivery Delivery; }
-        public struct Impact { public Vector3 Point, Normal; public float Amount, Radius, Wetness; public int Tree; public FireDelivery Delivery; }
+        public struct Packet { public Vector3 Position, Velocity; public float Amount, Age, Distance, Range, Radius, Wetness; public FireDelivery Delivery; public bool Magic; }
+        public struct Impact { public Vector3 Point, Normal; public float Amount, Radius, Wetness; public int Tree; public FireDelivery Delivery; public bool Magic; }
         public readonly Packet[] Packets = new Packet[256];
         public int Count { get; private set; }
         int pattern;
@@ -82,10 +82,17 @@ namespace FireRescue
             float lifted=vertical+4.905f*time*time,travel=offset.z+speed*time;
             return horizontal*horizontal+lifted*lifted-travel*travel-offset.y*offset.y;
         }
-        public void Step(float dt,Vector3 origin,Vector3 velocity,float amount,float range,Transform arena,Vector3[] targets,Action<Impact> impact,float radius=.82f,float wetness=1,float spread=0,FireDelivery delivery=FireDelivery.Pulse)
+        public void Step(float dt,Vector3 origin,Vector3 velocity,float amount,float range,Transform arena,Vector3[] targets,Action<Impact> impact,float radius=.82f,float wetness=1,float spread=0,FireDelivery delivery=FireDelivery.Pulse,bool magic=false)
         {
             dt=Mathf.Clamp(dt,0,.1f);
             for(int i=Count-1;i>=0;i--)if(!Advance(ref Packets[i],dt,arena,targets,impact))Packets[i]=Packets[--Count];
+            Emit(dt,origin,velocity,amount,range,arena,targets,impact,radius,wetness,spread,delivery,magic);
+        }
+        // Adds new packets without advancing the existing ones, so several
+        // sources can share one jet in a frame after a single Step.
+        public void Emit(float dt,Vector3 origin,Vector3 velocity,float amount,float range,Transform arena,Vector3[] targets,Action<Impact> impact,float radius=.82f,float wetness=1,float spread=0,FireDelivery delivery=FireDelivery.Pulse,bool magic=false)
+        {
+            dt=Mathf.Clamp(dt,0,.1f);
             if(amount<=0 || dt<=0)return;
             int n=Mathf.Min(delivery==FireDelivery.Charge?1:Mathf.CeilToInt(dt*160),Packets.Length-Count);
             for(int i=0;i<n;i++)
@@ -93,7 +100,7 @@ namespace FireRescue
                 var side=Vector3.Cross(velocity.normalized,Vector3.up).normalized;
                 var axis=Vector3.Cross(side,velocity.normalized).normalized;
                 float angle=((pattern++%5)-2)*spread*.5f;
-                var packet=new Packet{Position=origin,Velocity=Quaternion.AngleAxis(angle,axis)*velocity,Amount=amount/n,Range=range,Radius=radius,Wetness=wetness,Delivery=delivery};
+                var packet=new Packet{Position=origin,Velocity=Quaternion.AngleAxis(angle,axis)*velocity,Amount=amount/n,Range=range,Radius=radius,Wetness=wetness,Delivery=delivery,Magic=magic};
                 if(Advance(ref packet,dt*(i+.5f)/n,arena,targets,impact))Packets[Count++]=packet;
             }
         }
@@ -106,7 +113,7 @@ namespace FireRescue
                 float length=Vector3.Distance(packet.Position,next);
                 if(packet.Distance+length>packet.Range || packet.Age>1.5f)return false;
                 if(Segment(packet.Position,next,arena,targets,out var hit))
-                { hit.Amount=packet.Amount;hit.Radius=packet.Radius;hit.Wetness=packet.Wetness;hit.Delivery=packet.Delivery;callback?.Invoke(hit);return false; }
+                { hit.Amount=packet.Amount;hit.Radius=packet.Radius;hit.Wetness=packet.Wetness;hit.Delivery=packet.Delivery;hit.Magic=packet.Magic;callback?.Invoke(hit);return false; }
                 packet.Position=next;packet.Velocity+=Gravity*step;packet.Age+=step;packet.Distance+=length;
             }
             return true;

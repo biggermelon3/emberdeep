@@ -33,7 +33,9 @@ EditorBuildSettings:
     path: Assets/ShadowWorkshop/Scenes/EverydayObjects.unity
     guid: 30f7a948ea02c384181a7a4ccf9d0915
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 8cba16f45e3b8f34db49ea0c759e6709, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.localization.settings: {fileID: 11400000, guid: c3816138d385c21448ecff61a28314df, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: b449ff60c64ee8c4da00cce5f7936c25, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: e86c3d9ad332b444f90b6e8955393f38, type: 2}
   m_UseUCBPForAssetBundles: 0

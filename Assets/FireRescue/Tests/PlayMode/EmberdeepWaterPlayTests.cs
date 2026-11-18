@@ -16,7 +16,7 @@ namespace FireRescue.Tests
 
         IEnumerator Load(int hand)
         {
-            EmberdeepSession.NewExpedition();
+            EmberdeepSession.BeginEquipmentTestRun();
             yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
             yield return null;yield return null;
             game=Object.FindFirstObjectByType<FireRescueGame>();
@@ -64,7 +64,7 @@ namespace FireRescue.Tests
             game.Run.CancelTrigger();
         }
         static void Clear(FireRun run)
-        {for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);}
+        {for(int i=0;i<run.Trees.Length;i++)if(run.Trees[i].State==TreeState.Burning)run.ApplyWater(run.Trees[i].Position,100,.1f);run.EvacuateSafeAnimals();}
 
         [UnityTest] public IEnumerator LeftHandHydrantDockValveFullAndDisconnect()=>Hydrant(0);
         [UnityTest] public IEnumerator RightHandHydrantDockValveFullAndDisconnect()=>Hydrant(1);

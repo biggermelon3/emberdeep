@@ -38,7 +38,7 @@ namespace FireRescue.Tests
                     Assert.LessOrEqual(particles[i].remainingLifetime,.18001f);
                 }
                 Assert.Greater(cooling,0,"Existing particles must contract, not merely stop spawning");
-                Assert.AreEqual(7,root.GetComponentsInChildren<ParticleSystem>().Length);
+                Assert.AreEqual(9,root.GetComponentsInChildren<ParticleSystem>().Length);
                 Assert.AreEqual(1024,flames.main.maxParticles);
                 Assert.AreEqual(384,root.transform.Find("Rolling smoke").GetComponent<ParticleSystem>().main.maxParticles);
             }

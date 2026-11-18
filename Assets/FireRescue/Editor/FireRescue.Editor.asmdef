@@ -1,1 +1,15 @@
-{"name":"FireRescue.Editor","references":["FireRescue.Runtime","PhysicalAssembly.Editor"],"includePlatforms":["Editor"]}
+{
+  "name": "FireRescue.Editor",
+  "references": [
+    "FireRescue.Runtime",
+    "PhysicalAssembly.Editor",
+    "Unity.Localization",
+    "Unity.Localization.Editor",
+    "Unity.Addressables.Editor",
+    "Unity.Addressables",
+    "Unity.ResourceManager"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

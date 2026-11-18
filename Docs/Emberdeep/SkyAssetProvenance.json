@@ -1,0 +1,20 @@
+{
+  "asset": "Assets/FireRescue/Resources/EmberdeepSky.jpg",
+  "title": "Kloofendal 48d Partly Cloudy (Pure Sky)",
+  "authors": [
+    "Greg Zaal",
+    "Jarod Guest"
+  ],
+  "provider": "Poly Haven",
+  "asset_page": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+  "download": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloofendal_48d_partly_cloudy_puresky.jpg",
+  "license": "CC0 1.0",
+  "license_url": "https://polyhaven.com/license",
+  "retrieved": "2026-11-15",
+  "source_sha256": "2bdd7abe32f1d2f7a626e0a6e45bb808313f29bd41d758eacbdba91560e93f04",
+  "source_bytes": 22162150,
+  "modifications": "Original tonemapped JPG retained; runtime shader samples a 24-degree upward elevation offset and blends its lower horizon to blue-grey haze.",
+  "unity_import": "2048 x 1024, sRGB, mipmaps, trilinear, U repeat/V clamp, Android ASTC 6x6, non-readable. Original 8K source remains editable; mobile upload uses the importer size cap.",
+  "archived_asset": "Assets/FireRescue/ArtV2/EmberdeepSky-Photographic.jpg",
+  "current_usage": "Historical 0.2.20 sky; replaced by original procedural cartoon sky in 0.2.21, no longer in Resources."
+}

@@ -51,19 +51,27 @@ PrefabInstance:
     - target: {fileID: -6218534167049807283, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: a00879629e476e54bb87486f0f387348, type: 2}
+      objectReference: {fileID: 2100000, guid: 0560b575b2451e04a9d1e581afeed691, type: 2}
     - target: {fileID: -6218534167049807283, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 0560b575b2451e04a9d1e581afeed691, type: 2}
+      objectReference: {fileID: 2100000, guid: a00879629e476e54bb87486f0f387348, type: 2}
+    - target: {fileID: -5247676899829617416, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 85f7b50c83466aa43886d47a8882aa63, type: 2}
+    - target: {fileID: -5247676899829617416, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c97844f99cc11c144a1867b35e63a928, type: 2}
+    - target: {fileID: -5247676899829617416, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7b928d97e90fca245a903e9244b18449, type: 2}
     - target: {fileID: -3988218568073741993, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 07c7cefb9df2f714d866fa7ce538fd4c, type: 2}
-    - target: {fileID: -3988218568073741993, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 0560b575b2451e04a9d1e581afeed691, type: 2}
     - target: {fileID: 919132149155446097, guid: 4b1ea5e737644854ea3ed7869c6f9b88, type: 3}
       propertyPath: m_Name
       value: EDV2_Log

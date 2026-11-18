@@ -46,7 +46,7 @@ namespace FireRescue
             }
             point=t.TransformPoint(q);
         }
-        static bool Active(MeshFilter p)=>p && p.sharedMesh && p.gameObject.activeInHierarchy;
+        static bool Active(MeshFilter p)=>p && p.sharedMesh && p.gameObject.activeInHierarchy && !p.name.StartsWith("Grab dot");
         public Vector3 Resolve(Vector3 position,float radius)
         {
             if(dirty)Prepare();

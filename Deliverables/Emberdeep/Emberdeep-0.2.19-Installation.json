@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-15",
+  "device": "Quest 3",
+  "serial": "2G0YC1ZG42020Y",
+  "package": "com.metahackathon2026.emberdeep",
+  "version": "0.2.19",
+  "versionCode": 22,
+  "installedVersionVerified": true,
+  "installation": "Replace existing application; preserve data",
+  "apkSha256": "597640795d2a64d78b9dd9271fef21d50ed47d8ef47c14ce7d71f354041542fd",
+  "appInfo": {
+    "version_name": "0.2.19",
+    "version_code": "22",
+    "verified_via": "ADB dumpsys package",
+    "launch": "Launch requested; headset asleep, foreground acceptance not verified",
+    "installation": "Streamed install -r returned Success",
+    "package": "com.metahackathon2026.emberdeep"
+  },
+  "headset_visual_acceptance": "Pending user test of fitted background, river and transparency"
+}

@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-15",
+  "released_in": "0.2.20 / code 23",
+  "status": "QUEST_INSTALLED; physical usability and visual acceptance pending",
+  "supersedes": [
+    "SubjectFittedBackdrop.json: polygon outline",
+    "ViewRelativeSkyAndRiver.json: procedural sky and rear creek/effect placement",
+    "ErgonomicGripAndMaterialAA.json: nozzle orientation and no in-place body regrip"
+  ],
+  "interaction": [
+    "Nozzle proximity uses the entire horn-to-muzzle segment. Stable closure >= 0.40 for 75 ms acquires it even when the hand closed before arriving; no 250 ms nozzle acquisition deadline.",
+    "Actual carried-tool proximity takes priority over menu ray intent. Near-nozzle hands cannot accidentally transfer primary ownership.",
+    "Canonical mirrored nozzle frames align anatomical wrist-to-knuckles +Z with the nozzle barrel, with the palm wrapping inward from the appropriate side.",
+    "Opening a body-grip hand <= 0.20 for 120 ms holds the tool in place to regrasp its top trigger with the same hand. The nozzle remains held during this adjustment.",
+    "An available other hand can grasp a non-nozzle body/trigger region for 120 ms to take primary ownership. Hand contacts must be more than 4.5 cm apart. Both transfer latches reset until each respective hand opens, preventing the old closed hand from stealing the tool back.",
+    "A hand currently holding the nozzle or forward support must release that secondary contact before taking the body/trigger. New owner and handedness synchronize with gameplay input immediately; stations are not relocated.",
+    "Trigger grip: squeeze >= 0.76 to spray, relax <= 0.52 to stop, retain ownership even when fully open. Extinguisher requires the auxiliary nozzle to be held. Body grip never fires.",
+    "Brief auxiliary tracking loss immediately stops water and holds the last nozzle pose for up to 350 ms to aid reacquisition. Spraying must rearm; loss of focus/main tracking also cancels actions.",
+    "Deliberate open-hand return at the rack remains the release policy. This version does not restore dual-open automatic drop."
+  ],
+  "art": [
+    "One round spherical angular cap encloses the projected forest, rack, held tool and refill-station bounds, with 4 degrees of inner padding and 12 degrees of soft outer feather. Radius is capped at 72 degrees and poles fade to transparent.",
+    "Use the real Poly Haven sky photograph described in SkyAssetProvenance.json. Cloud environment remains world-oriented; viewer translation and subject movement update coverage. Exterior directions remain transparent and the four-second upward reveal is retained.",
+    "Move authored creek and banks from arena-local z=10.9 to z=2.1, including dependent rocks and moving foam. Re-export only EDV2_Terrain.fbx using Tools/BuildEmberdeepArtV2.py --terrain-only; existing Blender scene is a historical source until regenerated.",
+    "Move wind to arena-local z=2.5 plus 0.9 per ribbon and dust to z=3.5..7.8. Preserve the 154-triangle effect budget, 40 dust motes, three wind ribbons and seven foam wisps. No waterfall."
+  ],
+  "tests": {
+    "EditMode": {
+      "total": 215,
+      "passed": 215,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepUsability/Acceptance2/EditMode-results.json"
+    },
+    "PlayMode": {
+      "total": 236,
+      "passed": 236,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "path": "Logs/EmberdeepUsability/Acceptance2/PlayMode-results.json"
+    }
+  },
+  "preview": "Deliverables/Emberdeep/Emberdeep-0.2.20-Sky-River.mp4",
+  "preview_scope": "Advancing desktop Unity frames, camera orbit and yaw. Not headset footage.",
+  "asset_provenance": "SkyAssetProvenance.json",
+  "source_hashes": {
+    "Assets/FireRescue/Runtime/FireToolManipulation.cs": "e9da000551c7ea2b7a638237e90271c5ef001f299b262ee90cc0480c351fe0db",
+    "Assets/FireRescue/Runtime/EmberdeepHandPose.cs": "53b7c4a5cece941f04b32e5bda173b1cc57804ba83c86319b534bdb60fb31b68",
+    "Assets/FireRescue/Runtime/FireEquipmentView.Interaction.cs": "9508538ea3cf2832c374cea0ba5731f524853bad926f4c1389b783ad661d3d3b",
+    "Assets/FireRescue/Runtime/FireEquipmentView.cs": "6947341e91656e691c9d29a0c3f87ae49b66ee54d624340efdae05cdfe7126a6",
+    "Assets/FireRescue/Runtime/FireRescueGame.Tools.cs": "eae5cf6184a2b49b99952288d07c60fe8f46ac60ccc3f1acb0fbb4ae07506da5",
+    "Assets/FireRescue/Runtime/FireRescueGame.Water.cs": "e104041e1ff80fbe6a5722ec4cb42b2b61864fc0a92e7bcb3326b7b3be113638",
+    "Assets/FireRescue/Runtime/FireRescueGame.cs": "f199a1c151361df764e0cebfc1ed286156c67257aaf849b0a3d5512d5a6e704a",
+    "Assets/FireRescue/Runtime/EmberdeepImmersiveSky.cs": "bbbbedefbe42dc7c61fa9c8821ce11fe0fe8f69ccf4e0bfed5b590f8695631d7",
+    "Assets/FireRescue/Runtime/EmberdeepEnvironmentVfx.cs": "b31e55744780d0e8a5d8797a642e24430b6016e6164845fa10a21d15efad2d33",
+    "Assets/FireRescue/Resources/EmberdeepImmersiveSky.shader": "36d5f0955a74e794c0b92da55acb4d7b5c1f33747b12dcdc596ce086fe192b8c",
+    "Assets/FireRescue/Resources/EmberdeepV2Creek.shader": "da73a158cb84377de856984214ede75060ed76b0de0a319d2c49bbd992a2421f",
+    "Assets/FireRescue/Resources/EmberdeepSky.jpg": "2bdd7abe32f1d2f7a626e0a6e45bb808313f29bd41d758eacbdba91560e93f04",
+    "Assets/FireRescue/Resources/EmberdeepSky.jpg.meta": "daceef3ca6fb4c9f3bbf2c9ed5cd895e681ffdda6c558e90e88dff4c73ed9fd1",
+    "Assets/FireRescue/ArtV2/Models/EDV2_Terrain.fbx": "c86622ba705c7d48add106ed58c7cd0b31901884036205e4fe94a79b9424cde5",
+    "Tools/BuildEmberdeepArtV2.py": "5266d16313501d996f3c293dbe804f1ab9b4a5b3cbd7a44cbaf8e6ebd1449785"
+  },
+  "limits": [
+    "Injected hand samples do not establish optical tracking reliability or real-hand comfort.",
+    "Desktop alpha and angle tests do not establish binocular passthrough edges or headset GPU frame timing.",
+    "PICO shares the changed source; no 0.2.20 PICO APK or hardware acceptance."
+  ]
+}

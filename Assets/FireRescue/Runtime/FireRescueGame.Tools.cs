@@ -10,6 +10,18 @@ namespace FireRescue
         public FireToolManipulation ToolManipulation=>toolManipulation;
         bool ToolOwnsHand(int hand)=>grip.Held && (hand==grip.Hand?toolManipulation.HasPhysicalGrip:
             toolManipulation.NozzleHeld || toolManipulation.SupportHeld || pump.Active);
+        bool NearCarriedTool(int hand,Vector3 fallback)
+        {
+            if(!grip.Held || !heldView || Run.Supply.Locked)return false;
+            var contact=toolHands[hand].Usable?toolHands[hand].Contact:fallback;
+            return heldView.NearNozzle(contact,.13f) || heldView.TryGrabRegion(contact,out _,out _);
+        }
+        bool GraspingRackTool(int hand)
+        {
+            var h=toolHands[hand];
+            return !grip.Held && !ShopOpen && !Run.Supply.Locked && rackView && rackView.gameObject.activeInHierarchy && h.Usable
+                && h.Closure>=EmberdeepSqueeze.Grab && rackView.TryPrimaryGrab(h.Contact,hand,out _,out _);
+        }
         void ReadObjectHands()
         {
             for(int i=0;i<2;i++)
@@ -32,8 +44,9 @@ namespace FireRescue
         }
         void ProcessToolPickup(float dt)
         {
-            if(grip.Held || !Run.Owns(SelectedEquipment))return;
+            if(Run.SpellMode || Run.IsPalmLesson || palmMagic.Aiming || grip.Held || !Run.Owns(SelectedEquipment))return;
             var left=toolHands[0];var right=toolHands[1];
+            if(sheepInteraction.OwnsHand(0))left.Valid=false;if(sheepInteraction.OwnsHand(1))right.Valid=false;
             if(refill.OwnsControl){if(refill.OperatingHand==0)left.Valid=false;else right.Valid=false;}
             if(left.Usable && NearWellLever(left.Contact))left.Valid=false;
             if(right.Usable && NearWellLever(right.Contact))right.Valid=false;
@@ -48,8 +61,15 @@ namespace FireRescue
         {
             if(!grip.Held)return;
             var left=toolHands[0];var right=toolHands[1];
+            if(sheepInteraction.OwnsHand(0))left.Valid=false;if(sheepInteraction.OwnsHand(1))right.Valid=false;
             if(refill.OwnsControl){if(refill.OperatingHand==0)left.Valid=false;else right.Valid=false;}
             if(toolManipulation.Step(heldView,rackView,left,right,dt,permitted))ReturnEquipment();
+            if(grip.Held && grip.Hand!=toolManipulation.Owner)
+            {
+                grip.EquipForDesktop(toolManipulation.Owner);LeftHanded=grip.Hand==0;
+                Spraying=false;Run.CancelTrigger();gesture.Reset();pump.Reset();
+                handMenu?.ResetInput();ClearInterfaceReservation();
+            }
             if(!toolManipulation.TriggerValid){Run.CancelTrigger();pump.Reset();}
         }
     }

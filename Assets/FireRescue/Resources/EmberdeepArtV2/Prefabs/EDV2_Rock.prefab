@@ -48,7 +48,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -5247676899829617416, guid: 4d1be7cbea5b7254abfa1e178195383a, type: 3}
+    - target: {fileID: -5873710059908122811, guid: 4d1be7cbea5b7254abfa1e178195383a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 85f7b50c83466aa43886d47a8882aa63, type: 2}
@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 61d1ad9378fe2cc4fa739c12be86ca37, type: 2}
+    - target: {fileID: -302736238102332845, guid: 4d1be7cbea5b7254abfa1e178195383a, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c877b46f8c9ab6742a4b258047079f59, type: 2}
     - target: {fileID: 919132149155446097, guid: 4d1be7cbea5b7254abfa1e178195383a, type: 3}
       propertyPath: m_Name
       value: EDV2_Rock

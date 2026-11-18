@@ -1,0 +1,30 @@
+Emberdeep 0.2.22 — quick test / 快速测试
+
+NEW GAME / 新游戏
+First sector is now a single-tree palm tutorial. Equipment appears in sector 2.
+第一关只教掌心水，只有一棵树；第二关再使用灭火器。
+
+GODDESS HAND / 女神之手
+Open all five LEFT fingers. Aim the palm at the island: a blue ground circle appears.
+Rest your relaxed RIGHT hand over the left wrist/back, with both palms facing the same way.
+Hold briefly to spray; lift right hand to stop. Keep left fingertips visible to the headset.
+The LEFT-hand crystal shows mana. It recharges over time, never from pumps. Each sector starts charged.
+左手五指伸直，掌心朝向地面蓝圈；右手轻叠在左手腕附近，两掌同向。
+稍停即喷水，抬起右手停喷。尽量露出左手手指，方便头显追踪。
+左手晶石显示魔力，随时间恢复，每关开始充满。通关后商店可升级魔力。
+
+EXTINGUISHER / 灭火器
+Right hand: gold top handle; left hand: cyan nozzle. Left knuckles point along the stream.
+Squeeze right fist to spray; half open to stop; fully open to release into a hover.
+Regrasp while hovering. At 3 seconds it wobbles; at 5 seconds it returns to the rack.
+Body dots are carry contacts; top handle is the firing contact. Left nozzle stays held during right-hand regrip.
+右手抓顶部金色把手，左手抓青色喷嘴，以拳头前方瞄准。
+右手握紧喷水、半松停喷、完全张掌松开。悬浮时可重新抓取或换手；3 秒轻晃，5 秒自动回架。
+
+WATER / 补水
+Dock blue couplings; grasp the well lever, press down then lift. Longer strokes collect more.
+Every equipped water weapon also recovers slowly after 3 idle seconds (0.25 units/second).
+对接蓝色接口；握住杠杆，压下再抬起，行程越大收集越多。武器静置 3 秒后缓慢回水。
+
+Desktop: mouse aim/fire equipment, SPACE palm water. B shop. H manual-water station. C creek.
+Language follows system language (Chinese / English fallback). Quit requires explicit confirmation.

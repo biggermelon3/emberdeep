@@ -28,6 +28,7 @@ namespace FireRescue
         bool hasContact;
         Vector3 safePalm;
         bool hasSafePalm;
+        readonly List<Mesh> gloves=new();
         sealed class Skin
         {
             public SkinnedMeshRenderer Source,Live;
@@ -43,6 +44,15 @@ namespace FireRescue
         public float ContactWeight=>contactProgress*contactProgress*(3-2*contactProgress);
         public bool ContactLocked=>contactProgress>=.999f && contactAnchor;
         public Transform DisplayJoint(HandJointId joint)=>(int)joint>=0&&(int)joint<joints.Length?joints[(int)joint]:null;
+        // True while the copy is drawn, live or as a held snapshot.
+        public bool Showing
+        {get{foreach(var skin in skins)if((skin.Live && skin.Live.enabled) || (skin.Still && skin.Still.enabled))return true;return false;}}
+        public bool TryGetWristFrame(out Pose frame)
+        {
+            frame=default;var wrist=DisplayJoint(HandJointId.HandWristRoot);
+            if(!wrist || !TryGetPalmFrame(out var palm))return false;
+            frame=new Pose(wrist.position,palm.rotation);return true;
+        }
         public Renderer SnapshotRenderer(int index)=>index>=0&&index<skins.Length?skins[index].Still:null;
 
         public EmberdeepHandPresentation(HandVisual hand,Material material)
@@ -80,7 +90,7 @@ namespace FireRescue
                     if(sourceBones[i] && !mapping.TryGetValue(sourceBones[i],out bones[i]))complete=false;
                 if(!complete)continue;
                 var live=skinTransform.gameObject.AddComponent<SkinnedMeshRenderer>();
-                live.sharedMesh=renderer.sharedMesh;live.bones=bones;
+                live.sharedMesh=GloveMesh(renderer.sharedMesh,bones,hand.Hand!=null && hand.Hand.Handedness==Handedness.Left);live.bones=bones;
                 if(renderer.rootBone && mapping.TryGetValue(renderer.rootBone,out var rootBone))live.rootBone=rootBone;
                 live.localBounds=renderer.localBounds;live.quality=renderer.quality;live.updateWhenOffscreen=true;
                 live.shadowCastingMode=ShadowCastingMode.Off;live.receiveShadows=false;
@@ -107,6 +117,54 @@ namespace FireRescue
                 }
             }
             skins=eligible.ToArray();
+        }
+
+        Mesh GloveMesh(Mesh source,Transform[] bones,bool left)
+        {
+            int wrist=-1,middle=-1;
+            for(int i=0;i<bones.Length;i++)
+            {
+                if(!bones[i])continue;
+                int joint=Array.IndexOf(joints,bones[i]);
+                if(joint==(int)HandJointId.HandWristRoot)wrist=i;else if(joint==(int)HandJointId.HandMiddle1)middle=i;
+            }
+            var mesh=BakeGlovePanels(source,bones,wrist,middle,left);
+            if(mesh!=source)gloves.Add(mesh);
+            return mesh;
+        }
+        // Glove panels baked once from the bind pose: R palm leather, G fingertip caps,
+        // B the cream panel on the back of the hand. Alpha 0 marks a baked mesh.
+        // Returns the source itself when the mesh cannot be read or the skeleton is unexpected.
+        public static Mesh BakeGlovePanels(Mesh source,Transform[] bones,int wrist,int middle,bool left)
+        {
+            if(!source || !source.isReadable || bones==null)return source;
+            var bind=source.bindposes;var cap=new bool[bones.Length];
+            for(int i=0;i<bones.Length;i++)
+            {
+                if(!bones[i])continue;
+                // The last phalanx and its tip marker: bones with no grandchildren.
+                bool leaf=true;foreach(Transform child in bones[i])if(child.childCount>0)leaf=false;
+                cap[i]=leaf && i!=wrist;
+            }
+            if(wrist<0 || middle<0 || wrist>=bind.Length || middle>=bind.Length)return source;
+            var root=bind[wrist].inverse;Vector3 origin=root.GetColumn(3),knuckle=bind[middle].inverse.GetColumn(3);
+            var distal=knuckle-origin;float length=distal.magnitude;if(length<.01f)return source;distal/=length;
+            var palmar=root.rotation*(left?Constants.LeftPalmar:Constants.RightPalmar);
+            palmar=(palmar-distal*Vector3.Dot(palmar,distal)).normalized;var across=Vector3.Cross(distal,palmar);
+            var vertices=source.vertices;var normals=source.normals;var weights=source.boneWeights;
+            if(normals.Length!=vertices.Length || weights.Length!=vertices.Length)return source;
+            var colors=new Color[vertices.Length];
+            for(int i=0;i<vertices.Length;i++)
+            {
+                var p=vertices[i]-origin;float along=Vector3.Dot(p,distal)/length,side=Vector3.Dot(p,across)/length,facing=Vector3.Dot(normals[i],palmar);
+                float palm=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-.30f,.30f,facing));
+                int bone=weights[i].boneIndex0;float tip=bone>=0 && bone<cap.Length && cap[bone]?Mathf.Clamp01(weights[i].weight0*1.6f-.3f):0;
+                float dx=side/.43f,dy=(along-.53f)/.50f;
+                float panel=facing<.1f?Mathf.Clamp01(1.9f-1.9f*(dx*dx+dy*dy)):0;
+                colors[i]=new Color(palm,tip,panel,0);
+            }
+            var mesh=UnityEngine.Object.Instantiate(source);mesh.name=source.name+" (Emberdeep glove panels)";
+            mesh.colors=colors;return mesh;
         }
 
         // appValid includes system-gesture/focus/head-pose gates from the existing
@@ -290,6 +348,7 @@ namespace FireRescue
                 Destroy(skin.Mesh);
             }
             if(display){display.SetActive(false);Destroy(display);}
+            foreach(var mesh in gloves)Destroy(mesh);gloves.Clear();
             Frozen=false;hasPose=false;
         }
         static void Destroy(UnityEngine.Object value)

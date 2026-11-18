@@ -1,0 +1,62 @@
+{
+  "release": "0.2.22",
+  "title": "Goddess hand and palm-first onboarding",
+  "production_route": "Camp New Game -> one-tree palm lesson -> sector 2 extinguisher and manual water -> remaining forest sectors",
+  "input": {
+    "indicator": "One crystal on the back of the LEFT rendered hand only; fill runs wrist-to-knuckles; bright at full charge.",
+    "aim": "All five left fingers extended; tracked palmar normal intersects the miniature ground within ability range and island bounds. The blue circle shows the splash radius.",
+    "cast": "Right hand relaxed and stacked across the left wrist/back, palms approximately parallel, for 0.12 seconds. Supporting near the wrist keeps the left fingertips exposed to headset cameras.",
+    "stop": "Lift the right hand, curl the left fingers, leave the ground, lose tracking, enter a menu or acquire a tool. No charge is discarded on release.",
+    "ownership": "Both hands must be free of weapons/nozzle/pump/station ownership. Aiming reserves the left hand; stacked casting reserves both against menu input.",
+    "desktop_equivalent": "Mouse aims; hold SPACE for palm water. Desktop equivalence is used for actual projectile regression, not a claim of headset gesture acceptance."
+  },
+  "resource": {
+    "base_capacity": 30,
+    "starter_extinguisher_capacity": 60,
+    "flow_per_second": 14,
+    "base_continuous_seconds": 2.142857,
+    "base_power_per_second": 45,
+    "base_recharge_per_second": 0.6,
+    "base_empty_to_full_seconds": 50,
+    "new_sector": "Full magic charge, independent of weapon tank contents.",
+    "partial_charge": "Usable immediately; stopping and restarting never requires discarding remaining charge.",
+    "manual_water": "Hydrants, lever pumps, creek and refill assist cannot refill magic.",
+    "pause": "No recovery or consumption during focus loss, pause or modal/shop pauses; no catch-up after resuming.",
+    "retry": "Sector-entry magic level and cumulative consumption restored; initial sector charge restored."
+  },
+  "upgrades": {
+    "levels": 4,
+    "coin_costs": [
+      75,
+      175,
+      275,
+      375
+    ],
+    "per_level": {
+      "capacity": 20,
+      "power": 18,
+      "recharge_per_second": 0.3,
+      "splash_radius_forest_units": 0.12,
+      "range_forest_units": 3
+    },
+    "purchase": "Supply phase only; deduct exact displayed price; increasing capacity does not immediately grant water.",
+    "presentation": "Dedicated magic shop page, animated two-hand preview, before/after stats, English/Chinese String Tables."
+  },
+  "lesson": {
+    "burning_trees": 1,
+    "tree_heat": 60,
+    "equipment": "Rack, take-tool button and water stations hidden/disabled until sector 2.",
+    "teaching": "Blue hands demonstrate open left palm, stacked right hand, water stream, ground circle, stop and crystal recovery.",
+    "forgiving": "Lesson tree does not burn out or spread, sheep do not ignite while the player learns.",
+    "second_sector": "Gold right-hand handle, cyan left-hand nozzle and squeeze-to-spray guidance."
+  },
+  "weapon_recovery": "Existing recovery retained for every equipped water weapon: 3 seconds idle, then 0.25 units/second. Manual collection remains far faster.",
+  "validation": {
+    "domain": "Five new regressions cover budget, pause/clamp, upgrade economy, checkpoint restore, one-tree lesson and tracked stack gesture gates.",
+    "scene": "Actual production New Game uses real WaterJet packets to save the tree with SPACE without spending weapon water; magic shop purchase and sector-2 tool unlock verified.",
+    "fixtures": "Editor-only BeginEquipmentTestRun preserves the old three-fire fixture for focused equipment/menu/refill regressions; production New Game always uses the palm tutorial.",
+    "headset": "Quest/PICO tracking ergonomics and occlusion still need worn-headset testing. No OS tracking guarantee.",
+    "release_evidence": "Release-0.2.22.json"
+  },
+  "status": "QUEST_BUILT_AND_INSTALLED; 232 EditMode + 228 PlayMode passed; final 8 visual regressions passed; worn-headset acceptance pending"
+}

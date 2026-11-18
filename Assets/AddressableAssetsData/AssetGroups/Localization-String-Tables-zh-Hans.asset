@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-String-Tables-zh-Hans
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-String-Tables-zh-Hans
+  m_GUID: 393c8653ef4b2db45abc4ca9cdea1c20
+  m_SerializeEntries:
+  - m_GUID: 995de2cc3714c9940ad103a3927252bd
+    m_Address: EmberdeepUI_zh-Hans
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-zh-Hans
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: d70a78b59eacb89408e05b8322a51be0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d634f625491cc084484fef7fd3ca2809, type: 2}
+    - {fileID: 11400000, guid: 6ce1be0f4125978468abbc3476a9be2d, type: 2}
+    - {fileID: 11400000, guid: 8c57e6209c7bcc74b9f97b87e93b2960, type: 2}

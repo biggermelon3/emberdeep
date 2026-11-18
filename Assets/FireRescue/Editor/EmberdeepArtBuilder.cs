@@ -19,7 +19,8 @@ namespace FireRescue.Editor
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop Play mode before importing Art V2.");
             Directory.CreateDirectory(Output+"/Materials");Directory.CreateDirectory(Output+"/Prefabs");AssetDatabase.Refresh();
             var shader=Shader.Find("Emberdeep/V2 Sculpted Surface");var creekShader=Shader.Find("Emberdeep/V2 Shallow Creek");
-            if(!shader || !creekShader)throw new InvalidOperationException("Art V2 shader import is incomplete.");
+            var flameShader=Shader.Find("Emberdeep/V2 Camp Flame");
+            if(!shader || !creekShader || !flameShader)throw new InvalidOperationException("Art V2 shader import is incomplete.");
             Materials.Clear();var entries=new List<EmberdeepArtLibrary.Entry>();
             var paths=Directory.GetFiles(Source,"*.fbx").OrderBy(x=>x).ToArray();
             if(paths.Length<7)throw new InvalidOperationException("Expected the complete Blender environment kit before integration.");
@@ -43,9 +44,12 @@ namespace FireRescue.Editor
                             bool water=r.name.Contains("CreekSurface") || semantic.ToLowerInvariant().Contains("water");
                             Color color=mats[i] && mats[i].HasProperty("_BaseColor")?mats[i].GetColor("_BaseColor"):
                                 mats[i] && mats[i].HasProperty("_Color")?mats[i].color:Color.white;
-                            mats[i]=Material(semantic,color,water?creekShader:shader);
+                            mats[i]=Material(semantic,color,water?creekShader:semantic=="Flame"?flameShader:shader);
                         }
-                        r.sharedMaterials=mats;r.shadowCastingMode=go.name.Contains("Hydrant") || go.name.Contains("CreekPump")?
+                        // Hand-worn pieces, station controls and interface trim never cast into the diorama.
+                        bool unshadowed=go.name.Contains("Hydrant") || go.name.Contains("CreekPump") || go.name.Contains("Glove") || go.name.Contains("Crystal")
+                            || go.name.Contains("Sign") || go.name.Contains("Valve") || go.name.Contains("Button");
+                        r.sharedMaterials=mats;r.shadowCastingMode=unshadowed?
                             UnityEngine.Rendering.ShadowCastingMode.Off:UnityEngine.Rendering.ShadowCastingMode.On;r.receiveShadows=true;
                     }
                     var prefab=PrefabUtility.SaveAsPrefabAsset(go,Output+"/Prefabs/"+go.name+".prefab");
@@ -113,9 +117,12 @@ namespace FireRescue.Editor
             var mat=AssetDatabase.LoadAssetAtPath<Material>(path);
             if(!mat){mat=new Material(shader);AssetDatabase.CreateAsset(mat,path);}else mat.shader=shader;
             mat.name=key;mat.SetColor("_BaseColor",color);mat.enableInstancing=true;
-            if(mat.HasProperty("_Wind"))mat.SetFloat("_Wind",key.ToLowerInvariant().Contains("leaf") || key.ToLowerInvariant().Contains("canopy")?1:0);
+            // Sway weight is baked per vertex; runtime primitives keep their own still materials.
+            if(mat.HasProperty("_Wind"))mat.SetFloat("_Wind",key.StartsWith("Runtime")?0:1);
             if(mat.HasProperty("_GroundDetail"))mat.SetFloat("_GroundDetail",key=="Moss"?1:0);
-            if(mat.HasProperty("_Roughness"))mat.SetFloat("_Roughness",key.ToLowerInvariant().Contains("metal")?.35f:.75f);
+            bool polished=key=="Brass" || key=="Teal" || key=="Cyan" || key=="EnamelRed" || key=="Glass" || key=="Gem" || key=="Hoof" || key=="EyeWhite";
+            if(mat.HasProperty("_Roughness"))mat.SetFloat("_Roughness",polished?.3f:key.ToLowerInvariant().Contains("metal")?.35f:.78f);
+            if(mat.HasProperty("_EmissionColor"))mat.SetColor("_EmissionColor",key=="WindowGlow"?new Color(.85f,.48f,.10f):key=="Ember"?new Color(.75f,.22f,.03f):Color.black);
             EditorUtility.SetDirty(mat);Materials[key]=mat;return mat;
         }
     }

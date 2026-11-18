@@ -13,24 +13,70 @@ MonoBehaviour:
   m_Name: Library
   m_EditorClassIdentifier: FireRescue.Runtime::FireRescue.EmberdeepArtLibrary
   Models:
+  - Id: Basin
+    Prefab: {fileID: 8089297768512861094, guid: 723a6bf9017aae545894b040ecd35f1c, type: 3}
   - Id: Broadleaf
     Prefab: {fileID: 7368643124273641525, guid: 0819080656e745a44a9744e1207e0b81, type: 3}
+  - Id: ButtonPost
+    Prefab: {fileID: 1761733915013387453, guid: b013eddce3708404e9def5f856940adb, type: 3}
+  - Id: ButtonStation
+    Prefab: {fileID: 6581069855390320728, guid: d18f3c7d5d23b8e4ea4588c769a05916, type: 3}
   - Id: Cabin
     Prefab: {fileID: 6071887619007803911, guid: 51f0434694a1cc44e8ea341edbe451da, type: 3}
+  - Id: CampCrate
+    Prefab: {fileID: 4409252729775486329, guid: bec35f999ca54f248a9d8fa0427a3a32, type: 3}
+  - Id: Campfire
+    Prefab: {fileID: 7717093321205620447, guid: c465dfd13f6298a4ba58abb394d74677, type: 3}
+  - Id: CampGround
+    Prefab: {fileID: 3615483308004461490, guid: f7219b2a139c3d14db74a9c17c0aa50a, type: 3}
   - Id: Cedar
     Prefab: {fileID: 440335464401964102, guid: 2054d33570f3f2e4cb66e59909de7652, type: 3}
   - Id: CreekPump
     Prefab: {fileID: 598282095183982674, guid: 93686ee20653f2e4eaefb4d27d7db523, type: 3}
+  - Id: Crystal
+    Prefab: {fileID: 6279514777522433326, guid: 2cfc68a999fba264f9758b8bdf22b311, type: 3}
   - Id: Fern
     Prefab: {fileID: 5986670585778567177, guid: 43fc472ab3fce9f49861f2b48a31cd03, type: 3}
+  - Id: GloveCuff
+    Prefab: {fileID: 1442255021504584182, guid: 42a6ad5e3cbf2d141ad9a58a78bd0928, type: 3}
   - Id: Hydrant
     Prefab: {fileID: 5202125440886995096, guid: faa761e44faa2b647b4bddb39b7c00f5, type: 3}
   - Id: Log
     Prefab: {fileID: 2007431597249168505, guid: 20d9b1389fd70df4fa18231a01767183, type: 3}
+  - Id: PumpLever
+    Prefab: {fileID: 6367674509234776500, guid: 97739c4c1b7e6144f8521dbbae546104, type: 3}
+  - Id: PushButton
+    Prefab: {fileID: 8497307402887245119, guid: 4f6ef26164e74804c8c84ab053501e38, type: 3}
+  - Id: Reservoir
+    Prefab: {fileID: 1719541847077570148, guid: aa87a262ba91e2e4d90c7fc646e20d21, type: 3}
   - Id: Rock
     Prefab: {fileID: 3998449403677467475, guid: 49426f5f3944c0e49998dab9bfc5251e, type: 3}
+  - Id: Sheep
+    Prefab: {fileID: 5625590132908620288, guid: b392a70040389084da27cf5aa558a8bc, type: 3}
+  - Id: SignCorner
+    Prefab: {fileID: 8499200841585045804, guid: cda4af2a1267c9f44b0604f81b942340, type: 3}
+  - Id: SignCrest
+    Prefab: {fileID: 6898518466382605929, guid: c252f6c389f376e4da84f2ba29cf2687, type: 3}
+  - Id: SignLantern
+    Prefab: {fileID: 7786554077139172087, guid: 76c469ebe105b1e4e8f1f4173cb5804d, type: 3}
+  - Id: SignMoss
+    Prefab: {fileID: 332508097727456118, guid: 294352d3bb9347e4f839b75e41304be6, type: 3}
+  - Id: SignPost
+    Prefab: {fileID: 4385440889834313652, guid: 74c644123770a1f4994786094e4737ab, type: 3}
+  - Id: SignPostCap
+    Prefab: {fileID: 8814969319078434983, guid: 7bde037fae8b3084a86bb42a2f2ad3cf, type: 3}
+  - Id: SignRail
+    Prefab: {fileID: 2425573901084909883, guid: c70f270eda776cd48a07b2646299b927, type: 3}
+  - Id: Tent
+    Prefab: {fileID: 5252850281456756914, guid: c9b8d95d949706b48b24637f8a1456a5, type: 3}
   - Id: Terrain
     Prefab: {fileID: 8604933238951439724, guid: 2b8dc6b45c5a860419d6d784a369cf84, type: 3}
+  - Id: ValveMount
+    Prefab: {fileID: 2094872410197053230, guid: 04aba25ad0761fc4291b9524ccee67db, type: 3}
+  - Id: ValveWheel
+    Prefab: {fileID: 5852408038594808653, guid: dd4b6cf699a03484b9da236f513aaaaf, type: 3}
+  - Id: WellPump
+    Prefab: {fileID: 7296257256450079751, guid: a762c8372fb18c245a9d57b2156d4588, type: 3}
   Surface: {fileID: 2100000, guid: ade6739d75d9c794ca8dde1f2fc4818f, type: 2}
   Creek: {fileID: 2100000, guid: c876d6a1bfba6ce43b30aed34c6eae6d, type: 2}
   Panel: {fileID: 2100000, guid: aac6bd30f6ee19f448a52224e3e42a52, type: 2}

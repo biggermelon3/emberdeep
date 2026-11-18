@@ -12,6 +12,7 @@ namespace FireRescue
         float dwell,acquireRemaining;
         public bool CanAcquire=>Closed && acquireRemaining>0;
         public bool Closed { get; private set; }
+        public bool ReadyForSqueeze=>armed || Closed;
         public bool Pressed { get; private set; }
         public EmberdeepSqueeze(float close=Grab,float release=Open){this.close=close;this.release=release;}
         public void Reset(){armed=Closed=Pressed=false;dwell=acquireRemaining=0;}

@@ -5,199 +5,135 @@ namespace FireRescue.Tests
 {
     public sealed class EmberdeepSurfaceToolTests
     {
-        GameObject root;
-        Material material;
-        FireEquipmentView tool,rack;
-        FireToolManipulation input;
-        FireToolManipulation.Hand owner,other;
+        GameObject root;Material material;FireEquipmentView tool,rack;FireToolManipulation input;
+        FireToolManipulation.Hand owner,other;int OwnerIndex=1;
         const float Dt=.025f;
         [TearDown] public void Cleanup(){if(root)Object.DestroyImmediate(root);if(material)Object.DestroyImmediate(material);}
-        static FireToolManipulation.Hand At(Vector3 point,float closure)=>new(){Valid=true,Palm=new Pose(point,Quaternion.identity),Contact=point,Closure=closure};
+        static FireToolManipulation.Hand At(Vector3 p,float c)=>new(){Valid=true,Palm=new Pose(p,Quaternion.identity),Contact=p,Closure=c};
         void Setup(FireEquipmentId id,bool body=false,int hand=1)
         {
             root=new GameObject("Surface tool regression");material=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
             FireEquipmentView Build(string name){var v=new GameObject(name).AddComponent<FireEquipmentView>();v.transform.SetParent(root.transform);v.Build(id,material,material,material);return v;}
-            tool=Build("Tool");rack=Build("Rack");rack.gameObject.SetActive(false);
-            input=new FireToolManipulation();owner=At(body?tool.transform.TransformPoint(new Vector3(0,id==FireEquipmentId.Extinguisher?-.1f:.025f,0)):tool.Grip.position,.5f);
-            other=At(Vector3.left*2,0);input.Begin(tool,hand,owner);OwnerIndex=hand;
+            tool=Build("Tool");rack=Build("Rack");rack.gameObject.SetActive(false);OwnerIndex=hand;
+            input=new FireToolManipulation();owner=At(body?new Vector3(hand==0?-.055f:.055f,id==FireEquipmentId.Extinguisher?-.07f:.025f,0):tool.Grip.position,.5f);
+            other=At(Vector3.left*2,0);input.Begin(tool,hand,owner);
         }
-        int OwnerIndex;
-        bool Step(int count=1,bool permitted=true)
-        {bool returned=false;for(int i=0;i<count;i++)returned|=input.Step(tool,rack,OwnerIndex==0?owner:other,OwnerIndex==0?other:owner,Dt,permitted);return returned;}
-        void HoldNozzle()
-        {other=At(tool.Nozzle.position,0);Step();other.Closure=.5f;Step(4);Assert.IsTrue(input.NozzleHeld);}
-        [TestCase(0)] [TestCase(1)] public void ExtinguisherRearHandleLeavesPalmClearAndSqueezeKeepsFixedBarStill(int hand)
+        bool Step(int n=1,bool permitted=true)
+        {bool returned=false;for(int i=0;i<n;i++)returned|=input.Step(tool,rack,OwnerIndex==0?owner:other,OwnerIndex==0?other:owner,Dt,permitted);return returned;}
+        void Nozzle(){other=At(tool.Nozzle.position,.5f);Step(4);Assert.True(input.NozzleHeld);}
+        [TestCase(0)] [TestCase(1)] public void SideDotsAcquireWithAnAlreadyClosedHandWithinFiftyMilliseconds(int hand)
         {
-            Setup(FireEquipmentId.Extinguisher,false,hand);
-            var local=tool.PrimaryContact(FireToolRegion.Trigger,hand==0);
-            var contacts=new EmberdeepHandContact();contacts.Add(tool.transform);contacts.Prepare();
-            var palm=tool.transform.TransformPoint(local.position);
-            Assert.Less(Vector3.Distance(palm,contacts.Resolve(palm,.007f)),.0001f,"Palm must sit outside the handles");
-            Assert.Less(local.position.z,-.055f,"Wrap behind the bottle shoulder, not over the valve block");
-            Assert.IsTrue(tool.TryGrabRegion(palm,out var region,out _));Assert.AreEqual(FireToolRegion.Trigger,region);
-            var fixedBar=tool.transform.Find("Fixed carrying handle");var moving=tool.transform.Find("Squeeze handle");
-            var barPose=fixedBar.localPosition;var rest=moving.localPosition;
-            tool.Animate(1,0,true,.02f);
-            Assert.AreEqual(barPose,fixedBar.localPosition);Assert.That(rest.y-moving.localPosition.y,Is.EqualTo(.01f).Within(.0001f));
-            tool.Animate(1,0,false,.1f);Assert.Less(Vector3.Distance(rest,moving.localPosition),.0001f);
+            Setup(FireEquipmentId.Extinguisher,true,hand);rack.gameObject.SetActive(true);input.Reset();
+            var h=At(new Vector3(hand==0?-.055f:.055f,-.07f,0),.65f);
+            Assert.AreEqual(-1,input.FindPickup(rack,hand==0?h:default,hand==1?h:default,Dt));
+            Assert.AreEqual(hand,input.FindPickup(rack,hand==0?h:default,hand==1?h:default,Dt));
+            input.Begin(tool,hand,h);Assert.AreEqual(FireToolRegion.Body,input.Region);Assert.True(input.HasPhysicalGrip);
         }
-        [TestCase(0)] [TestCase(1)] public void ForwardSupportPalmStaysOutsideTheCannonGrip(int hand)
+        [Test] public void TriggerIsRightHandOnlyAndNozzleIsNeverAPrimaryPickup()
         {
-            Setup(FireEquipmentId.PressureCannon,false,hand);tool.CaptureSupport(Vector3.zero);
-            var contact=EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.ForwardSupport,hand==0);
-            var palm=tool.SupportGrip.TransformPoint(contact.position);
-            var contacts=new EmberdeepHandContact();contacts.Add(tool.transform);contacts.Prepare();
-            Assert.Less(Vector3.Distance(palm,contacts.Resolve(palm,.007f)),.0001f,
-                "Fixed support palm must not start inside a solid part");
+            Setup(FireEquipmentId.Extinguisher);
+            Assert.True(tool.TryPrimaryGrab(tool.Grip.position,1,out var r,out _));Assert.AreEqual(FireToolRegion.Trigger,r);
+            Assert.False(tool.TryPrimaryGrab(tool.Grip.position,0,out _,out _));
+            Assert.False(tool.TryPrimaryGrab(tool.Nozzle.position,0,out _,out _));
+            Assert.False(tool.TryPrimaryGrab(new Vector3(.055f,-.07f,0),0,out _,out _));
+            Assert.False(tool.TryPrimaryGrab(new Vector3(-.055f,-.07f,0),1,out _,out _));
         }
-        [TestCase(0)] [TestCase(1)] public void RepeatedFullOpeningStopsFireWithoutDroppingAndCanSqueezeAgain(int hand)
+        [Test] public void DistantOrInvalidHandsNeverAcquire()
         {
-            Setup(FireEquipmentId.Extinguisher,false,hand);Step();HoldNozzle();
-            for(int cycle=0;cycle<4;cycle++)
-            {
-                owner.Closure=1;Step(4);Assert.IsTrue(input.Firing);
-                owner.Closure=0;Assert.IsFalse(Step(30));Assert.IsFalse(input.Firing);
-                Assert.IsFalse(input.TriggerValid,"Full open must cancel any stored charge");
-                Assert.IsTrue(input.HasPhysicalGrip);Assert.IsFalse(input.Adjusting);
-                owner.Contact+=Vector3.up*.02f;owner.Palm.position=owner.Contact;Step();
-                Assert.Less(Vector3.Distance(owner.Contact,tool.Grip.position),.001f);
-            }
-        }
-        [TestCase(0)] [TestCase(1)] public void NozzlePhysicalAndDisplayedPalmUseOneCanonicalFrame(int hand)
-        {
-            Setup(FireEquipmentId.Extinguisher,false,hand);Step();HoldNozzle();
-            other.HasGripFrame=true;
-            var contact=EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.NozzleGrip,hand!=0);
-            foreach(var turn in new[]{Quaternion.identity,Quaternion.Euler(20,40,10),Quaternion.Euler(-10,-35,25)})
-            {
-                other.Contact=tool.transform.position+new Vector3(hand==0?.13f:-.13f,.05f,.18f);
-                other.GripRotation=turn*contact.rotation;Step();
-                Assert.Less(Quaternion.Angle(turn,tool.Nozzle.rotation),.01f);
-                Assert.Less(Vector3.Distance(other.Contact,tool.Nozzle.TransformPoint(contact.position)),.001f);
-            }
-        }
-        [TestCase(0)] [TestCase(1)] public void CanonicalPrimaryContactFollowsPhysicalPalmWithoutAnAcquisitionAngleOffset(int hand)
-        {
-            Setup(FireEquipmentId.Extinguisher,false,hand);
-            owner.HasGripFrame=true;var contact=tool.PrimaryContact(FireToolRegion.Trigger,hand==0);
-            var turn=Quaternion.Euler(15,-20,10);owner.GripRotation=turn*contact.rotation;Step();
-            Assert.Less(Quaternion.Angle(turn,tool.transform.rotation),.01f);
-            Assert.Less(Vector3.Distance(owner.Contact,tool.transform.TransformPoint(contact.position)),.001f);
-            owner.Closure=0;Step(25);Assert.IsTrue(input.HasPhysicalGrip);
+            Setup(FireEquipmentId.Extinguisher);rack.gameObject.SetActive(true);input.Reset();
+            var h=At(Vector3.one*2,1);for(int i=0;i<40;i++)Assert.AreEqual(-1,input.FindPickup(rack,default,h,Dt));
+            h.Contact=rack.Grip.position;h.Valid=false;for(int i=0;i<10;i++)Assert.AreEqual(-1,input.FindPickup(rack,default,h,Dt));
         }
         [TestCase(FireEquipmentId.Extinguisher)] [TestCase(FireEquipmentId.PulsePistol)]
         [TestCase(FireEquipmentId.RainFan)] [TestCase(FireEquipmentId.PressureCannon)]
-        public void BodyGripCannotFireButCanRegraspFunctionalHandle(FireEquipmentId id)
+        public void HalfClosureStopsWaterButFullPalmReleasesIntoHover(FireEquipmentId id)
         {
-            Setup(id,true);Assert.AreEqual(FireToolRegion.Body,input.Region);Step();owner.Closure=1;Step(6);Assert.IsFalse(input.Firing);
-            input.Park();owner.Closure=0;Step();Assert.IsTrue(input.Adjusting);
-            owner=At(tool.Grip.position,.5f);Step(4);Assert.AreEqual(FireToolRegion.Trigger,input.Region);Assert.IsFalse(input.Adjusting);
-            if(tool.Nozzle)HoldNozzle();
-            Step(3);owner.Closure=1;Step(4);Assert.IsTrue(input.Firing);
-            owner.Closure=.5f;Step();Assert.IsFalse(input.Firing);Assert.IsFalse(input.Adjusting);
+            Setup(id);Step(12);if(tool.Nozzle)Nozzle();owner.Closure=1;Step(4);Assert.True(input.Firing);
+            owner.Closure=.45f;Step(30);Assert.False(input.Firing);Assert.True(input.HasPhysicalGrip);Assert.False(input.Floating);
+            owner.Closure=0;Step(4);Assert.True(input.Floating);Assert.False(input.HasPhysicalGrip);Assert.False(input.TriggerValid);
+            if(tool.Nozzle){Assert.True(input.NozzleHeld,"Left hand can retain nozzle while bottle floats");other.Closure=0;Step();Assert.False(input.NozzleHeld);}
+            Assert.False(input.Firing);
         }
-        [TestCase(0)] [TestCase(1)] public void RackReturnRequiresFullOpenDwellAndWorksWithHiddenRack(int hand)
+        [Test] public void HoverIsStillUntilThreeSecondsWobblesThenShrinksAndReturnsAtFive()
         {
-            Setup(FireEquipmentId.PulsePistol,false,hand);other.Closure=.5f;owner.Contact+=Vector3.forward*.4f;owner.Palm.position=owner.Contact;Step(2);
-            owner.Closure=0;Assert.IsFalse(Step(25));Assert.IsFalse(input.Adjusting,"Opening away from rack retains the tool");
-            owner=At(tool.Grip.position,.5f);Step(4);
-            owner.Contact-=Vector3.forward*.4f;owner.Palm.position=owner.Contact;Step(2);
-            Assert.IsFalse(Step(25),"Half grip near rack is not a release");
-            owner.Closure=0;Assert.IsFalse(Step(5));bool returned=false;
-            for(int i=0;i<20 && !returned;i++)returned=Step();Assert.IsTrue(returned);
+            Setup(FireEquipmentId.Extinguisher);Step(12);owner.Closure=0;Step(4);
+            var p=tool.transform.position;var q=tool.transform.rotation;
+            Step(116);Assert.That(input.FloatingSeconds,Is.EqualTo(2.9f).Within(.001f));Assert.AreEqual(p,tool.transform.position);Assert.AreEqual(q,tool.transform.rotation);
+            Step(20);Assert.Greater(Quaternion.Angle(q,tool.transform.rotation),.2f);Assert.AreEqual(Vector3.one,tool.transform.localScale);
+            Step(56);Assert.Less(tool.transform.localScale.x,1);Assert.Greater(tool.transform.localScale.x,0);
+            bool returned=false;for(int i=0;i<10 && !returned;i++)returned=Step();Assert.True(returned);Assert.False(input.Floating);Assert.AreEqual(Vector3.one,tool.transform.localScale);
         }
-        [TestCase(0)] [TestCase(1)] public void BothOpenHandsKeepToolHeldAwayFromRack(int hand)
+        [TestCase(0)] [TestCase(1)] public void EitherHandCanRegrabFloatingBodyAndResetTheReturnTimer(int hand)
         {
-            Setup(FireEquipmentId.PressureCannon,false,hand);
-            owner.Contact+=Vector3.forward*.5f;owner.Palm.position=owner.Contact;Step(2);
-            owner.Closure=0;other.Closure=0;Assert.IsFalse(Step(12));
-            other.Closure=.5f;Assert.IsFalse(Step(30),"One open hand retains the tool");
-            Assert.IsFalse(input.Adjusting);
-            other.Closure=0;Assert.IsFalse(Step(12),"Reclosing either hand resets the dwell");
-            bool returned=false;for(int i=0;i<30;i++)returned|=Step();Assert.IsFalse(returned);Assert.IsTrue(input.HasPhysicalGrip);
+            Setup(FireEquipmentId.Extinguisher);Step(12);owner.Closure=0;Step(4);Step(128);
+            var h=At(tool.transform.TransformPoint(new Vector3(hand==0?-.055f:.055f,-.07f,0)),.6f);
+            if(hand==1)owner=h;else other=h;
+            Step(2);Assert.False(input.Floating);Assert.True(input.HasPhysicalGrip);Assert.AreEqual(hand,input.Owner);Assert.Zero(input.FloatingSeconds);
         }
-        [TestCase(0)] [TestCase(1)] public void RelaxedHoldSurvivesMissingTrackingBlockedInputAndLongFrames(int hand)
+        [Test] public void OpenBodyHandCanRegraspTheTopWithoutReturningToRack()
         {
-            Setup(FireEquipmentId.RainFan,false,hand);
-            owner.Contact+=Vector3.forward*.5f;owner.Palm.position=owner.Contact;Step(2);
-            owner.Closure=0;other.Closure=0;other.Valid=false;
-            Assert.IsFalse(Step(30),"A missing other hand is not an open hand");
-            other.Valid=true;Assert.IsFalse(Step(10));Step(1,false);
-            Assert.IsFalse(Step(10),"Interface interruption resets accumulated dwell");
-            other.Closure=.5f;Step();other.Closure=0;
-            Assert.IsFalse(input.Step(tool,rack,hand==0?owner:other,hand==0?other:owner,10,true),"A long frame cannot instantly release");
-            Assert.IsFalse(Step(16));bool returned=false;
-            for(int i=0;i<30;i++)returned|=Step();Assert.IsFalse(returned);Assert.IsTrue(input.HasPhysicalGrip);
+            Setup(FireEquipmentId.Extinguisher,true);Step(12);owner.Closure=0;Step(4);Assert.True(input.Floating);
+            owner=At(tool.Grip.position,.5f);Step(2);Assert.AreEqual(FireToolRegion.Trigger,input.Region);Assert.False(input.Floating);
+            Step(12);Nozzle();owner.Closure=1;Step(4);Assert.True(input.Firing);
         }
-        [Test] public void ClosedHandCannotPickupAndPickupCannotFire()
+        [Test] public void PickupPreservesHeadingAndSmoothlyAlignsInsteadOfTeleporting()
         {
-            Setup(FireEquipmentId.PulsePistol);input.Reset();rack.gameObject.SetActive(true);owner.Closure=1;
-            for(int i=0;i<10;i++)Assert.AreEqual(-1,input.FindPickup(rack,other,owner,Dt));
-            owner.Closure=0;input.FindPickup(rack,other,owner,Dt);owner.Closure=.5f;
-            int picked=-1;for(int i=0;i<4;i++){int value=input.FindPickup(rack,other,owner,Dt);if(value>=0)picked=value;}
-            Assert.AreEqual(1,picked);input.Begin(tool,picked,owner);owner.Closure=1;Step(10);Assert.IsFalse(input.Firing);
+            Setup(FireEquipmentId.Extinguisher);tool.transform.rotation=Quaternion.Euler(12,75,8);
+            owner=At(tool.Grip.position+Vector3.right*.06f,.5f);owner.Palm.rotation=Quaternion.Euler(0,-70,0);owner.HasGripFrame=true;owner.GripRotation=Quaternion.Euler(0,160,0);
+            var p=tool.transform.position;var q=tool.transform.rotation;input.Begin(tool,1,owner);
+            Assert.AreEqual(p,tool.transform.position);Assert.AreEqual(q,tool.transform.rotation);
+            var target=owner.Contact-q*tool.PrimaryContact(input.Region,false).position;
+            Step();Assert.Greater(Vector3.Distance(tool.transform.position,p),0);Assert.Less(Vector3.Distance(tool.transform.position,p),Vector3.Distance(target,p));
+            Assert.Less(Quaternion.Angle(q,tool.transform.rotation),.02f);
+            Step(16);Assert.Less(Vector3.Distance(target,tool.transform.position),.001f);
+            owner.Palm.rotation=Quaternion.Euler(0,-40,0);Step();float turn=Quaternion.Angle(q,tool.transform.rotation);Assert.Greater(turn,0);Assert.Less(turn,30);
         }
-        [Test] public void SlightlyEarlyGraspCanCatchHandleButAnOldFistCannot()
+        [TestCase(-60f)] [TestCase(0f)] [TestCase(70f)] public void NozzleFollowsKnucklesRegardlessOfPalmRoll(float roll)
         {
-            Setup(FireEquipmentId.Extinguisher);input.Reset();rack.gameObject.SetActive(true);
-            owner=At(Vector3.right*.5f,0);input.FindPickup(rack,other,owner,Dt);owner.Closure=.5f;
-            for(int i=0;i<4;i++)Assert.AreEqual(-1,input.FindPickup(rack,other,owner,Dt));
-            owner.Contact=rack.Grip.position+new Vector3(.06f,.04f,0);
-            Assert.AreEqual(1,input.FindPickup(rack,other,owner,Dt));
-            input.Reset();owner=At(Vector3.right*.5f,0);input.FindPickup(rack,other,owner,Dt);owner.Closure=.5f;
-            for(int i=0;i<20;i++)input.FindPickup(rack,other,owner,Dt);
-            owner.Contact=rack.Grip.position;Assert.AreEqual(-1,input.FindPickup(rack,other,owner,Dt));
+            Setup(FireEquipmentId.Extinguisher);Step(12);Nozzle();other.HasGripFrame=true;
+            other.GripRotation=Quaternion.Euler(10,-30,roll);other.Palm.rotation=Quaternion.Euler(100,170,40);
+            Step(14);Assert.Greater(Vector3.Dot(tool.Muzzle.forward,other.GripRotation*Vector3.forward),.999f);
+            var contact=EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.NozzleGrip,true);
+            Assert.Less(Vector3.Distance(other.Contact,tool.Nozzle.TransformPoint(contact.position)),.001f);
         }
-        [Test] public void TopGripSnapsToFunctionalAnchorAndBodyKeepsItsOwnPose()
+        [Test] public void SlowlyApproachingClosedLeftHandAcquiresNozzleWithoutTakingBottle()
         {
-            Setup(FireEquipmentId.Extinguisher);
-            owner=At(tool.Grip.position+new Vector3(.06f,.03f,0),.5f);input.Begin(tool,1,owner);Step();
-            Assert.AreEqual(FireToolRegion.Trigger,input.Region);
-            Assert.Less(Vector3.Distance(tool.Grip.position,owner.Contact),.001f);
-            owner=At(tool.transform.TransformPoint(new Vector3(0,-.13f,-.05f)),.5f);input.Begin(tool,1,owner);
-            Assert.AreEqual(FireToolRegion.Body,input.Region);Assert.NotNull(tool.SurfaceGrip);
-            Assert.Greater(Vector3.Distance(tool.SurfaceGrip.position,tool.Grip.position),.15f);
+            Setup(FireEquipmentId.Extinguisher);Step(12);other=At(Vector3.left*2,.8f);Step(40);
+            other.Contact=tool.Nozzle.position+Vector3.left*.08f;Step(2);Assert.True(input.NozzleHeld);Assert.AreEqual(1,input.Owner);
         }
-        [Test] public void ExtinguisherRequiresNozzleAndUsesItsActualPose()
+        [Test] public void BodyHandoffAndRightTriggerRegraspPreserveBottleHeading()
         {
-            Setup(FireEquipmentId.Extinguisher);Step();owner.Closure=1;Step(4);Assert.IsFalse(input.Firing);
-            owner.Closure=.5f;HoldNozzle();other.Contact+=Vector3.left*.15f;other.Palm.rotation=Quaternion.Euler(0,-35,0);Step();
-            Assert.That(Vector3.Distance(other.Contact,tool.Nozzle.TransformPoint(EmberdeepHandPose.GripContact(EmberdeepHandPoseKind.NozzleGrip,true).position)),Is.LessThan(.001f));
-            Assert.That(Vector3.Angle(tool.Muzzle.forward,Quaternion.Euler(0,-35,0)*Vector3.forward),Is.LessThan(.1f));
-            owner.Closure=1;Step(4);Assert.IsTrue(input.Firing);
-            other.Valid=false;Step();Assert.IsFalse(input.Firing);Assert.IsFalse(input.TriggerValid);
-            other.Valid=true;Step(5);Assert.IsFalse(input.NozzleHeld,"Returning closed hand cannot reacquire the nozzle");
+            Setup(FireEquipmentId.Extinguisher,true);Step(12);var q=tool.transform.rotation;
+            other=At(tool.transform.TransformPoint(new Vector3(-.055f,-.07f,0)),.6f);Step(4);
+            Assert.AreEqual(0,input.Owner);Assert.AreEqual(FireToolRegion.Body,input.Region);Assert.Less(Quaternion.Angle(q,tool.transform.rotation),.01f);
+            owner.Closure=0;Step();owner=At(tool.Grip.position,.5f);Step(4);Assert.AreEqual(1,input.Owner);Assert.AreEqual(FireToolRegion.Trigger,input.Region);
         }
-        [Test] public void TrackingAndInterfaceLossCancelFireWithoutMovingOrDroppingTool()
+        [Test] public void InvalidTrackingAndInterfaceInterruptionCancelFireWithoutDropping()
         {
-            Setup(FireEquipmentId.RainFan);Step();owner.Closure=1;Step(4);Assert.IsTrue(input.Firing);
-            var pose=tool.transform.position;owner.Valid=false;owner.Contact=Vector3.one*20;Step(20);
-            Assert.IsFalse(input.Firing);Assert.AreEqual(pose,tool.transform.position);
-            owner=At(pose+tool.Grip.localPosition,1);Step(6);Assert.IsFalse(input.Firing);
-            owner.Closure=.5f;Step();owner.Closure=1;Step(4);Assert.IsTrue(input.Firing);
-            Step(1,false);Assert.IsFalse(input.Firing);Assert.IsFalse(input.TriggerValid);
+            Setup(FireEquipmentId.RainFan);Step(12);owner.Closure=1;Step(4);Assert.True(input.Firing);
+            var p=tool.transform.position;owner.Valid=false;owner.Closure=0;owner.Contact=Vector3.one*20;Step(240);
+            Assert.False(input.Floating);Assert.True(input.HasPhysicalGrip);Assert.AreEqual(p,tool.transform.position);Assert.False(input.Firing);
+            owner=At(p+tool.PrimaryContact(input.Region,false).position,1);Step(10);Assert.False(input.Firing);
+            owner.Closure=.45f;Step();owner.Closure=1;Step(4);Assert.True(input.Firing);Step(1,false);Assert.False(input.TriggerValid);
         }
-        [Test] public void ExplicitlyParkedToolRequiresNearbyRegrip()
+        [Test] public void HoverTimerPausesWhenInputIsSuspendedAndLongFramesDoNotSkipReturn()
         {
-            Setup(FireEquipmentId.Extinguisher,true);input.Park();owner.Closure=0;Step();var position=tool.transform.position;
-            owner=At(Vector3.one*5,1);Step(10);Assert.AreEqual(position,tool.transform.position);Assert.IsTrue(input.Adjusting);
+            Setup(FireEquipmentId.RainFan);Step(12);owner.Closure=0;Step(4);Step(20);float elapsed=input.FloatingSeconds;
+            Step(200,false);Assert.AreEqual(elapsed,input.FloatingSeconds);
+            Assert.False(input.Step(tool,rack,other,owner,100,true));Assert.Less(input.FloatingSeconds-elapsed,.051f);
+        }
+        [Test] public void ExplicitStationParkHasNoAutomaticReturnOrDistantRegrasp()
+        {
+            Setup(FireEquipmentId.Extinguisher,true);input.Park();owner=At(Vector3.one*3,1);var p=tool.transform.position;Step(240);
+            Assert.AreEqual(p,tool.transform.position);Assert.True(input.Adjusting);Assert.False(input.Floating);
         }
         [TestCase(FireEquipmentId.PulsePistol)] [TestCase(FireEquipmentId.RainFan)] [TestCase(FireEquipmentId.PressureCannon)]
-        public void FrontSupportSteersWithoutMovingThePrimaryGrasp(FireEquipmentId id)
+        public void FrontSupportAimsWithoutStealingOwnershipAndTrackingLossCancelsCharge(FireEquipmentId id)
         {
-            Setup(id);other=At(tool.transform.TransformPoint(new Vector3(0,.015f,.12f)),0);Step();
-            other.Closure=.5f;Step(4);Assert.IsTrue(input.SupportHeld);
-            var primary=tool.Grip.position;other.Contact+=Vector3.left*.12f;Step();
-            Assert.That(Vector3.Distance(primary,tool.Grip.position),Is.LessThan(.001f));
-            Assert.Less(tool.Muzzle.forward.x,-.2f);other.Closure=0;Step();Assert.IsFalse(input.SupportHeld);
-        }
-        [TestCase(FireEquipmentId.PulsePistol)] [TestCase(FireEquipmentId.RainFan)] [TestCase(FireEquipmentId.PressureCannon)]
-        public void LostSupportingHandCancelsRatherThanReleasingAChargedShot(FireEquipmentId id)
-        {
-            Setup(id);other=At(tool.transform.TransformPoint(new Vector3(0,.015f,.12f)),0);Step();
-            other.Closure=.5f;Step(4);owner.Closure=1;Step(4);Assert.IsTrue(input.Firing);
-            other.Valid=false;Step();Assert.IsFalse(input.Firing);Assert.IsFalse(input.TriggerValid,"Caller must cancel charge, not interpret this as trigger release");
-            Step(5);Assert.IsFalse(input.Firing,"A closed primary fist cannot restart firing after the support was lost");
+            Setup(id);Step(12);other=At(tool.transform.TransformPoint(new Vector3(0,.015f,.12f)),0);Step();other.Closure=.5f;Step(4);
+            Assert.True(input.SupportHeld);Assert.AreEqual(1,input.Owner);
+            other.Contact+=Vector3.left*.10f;Step(8);Assert.Less(tool.Muzzle.forward.x,-.2f);
+            owner.Closure=1;Step(4);Assert.True(input.Firing);other.Valid=false;Step();Assert.False(input.TriggerValid);Step(6);Assert.False(input.Firing);
         }
     }
 }

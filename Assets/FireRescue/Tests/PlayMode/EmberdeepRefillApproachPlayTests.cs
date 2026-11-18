@@ -14,7 +14,7 @@ namespace FireRescue.Tests
         const float Dt=.025f;
         IEnumerator Load(int hand)
         {
-            EmberdeepSession.NewExpedition();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
+            EmberdeepSession.BeginEquipmentTestRun();yield return SceneManager.LoadSceneAsync(EmberdeepSession.FireScene);
             yield return null;yield return null;
             game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);game.enabled=false;
             game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
@@ -205,7 +205,7 @@ namespace FireRescue.Tests
             {
                 Assert.IsTrue(game.TakeEquipment(hand));var creek=game.CreekStation;
                 var local=game.Arena.InverseTransformPoint(creek.transform.position);
-                Assert.That(local.x,Is.EqualTo(hand==0?-4f:4f).Within(.0001f));
+                Assert.That(local.x,Is.EqualTo(4f).Within(.0001f));
                 Assert.That(local.z,Is.EqualTo(3.5f).Within(.0001f));
                 Assert.That(Mathf.Abs(Vector3.Dot(creek.transform.position-game.Arena.position,game.Arena.right)),Is.EqualTo(.32f).Within(.0001f));
                 // Geometric reach envelope only: synthetic head/anchors cannot
