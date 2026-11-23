@@ -36,7 +36,7 @@ namespace FireRescue.Editor
             Directory.CreateDirectory(Root+"/Tables");AssetDatabase.Refresh();
             var collection=LocalizationEditorSettings.GetStringTableCollection("EmberdeepUI")
                 ??LocalizationEditorSettings.CreateStringTableCollection("EmberdeepUI",Root+"/Tables");
-            int count=0;
+            int count=0;var keys=new System.Collections.Generic.HashSet<string>();
             foreach(var line in File.ReadAllLines(Root+"/Translations.tsv"))
             {
                 if(string.IsNullOrWhiteSpace(line))continue;
@@ -48,8 +48,12 @@ namespace FireRescue.Editor
                     var entry=table.GetEntry(key)??table.AddEntry(key,"");entry.Value=table.LocaleIdentifier.Code=="zh-Hans"?zh:en;
                     EditorUtility.SetDirty(table);
                 }
-                count++;
+                keys.Add(key);count++;
             }
+            // The TSV is the source of truth: entries whose row was removed or rewritten leave the tables too, so a stale
+            // English phrase can no longer match at runtime.
+            foreach(var stale in collection.SharedData.Entries.Select(e=>e.Key).Where(k=>!keys.Contains(k)).ToArray())
+                collection.RemoveEntry(stale);
             var fonts=LocalizationEditorSettings.GetAssetTableCollection("EmberdeepFonts")
                 ??LocalizationEditorSettings.CreateAssetTableCollection("EmberdeepFonts",Root+"/Tables");
             foreach(var table in fonts.AssetTables)

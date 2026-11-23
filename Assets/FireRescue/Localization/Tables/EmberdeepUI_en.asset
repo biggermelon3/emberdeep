@@ -22,10 +22,6 @@ MonoBehaviour:
     m_Localized: E M B E R D E E P
     m_Metadata:
       m_Items: []
-  - m_Id: 1099464704
-    m_Localized: A MINIATURE FIRE EXPEDITION
-    m_Metadata:
-      m_Items: []
   - m_Id: 1099464705
     m_Localized: Continue
     m_Metadata:
@@ -62,38 +58,8 @@ MonoBehaviour:
     m_Localized: Back
     m_Metadata:
       m_Items: []
-  - m_Id: 1103659015
-    m_Localized: 'Sound: On'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659016
-    m_Localized: 'Sound: Off'
-    m_Metadata:
-      m_Items: []
   - m_Id: 1103659017
     m_Localized: Recenter Menu
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659018
-    m_Localized: AIM YOUR HAND AT A BUTTON  -  PINCH
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659019
-    m_Localized: Use either hand. Open your fingers before each pinch.
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659020
-    m_Localized: SHOW AN OPEN HAND TO BEGIN
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659021
-    m_Localized: BUTTON FOUND  -  PINCH WITH THE POINTING HAND
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659022
-    m_Localized: 'Look ahead
-
-      Finding your headset position...'
     m_Metadata:
       m_Items: []
   - m_Id: 1103659023
@@ -182,10 +148,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1103659044
     m_Localized: Forest saved. Return to camp.
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1103659045
-    m_Localized: Too many trees burned. RETRY SECTOR restores its checkpoint.
     m_Metadata:
       m_Items: []
   - m_Id: 1103659046
@@ -814,22 +776,6 @@ MonoBehaviour:
     m_Localized: clear their escape paths. Spray to protect.
     m_Metadata:
       m_Items: []
-  - m_Id: 1107853446
-    m_Localized: FIGHTING
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1107853447
-    m_Localized: Fighting
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1107853448
-    m_Localized: CLEARED
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1107853449
-    m_Localized: Cleared
-    m_Metadata:
-      m_Items: []
   - m_Id: 1107853450
     m_Localized: Won
     m_Metadata:
@@ -844,10 +790,6 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1107853453
     m_Localized: FILL
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1107853454
-    m_Localized: FIRST SPARK
     m_Metadata:
       m_Items: []
   - m_Id: 1107853455
@@ -1147,28 +1089,12 @@ MonoBehaviour:
     m_Localized: GODDESS HAND
     m_Metadata:
       m_Items: []
-  - m_Id: 8771032612864
-    m_Localized: 'GODDESS HAND: extinguish the single tree with your palms.'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 8771032612865
-    m_Localized: 'Open left palm: aim. Stack right hand: water.'
-    m_Metadata:
-      m_Items: []
   - m_Id: 8771032612866
     m_Localized: 'Right hand: gold handle. Left hand: nozzle. Squeeze to spray.'
     m_Metadata:
       m_Items: []
-  - m_Id: 8771032612867
-    m_Localized: Lift right hand to stop. Crystal refills over time.
-    m_Metadata:
-      m_Items: []
   - m_Id: 8771032612868
     m_Localized: 'Mouse: aim / hold SPACE: palm water'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 8771032612869
-    m_Localized: Stack right hand over left wrist to spray. Lift to stop.
     m_Metadata:
       m_Items: []
   - m_Id: 8771032612870
@@ -1179,27 +1105,12 @@ MonoBehaviour:
     m_Localized: 'OPEN LEFT PALM: AIM'
     m_Metadata:
       m_Items: []
-  - m_Id: 8771032612872
-    m_Localized: 'STACK RIGHT HAND: WATER'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 8771032612873
-    m_Localized: 'LIFT RIGHT HAND: STOP / RECHARGE'
-    m_Metadata:
-      m_Items: []
   - m_Id: 8771032612874
     m_Localized: VIEW MAGIC
     m_Metadata:
       m_Items: []
   - m_Id: 8771032612875
     m_Localized: TIME-RECHARGED ABILITY
-    m_Metadata:
-      m_Items: []
-  - m_Id: 8771032612876
-    m_Localized: 'Open left palm: aim / stack right hand: water
-
-      Only time
-      restores mana'
     m_Metadata:
       m_Items: []
   - m_Id: 8771032612877
@@ -1214,24 +1125,12 @@ MonoBehaviour:
     m_Localized: RECHARGE
     m_Metadata:
       m_Items: []
-  - m_Id: 22811381366784
-    m_Localized: GROWING MAGIC
-    m_Metadata:
-      m_Items: []
   - m_Id: 22811423309824
     m_Localized: PALM RESCUE
     m_Metadata:
       m_Items: []
   - m_Id: 22811423309825
     m_Localized: 'PALM RESCUE: cool the grove and protect the sheep.'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 22811423309826
-    m_Localized: WATER STATION / EQUIPMENT FROM LEVEL 4
-    m_Metadata:
-      m_Items: []
-  - m_Id: 22811423309827
-    m_Localized: EQUIPMENT FROM LEVEL 4
     m_Metadata:
       m_Items: []
   - m_Id: 22811423309828
@@ -1299,10 +1198,6 @@ MonoBehaviour:
 
       Only
       time restores mana'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 43987042336774
-    m_Localized: GET READY / RESCUE PREVIEW
     m_Metadata:
       m_Items: []
   - m_Id: 43987042336775
@@ -1418,84 +1313,8 @@ MonoBehaviour:
     m_Localized: CHARGING - open your right hand to fire
     m_Metadata:
       m_Items: []
-  - m_Id: 595918919860243
-    m_Localized: ABSORBING WATER
-    m_Metadata:
-      m_Items: []
   - m_Id: 595918919860244
     m_Localized: WATER BOLT - make a right fist to charge, open it to fire
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860245
-    m_Localized: A crystal is empty - pump the well, then dip a hand in the basin
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860246
-    m_Localized: Cast with your hands. The board on the right shows each gesture.
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860247
-    m_Localized: 'SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: pump | E: absorb'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860248
-    m_Localized: WATER STATION / OPENS AFTER THE FIRST LESSON
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860249
-    m_Localized: PUMP THE LEVER
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860250
-    m_Localized: Water fills the basin
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860251
-    m_Localized: FILLING THE BASIN
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860252
-    m_Localized: TWIST THE WHEEL
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860253
-    m_Localized: The basin keeps filling
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860254
-    m_Localized: FAST FILL
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860255
-    m_Localized: AUTO FILL
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860256
-    m_Localized: Press the button for a fast fill
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860257
-    m_Localized: BASIN
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860258
-    m_Localized: DIP A HAND TO ABSORB
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860259
-    m_Localized: 'Pump the lever: each stroke fills the basin'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860260
-    m_Localized: Dip a hand in the basin to absorb
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860261
-    m_Localized: 'Twist the wheel once: the basin keeps filling'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 595918919860262
-    m_Localized: The basin refills slowly by itself
     m_Metadata:
       m_Items: []
   - m_Id: 595918919860263
@@ -1550,20 +1369,505 @@ MonoBehaviour:
     m_Localized: 'FLIP AND OPEN: DROP'
     m_Metadata:
       m_Items: []
-  - m_Id: 632026533756938
-    m_Localized: LIFT THE LEVER BACK UP
-    m_Metadata:
-      m_Items: []
-  - m_Id: 632026533756939
-    m_Localized: PUSH THE LEVER DOWN
-    m_Metadata:
-      m_Items: []
-  - m_Id: 632026533756940
-    m_Localized: CLOSE YOUR HAND ON THE LEVER
-    m_Metadata:
-      m_Items: []
   - m_Id: 632026533756941
     m_Localized: WATER ORB - left palm up, right fingers under it
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364636958720
+    m_Localized: FOREST LOST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364674707457
+    m_Localized: Too many trees burned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364674707458
+    m_Localized: 'Open right palm: aim. Touch its back with any left fingertip: water.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096064
+    m_Localized: Touch the back of your right hand with any left fingertip. Lift
+      to stop.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096065
+    m_Localized: GEM EMPTY - hammer the pump with your fist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096066
+    m_Localized: 'Mouse: aim / hold SPACE: spray / R: hammer the pump'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096067
+    m_Localized: Lift your fingertip to stop. Rest or hammer the pump to refill.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096068
+    m_Localized: 'SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: hammer the pump'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096069
+    m_Localized: WATER GEM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096070
+    m_Localized: GEM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096071
+    m_Localized: 'Open left palm: aim / right fingertip on its back: water
+
+      Hammer
+      the pump to refill'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2117364683096072
+    m_Localized: 'Open right palm: aim / left fingertip on its back: water
+
+      Hammer
+      the pump to refill'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135113375744
+    m_Localized: PAUSED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735872
+    m_Localized: RESUME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735873
+    m_Localized: RETRY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735874
+    m_Localized: CAMP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735875
+    m_Localized: NEXT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735876
+    m_Localized: UPGRADES
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735877
+    m_Localized: PLAY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735878
+    m_Localized: BACK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735879
+    m_Localized: PUMP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735880
+    m_Localized: SLOT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735881
+    m_Localized: TOWER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735882
+    m_Localized: MAX
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735883
+    m_Localized: FOREST
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735884
+    m_Localized: CABIN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735885
+    m_Localized: FRONTS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2132135142735886
+    m_Localized: INFERNO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2148113561927680
+    m_Localized: HEIGHT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2148113603870720
+    m_Localized: DISTANCE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2148113603870721
+    m_Localized: WATER HAND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2148113603870724
+    m_Localized: MUSIC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2148113603870725
+    m_Localized: SOUND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2160975856517120
+    m_Localized: How to play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2160975894265856
+    m_Localized: SKIP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2160975894265857
+    m_Localized: WIND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2160975894265859
+    m_Localized: PLANE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2169598884167680
+    m_Localized: EQUIPMENT FROM LEVEL 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174666962354176
+    m_Localized: Point at a button and pinch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667004297216
+    m_Localized: Either hand works. Open your fingers between pinches.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667012685824
+    m_Localized: Hold up an open hand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667012685825
+    m_Localized: Pinch to select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667012685826
+    m_Localized: Look straight ahead
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463040
+    m_Localized: FIRE OUT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463041
+    m_Localized: LEFT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463042
+    m_Localized: RIGHT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463043
+    m_Localized: Your progress won't be saved.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463044
+    m_Localized: SHEEP MEADOW
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463045
+    m_Localized: WELL HOLLOW
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463046
+    m_Localized: TOWER HILL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463047
+    m_Localized: WINDY RIDGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463048
+    m_Localized: HAYFIELD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463049
+    m_Localized: EMBERDEEP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463050
+    m_Localized: EXCAVATOR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463051
+    m_Localized: FOREST SAVED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2174667029463052
+    m_Localized: SAVED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2203083363565568
+    m_Localized: NEW HERE?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2203083409702912
+    m_Localized: Learn the hand moves at camp first
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2332396037586944
+    m_Localized: TILT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2332396075335680
+    m_Localized: FLAT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2332396075335681
+    m_Localized: TILTED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733837778944
+    m_Localized: SHOW HINTS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139072
+    m_Localized: PER STRIKE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139073
+    m_Localized: EXTRA TOWERS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139074
+    m_Localized: RAIN REACH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139075
+    m_Localized: A bigger gem sprays longer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139076
+    m_Localized: Each pump strike puts more water in the gem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139077
+    m_Localized: One more tower in the tray on every level with pieces
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139078
+    m_Localized: Towers rain over a wider circle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2334733867139079
+    m_Localized: Point at an upgrade to see what it does
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2365932736069632
+    m_Localized: Pick it up and set it near a fire.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2365932769624064
+    m_Localized: It rains once when fire gets close.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653336465408
+    m_Localized: Hmm. Ah, I see. So YOU'RE the new forest guardian they sent?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602752
+    m_Localized: And your name is... You know what, I don't care.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602753
+    m_Localized: Let's get your orientation over with, so you can leave me in peace.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602754
+    m_Localized: See that blue gem on the back of your hand?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602755
+    m_Localized: That's where your water lives. You'll need it to protect the forest.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602756
+    m_Localized: Now, see that unattended, unauthorized campfire?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602757
+    m_Localized: Open your hand and aim your palm at it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602758
+    m_Localized: Like in that movie... Metal Man.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602759
+    m_Localized: Then press the gem with a finger from your other hand, and keep
+      it there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602760
+    m_Localized: What's that? Too fiddly?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602761
+    m_Localized: Well, it's either that, or you soak everything you wave at.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602762
+    m_Localized: You gonna... you gonna put that fire out?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602763
+    m_Localized: Palm at the fire, finger on the gem.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602764
+    m_Localized: Or are you too good for target practice?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602765
+    m_Localized: Palm. Fire. Finger. Gem.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602766
+    m_Localized: I'll wait. I'm a spirit, waiting is all I do.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602767
+    m_Localized: You didn't think water was unlimited, did you?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602768
+    m_Localized: Or has living around humans made you take everything for granted?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602769
+    m_Localized: When you run low, make a fist and pound that pump next to you.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602770
+    m_Localized: Go on, top it up.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602771
+    m_Localized: The pump. Next to you. Make a fist and hit it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602772
+    m_Localized: It won't hit itself.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602773
+    m_Localized: There. Full. Try not to waste it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602774
+    m_Localized: Oh, you fluffy idiot. Trying to turn yourself into roast lamb?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602775
+    m_Localized: Guardian, quick! Put out the sheep, and the tree, before it spreads.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602776
+    m_Localized: Still burning. The sheep. And the tree.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602777
+    m_Localized: Palm, gem, water. You know this.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602778
+    m_Localized: Now go on, give it a pat.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602779
+    m_Localized: Teach it a lesson about how close it came to becoming someone's
+      dinner today.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602780
+    m_Localized: ...and send the new guardian off with words of encouragement...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602781
+    m_Localized: Right. That's your orientation. I'm sure you'll do fine.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602782
+    m_Localized: It's not like anyone cares about nature these days.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602783
+    m_Localized: Am I right, ladies and gentlemen?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2391653382602784
+    m_Localized: ...Okay. Get out of here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2485189092294656
+    m_Localized: PLAN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2485189134237696
+    m_Localized: Place pieces. Ring the bell to start.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2485189134237697
+    m_Localized: Ring the bell to start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2490686411358208
+    m_Localized: GRASS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2490686440718336
+    m_Localized: FINALE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084720345088
+    m_Localized: Water towers! What do they do? Where do they come from?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899520
+    m_Localized: And why 'water tower', not 'tower water'? Hmm. Anyway.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899521
+    m_Localized: Put one in the middle of the trees,
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899522
+    m_Localized: and when fire comes near, it rains on everything around it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899523
+    m_Localized: Set them down while time's frozen, before you ring the bell,
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899524
+    m_Localized: or even once the fire's going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899525
+    m_Localized: But they're a one-time thing. Once it's rained, it's done. No refills.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899526
+    m_Localized: Wind. What a cruel creature, lurking in this naive little paradise.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899527
+    m_Localized: They lure you close, then rip your heart out and smash it to pieces.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899528
+    m_Localized: Anyway. Be careful of them. They help the fire spread.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2494084753899529
+    m_Localized: 'Watch the weathervane: the fire runs the way it points.'
     m_Metadata:
       m_Items: []
   references:

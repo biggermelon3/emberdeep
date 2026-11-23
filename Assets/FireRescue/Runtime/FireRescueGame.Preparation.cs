@@ -9,7 +9,8 @@ namespace FireRescue
         }
         void RefreshPreparation()
         {
-            if(Run.Phase!=FirePhase.Preparing)return;
+            // LoopSpec §11b: the spell flow starts with the rim bell (FireRescueGame.Rim.cs) and shows no Plan text.
+            if(Run.Phase!=FirePhase.Preparing || Run.SpellMode)return;
             bool counting=Run.CountdownRemaining>=0;
             status.text=$"{Run.Stage+1}/{Run.StageCount}  {Run.StageName}";
             mission.text=counting?$"STARTING IN {UnityEngine.Mathf.CeilToInt(Run.CountdownRemaining)}":$"GET READY / {Run.Burning} FIRES / {Run.Animals.Length} SHEEP";

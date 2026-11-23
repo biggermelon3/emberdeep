@@ -15,9 +15,10 @@ namespace FireRescue
             id==FireEquipmentId.PressureCannon?new Color(1,.55f,.12f):new Color(.06f,.65f,1);
     }
 
-    // Gesture spells for the production flow: WATER BOLT, RAIN FAN and WATER ORB
-    // join the existing palm water. Gestures decide intent, FireRun owns every
-    // unit of water, and the shared WaterJet carries it to the forest.
+    // Gesture spells WATER BOLT, RAIN FAN and WATER ORB. LoopSpec §11 cuts them from the
+    // production flow; they are only owned with EmberdeepSession.PlaytestAllSpells.
+    // Gestures decide intent, FireRun owns every unit of water, and the shared
+    // WaterJet carries it to the forest.
     public sealed partial class FireRescueGame
     {
         readonly EmberdeepBoltGesture bolt=new();
@@ -26,22 +27,15 @@ namespace FireRescue
         readonly EmberdeepSpellHand[] spellHands=new EmberdeepSpellHand[2];
         readonly EmberdeepManaCrystal[] spellCrystals=new EmberdeepManaCrystal[3];
         EmberdeepSpellVfx spellVfx;
-        EmberdeepBasinView basin;
-        EmberdeepPalmAimVfx absorbMotes;
-        EmberdeepInteractionDemo spellLessonDemo,wellLessonDemo;
+        EmberdeepInteractionDemo spellLessonDemo;
         Vector3 orbTarget,boltTarget,fanTarget;
         bool orbTargetValid;
-        float desktopBolt=-1,desktopOrb=-1,valveTurn,basinButtonPress;
-        int valveHand=-1,absorbingHand=-1;
-        Quaternion valveStart;
-        bool valveToggled,basinButtonArmed=true;
+        float desktopBolt=-1,desktopOrb=-1;
         public EmberdeepBoltGesture BoltSpell=>bolt;
         public EmberdeepFanGesture FanSpell=>fan;
         public EmberdeepOrbGesture OrbSpell=>orb;
-        public EmberdeepBasinView Basin=>basin;
         public EmberdeepSpellVfx SpellVfx=>spellVfx;
         public bool FanSpraying {get;private set;}
-        public bool Absorbing=>absorbingHand>=0;
         public float SpellCharge01=>Mathf.Max(bolt.Charge01,orb.State==EmberdeepOrbGesture.Stage.Charging?orb.Charge01:0,
             desktopBolt>=0?Mathf.Clamp01(desktopBolt/EmberdeepBoltGesture.FullChargeSeconds):0,
             desktopOrb>=0?Mathf.Clamp01(desktopOrb/EmberdeepOrbGesture.FullChargeSeconds):0);
@@ -53,7 +47,6 @@ namespace FireRescue
         {
             spellVfx=new GameObject("Gesture spell effects").AddComponent<EmberdeepSpellVfx>();
             spellVfx.transform.SetParent(transform,false);spellVfx.Initialize(WaterMaterial);
-            absorbMotes=new GameObject("Basin to hand water motes").AddComponent<EmberdeepPalmAimVfx>();absorbMotes.transform.SetParent(transform,false);
             // Three small crystals are set into the leather strap of the glove cuff, behind the
             // main palm-water crystal (the sleeve would cover them on the back of the hand).
             Vector3[] offsets={new(-.021f,-.011f,-.071f),new(0,-.0175f,-.071f),new(.021f,-.011f,-.071f)};
@@ -62,18 +55,11 @@ namespace FireRescue
                 var id=(FireEquipmentId)(i+1);
                 var crystal=new GameObject("Left hand "+EmberdeepSpellText.Name(id)+" crystal").AddComponent<EmberdeepManaCrystal>();
                 crystal.transform.SetParent(transform,false);crystal.transform.localScale=Vector3.one*.42f;
-                crystal.Offset=offsets[i];crystal.SetTint(EmberdeepSpellText.Tint(id));crystal.FollowLeftHand(handVisuals);
+                crystal.Offset=offsets[i];crystal.SetTint(EmberdeepSpellText.Tint(id));crystal.FollowHand(handVisuals,EmberdeepWaterHand.Left);
                 crystal.gameObject.SetActive(false);spellCrystals[i]=crystal;
             }
-            basin=new GameObject("Altar water basin").AddComponent<EmberdeepBasinView>();
-            basin.transform.SetParent(hydrantStation.transform,false);basin.transform.localPosition=new Vector3(.02f,0,-.15f);
-            basin.Build(PanelMaterial,WaterMaterial,art);basin.gameObject.SetActive(Run.SpellMode);
-            if(Run.SpellMode)hydrantStation.SetSpellSkin();
             spellLessonDemo=new GameObject("New spell visual lesson").AddComponent<EmberdeepInteractionDemo>();
             spellLessonDemo.transform.SetParent(transform,false);spellLessonDemo.gameObject.SetActive(false);
-            wellLessonDemo=new GameObject("Well basin visual lesson").AddComponent<EmberdeepInteractionDemo>();
-            wellLessonDemo.transform.SetParent(transform,false);wellLessonDemo.gameObject.SetActive(false);
-            refill.LeverReach=Run.SpellMode?.13f:.10f;refill.LeverAcceptsClosedHand=Run.SpellMode;
         }
         void ReadSpellHands(float dt)
         {
@@ -101,7 +87,7 @@ namespace FireRescue
         {
             spellHands[0]=left;spellHands[1]=right;
             bool live=Run.SpellMode && Run.Phase==FirePhase.Fighting && !ShopOpen && !QuitConfirmationOpen && !QuitRequested && !Run.Supply.Locked;
-            bool free=live && !refill.OwnsControl && valveHand<0 && !sheepInteraction.OwnsHand(0) && !sheepInteraction.OwnsHand(1);
+            bool free=live && !refill.OwnsControl && !sheepInteraction.OwnsHand(0) && !sheepInteraction.OwnsHand(1);
             // A formed orb stays in the palm while the other hand does something else.
             bool orbOwned=Run.Owns(FireEquipmentId.PressureCannon) && (!OrbIdle || Run.SpellWater(FireEquipmentId.PressureCannon)>=8);
             orbTargetValid=TryOrbTarget(left,out orbTarget);
@@ -109,7 +95,7 @@ namespace FireRescue
             bool others=free && OrbIdle && !palmMagic.Casting;
             bolt.Sample(left,right,others && !fan.Active && Run.Owns(FireEquipmentId.PulsePistol) && Run.SpellWater(FireEquipmentId.PulsePistol)>=1,dt);
             var toward=Arena?Vector3.ProjectOnPlane(Arena.TransformPoint(new Vector3(0,0,6))-(left.Contact+right.Contact)*.5f,Vector3.up):Vector3.zero;
-            fan.Sample(left,right,toward,others && !bolt.Charging && !Absorbing && Run.Owns(FireEquipmentId.RainFan) && Run.SpellWater(FireEquipmentId.RainFan)>.01f,dt);
+            fan.Sample(left,right,toward,others && !bolt.Charging && Run.Owns(FireEquipmentId.RainFan) && Run.SpellWater(FireEquipmentId.RainFan)>.01f,dt);
             if(SpellBusy)introStarted=true;
         }
         // The orb drops along the open palm; a palm aimed off the island falls straight down instead.
@@ -186,113 +172,30 @@ namespace FireRescue
                 else if(desktopOrb>=0){ThrowOrb(origin,target,Mathf.Clamp01(desktopOrb/EmberdeepOrbGesture.FullChargeSeconds));desktopOrb=-1;}
             }
         }
-        // Slow crystal recovery, basin feed and absorbing run every live frame,
-        // including frames in which a hand is working the well.
+        // Slow spell-tank recovery runs every live frame (playtest spells only).
         void TickSpellUpkeep(float dt)
         {
-            absorbingHand=-1;
-            if(!Run.SpellMode)return;
-            Run.TickSpellRecovery(dt,introStarted);Run.TickBasin(dt);
-            if(!basin || !Run.StationOpen || !basin.gameObject.activeInHierarchy)return;
-            if(!Player.IsXR)
-            {
-                if(Keyboard.current!=null && Keyboard.current.eKey.isPressed && Run.AbsorbBasin(dt)>0)absorbingHand=1;
-                return;
-            }
-            for(int i=0;i<2;i++)
-            {
-                if((refill.OwnsControl && refill.OperatingHand==i) || valveHand==i || sheepInteraction.OwnsHand(i))continue;
-                // Any tracked palm counts: a relaxed or half-closed hand in the water still drinks.
-                var hand=spellHands[i];
-                if(hand.Usable && basin.Contains(hand.Contact) && Run.AbsorbBasin(dt)>0)absorbingHand=i;
-            }
-        }
-        // Spell-mode well: the lever reuses the tracked empty-outlet stroke and
-        // pours into the basin; the wheel and button are handled here.
-        bool ProcessBasinInput(float dt)
-        {
-            // Only the hands a spell is using are withheld: a held orb never locks the well.
-            if(!Run.StationOpen)
-            {
-                if(refill.OwnsControl){refill.Reset();hydrantStation.StopOutlet();}
-                valveHand=-1;return false;
-            }
-            if(!Player.IsXR)
-            {
-                if(interfaceHovered)return false;
-                var keys=Keyboard.current;
-                if(keys!=null && keys.vKey.wasPressedThisFrame)Run.SetBasinFlow(!Run.BasinFlowing);
-                return DesktopRefill(dt);
-            }
-            bool lever=Run.StationTier==WaterStationTier.LeverWell && ProcessBasinLever(dt);
-            return ProcessBasinControls() || lever;
-        }
-        bool ProcessBasinControls()
-        {
-            if(Run.StationTier==WaterStationTier.RotaryHydrant)
-            {
-                var valve=hydrantStation.Valve;
-                if(valveHand>=0)
-                {
-                    var held=spellHands[valveHand];
-                    if(!held.Usable || !held.CurlsValid || held.Closure<EmberdeepSqueeze.Open || Vector3.Distance(held.Contact,valve.position)>.2f)
-                    {valveHand=-1;valveTurn=0;return false;}
-                    // Twist the fist like a tap: only rotation about the wheel's own axis counts.
-                    var from=Vector3.ProjectOnPlane(valveStart*Vector3.up,valve.forward);
-                    var to=Vector3.ProjectOnPlane(held.Frame*Vector3.up,valve.forward);
-                    if(from.sqrMagnitude>1e-6f && to.sqrMagnitude>1e-6f)valveTurn=Vector3.SignedAngle(from,to,valve.forward);
-                    if(!valveToggled && Mathf.Abs(valveTurn)>=40)
-                    {valveToggled=true;Run.SetBasinFlow(!Run.BasinFlowing);Run.Learn(EmberdeepInteractionDemo.Action.Valve);Feedback.Impact(false);}
-                    return true;
-                }
-                for(int i=0;i<2;i++)
-                {
-                    var hand=spellHands[i];
-                    if(!hand.Usable || !hand.CurlsValid || hand.Closure<EmberdeepSqueeze.Grab || sheepInteraction.OwnsHand(i) || SpellOwnsHand(i)
-                        || Vector3.Distance(hand.Contact,valve.position)>.10f)continue;
-                    valveHand=i;valveStart=hand.Frame;valveTurn=0;valveToggled=false;return true;
-                }
-                return false;
-            }
-            valveHand=-1;valveTurn=0;
-            if(Run.StationTier!=WaterStationTier.PushButton){basinButtonPress=0;return false;}
-            bool pressed=false;var button=hydrantStation.Button;
-            for(int hand=0;hand<2 && !pressed;hand++)
-                for(int finger=0;finger<5;finger++)
-                {
-                    if(!spellHands[hand].TryTip(finger,out var tip))continue;
-                    var at=button.InverseTransformPoint(tip);
-                    if(new Vector2(at.x,at.y).magnitude<.05f && at.z>-.015f && at.z<.06f){pressed=true;break;}
-                }
-            if(pressed && basinButtonArmed){Run.SetBasinFlow(true);Run.Learn(EmberdeepInteractionDemo.Action.Button);Feedback.Impact(false);}
-            basinButtonArmed=!pressed;basinButtonPress=pressed?1:0;
-            return false;
+            if(Run.SpellMode)Run.TickSpellRecovery(dt,introStarted);
         }
         void ResetSpells()
         {
             bolt.Reset();fan.Reset();orb.Reset();FanSpraying=false;desktopBolt=desktopOrb=-1;
-            valveHand=absorbingHand=-1;valveTurn=basinButtonPress=0;basinButtonArmed=true;
-            if(spellVfx)spellVfx.Hide();if(absorbMotes)absorbMotes.Hide();
+            if(spellVfx)spellVfx.Hide();
         }
         void RenderSpells()
         {
             if(!spellVfx || !Player)return;
             bool available=Run.SpellMode && focused && !paused && !acquiringPose && !returningToCamp && hands && hands.HeadReady;
-            bool handVisible=available && Player.IsXR && toolHands[0].Usable;
+            int water=EmberdeepWaterHand.Index;
+            bool handVisible=available && Player.IsXR && toolHands[water].Usable;
             for(int i=0;i<3;i++)
             {
                 var id=(FireEquipmentId)(i+1);var crystal=spellCrystals[i];bool show=handVisible && Run.Owns(id);
                 crystal.gameObject.SetActive(show);
                 if(!show)continue;
-                var palm=toolHands[0];
+                var palm=toolHands[water];
                 crystal.transform.SetPositionAndRotation(palm.Contact+palm.GripRotation*(crystal.Offset-Vector3.up*.016f),palm.GripRotation);
                 crystal.SetFill(Run.SpellFill01(id));
-            }
-            if(basin)
-            {
-                basin.gameObject.SetActive(Run.SpellMode);
-                basin.SetFill(Run.BasinWater/FireRun.BasinCapacity);
-                basin.SetLabel(!Run.StationOpen?"":Run.BasinWater<1?$"BASIN {Run.BasinWater:0}/{FireRun.BasinCapacity:0}":$"BASIN {Run.BasinWater:0}/{FireRun.BasinCapacity:0}\nDIP A HAND TO ABSORB",Player.ViewCamera.transform.rotation);
             }
             RenderLessons(available);
             bool live=available && Run.Phase==FirePhase.Fighting && !ShopOpen && !QuitConfirmationOpen;
@@ -316,11 +219,8 @@ namespace FireRescue
             else if(aiming)
                 spellVfx.ShowCircle(true,boltTarget,Arena.up,(.5f+.6f*bolt.Charge01+Run.WidthFor(FireEquipmentId.PulsePistol))*FireMiniature.Scale,boltColor);
             else spellVfx.ShowCircle(false,default,default,0,default);
-            bool drink=available && Absorbing && Player.IsXR && spellHands[absorbingHand].Usable;
-            absorbMotes.Show(drink,basin?basin.Center:default,drink?spellHands[absorbingHand].Contact:default,Player.ViewCamera,true,dt);
         }
-        // One blue hand demonstration at a time: the newest purchased spell until it
-        // has put out a fire, and the well control until it has been worked once.
+        // One blue hand demonstration at a time: the newest purchased spell until it has put out a fire.
         void RenderLessons(bool available)
         {
             if(!spellLessonDemo)return;
@@ -335,49 +235,8 @@ namespace FireRescue
                 spellLessonDemo.Show(FireRun.LessonFor((FireEquipmentId)spell));
                 spellLessonDemo.transform.SetPositionAndRotation(Arena.TransformPoint(new Vector3(-2.5f,4.6f,3.8f)),Player.ViewCamera.transform.rotation);
             }
-            var well=Run.StationTier==WaterStationTier.LeverWell?EmberdeepInteractionDemo.Action.Lever:
-                Run.StationTier==WaterStationTier.RotaryHydrant?EmberdeepInteractionDemo.Action.Valve:EmberdeepInteractionDemo.Action.Button;
-            bool teachWell=stage && Run.StationOpen && !palmLesson && Run.Stage>0 && Run.NeedsTutorial(well) && hydrantStation && hydrantStation.gameObject.activeInHierarchy && !refill.OwnsControl;
-            wellLessonDemo.gameObject.SetActive(teachWell);
-            if(teachWell)
-            {
-                wellLessonDemo.Show(well);
-                // Small and set back behind the pump so it never hides the lever itself.
-                wellLessonDemo.transform.localScale=Vector3.one*.5f;
-                wellLessonDemo.transform.SetPositionAndRotation(hydrantStation.transform.TransformPoint(new Vector3(-.02f,.40f,.20f)),Player.ViewCamera.transform.rotation);
-            }
         }
         public EmberdeepInteractionDemo SpellLessonDemo=>spellLessonDemo;
-        public EmberdeepInteractionDemo WellLessonDemo=>wellLessonDemo;
-        bool HandNearLever()
-        {
-            if(!Player.IsXR || !hydrantStation)return false;
-            for(int i=0;i<2;i++)if(spellHands[i].Usable && Vector3.Distance(spellHands[i].Contact,hydrantStation.LeverVisual.position)<.16f)return true;
-            return false;
-        }
-        // The station plate says what the lever is waiting for, so a missed grab is visible.
-        string LeverPrompt()=>refill.OwnsControl && refill.CurrentAction==EmberdeepRefillInteraction.ActionKind.Lever?
-            (refill.EmptyLeverReturnRequired?"LIFT THE LEVER BACK UP":"PUSH THE LEVER DOWN"):
-            HandNearLever()?"CLOSE YOUR HAND ON THE LEVER":"PUMP THE LEVER\nWater fills the basin";
-        // Tracked palm and finger curls without the high-confidence gate: fingers
-        // wrapped around the lever are hidden behind the hand itself.
-        EmberdeepRefillInteraction.Hand BasinHand(int index)
-        {
-            var hand=spellHands[index];
-            bool operating=refill.OwnsControl && refill.OperatingHand==index;
-            bool tracked=hand.Usable && hand.CurlsValid && !sheepInteraction.OwnsHand(index) && !SpellOwnsHand(index)
-                && !(index==1 && palmMagic.Casting) && (operating || !interfacePhysicalBlocked[index]);
-            return new EmberdeepRefillInteraction.Hand(tracked,new Pose(hand.Contact,hand.Frame),.04f,hand.Contact)
-                {UsesGrip=true,GripValid=tracked,GripStrength=hand.Closure,GripContact=hand.Contact,HasGripContact=true};
-        }
-        bool ProcessBasinLever(float dt)
-        {
-            if(!focused || paused || !hands.HeadReady)return false;
-            bool wasEmpty=refill.EmptyOutlet;
-            bool consumed=refill.Process(Run,heldView,hydrantStation,creekStation,false,grip.Hand,BasinHand(0),BasinHand(1),dt);
-            if(refill.Interrupted || (wasEmpty && !refill.EmptyOutlet))hydrantStation.StopOutlet();
-            return consumed;
-        }
         float celebrationUntil;
         public bool Celebrating=>Time.unscaledTime<celebrationUntil;
         // Every fire is out: the whole grove bursts into sparks and the trees hop.
@@ -409,13 +268,8 @@ namespace FireRescue
         void RefreshSpellText()
         {
             if(!Run.SpellMode)return;
-            string crystals=$"$ {Run.Coins}";
-            for(int i=0;i<4;i++)
-            {
-                var id=(FireEquipmentId)i;
-                if(Run.Owns(id))crystals+=$"  |  {EmberdeepSpellText.Short(id)} {Run.SpellWater(id):0}/{Run.SpellCapacity(id):0}";
-            }
-            economy.text=crystals;
+            // LoopSpec §3.1: the gem is the only water meter, so the dashboard shows no water numbers.
+            economy.text=$"$ {Run.Coins}";
             handText.gameObject.SetActive(false);
             foreach(var b in buttons)if(b.Command=="Return equipment")b.gameObject.SetActive(false);
             if(Run.NeedsMagicUpgrade)return;
@@ -431,19 +285,13 @@ namespace FireRescue
             else if(fan.Active)hint="RAIN FAN spraying - close your hands to stop";
             else if(fan.Ready)hint="RAIN FAN - hold both palms forward";
             else if(bolt.Charging)hint="CHARGING - open your right hand to fire";
-            else if(Absorbing)hint="ABSORBING WATER";
             else if(bolt.Aiming && Run.Owns(FireEquipmentId.PulsePistol))hint="WATER BOLT - make a right fist to charge, open it to fire";
             else if(palmMagic.Aiming || Run.IsPalmLesson)hint=null;
-            else if(LowCrystal())hint="A crystal is empty - pump the well, then dip a hand in the basin";
-            else if(!Player.IsXR)hint="SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: pump | E: absorb";
+            else if(Run.GemEmpty)hint=GemEmptyHint;
+            else if(!Player.IsXR)hint=Run.SpellsCut?DesktopGemHint:"SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: hammer the pump";
             else hint=Run.SpellLesson==1?"WATER BOLT - make a right fist to charge, open it to fire":Run.SpellLesson==2?"RAIN FAN - hold both palms forward":
-                Run.SpellLesson==3?"WATER ORB - left palm up, right fingers under it":"Open left palm: aim. Touch its back with any right fingertip: water.";
+                Run.SpellLesson==3?"WATER ORB - left palm up, right fingers under it":PalmHint;
             if(hint!=null)help.text=hint;
-        }
-        bool LowCrystal()
-        {
-            for(int i=0;i<4;i++)if(Run.Owns((FireEquipmentId)i) && Run.SpellFill01((FireEquipmentId)i)<.06f)return true;
-            return false;
         }
     }
 }

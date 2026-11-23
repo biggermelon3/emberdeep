@@ -47,6 +47,35 @@ namespace FireRescue
         public int VisibleCuffCount {get{int count=0;foreach(var item in visuals)if(item.Cuff && item.Cuff.gameObject.activeSelf)count++;return count;}}
         public int FrozenHandCount
         {get{int count=0;foreach(var item in visuals)if(item.Presentation!=null && item.Presentation.Frozen)count++;return count;}}
+        public int HiddenHandCount
+        {get{int count=0;foreach(var item in visuals)if(item.Presentation!=null && item.Presentation.Hidden)count++;return count;}}
+        // Tests and tools: the runtime's own tracking for a hand chain (EmberdeepHandSight.RawTracked by default).
+        public System.Func<IHand,bool> RawTracking {get;set;}
+
+        // Whether hand `left` (0 left, 1 right in gameplay) is in view for INPUT this frame: the chain gives a hand and the
+        // runtime itself tracks it, with EmberdeepSightGate's short grace (the ISDK chain bridges a lost hand at its
+        // last pose, EmberdeepHandSight). Drawing uses the raw state and EmberdeepLostHand's freeze instead.
+        public bool Seen(bool left)
+        {
+            int i=left?0:1;
+            if(sightFrame[i]==Time.frameCount)return sightGates[i].Seen;
+            sightFrame[i]=Time.frameCount;
+            IHand hand=null;
+            // Not the UnityXR rig's static prefab hand, which always reads as tracked.
+            foreach(var item in visuals)
+                if(item.Hand && item.Hand.Hand!=null && (item.Hand.Hand.Handedness==Handedness.Left)==left
+                    && !(item.Hand.Hand is Component c && c.GetComponent<FromHandPrefabDataSource>())){hand=item.Hand.Hand;break;}
+            bool present=hand!=null && hand.IsConnected && hand.IsTrackedDataValid;
+            return sightGates[i].Step(present,present && Raw(hand,out _),Time.unscaledDeltaTime);
+        }
+        readonly EmberdeepSightGate[] sightGates=new EmberdeepSightGate[2];
+        readonly int[] sightFrame={-1,-1};
+        readonly EmberdeepLostHand.State[] loggedState=new EmberdeepLostHand.State[2];
+        bool Raw(IHand hand,out bool confident)
+        {
+            if(RawTracking!=null){confident=true;return RawTracking(hand);}
+            return EmberdeepHandSight.RawTracked(hand,out confident);
+        }
 
         // The pose is visual feedback only. Hand indices match existing gameplay:
         // 0 left, 1 right. Call after ownership arbitration, before this LateUpdate.
@@ -89,7 +118,9 @@ namespace FireRescue
                     for(int slot=0;slot<replacement.Length;slot++)replacement[slot]=material;
                     renderers[i].sharedMaterials=replacement;
                 }
-                item.Presentation=new EmberdeepHandPresentation(hand,material);
+                // Quest's OVR skeleton is the mesh's own; the portable UnityXR (PICO) rig reports the
+                // runtime's skeleton at real hand size, so its palm is fitted to the tracked knuckles.
+                item.Presentation=new EmberdeepHandPresentation(hand,material,!hand.GetComponentInParent<OVRCameraRig>(true));
                 // Leather-strapped fleece cuff from the Blender kit closes the open wrist of the SDK mesh.
                 item.Cuff=art?art.Create("GloveCuff",transform,Vector3.zero):null;
                 if(item.Cuff)
@@ -170,10 +201,20 @@ namespace FireRescue
                 var hand=visual.Hand;
                 bool isLeft=hand!=null && hand.Handedness==Handedness.Left;
                 bool staticPose=hand is Component component && component.GetComponent<FromHandPrefabDataSource>();
-                bool show=visual.isActiveAndEnabled && hand!=null && hand.IsConnected && hand.IsTrackedDataValid
+                bool bridged=visual.isActiveAndEnabled && hand!=null && hand.IsConnected && hand.IsTrackedDataValid
                     && !staticPose && (isLeft?left:right);
+                // "Valid" must mean tracked now: the chain's LastKnownGoodHand keeps a lost hand valid at its last pose.
+                bool confident=false;
+                bool raw=hand!=null && Raw(hand,out confident);
+                bool show=bridged && raw;
                 var pose=interactionPoses[isLeft?0:1];
                 item.Presentation?.Present(show,pose.Kind,pose.Anchor,pose.Amount,Time.unscaledDeltaTime);
+                if(item.Presentation!=null && item.Presentation.State!=loggedState[isLeft?0:1])
+                {
+                    loggedState[isLeft?0:1]=item.Presentation.State;
+                    if(EmberdeepHandRayMenu.DeviceLog)Debug.Log("EMBERDEEP_HAND hand="+(isLeft?'L':'R')+" state="+item.Presentation.State.ToString().ToLowerInvariant()
+                        +" bridged="+(bridged?1:0)+" raw_tracked="+(raw?1:0)+" raw_confident="+(confident?1:0));
+                }
                 if(show)item.Presentation?.Constrain(Contacts,pose.Kind!=EmberdeepHandPoseKind.Free);
                 // SDK owns renderer.enabled and HandVisual.ForceOffVisibility.
                 // Its source geometry is masked while the render-only copy is
@@ -184,11 +225,11 @@ namespace FireRescue
                 {
                     bool worn=item.Presentation!=null && item.Presentation.Showing;
                     if(item.Cuff.gameObject.activeSelf!=worn)item.Cuff.gameObject.SetActive(worn);
-                    // A held snapshot keeps its cuff where the hand froze.
+                    // A held snapshot keeps its cuff where the hand froze; a hidden (lost) hand hides it with the glove.
                     if(worn && !item.Presentation.Frozen && item.Presentation.TryGetWristFrame(out var wrist))
                     {
                         item.Cuff.SetPositionAndRotation(wrist.position,wrist.rotation);
-                        var root=item.Presentation.DisplayRoot;if(root)item.Cuff.localScale=Vector3.one*Mathf.Abs(root.lossyScale.x)/Mathf.Max(1e-5f,Mathf.Abs(transform.lossyScale.x));
+                        var root=item.Presentation.DisplayRoot;if(root)item.Cuff.localScale=Vector3.one*Mathf.Abs(root.lossyScale.x)*item.Presentation.PalmScale/Mathf.Max(1e-5f,Mathf.Abs(transform.lossyScale.x));
                     }
                 }
             }

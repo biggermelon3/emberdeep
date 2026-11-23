@@ -38,7 +38,7 @@ namespace FireRescue
         readonly FirePumpGesture pump=new FirePumpGesture();
         FirePhase previousPhase;
         Vector3[] waterTargets=System.Array.Empty<Vector3>();
-        sealed class TreeView { public Transform Root; public Renderer Leaves, Trunk; public Transform Bar; public Renderer[] Authored; }
+        sealed class TreeView { public Transform Root; public Renderer Leaves, Trunk; public Renderer[] Authored; }
         Transform grove, hud, dashboard, shop, rack, rackControls, aimMarker;
         FireEquipmentView heldView, rackView;
         LineRenderer coverage;
@@ -101,17 +101,12 @@ namespace FireRescue
         }
         void BuildWorld()
         {
-            bool authored=art && art.Create("Terrain",Arena,Vector3.zero);
+            var terrain=art?art.Create("Terrain",Arena,Vector3.zero):null;bool authored=terrain;
             if(authored)
             {
+                FitBoard(terrain); // compact board (§5 Reach): FireRescueGame.Placement.cs
                 var border=new GameObject("Decorative healthy rim grove").transform;border.SetParent(Arena,false);
-                for(int side=-1;side<=1;side+=2)
-                {
-                    art.Create("Cedar",border,new Vector3(side*4.65f,0,7.8f),.62f);
-                    art.Create("Broadleaf",border,new Vector3(side*4.1f,0,9.65f),.8f);
-                    art.Create("Fern",border,new Vector3(side*4.55f,0,5.9f),1.2f);
-                    art.Create("Log",border,new Vector3(side*4.4f,0,2.1f),.75f);
-                }
+                BuildRimGrove(border);
             }
             if(!authored)
             {
@@ -119,6 +114,7 @@ namespace FireRescue
                 Shape("Fire break",PrimitiveType.Cube,Arena,new Vector3(0,.004f,1.7f),new Vector3(10,.02f,.12f),PanelMaterial);
                 Shape("Diorama plinth",PrimitiveType.Cube,Arena,new Vector3(0,-.5f,6),new Vector3(11.3f,.6f,13.3f),PanelMaterial);
                 for(int i=0;i<4;i++)Shape("Miniature rock",PrimitiveType.Sphere,Arena,new Vector3(i%2==0?-4.7f:4.7f,.08f,3+i*2.1f),new Vector3(.7f,.45f,.8f),BarkMaterial);
+                FitPrimitiveBoard(); // compact board (§5 Reach): FireRescueGame.Placement.cs
             }
             hud=new GameObject("Rescue station").transform; hud.SetParent(transform,false); hud.localScale=Vector3.one*.25f;
             dashboard=new GameObject("Main controls").transform;dashboard.SetParent(hud,false);
@@ -173,17 +169,18 @@ namespace FireRescue
                 if(model)
                 {
                     model.localRotation=Quaternion.Euler(0,i*137.5f,0);
-                    var heatBar=Shape("Heat remaining",PrimitiveType.Cube,root,new Vector3(0,2.05f,0),new Vector3(.6f,.055f,.03f),FlameMaterial).transform;
-                    trees.Add(new TreeView{Root=root,Bar=heatBar,Authored=model.GetComponentsInChildren<Renderer>()});
+                    trees.Add(new TreeView{Root=root,Authored=model.GetComponentsInChildren<Renderer>()});
                     continue;
                 }
                 var trunk=Shape("Trunk",PrimitiveType.Cylinder,root,new Vector3(0,.55f,0),new Vector3(.13f,.55f,.13f),BarkMaterial);
                 var leaves=Shape("Canopy",PrimitiveType.Sphere,root,new Vector3(0,1.22f,0),new Vector3(.75f,1.05f,.75f)*scale,FoliageMaterial);
                 if(i%3!=1)leaves.GetComponent<MeshFilter>().sharedMesh=diorama.PineMesh;
-                var bar=Shape("Heat remaining",PrimitiveType.Cube,root,new Vector3(0,1.95f,0),new Vector3(.6f,.055f,.03f),FlameMaterial).transform;
-                trees.Add(new TreeView{Root=root,Leaves=leaves.GetComponent<Renderer>(),Trunk=trunk.GetComponent<Renderer>(),Bar=bar});
+                trees.Add(new TreeView{Root=root,Leaves=leaves.GetComponent<Renderer>(),Trunk=trunk.GetComponent<Renderer>()});
             }
+            // Heat bar, burning pin and see-through fade live in EmberdeepTreeReadout (§4.6).
+            BuildTreeReadout();
             diorama.Build(Run,Arena,FoliageMaterial,BarkMaterial,WaterMaterial,PanelMaterial,art);
+            BuildBoardPieces(); // tray, pieces, Plan look (FireRescueGame.Pieces.cs)
             if(SheepView){SheepView.gameObject.SetActive(false);Destroy(SheepView.gameObject);}
             SheepView=new GameObject("Woodland rescue flock").AddComponent<EmberdeepSheepView>();
             SheepView.transform.SetParent(Arena,false);SheepView.Initialize(Run);
@@ -212,12 +209,12 @@ namespace FireRescue
             if(!Player.IsXR)
             {
                 Player.ViewCamera.transform.position=new Vector3(0,1.65f,0);
-                Player.ViewCamera.transform.rotation=Quaternion.Euler(25,0,0);
+                Player.ViewCamera.transform.rotation=Quaternion.Euler(Run.CompactBoard?DesktopPitchCompact:DesktopPitchLegacy,0,0);
                 Player.ViewCamera.fieldOfView=70;
                 Player.ViewCamera.backgroundColor=new Color(.065f,.12f,.145f);
             }
             var view=Player.ViewCamera.transform;
-            FireMiniature.Place(Arena,view.position,view.forward,Player.FloorHeight);
+            PlaceArena(view); // compact or legacy, plus the play-area options: FireRescueGame.Placement.cs
             PlaceHud();
             xrPlaced=Player.IsXR && hands.HeadReady;
             PositionRack();UpdateTargets();
@@ -233,13 +230,15 @@ namespace FireRescue
             if(Player.IsXR && !xrPlaced){Recenter();return;}
             UpdateTargets();
             if(Player.IsXR){ReadObjectHands();ReadSheepHands(Time.unscaledDeltaTime);ReadMagicHands(Time.unscaledDeltaTime);ReadSpellHands(Time.unscaledDeltaTime);}
+            if(TickRimInput(Time.unscaledDeltaTime)){Run.ResetRecovery();CancelWeaponInput();Refresh();return;} // token, bell, slap (§11b)
             if(ProcessInterfaceInput()){Run.ResetRecovery();Refresh();return;}
-            if(QuitConfirmationOpen || QuitRequested || ShopOpen){Run.ResetRecovery();CancelWeaponInput();Refresh();return;}
+            if(QuitConfirmationOpen || QuitRequested || ShopOpen || RimBlocksPlay){Run.ResetRecovery();CancelWeaponInput();Refresh();return;}
+            TickBoardPieces(Time.unscaledDeltaTime); // pieces by hand, Plan and Fight (FireRescueGame.Pieces.cs)
             if(Run.Phase==FirePhase.Preparing)
             {
                 float prepareDt=Mathf.Min(Time.unscaledDeltaTime,.1f);
                 if(Player.IsXR){ProcessToolPickup(prepareDt);ProcessCarriedTool(prepareDt,!interfaceHovered);}
-                if(Run.SpellMode){ProcessBasinInput(prepareDt);TickSpellUpkeep(prepareDt);}
+                if(Run.SpellMode)TickSpellUpkeep(prepareDt);
                 CancelWeaponInput();Run.TickPreparation(prepareDt);
                 Run.TickPreparedAnimals(prepareDt);
                 Effects.Tick(Run,Arena,jet,prepareDt);diorama.Tick(Run,Player.ViewCamera,prepareDt);
@@ -367,7 +366,7 @@ namespace FireRescue
         {
             int count=Run.Trees.Length+Run.Props.Length+Run.Animals.Length;
             if(waterTargets.Length!=count)waterTargets=new Vector3[count];
-            for(int i=0;i<Run.Trees.Length;i++)waterTargets[i]=Arena.TransformPoint(Run.Trees[i].Position);
+            for(int i=0;i<Run.Trees.Length;i++)waterTargets[i]=Arena.TransformPoint(Run.Trees[i].State==TreeState.Cleared?new Vector3(0,-1000,0):Run.Trees[i].Position); // dug: gone
             for(int i=0;i<Run.Props.Length;i++)waterTargets[Run.Trees.Length+i]=Arena.TransformPoint(Run.Props[i].Position);
             for(int i=0;i<Run.Animals.Length;i++)
             {
@@ -379,8 +378,10 @@ namespace FireRescue
         {
             bool hot=hit.Tree>=0 && hit.Tree<Run.Trees.Length && Run.Trees[hit.Tree].State==TreeState.Burning;
             bool prop=hit.Tree>=Run.Trees.Length && hit.Tree<Run.Trees.Length+Run.Props.Length;
+            if(!hot && !prop && hit.Tree<0)hot=PalmSplashReachesFire(hit); // a palm root splash on the board (before ApplyWater saves it)
             if(prop)Run.ApplyPropWater(hit.Tree-Run.Trees.Length,hit.Amount);
-            if(!prop || hit.Delivery==FireDelivery.Charge)Run.ApplyWater(Arena.InverseTransformPoint(hit.Point),hit.Amount,hit.Radius,hit.Wetness);
+            // Palm water counts along the trunk column (FireRun.WaterReaches column, PalmColumn); everything else at the .7 point.
+            if(!prop || hit.Delivery==FireDelivery.Charge)Run.ApplyWater(Arena.InverseTransformPoint(hit.Point),hit.Amount,hit.Radius,hit.Wetness,PalmColumn(hit));
             if(hot)
             {
                 if(!hit.Magic)Run.LearnWeapon(Run.Equipped);
@@ -410,24 +411,7 @@ namespace FireRescue
             if(!status)return;
             if(SheepView)SheepView.Render();
             float now=Time.unscaledTime;
-            for(int i=0;i<trees.Count;i++)
-            {
-                var tree=trees[i];var data=Run.Trees[i];bool burning=data.State==TreeState.Burning;
-                tree.Bar.gameObject.SetActive(burning);
-                tree.Bar.localScale=new Vector3(.65f*data.Heat/100,.025f,.015f);
-                if(tree.Authored!=null)
-                {
-                    tint.Clear();tint.SetFloat("_Heat",burning?Mathf.Clamp01(data.Heat/100):0);
-                    tint.SetFloat("_Wetness",Mathf.Clamp01(data.Wetness));
-                    tint.SetFloat("_Scorch",data.State==TreeState.Burnt?1:data.State==TreeState.Saved?.12f:0);
-                    foreach(var renderer in tree.Authored)renderer.SetPropertyBlock(tint);
-                }
-                else
-                {
-                    Tint(tree.Leaves,data.State==TreeState.Burnt?new Color(.13f,.12f,.10f):data.State==TreeState.Saved?new Color(.12f,.64f,.37f):new Color(.18f,.36f,.23f));
-                    tree.Leaves.transform.localScale=new Vector3(.75f,1.05f,.75f)*(data.State==TreeState.Burnt?.35f:1)*(1+(i%4)*.08f);
-                }
-            }
+            RefreshTrees(); // tint, readout and see-through fade: FireRescueGame.Trees.cs
             string phase=Run.Phase==FirePhase.Won?"FOREST SAVED!":Run.Phase==FirePhase.Lost?"FOREST LOST - TRY AGAIN":Run.Phase==FirePhase.Cleared?"INCIDENT CONTAINED":Run.StageName;
             status.text=$"{Run.Stage+1}/{Run.StageCount}  {phase}    SHEEP {Run.AnimalsSaved}/{Run.Animals.Length}";
             economy.text=$"$ {Run.Coins}  |  {Run.Equipment.Name} +{Run.Upgrade}  |  WATER {Run.Water:0}/{Run.Capacity:0}";
@@ -461,7 +445,7 @@ namespace FireRescue
             upgradeButton.Interactable=Run.InSupply;
             upgradeText.text=Run.InSupply?"GEAR SHOP >":Run.Phase==FirePhase.Won?"SHOP CLOSED":"SHOP AFTER ROUND";
             handText.text=grip.Held?"RETURN TOOL":"TAKE OWNED TOOL";RefreshMagicText();RefreshSpellText();
-            RefreshPreparation();
+            RefreshPreparation();RefreshRim();
             reward.gameObject.SetActive(now<rewardUntil);
             if(now<rewardUntil){reward.transform.localPosition=rewardStart+Vector3.up*(2-(rewardUntil-now))*.16f;reward.transform.rotation=Player.ViewCamera.transform.rotation;}
         }
@@ -502,11 +486,13 @@ namespace FireRescue
             ReturnEquipment();ShopOpen=true;ShopPage=Run.IsPalmLesson?EmberdeepShopPage.Magic:EmberdeepShopPage.Equipment;
             // A spell that has just become affordable is what the player came for.
             if(Run.SpellMode && !Run.NeedsMagicUpgrade)for(int i=1;i<4;i++)if(Run.CanBuy((FireEquipmentId)i)){SelectedEquipment=(FireEquipmentId)i;ShopPage=EmberdeepShopPage.Equipment;break;}
-            ShopShowingCurrentStation=false;dashboard.gameObject.SetActive(false);shop.gameObject.SetActive(true);PlaceHud();RefreshShop();
+            // The spell flow shows the upgrade tiles (FireRescueGame.Screens.cs) instead of the gear shop panel.
+            ShopShowingCurrentStation=false;dashboard.gameObject.SetActive(false);shop.gameObject.SetActive(!RimUi);PlaceHud();RefreshShop();
+            if(RimUi)RefreshScreens();
         }
         public void CloseShop()
         {
-            ShopOpen=false;shop.gameObject.SetActive(false);dashboard.gameObject.SetActive(true);
+            ShopOpen=false;shop.gameObject.SetActive(false);if(!RimUi)dashboard.gameObject.SetActive(true);
             if(!Run.Owns(SelectedEquipment))SelectedEquipment=Run.Equipped;
             RefreshEquipment();ResetInput();PlaceHud();Refresh();
         }
@@ -517,16 +503,17 @@ namespace FireRescue
         }
         void OnExtinguished(int i)
         {
-            reward.text=Run.Combo>1?$"PATH CLEAR   CHAIN x{Run.Combo}":"PATH CLEAR";rewardStart=Run.Trees[i].Position+Vector3.up*.9f;rewardUntil=Time.unscaledTime+2;
+            // LoopSpec §13: no sentences in a fight. The spell flow pops only a chain count (the out puff marks one tree).
+            reward.text=RimUi?(Run.Combo>1?$"CHAIN x{Run.Combo}":""):Run.Combo>1?$"PATH CLEAR   CHAIN x{Run.Combo}":"PATH CLEAR";rewardStart=Run.Trees[i].Position+Vector3.up*.9f;rewardUntil=Time.unscaledTime+2;
             Effects.Rescue(Arena.TransformPoint(Run.Trees[i].Position),Run.Combo);Feedback.Rescue(Run.Combo);
         }
         void OnAnimalRescued(int i)
         {
-            reward.text=$"SHEEP SAFE!  + ${Run.AnimalReward}";rewardStart=Run.Animals[i].Refuge+Vector3.up;rewardUntil=Time.unscaledTime+1.5f;
+            reward.text=RimUi?$"SAVED +{Run.AnimalReward}":$"SHEEP SAFE!  + ${Run.AnimalReward}";rewardStart=Run.Animals[i].Refuge+Vector3.up;rewardUntil=Time.unscaledTime+1.5f;
             Feedback.Rescue(1);
         }
         void OnPropActivated(int i){Effects.Burst(Arena.TransformPoint(Run.Props[i].Position),FireRun.ReservoirRadius*FireMiniature.Scale);Feedback.Launch(.4f);reward.text="RAIN ACTIVATED";rewardStart=Run.Props[i].Position+Vector3.up;rewardUntil=Time.unscaledTime+2;}
-        void OnCabinLost(int i){reward.text="CABIN LOST - SAVE THE OTHERS";rewardStart=Run.Props[i].Position+Vector3.up;rewardUntil=Time.unscaledTime+2;}
+        void OnCabinLost(int i){reward.text=RimUi?"CABIN LOST":"CABIN LOST - SAVE THE OTHERS";rewardStart=Run.Props[i].Position+Vector3.up;rewardUntil=Time.unscaledTime+2;}
         void UpdateShopInput()
         {
             if(Player.IsXR || Mouse.current==null)return;
@@ -564,7 +551,7 @@ namespace FireRescue
         void OnApplicationFocus(bool value){focused=value;if(!value)ResetInput(true,true);}
         void OnApplicationPause(bool value){paused=value;if(value)ResetInput(true,true);}
         void OnDisable(){ResetInput();}
-        void OnDestroy(){if(recoveryIconMesh)Destroy(recoveryIconMesh);Run.Extinguished-=OnExtinguished;Run.AnimalRescued-=OnAnimalRescued;Run.PropActivated-=OnPropActivated;Run.CabinLost-=OnCabinLost;Run.Supply.DockConfirmed-=OnSupplyDock;Run.Supply.PumpStroke-=OnSupplyStroke;Run.Supply.Disconnected-=OnSupplyDisconnect;RenderSettings.ambientLight=savedAmbient;RenderSettings.ambientMode=savedAmbientMode;RenderSettings.fog=savedFog;if(changedPipeline && QualitySettings.renderPipeline==art.Pipeline)QualitySettings.renderPipeline=previousPipeline;}
+        void OnDestroy(){UnhookPlacement();DestroyScreenMaterials();if(recoveryIconMesh)Destroy(recoveryIconMesh);Run.Extinguished-=OnExtinguished;Run.AnimalRescued-=OnAnimalRescued;Run.PropActivated-=OnPropActivated;Run.CabinLost-=OnCabinLost;Run.Supply.DockConfirmed-=OnSupplyDock;Run.Supply.PumpStroke-=OnSupplyStroke;Run.Supply.Disconnected-=OnSupplyDisconnect;RenderSettings.ambientLight=savedAmbient;RenderSettings.ambientMode=savedAmbientMode;RenderSettings.fog=savedFog;if(changedPipeline && QualitySettings.renderPipeline==art.Pipeline)QualitySettings.renderPipeline=previousPipeline;}
     }
 }
 

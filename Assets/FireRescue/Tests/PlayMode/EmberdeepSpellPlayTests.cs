@@ -40,7 +40,7 @@ namespace FireRescue.Tests
             for(int i=0;i<4;i++)Assert.True(run.Owns((FireEquipmentId)i),"The playtest switch owns every spell from the first level");
             Assert.False(game.transform.Find("Equipment rack").gameObject.activeSelf,"Hand-held tools stay hidden");
             Assert.IsNull(game.transform.Find("Spell gesture board"),"No wall of text: lessons are demonstrations");
-            Assert.False(game.TakeEquipment());Assert.True(run.StationOpen);Assert.True(game.Basin.gameObject.activeInHierarchy);
+            Assert.False(game.TakeEquipment());Assert.True(game.Pump.gameObject.activeInHierarchy);Assert.False(game.HydrantStation.gameObject.activeSelf);
         }
         static EmberdeepSpellHand Hand(Vector3 at,Vector3 normal,Vector3 forward,float curl=0)
         {
@@ -119,7 +119,9 @@ namespace FireRescue.Tests
             Assert.False(game.SpellVfx.OrbVisible);Assert.AreEqual(60,run.Water,"The retired extinguisher tank is never used");
         }
 
-        [UnityTest] public IEnumerator DesktopKeysCastSpellsPumpTheBasinAndAbsorbIt()
+        // Intent changed (LoopSpec §3): R used to work the well lever into the altar basin and E
+        // dipped a hand in it; now R is one fist strike on the pump, straight into the gem.
+        [UnityTest] public IEnumerator DesktopKeysCastSpellsAndHammerThePumpIntoTheGem()
         {
             yield return Enter();
             var run=game.Run;var mouse=InputSystem.AddDevice<Mouse>();var keyboard=InputSystem.AddDevice<Keyboard>();
@@ -145,15 +147,11 @@ namespace FireRescue.Tests
                 yield return Hold(.3f,Key.Digit4);yield return Hold(.1f);
                 Assert.That(orbFull-run.SpellWater(FireEquipmentId.PressureCannon),Is.InRange(8f,28f));
                 Assert.AreEqual(FirePhase.Fighting,run.Phase,"Every shot was aimed at bare ground");
-                // R lowers and returns the well lever; each stroke pours into the basin. E holds a hand in it.
-                Assert.Zero(run.BasinWater);
+                for(int i=0;i<40 && !run.GemEmpty;i++)run.TickMagic(.1f,true,true);
+                Assert.True(run.GemEmpty);float pumped=run.MagicPumped;
                 for(int stroke=0;stroke<2;stroke++){yield return Hold(.1f,Key.R);yield return Hold(.1f);}
-                Assert.That(run.BasinWater,Is.EqualTo(2*.085f/.08f*12*1.5f).Within(.5f));
-                float basin=run.BasinWater,low=run.SpellFill01(FireEquipmentId.PulsePistol)+run.SpellFill01(FireEquipmentId.RainFan)+run.SpellFill01(FireEquipmentId.PressureCannon);
-                yield return Hold(.3f,Key.E);
-                Assert.Less(run.BasinWater,basin);
-                Assert.Greater(run.SpellFill01(FireEquipmentId.PulsePistol)+run.SpellFill01(FireEquipmentId.RainFan)+run.SpellFill01(FireEquipmentId.PressureCannon),low);
-                yield return Hold(.05f);Assert.False(game.Absorbing);
+                Assert.AreEqual(2*EmberdeepWaterTuning.StrikeWater,run.MagicPumped-pumped,.01f,"Each R press is one off-beat strike");
+                Assert.AreEqual(2,game.PumpStrikes);
             }
             finally{InputSystem.RemoveDevice(mouse);InputSystem.RemoveDevice(keyboard);}
         }

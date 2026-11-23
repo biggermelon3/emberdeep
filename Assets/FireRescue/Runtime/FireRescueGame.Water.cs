@@ -64,7 +64,9 @@ namespace FireRescue
         void SetWorldVisible(bool visible)
         {
             Arena.gameObject.SetActive(visible);hud.gameObject.SetActive(visible);rack.gameObject.SetActive(visible && !Run.SpellMode);
-            hydrantStation.gameObject.SetActive(visible);creekStation.gameObject.SetActive(visible && !Run.GoddessTutorial && Run.Stage>0);
+            // The production flow has one water source: the fist-hammer pump (LoopSpec §3.4).
+            hydrantStation.gameObject.SetActive(visible && !Run.SpellMode);creekStation.gameObject.SetActive(visible && !Run.GoddessTutorial && Run.Stage>0);
+            if(pumpView)pumpView.gameObject.SetActive(visible && Run.SpellMode);
         }
         void PlaceHud()
         {
@@ -85,8 +87,6 @@ namespace FireRescue
         void OnEmptyOutletStroke(float units)
         {
             if(units>0)Run.Learn(EmberdeepInteractionDemo.Action.Lever);outletFeedbackUnits+=units;
-            // Spell mode: every returned stroke pours into the altar basin.
-            if(Run.SpellMode)Run.AddBasinWater(units*1.5f);
             if(outletFeedbackUnits<1)return;
             outletFeedbackUnits%=1;hydrantStation.EmitOutletSplash();
             if(Time.unscaledTime>=supplyStrokeFlashUntil){Feedback.Impact(false);supplyStrokeFlashUntil=Time.unscaledTime+.15f;}
@@ -99,6 +99,7 @@ namespace FireRescue
             hydrantStation.transform.SetPositionAndRotation(Arena.TransformPoint(new Vector3(side*3.3f,.2f,.4f)),Arena.rotation);
             creekStation.transform.SetPositionAndRotation(Arena.TransformPoint(new Vector3(-side*4f,.2f,3.5f)),Arena.rotation);
             hydrantStation.SetLeftHanded(LeftHanded);creekStation.SetLeftHanded(!LeftHanded);
+            PositionPump();
         }
         void StopRefill()
         {
@@ -128,8 +129,9 @@ namespace FireRescue
         bool ProcessInterfaceInput()
         {
             EnsureHandMenu();
-            if(!Player.IsXR)ClearInterfaceReservation();
-            bool accepted=handMenu.Process(hands,Player.ViewCamera,Player.IsXR,buttons,true,Time.unscaledDeltaTime,
+            if(!Player.IsXR || !RayAllowed)ClearInterfaceReservation();
+            // LoopSpec §11b: no ray in Plan or Fight; unavailable also hides the line and drops any half pinch.
+            bool accepted=handMenu.Process(hands,Player.ViewCamera,Player.IsXR,buttons,RayAllowed,Time.unscaledDeltaTime,
                 AllowInterfaceButton,null,AllowPointedInterface);
             return AcceptInterfaceInput(accepted);
         }
@@ -194,8 +196,9 @@ namespace FireRescue
             if(!QuitConfirmationOpen && (ToolOwnsHand(1) || sheepInteraction.OwnsHand(1)))right=default;
             available=available && focused && !paused && !returningToCamp && !acquiringPose;
             if(!available){CancelWeaponInput();ClearInterfaceReservation();}
+            if(!RayAllowed)ClearInterfaceReservation(); // LoopSpec §11b: no ray in Plan or Fight
             if(refill.OwnsControl){if(refill.OperatingHand==0)left=default;else right=default;}
-            return AcceptInterfaceInput(handMenu.ProcessSamples(left,right,buttons,available,dt,AllowInterfaceButton));
+            return AcceptInterfaceInput(handMenu.ProcessSamples(left,right,buttons,available && RayAllowed,dt,AllowInterfaceButton));
         }
         bool AcceptInterfaceInput(bool accepted)
         {
@@ -240,7 +243,8 @@ namespace FireRescue
             || (Run.InSupply && button.Command=="Gear shop");
         bool ProcessRefillInput(Pose palm,bool valid,float dt)
         {
-            if(Run.SpellMode)return ProcessBasinInput(dt);
+            // The pump is a strike, not a hold: it never takes the frame from spraying.
+            if(Run.SpellMode){ProcessHammerPump(dt);return false;}
             if(Run.IsPalmLesson || palmMagic.Aiming)return false;
             if(!Player.IsXR)return interfaceHovered?BlockRefillForInterface(dt):DesktopRefill(dt);
             // Surface grabs retain their real pose: the visible coupling must
@@ -316,6 +320,12 @@ namespace FireRescue
         void RefreshWaterStations()
         {
             if(!hydrantStation)return;
+            if(Run.SpellMode)
+            {
+                if(hydrantStation.gameObject.activeSelf)hydrantStation.gameObject.SetActive(false);
+                if(creekStation.gameObject.activeSelf)creekStation.gameObject.SetActive(false);
+                return;
+            }
             hydrantStation.SetTier(Run.StationTier);
             var s=Run.Supply;float ratio=Run.Water/Run.Capacity;
             string control=Run.StationTier==WaterStationTier.LeverWell?"LOWER + RETURN LEVER":Run.StationTier==WaterStationTier.RotaryHydrant?"TURN THE WHEEL":"PRESS THE BUTTON";
@@ -328,22 +338,14 @@ namespace FireRescue
                 creek=s.Kind==WaterSourceKind.Creek?"I: intake / R: pump\nX: leave":"OPTIONAL CREEK / C: dock";
             }
             bool flowing=s.ValveOpen;
-            if(Run.SpellMode)
-            {
-                hyd=!Run.StationOpen?"WATER STATION / OPENS AFTER THE FIRST LESSON":
-                    Run.StationTier==WaterStationTier.LeverWell?LeverPrompt():
-                    Run.StationTier==WaterStationTier.RotaryHydrant?(Run.BasinFlowing?"FILLING THE BASIN":"TWIST THE WHEEL\nThe basin keeps filling"):
-                    Run.BasinFlowing?"FAST FILL":"AUTO FILL\nPress the button for a fast fill";
-                ratio=Run.BasinWater/FireRun.BasinCapacity;flowing=Run.BasinFlowing;
-            }
             bool strokeFlash=s.Locked && Time.unscaledTime<supplyStrokeFlashUntil;
             hydrantStation.SetState(hyd,ratio,flowing || (strokeFlash && s.Kind==WaterSourceKind.Hydrant),s.Kind==WaterSourceKind.Hydrant,0,false);
             creekStation.SetState(creek,ratio,strokeFlash && s.Kind==WaterSourceKind.Creek,s.Kind==WaterSourceKind.Creek,Player.IsXR?refill.PumpTravel:s.PumpTravel01*.08f,s.IntakePlaced);
             hydrantStation.SetControlAnimation(refill.EmptyOutlet?refill.ActionAmount:!Player.IsXR && !s.Locked?desktopOutletTravel:s.LeverTravel01*.08f,
-                Run.SpellMode?(valveHand>=0?Mathf.Clamp(valveTurn,-60,60):Run.BasinFlowing?45:0):Player.IsXR?refill.ValveVisualDegrees:(s.ValveOpen?45:0),
-                Run.SpellMode && Player.IsXR?basinButtonPress:Player.IsXR?(refill.CurrentAction==EmberdeepRefillInteraction.ActionKind.Button?refill.ActionAmount:0):
+                Player.IsXR?refill.ValveVisualDegrees:(s.ValveOpen?45:0),
+                Player.IsXR?(refill.CurrentAction==EmberdeepRefillInteraction.ActionKind.Button?refill.ActionAmount:0):
                 (Keyboard.current!=null && Keyboard.current.vKey.isPressed?1:0));
-            bool guide=Player.IsXR && !Run.IsPalmLesson && !Run.SpellMode && focused && !paused && hands.HeadReady;
+            bool guide=Player.IsXR && !Run.IsPalmLesson && focused && !paused && hands.HeadReady;
             hydrantStation.ShowTutorial(Run,heldView,grip.Held,rackView?rackView.Grip:null,guide,refill.CarryingIntake,refill.EmptyOutlet,refill.EmptyLeverReturnRequired);
             creekStation.ShowTutorial(Run,heldView,grip.Held,rackView?rackView.Grip:null,guide,refill.CarryingIntake);
             hydrantStation.FaceLabels(Player.ViewCamera.transform.rotation);creekStation.FaceLabels(Player.ViewCamera.transform.rotation);

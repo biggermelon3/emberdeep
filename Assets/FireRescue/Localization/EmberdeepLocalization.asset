@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EmberdeepLocalization
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Settings.LocalizationSettings
   m_StartupSelectors:
-  - rid: 3481149880219467776
+  - rid: 714219057120018543
   m_AvailableLocales:
     rid: 3481149840717512707
   m_AssetDatabase:
@@ -31,6 +31,9 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 714219057120018543
+      type: {class: EmberdeepSystemLocaleSelector, ns: FireRescue, asm: FireRescue.Runtime}
+      data: 
     - rid: 3481149840717512707
       type: {class: LocalesProvider, ns: UnityEngine.Localization.Settings, asm: Unity.Localization}
       data: 
@@ -191,6 +194,3 @@ MonoBehaviour:
         - default
         - d
         - 
-    - rid: 3481149880219467776
-      type: {class: EmberdeepSystemLocaleSelector, ns: FireRescue, asm: FireRescue.Runtime}
-      data: 

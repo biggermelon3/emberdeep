@@ -100,6 +100,62 @@ namespace FireRescue.Tests
             yield return null;
         }
 
+        // PICO's wrist joint sits elsewhere on the hand than the SDK mesh's: same knuckles, different wrist.
+        [UnityTest] public IEnumerator PalmFitSitsMeshPalmUnderTrackedKnucklesAndKeepsFingersTracked()
+        {
+            using(var fixture=new PairFixture())
+            {
+                yield return null;
+                for(int h=0;h<2;h++)
+                {
+                    var visual=fixture.Visuals[h];var hand=fixture.Hands[h];bool left=h==0;
+                    hand.MoveWrist(new Vector3(left?-.2f:.2f,1.1f,.45f),Quaternion.Euler(0,20,0),hand.Local(HandJointId.HandIndex1).rotation);
+                    var fit=new EmberdeepHandPresentation(visual,fixture.Material,true);
+                    try
+                    {
+                        Assert.IsTrue(fit.FitsPalm,"The SDK OpenXR hand must expose wrist, metacarpal and knuckle bindposes");
+                        var wristJoint=visual.Joints[(int)HandJointId.HandWristRoot];
+                        var restWrist=new Pose(wristJoint.position,wristJoint.rotation);
+                        fit.Present(true,EmberdeepHandPoseKind.Free,null,0,.1f);
+                        var display=fit.DisplayJoint(HandJointId.HandWristRoot);
+                        Assert.Less(Vector3.Distance(restWrist.position,display.position),.0005f,"Mesh skeleton data must fit as itself");
+                        Assert.Less(Quaternion.Angle(restWrist.rotation,display.rotation),.5f);
+                        Assert.AreEqual(1,fit.PalmScale,.01f);
+
+                        // Move the tracked wrist 12 mm along the hand and 4 mm across, and turn it about the
+                        // palm normal; every descendant keeps its world pose.
+                        var wrist=hand.Local(HandJointId.HandWristRoot);
+                        var moved=new Pose(wrist.position+wrist.rotation*new Vector3(.004f,-.012f,.002f),
+                            wrist.rotation*Quaternion.AngleAxis(8,left?Constants.LeftPalmar:Constants.RightPalmar));
+                        var inverse=Quaternion.Inverse(moved.rotation);
+                        for(int j=0;j<Constants.NUM_HAND_JOINTS;j++)
+                        {
+                            if(!visual.Joints[j] || visual.Joints[j].parent!=wristJoint)continue;
+                            var inRoot=hand.Local((HandJointId)j).GetTransformedBy(wrist);
+                            hand.SetLocal((HandJointId)j,new Pose(inverse*(inRoot.position-moved.position),inverse*inRoot.rotation));
+                        }
+                        hand.SetLocal(HandJointId.HandWristRoot,moved);hand.Publish();
+                        Assert.Greater(Vector3.Distance(wristJoint.position,restWrist.position),.01f,"The tracked wrist must have moved");
+                        fit.Present(true,EmberdeepHandPoseKind.Free,null,0,.1f);
+                        Assert.Less(Vector3.Distance(restWrist.position,display.position),.0005f,"Palm must sit under the knuckles, not on the moved wrist");
+                        Assert.Less(Quaternion.Angle(restWrist.rotation,display.rotation),.5f);
+                        Assert.AreEqual(1,fit.PalmScale,.01f);
+                        for(int j=0;j<Constants.NUM_HAND_JOINTS;j++)
+                        {
+                            var id=(HandJointId)j;var joint=fit.DisplayJoint(id);
+                            if(!joint || id==HandJointId.HandWristRoot || id==HandJointId.HandPalm || id==HandJointId.HandIndex0
+                                || id==HandJointId.HandMiddle0 || id==HandJointId.HandRing0 || id==HandJointId.HandPinky0)continue;
+                            Assert.Less(Vector3.Distance(visual.Joints[j].position,joint.position),.0001f,id+" must stay on its tracked position");
+                            Assert.Less(Quaternion.Angle(visual.Joints[j].rotation,joint.rotation),.1f,id+" must keep its tracked rotation");
+                        }
+                        Assert.AreEqual(moved.position,hand.Local(HandJointId.HandWristRoot).position,"Display fit must never write tracked input");
+                    }
+                    finally{fit.Dispose();}
+                }
+            }
+            yield return null;
+        }
+
         [UnityTest] public IEnumerator InvalidTrackingSnapshotsLastAppPoseOnceAndNeverCreatesOriginHands()
         {
             using(var fixture=new PairFixture())
@@ -142,6 +198,80 @@ namespace FireRescue.Tests
                     display.Present(true,EmberdeepHandPoseKind.Free,null,0,.1f);
                     Assert.IsFalse(display.Frozen);Assert.IsFalse(snapshot.enabled,"Live and frozen hand must not draw simultaneously");
                 }
+            }
+            yield return null;
+        }
+
+        // Headset test 2 (2026-11-22): a lost hand hung in the air. It freezes only for EmberdeepLostHand.FreezeSeconds.
+        [UnityTest] public IEnumerator LostHandFreezesForAFifthOfASecondThenHidesUntilTrackingReturns()
+        {
+            using(var fixture=new PairFixture())
+            {
+                yield return null;
+                for(int h=0;h<2;h++)
+                {
+                    var display=fixture.Displays[h];var hand=fixture.Hands[h];
+                    hand.Move(new Vector3(h==0?-.2f:.2f,1.2f,.5f),Quaternion.Euler(15,0,0));
+                    for(int i=0;i<3;i++)display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
+                    Assert.IsTrue(display.Showing);Assert.IsFalse(display.Frozen);Assert.IsFalse(display.Hidden);
+                    display.Present(false,EmberdeepHandPoseKind.Free,null,0,.02f);
+                    Assert.IsTrue(display.Frozen);Assert.IsTrue(display.Showing,"the loss frame holds the last pose");
+                    float held=0;
+                    while(display.Frozen && held<1){display.Present(false,EmberdeepHandPoseKind.Free,null,0,.02f);held+=.02f;}
+                    Assert.That(held,Is.EqualTo(EmberdeepLostHand.FreezeSeconds).Within(.021f),"frozen about .2 s");
+                    Assert.IsTrue(display.Hidden);Assert.IsFalse(display.Showing,"then gone: no live copy, no snapshot");
+                    for(int i=0;i<display.SkinCount;i++)Assert.IsFalse(display.SnapshotRenderer(i).enabled);
+                    for(int i=0;i<50;i++)display.Present(false,EmberdeepHandPoseKind.Free,null,0,.02f);
+                    Assert.IsFalse(display.Showing,"stays hidden while lost");Assert.AreEqual(1,display.SnapshotCount,"one bake per loss");
+                    hand.Move(new Vector3(h==0?-.1f:.1f,1.1f,.45f),Quaternion.identity);
+                    display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
+                    Assert.IsTrue(display.Showing);Assert.IsFalse(display.Hidden);Assert.IsFalse(display.Frozen);
+                    var wrist=fixture.Visuals[h].Joints[(int)HandJointId.HandWristRoot];
+                    Assert.Less(Vector3.Distance(display.DisplayJoint(HandJointId.HandWristRoot).position,wrist.position),.001f,"back live where the hand is");
+                }
+            }
+            yield return null;
+        }
+
+        // Headset test 2 (2026-11-22): a fist hammered down through the pump cap and the drawn hand stayed stuck on the cap
+        // until the real hand came back up. The drawn palm may trail at a surface by at most PinRelease, then follows.
+        [UnityTest] public IEnumerator HammeringThroughAContactNeverLeavesTheHandStuckOnIt()
+        {
+            using(var fixture=new PairFixture())
+            {
+                yield return null;
+                var cap=GameObject.CreatePrimitive(PrimitiveType.Cube);
+                try
+                {
+                    var display=fixture.Displays[1];var hand=fixture.Hands[1];var start=new Vector3(.2f,1.2f,.5f);
+                    hand.Move(start,Quaternion.identity);for(int i=0;i<3;i++)display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);
+                    Assert.IsTrue(display.TryGetPalmFrame(out var palm0));
+                    // A 10 cm block whose top is 6 cm under the palm: the fist goes 14 cm down (through it), then back up.
+                    cap.transform.localScale=new Vector3(.12f,.1f,.12f);cap.transform.position=palm0.position+Vector3.down*(.06f+.05f);
+                    var contacts=new EmberdeepHandContact();contacts.Add(cap.transform);contacts.Prepare();
+                    float worst=0,held=0;bool released=false,releasedInside=false;
+                    float Step(float depth)
+                    {
+                        hand.Move(start+Vector3.down*depth,Quaternion.identity);
+                        display.Present(true,EmberdeepHandPoseKind.Free,null,0,.02f);display.TryGetPalmFrame(out var real);
+                        display.Constrain(contacts,false);display.TryGetPalmFrame(out var drawn);
+                        return Vector3.Distance(real.position,drawn.position);
+                    }
+                    for(int i=0;i<=14;i++)
+                    {
+                        float gap=Step(i*.01f);worst=Mathf.Max(worst,gap);held=Mathf.Max(held,gap);
+                        if(display.PinReleased){released=true;if(i*.01f>.06f && i*.01f<.16f)releasedInside=true;}
+                    }
+                    Assert.Greater(held,.005f,"the strike still lands: the drawn palm stops at the top first");
+                    Assert.LessOrEqual(worst,EmberdeepHandPresentation.PinRelease+.001f,"never trails the real hand by more than PinRelease");
+                    Assert.IsTrue(released && releasedInside,"lets go while the fist is still inside the block");
+                    Assert.Less(Step(.14f),.0005f,"through the block: the drawn hand is where the real hand is, not on the cap");
+                    // Back up and out: no sticking on the way, and the contact holds again once clear.
+                    for(int i=13;i>=0;i--)Assert.LessOrEqual(Step(i*.01f),EmberdeepHandPresentation.PinRelease+.001f,"lifting at "+i+" cm");
+                    Assert.IsFalse(display.PinReleased,"clear of the block again");
+                    Assert.Less(Step(0),.0005f);
+                }
+                finally{Object.Destroy(cap);}
             }
             yield return null;
         }
@@ -481,6 +611,7 @@ namespace FireRescue.Tests
             public readonly HandVisual[] Visuals;
             public readonly EmberdeepPresentationHandFixture[] Hands=new EmberdeepPresentationHandFixture[2];
             public readonly EmberdeepHandPresentation[] Displays=new EmberdeepHandPresentation[2];
+            public Material Material=>material;
             public PairFixture()
             {
                 inactive=new GameObject("Inactive production source");inactive.SetActive(false);
@@ -518,6 +649,9 @@ namespace FireRescue.Tests
             for(int i=0;i<joints.Length;i++)joints[i]=visual.Joints[i]?new Pose(visual.Joints[i].localPosition,visual.Joints[i].localRotation):Pose.identity;
             poses=new ReadOnlyHandJointPoses(joints);RootPose=Pose.identity;
         }
+        public Pose Local(HandJointId id)=>joints[(int)id];
+        public void SetLocal(HandJointId id,Pose pose)=>joints[(int)id]=pose;
+        public void Publish(){CurrentDataVersion++;WhenHandUpdated?.Invoke();}
         public void Move(Vector3 position,Quaternion fingerRotation)
         {
             MoveWrist(position,Quaternion.identity,fingerRotation);

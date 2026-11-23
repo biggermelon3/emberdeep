@@ -32,6 +32,20 @@ namespace FireRescue
         readonly bool[] streamWasEmitting=new bool[2];
         float streamClock;
         readonly float[] flameClock=new float[42], smokeClock=new float[42], emberClock=new float[42], steamClock=new float[42];
+        // Grass (LoopSpec §4.1) shares the same capped pools; its flame tongues carry seeds from GrassSeed.
+        public const int MaximumGrass=64, GrassSeed=2000;
+        readonly float[] grassFlameClock=new float[MaximumGrass], grassSmokeClock=new float[MaximumGrass];
+        // Smoke leans downwind (§4.2): horizontal metres per second per unit of wind strength. *tune*
+        public const float SmokeLean=.07f, FlameLean=.022f;
+        public Vector3 LastWind { get; private set; }
+        // Tilted board (EmberdeepPlayArea, LoopSpec §10): flames, smoke, embers and splashes rise along the BOARD's up, so
+        // they stand with the trees; a world-up flame on a 30 deg board leans 30 deg against every tree and reads as a
+        // strong tailwind (the sheep flames already use arena.up). The ground discs (glow, ripples) lie on the board.
+        // Flat: BoardTilt is exactly identity and the ground discs keep their horizontal billboards, so nothing changes.
+        public Quaternion BoardTilt { get; private set; } = Quaternion.identity;
+        Vector3 BoardUp => BoardTilt * Vector3.up;
+        public bool GroundDiscsOnBoard { get; private set; }
+        Vector3 groundDiscUp = Vector3.up;
         readonly ParticleSystem.Particle[] buffer=new ParticleSystem.Particle[1024];
         readonly ParticleSystem.Particle[] drops=new ParticleSystem.Particle[768];
         readonly Vector3[] sprinklerCenters=new Vector3[4];
@@ -46,6 +60,35 @@ namespace FireRescue
         public int VisibleSteam => steam ? steam.particleCount : 0;
         public int VisibleSplash => splash ? splash.particleCount : 0;
         public int VisibleRipples => ripples ? ripples.particleCount : 0;
+        public int VisibleSmoke => smoke ? smoke.particleCount : 0;
+        // Readable fire floor for a burning tree at any Heat above 0 (LoopSpec §4.6). *tune*
+        public const float MinimumFlame=.5f;
+        // LoopSpec §6 Plan look (workstream L3, EmberdeepPlanLook): time is stopped, so fire and smoke hold a frozen,
+        // warmed-up pose: the emitters are simulated for EmberdeepPieceTuning.WarmupSeconds, then paused, and nothing
+        // emits until the fire resumes. A Clear() (recenter, new level) re-warms on the next Tick.
+        public bool Frozen { get; private set; }
+        bool frozenWarm;
+        public void SetFrozen(bool frozen)
+        {
+            if(Frozen==frozen)return;
+            Frozen=frozen;frozenWarm=false;
+            if(!frozen && emitters!=null)foreach(var p in emitters)if(p)p.Play();
+        }
+        void WarmFrozen(FireRun run,Transform arena,WaterJet jet)
+        {
+            const float step=.05f;
+            Frozen=false;
+            try
+            {
+                for(int s=0;s<Mathf.CeilToInt(EmberdeepPieceTuning.WarmupSeconds/step);s++)
+                {
+                    Tick(run,arena,jet,step);
+                    foreach(var p in emitters)if(p)p.Simulate(step,true,false,true);
+                }
+            }
+            finally{Frozen=true;frozenWarm=true;}
+            foreach(var p in emitters)if(p)p.Pause();
+        }
         public void Initialize()
         {
             if(flames)return;
@@ -99,6 +142,31 @@ namespace FireRescue
         }
         static void Grow(ParticleSystem p,float start,float end)
         {var size=p.sizeOverLifetime;size.enabled=true;size.size=new ParticleSystem.MinMaxCurve(1,AnimationCurve.Linear(0,start,1,end));}
+        // Tracks the board's up (see BoardTilt). The ground discs switch between a horizontal billboard (flat) and a
+        // billboard lying in their emitter's local plane, turned so its normal is the board's up (tilted); the shader is
+        // Cull Off, so either face reads. Runs every Tick; it only touches the renderers when the board's up changes.
+        void AlignToBoard(Transform arena)
+        {
+            var up=arena.up;
+            bool tilted=Vector3.Angle(up,Vector3.up)>.5f;
+            BoardTilt=tilted?Quaternion.FromToRotation(Vector3.up,up):Quaternion.identity;
+            if(tilted==GroundDiscsOnBoard && (!tilted || Vector3.Angle(up,groundDiscUp)<.1f))return;
+            GroundDiscsOnBoard=tilted;groundDiscUp=up;
+            foreach(var disc in new[]{glow,ripples})
+            {
+                if(!disc)continue;var r=disc.GetComponent<ParticleSystemRenderer>();
+                if(tilted)
+                {
+                    r.renderMode=ParticleSystemRenderMode.Billboard;r.alignment=ParticleSystemRenderSpace.Local;
+                    disc.transform.rotation=Quaternion.LookRotation(up,Vector3.ProjectOnPlane(arena.forward,up));
+                }
+                else
+                {
+                    r.renderMode=ParticleSystemRenderMode.HorizontalBillboard;r.alignment=ParticleSystemRenderSpace.View;
+                    disc.transform.localRotation=Quaternion.identity;
+                }
+            }
+        }
         static void Emit(ParticleSystem system,Vector3 at,Vector3 velocity,Vector3 size,Color color,float lifetime,uint seed=0)
         {system.Emit(new ParticleSystem.EmitParams{position=at,velocity=velocity,startSize3D=size,startColor=color,startLifetime=lifetime,randomSeed=seed},1);}
         public void Tick(FireRun run,Transform arena,WaterJet jet,float dt)
@@ -106,20 +174,27 @@ namespace FireRescue
             if(!flames || run==null || !arena || jet==null)return;
             if(float.IsNaN(dt) || float.IsInfinity(dt) || dt<0)dt=0;
             dt=Mathf.Min(dt,.1f);
+            AlignToBoard(arena);
+            if(Frozen){if(!frozenWarm)WarmFrozen(run,arena,jet);return;} // Plan: time stopped (LoopSpec §6)
             TickCelebration(dt);
             for(int i=0;i<steamClock.Length;i++)steamClock[i]=Mathf.Max(0,steamClock[i]-dt);
             glowClock+=dt;bool emitGlow=glowClock>=.08f;if(emitGlow)glowClock=0;
+            // World-space wind push for smoke, flames and embers (zero when calm or in the legacy flow).
+            var wind=run.BoardRules?arena.TransformDirection(run.WindDirection)*run.WindStrength:Vector3.zero;LastWind=wind;
             for(int i=0;i<Mathf.Min(run.Trees.Length,flameClock.Length);i++)
             {
                 var tree=run.Trees[i];
-                if(tree.Wetness>.1f && emitGlow)Emit(glow,arena.TransformPoint(tree.Position-Vector3.up*.68f),Vector3.zero,Vector3.one*.11f,new Color(.25f,.7f,1,.07f*Mathf.Clamp01(tree.Wetness)),.11f);
+                float wetGlow=run.BoardRules?EmberdeepBoardTuning.WetLook(tree.Wetness):tree.Wetness>.1f?Mathf.Clamp01(tree.Wetness):0;
+                if(wetGlow>0 && emitGlow)Emit(glow,arena.TransformPoint(tree.Position-Vector3.up*.68f),Vector3.zero,Vector3.one*.11f,new Color(.25f,.7f,1,.07f*wetGlow),.11f);
                 if(tree.State!=TreeState.Burning)continue;
-                float intensity=tree.Heat/100, wet=Mathf.Clamp01(tree.Wetness);
+                // A burning tree never reads as out: Heat only scales the fire above a readable
+                // floor, and water damps it rather than hiding it. Only Heat 0 (Saved) puts it out.
+                float heat01=Mathf.Clamp01(tree.Heat/100), intensity=Mathf.Lerp(MinimumFlame,1,heat01), wet=Mathf.Clamp01(tree.Wetness);
                 var at=arena.TransformPoint(tree.Position-Vector3.up*.4f);
-                flameClock[i]+=dt*(18+16*intensity)*(1-.7f*wet);
+                flameClock[i]+=dt*(18+16*intensity)*(1-.3f*wet);
                 while(flameClock[i]>=1)
                 {
-                    flameClock[i]--;float scale=Random.Range(.7f,1.15f)*(.4f+.6f*intensity)*(1-.4f*wet);
+                    flameClock[i]--;float scale=Random.Range(.7f,1.15f)*(.4f+.6f*intensity)*(1-.2f*wet);
                     var offset=Random.insideUnitCircle*.024f;
                     // Soft tongues lick up from the trunk foot and out of the boughs, so the whole
                     // tree reads as alight instead of carrying one column of fire over its crown.
@@ -128,19 +203,21 @@ namespace FireRescue
                     // foliage would hide them.
                     if(lift>.02f)
                     {
-                        var eye=Camera.main;var outward=eye?Vector3.ProjectOnPlane(eye.transform.position-at,Vector3.up):new Vector3(offset.x,0,offset.y);
+                        // Measured in the board's frame (offset and lift are board-flat / board-up).
+                        var eye=Camera.main;var outward=eye?Quaternion.Inverse(BoardTilt)*Vector3.ProjectOnPlane(eye.transform.position-at,BoardUp):new Vector3(offset.x,0,offset.y);
                         if(outward.sqrMagnitude>1e-6f){outward=outward.normalized*Random.Range(.030f,.046f);offset+=new Vector2(outward.x,outward.z);}
                     }
-                    Emit(flames,at+new Vector3(offset.x,lift,offset.y),
-                        new Vector3(Random.Range(-.02f,.02f),Random.Range(.045f,.09f),Random.Range(-.02f,.02f)),
+                    Emit(flames,at+BoardTilt*new Vector3(offset.x,lift,offset.y),
+                        BoardTilt*new Vector3(Random.Range(-.02f,.02f),Random.Range(.045f,.09f),Random.Range(-.02f,.02f))+wind*FlameLean,
                         new Vector3(.058f,.108f,.058f)*scale,Color.white,Random.Range(.32f,.6f),(uint)(i+1));
                 }
-                smokeClock[i]+=dt*2.2f*intensity*(1-wet);
-                if(smokeClock[i]>=1){smokeClock[i]--;Emit(smoke,at+Vector3.up*.115f,new Vector3(.012f,.075f,.006f),Vector3.one*Random.Range(.045f,.07f),Color.white,Random.Range(.65f,1.1f));}
-                emberClock[i]+=dt*2.5f*intensity*(1-wet);
-                if(emberClock[i]>=1){emberClock[i]--;Emit(embers,at+Vector3.up*.05f,new Vector3(Random.Range(-.05f,.05f),Random.Range(.14f,.28f),Random.Range(-.05f,.05f)),Vector3.one*.006f,Color.white,Random.Range(.35f,.8f));}
-                if(emitGlow)Emit(glow,arena.TransformPoint(tree.Position-Vector3.up*.68f),Vector3.zero,Vector3.one*(.10f+.04f*intensity),new Color(1,.22f,.015f,.1f*intensity*(1-.7f*wet)),.11f);
+                smokeClock[i]+=dt*2.2f*intensity*(1-.5f*wet);
+                if(smokeClock[i]>=1){smokeClock[i]--;Emit(smoke,at+BoardUp*.115f,BoardTilt*new Vector3(.012f,.075f,.006f)+wind*SmokeLean,Vector3.one*Random.Range(.045f,.07f),Color.white,Random.Range(.65f,1.1f));}
+                emberClock[i]+=dt*2.5f*intensity*(1-.5f*wet);
+                if(emberClock[i]>=1){emberClock[i]--;Emit(embers,at+BoardUp*.05f,BoardTilt*new Vector3(Random.Range(-.05f,.05f),Random.Range(.14f,.28f),Random.Range(-.05f,.05f))+wind*SmokeLean,Vector3.one*.006f,Color.white,Random.Range(.35f,.8f));}
+                if(emitGlow)Emit(glow,arena.TransformPoint(tree.Position-Vector3.up*.68f),Vector3.zero,Vector3.one*(.10f+.04f*intensity),new Color(1,.22f,.015f,.1f*intensity*(1-.5f*wet)),.11f);
             }
+            TickGrassFire(run,arena,wind,dt,emitGlow);
             // Reuse the capped flame/steam pool. Sheep carry a separate seed range
             // so watering a tree cannot erase an animal's fire by accident.
             for(int i=0;i<run.Animals.Length;i++)
@@ -159,13 +236,23 @@ namespace FireRescue
             int count=flames.GetParticles(buffer);
             for(int i=0;i<count;i++)
             {
+                int grass=(int)buffer[i].randomSeed-GrassSeed;
+                if(grass>=0 && grass<run.Grass.Length)
+                {
+                    var patch=run.Grass[grass];
+                    if(patch.State!=TreeState.Burning){buffer[i].startSize3D*=Mathf.Exp(-dt*14);buffer[i].remainingLifetime=Mathf.Min(buffer[i].remainingLifetime,.06f);}
+                    else if(patch.Wetness>.1f)buffer[i].startSize3D*=Mathf.Exp(-dt*Mathf.Clamp01(patch.Wetness));
+                    continue;
+                }
                 int animal=(int)buffer[i].randomSeed-1000;
                 if(animal>=0 && animal<run.Animals.Length)
                 {if(!run.Animals[animal].OnFire)buffer[i].remainingLifetime=Mathf.Min(buffer[i].remainingLifetime,.08f);continue;}
                 int tree=(int)buffer[i].randomSeed-1;if(tree<0 || tree>=run.Trees.Length)continue;
                 var data=run.Trees[tree];
-                if(data.Wetness>.1f || data.State!=TreeState.Burning)
-                {buffer[i].startSize3D*=Mathf.Exp(-dt*5);buffer[i].remainingLifetime=Mathf.Min(buffer[i].remainingLifetime,.18f);}
+                if(data.State!=TreeState.Burning)
+                {buffer[i].startSize3D*=Mathf.Exp(-dt*12);buffer[i].remainingLifetime=Mathf.Min(buffer[i].remainingLifetime,.08f);}
+                // Spray visibly knocks the tongues down, but a still-burning tree keeps its floor.
+                else if(data.Wetness>.1f)buffer[i].startSize3D*=Mathf.Exp(-dt*Mathf.Clamp01(data.Wetness));
             }
             flames.SetParticles(buffer,count);
             // Stretch billboards need a nonzero velocity to establish their axis.
@@ -197,6 +284,33 @@ namespace FireRescue
             }
             water.SetParticles(drops,n);
             UpdateStrands(jet,dt);
+        }
+        // Grass fire: a low, quick crackle of small red-orange tongues spread across the patch, thin
+        // pale smoke and a wide ground glow. Low heat reads as smaller, redder flames, never as out.
+        void TickGrassFire(FireRun run,Transform arena,Vector3 wind,float dt,bool emitGlow)
+        {
+            int patches=Mathf.Min(run.Grass.Length,MaximumGrass);
+            for(int g=0;g<patches;g++)
+            {
+                var patch=run.Grass[g];var ground=arena.TransformPoint(new Vector3(patch.Position.x,.02f,patch.Position.z));
+                float wetGlow=EmberdeepBoardTuning.WetLook(patch.Wetness);
+                if(wetGlow>0 && emitGlow)Emit(glow,ground,Vector3.zero,Vector3.one*.06f,new Color(.25f,.7f,1,.06f*wetGlow),.11f);
+                if(patch.State!=TreeState.Burning)continue;
+                float heat01=Mathf.Clamp01(patch.Heat/EmberdeepBoardTuning.Grass.IgniteHeat),intensity=Mathf.Lerp(MinimumFlame,1,heat01),wet=Mathf.Clamp01(patch.Wetness);
+                float spread=EmberdeepGrassView.Radius*FireMiniature.Scale;
+                grassFlameClock[g]+=dt*(22+18*intensity)*(1-.3f*wet);
+                while(grassFlameClock[g]>=1)
+                {
+                    grassFlameClock[g]--;
+                    var offset=Random.insideUnitCircle*spread;float scale=Random.Range(.7f,1.1f)*(.5f+.5f*intensity)*(1-.2f*wet);
+                    Emit(flames,ground+BoardTilt*new Vector3(offset.x,Random.Range(0,.006f),offset.y),
+                        BoardTilt*new Vector3(Random.Range(-.012f,.012f),Random.Range(.03f,.055f),Random.Range(-.012f,.012f))+wind*FlameLean,
+                        new Vector3(.042f,.068f,.042f)*scale,new Color(1,.62f,.5f),Random.Range(.22f,.4f),(uint)(GrassSeed+g));
+                }
+                grassSmokeClock[g]+=dt*1.4f*intensity*(1-.5f*wet);
+                if(grassSmokeClock[g]>=1){grassSmokeClock[g]--;Emit(smoke,ground+BoardUp*.03f,BoardUp*.05f+wind*SmokeLean,Vector3.one*Random.Range(.03f,.045f),new Color(.85f,.84f,.80f),Random.Range(.55f,.85f));}
+                if(emitGlow)Emit(glow,ground,Vector3.zero,Vector3.one*(.07f+.03f*intensity),new Color(1,.26f,.02f,.11f*intensity*(1-.5f*wet)),.11f);
+            }
         }
         static ParticleSystem.Particle Drop(Vector3 position,Vector3 velocity,float size,Color color)
         {return new ParticleSystem.Particle{position=position,velocity=velocity,startLifetime=2,remainingLifetime=1.5f,startSize=size,startColor=color};}
@@ -305,26 +419,26 @@ namespace FireRescue
         public void Burst(Vector3 worldPoint,float worldRadius)
         {
             if(!splash)return;
-            float radius=Mathf.Clamp(worldRadius,.04f,.4f);
+            float radius=Mathf.Clamp(worldRadius,.04f,.4f);var up=BoardUp;
             // Expand to the actual damage radius. A ring makes the area legible without
             // hiding the diorama under a large opaque flash.
             for(int i=0;i<32;i++)
             {
                 float angle=i*Mathf.PI*2/32;
-                Vector3 radial=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
-                Emit(splash,worldPoint+Vector3.up*.008f,radial*(radius/.22f)+Vector3.up*.8f,Vector3.one*.008f,Color.white,.24f);
+                Vector3 radial=BoardTilt*new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
+                Emit(splash,worldPoint+up*.008f,radial*(radius/.22f)+up*.8f,Vector3.one*.008f,Color.white,.24f);
             }
             for(int i=0;i<12;i++)
             {
                 float angle=i*Mathf.PI*2/12;
-                Vector3 offset=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius*.4f;
-                Emit(steam,worldPoint+offset+Vector3.up*.02f,Vector3.up*.13f,Vector3.one*.05f,new Color(.75f,.9f,1,.65f),.45f);
+                Vector3 offset=BoardTilt*new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius*.4f;
+                Emit(steam,worldPoint+offset+up*.02f,up*.13f,Vector3.one*.05f,new Color(.75f,.9f,1,.65f),.45f);
             }
             // Two rings spread across the soaked footprint after the crown falls back.
             if(ripples)
             {
-                Emit(ripples,worldPoint+Vector3.up*.004f,Vector3.zero,Vector3.one*radius*2.1f,new Color(.62f,.93f,1,.9f),.55f);
-                Emit(ripples,worldPoint+Vector3.up*.005f,Vector3.zero,Vector3.one*radius*1.2f,new Color(.85f,1,1,.8f),.38f);
+                Emit(ripples,worldPoint+up*.004f,Vector3.zero,Vector3.one*radius*2.1f,new Color(.62f,.93f,1,.9f),.55f);
+                Emit(ripples,worldPoint+up*.005f,Vector3.zero,Vector3.one*radius*1.2f,new Color(.85f,1,1,.8f),.38f);
             }
         }
         // Every fire is out. Firework-like pops rise above the saved crowns while
@@ -371,7 +485,29 @@ namespace FireRescue
             for(int i=0;i<count;i++)
             {
                 float angle=i*Mathf.PI*2/count;
-                Emit(splash,point+Vector3.up*.04f,new Vector3(Mathf.Cos(angle)*.13f,.65f,Mathf.Sin(angle)*.13f),Vector3.one*.006f,new Color(.55f,1,.82f,.8f),.18f);
+                Emit(splash,point+BoardUp*.04f,BoardTilt*new Vector3(Mathf.Cos(angle)*.13f,.65f,Mathf.Sin(angle)*.13f),Vector3.one*.006f,new Color(.55f,1,.82f,.8f),.18f);
+            }
+        }
+        // The tree is out: one white steam puff billows off the crown and a grey ring rolls
+        // outward from it, distinct from the green rescue sparkle. Flames die in Tick.
+        public void Extinguish(Vector3 crown,float worldRadius,Vector3 up)
+        {
+            if(!steam)return;
+            up=up.sqrMagnitude>.01f?up.normalized:Vector3.up;
+            float radius=Mathf.Clamp(worldRadius,.02f,.08f);
+            var side=Vector3.Cross(up,Vector3.forward);if(side.sqrMagnitude<.01f)side=Vector3.Cross(up,Vector3.right);
+            side.Normalize();var ahead=Vector3.Cross(side,up);
+            for(int i=0;i<14;i++)
+            {
+                float angle=i*2.399963f;var radial=side*Mathf.Cos(angle)+ahead*Mathf.Sin(angle);
+                float rise=Random.Range(.55f,1);
+                Emit(steam,crown+radial*radius*Random.Range(.1f,.5f)+up*radius*.3f*rise,up*(.07f+.06f*rise)+radial*.03f,
+                    Vector3.one*Random.Range(.045f,.075f),new Color(1,1,1,1),Random.Range(.8f,1.2f));
+            }
+            for(int i=0;i<10;i++)
+            {
+                float angle=i*Mathf.PI*2/10;var radial=side*Mathf.Cos(angle)+ahead*Mathf.Sin(angle);
+                Emit(smoke,crown+radial*radius*.6f-up*radius*.2f,radial*.11f+up*.025f,Vector3.one*Random.Range(.035f,.05f),new Color(.85f,.85f,.85f,1),Random.Range(.6f,.85f));
             }
         }
         public void Sprinkler(Vector3 center,float radius,float dt)
@@ -393,8 +529,8 @@ namespace FireRescue
             {
                 sprinklerClocks[slot]--;
                 float angle=sprinklerPattern++*2.399963f+Time.unscaledTime*3;
-                Vector3 radial=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
-                Emit(splash,center,radial*(Mathf.Clamp(radius,.04f,.4f)/.22f)+Vector3.up*.72f,Vector3.one*.006f,new Color(.8f,.95f,1,.9f),.25f);
+                Vector3 radial=BoardTilt*new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
+                Emit(splash,center,radial*(Mathf.Clamp(radius,.04f,.4f)/.22f)+BoardUp*.72f,Vector3.one*.006f,new Color(.8f,.95f,1,.9f),.25f);
             }
         }
         public void Impact(WaterJet.Impact hit,bool hot)
@@ -405,7 +541,7 @@ namespace FireRescue
             if(hot && hit.Tree>=0 && hit.Tree<steamClock.Length && steamClock[hit.Tree]<=0)
             {
                 steamClock[hit.Tree]=.06f;
-                Emit(steam,hit.Point+Vector3.up*.015f,new Vector3(Random.Range(-.025f,.025f),Random.Range(.08f,.13f),Random.Range(-.02f,.02f)),Vector3.one*Random.Range(.035f,.055f),Color.white,Random.Range(.4f,.65f));
+                Emit(steam,hit.Point+BoardUp*.015f,BoardTilt*new Vector3(Random.Range(-.025f,.025f),Random.Range(.08f,.13f),Random.Range(-.02f,.02f)),Vector3.one*Random.Range(.035f,.055f),Color.white,Random.Range(.4f,.65f));
             }
             // A small surface pulse marks wet contact without pretending to be another hit.
             if(hit.Tree<0 && glow)Emit(glow,hit.Point+hit.Normal*.002f,Vector3.zero,Vector3.one*.035f,new Color(.35f,.8f,.9f,.18f),.16f);
@@ -419,7 +555,9 @@ namespace FireRescue
         public void Clear()
         {
             if(emitters!=null)foreach(var p in emitters)if(p)p.Clear();
+            frozenWarm=false;
             System.Array.Clear(flameClock,0,42);System.Array.Clear(smokeClock,0,42);System.Array.Clear(emberClock,0,42);System.Array.Clear(steamClock,0,42);glowClock=0;
+            System.Array.Clear(grassFlameClock,0,MaximumGrass);System.Array.Clear(grassSmokeClock,0,MaximumGrass);
             System.Array.Clear(sprinklerClocks,0,4);System.Array.Clear(sprinklerSlots,0,4);sprinklerPattern=0;celebrationRemaining=0;rippleReadyAt=0;
             VisibleStreamLinks=0;strandVertices.Clear();strandUvs.Clear();strandColors.Clear();strandIndices.Clear();
             streamClock=0;System.Array.Clear(streamBreakCounts,0,2);System.Array.Clear(streamBreakCursors,0,2);System.Array.Clear(streamWasEmitting,0,2);

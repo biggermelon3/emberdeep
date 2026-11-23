@@ -13,12 +13,13 @@ namespace FireRescue
         // distance alone. Animated hands cannot drive the real input samples.
         void LateUpdate()
         {
-            if(EnvironmentVfx && Player)EnvironmentVfx.Tick(Time.unscaledDeltaTime,focused && !paused && hands && hands.HeadReady
+            // Plan: time stopped, the board's environment clock holds still too (L3, FireRescueGame.Pieces.cs).
+            if(EnvironmentVfx && Player)EnvironmentVfx.Tick(PlanFrozen?0:Time.unscaledDeltaTime,focused && !paused && hands && hands.HeadReady
                 && !acquiringPose && !returningToCamp && !QuitConfirmationOpen,Player.ViewCamera,Run);
             if(ImmersiveSky)
             {
-                ImmersiveSky.SetEquipmentSubjects(rack,heldView?heldView.transform:null,
-                    hydrantStation?hydrantStation.transform:null,creekStation?creekStation.transform:null);
+                ImmersiveSky.SetAnchor(SeatAnchor);bool tools=!Run.SpellMode; // spell flow: the board alone shapes the sky window
+                ImmersiveSky.SetEquipmentSubjects(tools?rack:null,tools && heldView?heldView.transform:null,tools && hydrantStation?hydrantStation.transform:null,tools && creekStation?creekStation.transform:null);
                 ImmersiveSky.Tick(Time.unscaledDeltaTime,Player && hands && focused && !paused
                     && hands.HeadReady && !acquiringPose && !returningToCamp && Arena && Arena.gameObject.activeInHierarchy);
             }
@@ -111,6 +112,7 @@ namespace FireRescue
             if(heldView)handVisuals.Contacts.Add(heldView.transform);
             if(rackView)handVisuals.Contacts.Add(rackView.transform);
             if(hydrantStation)handVisuals.Contacts.Add(hydrantStation.transform);
+            if(pumpView)handVisuals.Contacts.Add(pumpView.transform);
             if(creekStation)handVisuals.Contacts.Add(creekStation.transform);
             // Inscribed solid volumes only. Do not erase fingers in handle gaps
             // or move the user's tracked skeleton to imitate physical collision.

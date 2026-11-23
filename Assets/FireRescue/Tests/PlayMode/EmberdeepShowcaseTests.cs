@@ -49,35 +49,33 @@ namespace FireRescue.Tests
                 yield return WaitScene(EmberdeepSession.FireScene);
                 var game=Object.FindFirstObjectByType<FireRescueGame>();Assert.NotNull(game);Assert.IsTrue(game.StandaloneShowcase);OnePlayer();
                 Assert.IsFalse(game.GetComponentsInChildren<WorkshopButton>().Any(b=>b.Command=="Main menu"));
-                Assert.IsTrue(game.GetComponentsInChildren<WorkshopButton>().Any(b=>b.Command=="Return to camp"));
+                // LoopSpec §11b: camp is on the pause panel and the results (the dashboard is gone in the spell flow).
+                Assert.IsTrue(game.GetComponentsInChildren<WorkshopButton>(true).Any(b=>b.Command=="Pause camp"));
                 game.SendMessage("OnApplicationFocus",true);yield return new WaitForSeconds(.3f);
                 Capture(game.Player.ViewCamera,"Logs/Emberdeep-FirstResponse.png");game.enabled=false;
-                for(int lesson=0;lesson<3;lesson++){Assert.True(game.Run.IsPalmLesson);Clear(game.Run);if(game.Run.NeedsMagicUpgrade)Assert.True(game.Run.BuyMagicUpgrade());game.StartNext();}
-                Clear(game.Run);Assert.IsTrue(game.Run.BuyEquipment(FireEquipmentId.PulsePistol));
-                game.Run.Equip(FireEquipmentId.PulsePistol);game.StartNext();EmberdeepTestFlow.StartPrepared(game.Run);
-                Assert.AreEqual(game.Run.Capacity,game.Run.Water,"A purchased spell arrives with a full crystal");
-                var supply=game.Run.Supply;
-                for(int i=0;i<6;i++)supply.SampleDock(WaterSourceKind.Hydrant,1,0,0,true,.05f);
-                Assert.AreEqual(WaterStationTier.LeverWell,game.Run.StationTier);
-                for(int i=0;i<30 && game.Run.Water<game.Run.Capacity;i++){supply.SampleLever(0,true,true);supply.SampleLever(.085f,true,true);supply.SampleLever(0,true,true);}
-                Assert.AreEqual(game.Run.Capacity,game.Run.Water);supply.Disconnect();game.Run.Tick(.02f,false);
-                for(int shot=0;shot<24;shot++)game.Run.Tick(.1f,true);
-                var run=game.Run;float water=run.Water,fuel=run.Trees[0].Fuel;int coins=run.Coins;
-                Assert.Greater(water,0);Assert.Less(water,run.Capacity,"Resume regression uses a genuinely depleted purchased tank");
+                for(int lesson=0;lesson<FireRun.PalmLessons;lesson++){Assert.True(game.Run.IsPalmLesson);Clear(game.Run);if(game.Run.NeedsMagicUpgrade)Assert.True(game.Run.BuyMagicUpgrade());game.StartNext();}
+                // Intent changed (LoopSpec §3, §11): spells are not sold and the gem is the one water
+                // store, so the resume regression carries a partly drained gem instead of a spell tank.
+                Clear(game.Run);Assert.IsFalse(game.Run.BuyEquipment(FireEquipmentId.PulsePistol),"Spells are cut from the production shop");
+                game.StartNext();EmberdeepTestFlow.StartPrepared(game.Run);
+                Assert.AreEqual(game.Run.MagicCapacity,game.Run.MagicWater,"Each level loads with a full gem");
+                for(int i=0;i<10;i++)game.Run.TickMagic(.1f,true,true);game.Run.Tick(.02f,false);
+                var run=game.Run;float water=run.MagicWater,fuel=run.Trees[0].Fuel;int coins=run.Coins;
+                Assert.Greater(water,0);Assert.Less(water,run.MagicCapacity,"Resume regression uses a genuinely drained gem");
                 game.ReturnToMenu();yield return WaitScene(EmberdeepSession.CampScene);OnePlayer();
-                Assert.AreSame(run,EmberdeepSession.Run);Assert.AreEqual(water,run.Water);Assert.AreEqual(fuel,run.Trees[0].Fuel);
+                Assert.AreSame(run,EmberdeepSession.Run);Assert.AreEqual(water,run.MagicWater);Assert.AreEqual(fuel,run.Trees[0].Fuel);
                 camp=Object.FindFirstObjectByType<EmberdeepCamp>();camp.SendMessage("OnApplicationFocus",true);
                 yield return WaitPlaced(camp);camp.EnterFireground();yield return WaitScene(EmberdeepSession.FireScene);
                 game=Object.FindFirstObjectByType<FireRescueGame>();game.enabled=false;OnePlayer();
-                Assert.AreSame(run,game.Run);Assert.AreEqual(4,run.Stage);Assert.AreEqual(coins,run.Coins);Assert.AreEqual(FireEquipmentId.PulsePistol,run.Equipped);
+                Assert.AreSame(run,game.Run);Assert.AreEqual(2,run.Stage);Assert.AreEqual(coins,run.Coins);Assert.AreEqual(FireEquipmentId.Extinguisher,run.Equipped);
                 // Scene transitions preserve partial water exactly; waiting cannot refill it.
-                Assert.AreEqual(water,run.Water);Assert.LessOrEqual(run.Trees[0].Fuel,fuel);Assert.Greater(run.Trees[0].Fuel,fuel-2);
-                for(int stage=4;stage<8;stage++)
+                Assert.AreEqual(water,run.MagicWater);Assert.LessOrEqual(run.Trees[0].Fuel,fuel);Assert.Greater(run.Trees[0].Fuel,fuel-2);
+                for(int stage=2;stage<6;stage++) // stage cut (T): 6 stages, one palm lesson
                 {
-                    Assert.AreEqual(stage,run.Stage);Assert.AreEqual(new[]{3,9,18,30,42}[stage-3],run.Trees.Length);
-                    if(stage==7){game.enabled=true;game.SendMessage("OnApplicationFocus",true);yield return new WaitForSeconds(.3f);Capture(game.Player.ViewCamera,"Logs/Emberdeep-Forest.png");game.enabled=false;}
-                    Clear(run);game.Refresh();Assert.AreEqual(stage==7?FirePhase.Won:FirePhase.Cleared,run.Phase);
-                    if(stage<7){game.StartNext();yield return null;}
+                    Assert.AreEqual(stage,run.Stage);Assert.AreEqual(EmberdeepLevels.For(stage).Trees.Length,run.Trees.Length); // the authored level (EmberdeepLevels, LV)
+                    if(stage==5){game.enabled=true;game.SendMessage("OnApplicationFocus",true);yield return new WaitForSeconds(.3f);Capture(game.Player.ViewCamera,"Logs/Emberdeep-Forest.png");game.enabled=false;}
+                    Clear(run);game.Refresh();Assert.AreEqual(stage==5?FirePhase.Won:FirePhase.Cleared,run.Phase);
+                    if(stage<5){game.StartNext();yield return null;}
                 }
                 game.ReturnToMenu();yield return WaitScene(EmberdeepSession.CampScene);OnePlayer();
                 camp=Object.FindFirstObjectByType<EmberdeepCamp>();

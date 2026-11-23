@@ -8,28 +8,42 @@ namespace FireRescue
     public sealed class FireFeedback : MonoBehaviour
     {
         const int SampleRate=22050;
-        enum Sound { Flow, Pressure, Impact, Launch, Rescue, Complete, Failure }
+        enum Sound { Flow, Pressure, Impact, Launch, Rescue, Complete, Failure, Alarm }
         AudioSource flow, pressure, contact, accent;
         AudioClip[] clips;
         float impactClock, rescueClock;
         int pendingCombo;
         bool wasSpraying;
+        // End-of-level stings: one clear fanfare, one heavy loss. Durations are the clip lengths.
+        public const float ClearStingVolume=.32f,LossStingVolume=.36f,ClearStingSeconds=1.35f,LossStingSeconds=1.7f;
+        // Striking the start bell (FireRescueGame.StrikeBell): a placeholder fire-alarm ring on the accent voice.
+        public const float AlarmVolume=.26f,AlarmSeconds=1.25f;
+        public int Alarms {get;private set;}
+        // In-world outcome moments (banner, board light, burn meter). Only with a FireRescueGame alongside.
+        public EmberdeepOutcomeView Outcome {get;private set;}
 
         public void Initialize()
         {
             if(flow)return;
-            clips=new AudioClip[7];
+            clips=new AudioClip[8];
             clips[(int)Sound.Flow]=Synthesize(Sound.Flow,1.2f);
             clips[(int)Sound.Pressure]=Synthesize(Sound.Pressure,.5f);
             clips[(int)Sound.Impact]=Synthesize(Sound.Impact,.17f);
             clips[(int)Sound.Launch]=Synthesize(Sound.Launch,.28f);
             clips[(int)Sound.Rescue]=Synthesize(Sound.Rescue,.34f);
-            clips[(int)Sound.Complete]=Synthesize(Sound.Complete,.85f);
-            clips[(int)Sound.Failure]=Synthesize(Sound.Failure,.6f);
+            clips[(int)Sound.Complete]=Synthesize(Sound.Complete,ClearStingSeconds);
+            clips[(int)Sound.Failure]=Synthesize(Sound.Failure,LossStingSeconds);
+            clips[(int)Sound.Alarm]=Synthesize(Sound.Alarm,AlarmSeconds);
             flow=Voice("Water flow",true,clips[(int)Sound.Flow]);
             pressure=Voice("Pressure rising",true,clips[(int)Sound.Pressure]);
             contact=Voice("Cooling and water impacts",false,null);
             accent=Voice("Water cannon and rescue cues",false,null);
+            var game=GetComponent<FireRescueGame>();
+            if(game && !Outcome)
+            {
+                Outcome=new GameObject("Outcome moments").AddComponent<EmberdeepOutcomeView>();
+                Outcome.transform.SetParent(transform,false);Outcome.Initialize(game);
+            }
         }
         AudioSource Voice(string name,bool loop,AudioClip clip)
         {
@@ -91,7 +105,12 @@ namespace FireRescue
             if(!accent)return;
             pendingCombo=0;rescueClock=1;
             flow.Stop();flow.volume=0;pressure.Stop();pressure.volume=0;
-            Play(accent,won?Sound.Complete:Sound.Failure,won?.25f:.18f);
+            Play(accent,won?Sound.Complete:Sound.Failure,won?ClearStingVolume:LossStingVolume);
+        }
+        public void Alarm()
+        {
+            if(!accent)return;
+            pendingCombo=0;Play(accent,Sound.Alarm,AlarmVolume);Alarms++;
         }
         public void Silence()
         {
@@ -132,12 +151,29 @@ namespace FireRescue
                         value=(Mathf.Sin(t*2*Mathf.PI*660)*.25f+Mathf.Sin(t*2*Mathf.PI*990)*.1f)*Mathf.Exp(-u*5);
                         break;
                     case Sound.Complete:
-                        // Three short overlapping notes, C / E / G, then a gentle high C.
-                        value=Note(t,0,523.25f)+Note(t,.13f,659.25f)+Note(t,.26f,783.99f)+Note(t,.42f,1046.5f);
+                        // Rising C / E / G, then a ringing C-E-G-C chord with a soft sparkle on top.
+                        value=Note(t,0,523.25f)+Note(t,.11f,659.25f)+Note(t,.22f,783.99f)
+                            +Bell(t,.36f,1046.5f,.2f)+Bell(t,.36f,783.99f,.12f)+Bell(t,.36f,659.25f,.1f)+Bell(t,.36f,523.25f,.1f)
+                            +noise*.03f*Mathf.Clamp01((t-.36f)/.02f)*Mathf.Exp(-Mathf.Max(0,t-.36f)*5);
                         break;
+                    case Sound.Alarm:
+                    {
+                        // A brass fire-alarm bell: the clapper strikes 17 times a second (alternate sides a little softer),
+                        // each strike rings inharmonic partials over the bell's own hum, then it stops and rings out.
+                        const float hits=17,stop=.85f;
+                        float since=t<stop?t%(1/hits):t-(Mathf.Floor(stop*hits)/hits);
+                        int n=Mathf.FloorToInt(Mathf.Min(t,stop)*hits);
+                        float strike=(Mathf.Sin(2*Mathf.PI*1150*since)*.5f+Mathf.Sin(2*Mathf.PI*2420*since)*.3f+Mathf.Sin(2*Mathf.PI*3830*since)*.15f)
+                            *Mathf.Exp(-since*(t<stop?32:7))*(n%2==0?1:.8f);
+                        float hum=(Mathf.Sin(2*Mathf.PI*1150*t)*.22f+Mathf.Sin(2*Mathf.PI*2420*t)*.1f)*(t<stop?1:Mathf.Exp(-(t-stop)*6));
+                        value=(strike*.6f+hum*.4f+noise*.02f*Mathf.Exp(-since*200))*.9f;
+                        break;
+                    }
                     default:
-                        phase+=2*Mathf.PI*Mathf.Lerp(220,130,u)/SampleRate;
-                        value=Mathf.Sin(phase)*.23f*Mathf.Exp(-u*3);
+                        // Loss: a low thud, then a falling minor line (G - Eb - C) over a smoky rumble.
+                        float thud=Mathf.Sin(2*Mathf.PI*Mathf.Lerp(90,42,Mathf.Clamp01(t/.25f))*t)*.4f*Mathf.Exp(-t*9);
+                        float rumble=filtered*.5f*Mathf.Clamp01(t/.15f)*Mathf.Exp(-t*1.6f);
+                        value=thud+rumble+Low(t,.05f,196f)+Low(t,.42f,155.56f)+Low(t,.8f,130.81f)*1.3f;
                         break;
                 }
                 float edge=Mathf.Min(Mathf.Clamp01(t/.006f),Mathf.Clamp01((duration-t)/.012f));
@@ -146,6 +182,18 @@ namespace FireRescue
             }
             var clip=AudioClip.Create("Fire rescue "+sound,count,1,SampleRate,false);
             clip.SetData(samples,0);return clip;
+        }
+        // A ringing tone with a long tail.
+        static float Bell(float time,float start,float frequency,float gain)
+        {
+            float t=time-start;if(t<0)return 0;
+            return (Mathf.Sin(t*frequency*2*Mathf.PI)+.3f*Mathf.Sin(t*frequency*4*Mathf.PI)*Mathf.Exp(-t*6))*gain*Mathf.Exp(-t*2.6f)*Mathf.Clamp01(t/.01f);
+        }
+        // A soft, hollow low note (odd harmonics) that swells and fades.
+        static float Low(float time,float start,float frequency)
+        {
+            float t=time-start;if(t<0)return 0;float w=t*frequency*2*Mathf.PI;
+            return (Mathf.Sin(w)+Mathf.Sin(3*w)*.22f+Mathf.Sin(5*w)*.08f)*.2f*Mathf.Clamp01(t/.04f)*Mathf.Exp(-t*2.4f);
         }
         static float Note(float time,float start,float frequency)
         {

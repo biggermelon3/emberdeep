@@ -11,6 +11,9 @@ Shader "Emberdeep/V2 Sculpted Surface"
         _Wind("Canopy motion", Range(0,1))=0
         _GroundDetail("Moss variation", Range(0,1))=0
         _EmissionColor("Emission", Color)=(0,0,0,0)
+        _Fade("Dither fade (EMBERDEEP_DITHER_FADE only)", Range(0,1))=0
+        _Ember("Forecast ember glow", Range(0,1))=0
+        _VertexState("Per-vertex board state in UV1 (grass)", Float)=0
     }
     SubShader
     {
@@ -25,23 +28,48 @@ Shader "Emberdeep/V2 Sculpted Surface"
             #pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW
+            // Only the runtime fade clones (EmberdeepTreeReadout) enable this, so every other
+            // draw keeps early-Z; multi_compile so builds never strip it.
+            #pragma multi_compile_local_fragment _ EMBERDEEP_DITHER_FADE
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             CBUFFER_START(UnityPerMaterial)
             half4 _BaseColor, _WetColor, _EmissionColor;
-            half _Wetness, _Scorch, _Heat, _Roughness, _Wind, _GroundDetail;
+            half _Wetness, _Scorch, _Heat, _Roughness, _Wind, _GroundDetail, _Fade, _Ember, _VertexState;
             CBUFFER_END
-            struct Attributes { float4 positionOS:POSITION; float3 normalOS:NORMAL; half4 color:COLOR; UNITY_VERTEX_INPUT_INSTANCE_ID };
-            struct Varyings { float4 positionCS:SV_POSITION; float3 world:TEXCOORD0; half3 normal:TEXCOORD1; half2 baked:TEXCOORD2; UNITY_VERTEX_OUTPUT_STEREO };
+            // Board clock + Plan grade (LoopSpec §6, EmberdeepPlanLook): globals, not per material. With _EmberdeepClockOn 0
+            // (camp, legacy flow) this runs on _Time as before, and the grade is 0 outside Plan.
+            float _EmberdeepClock, _EmberdeepClockOn, _EmberdeepPlanGrade; float4 _EmberdeepPlanFlood;
+            float EmberdeepTime(){return lerp(_Time.y,_EmberdeepClock,_EmberdeepClockOn);}
+            // Time stopped: a whitish chalk grade everywhere outside the flood radius (world xz around the board
+            // centre), which grows from the centre when the fire resumes; a thin warm band marks its front.
+            half3 EmberdeepGrade(half3 color,float3 world,half strength)
+            {
+                if(_EmberdeepPlanGrade<=0)return color;
+                float d=distance(world.xz,_EmberdeepPlanFlood.xz);
+                half outside=smoothstep(_EmberdeepPlanFlood.w-.05,_EmberdeepPlanFlood.w,d);
+                half lum=dot(color,half3(.299,.587,.114));
+                color=lerp(color,(lum*.55+.47)*half3(1,.985,.955),_EmberdeepPlanGrade*outside*strength);
+                half front=saturate(1-abs(d-_EmberdeepPlanFlood.w)/.05)*step(.001,_EmberdeepPlanFlood.w);
+                return color+half3(1,.62,.30)*front*_EmberdeepPlanGrade*strength*.35;
+            }
+            // UV1 = (heat, wetness, scorch, ember) per vertex, read only where _VertexState is 1: the
+            // grass patches share one mesh and one draw. Every other mesh keeps the material values.
+            struct Attributes { float4 positionOS:POSITION; float3 normalOS:NORMAL; half4 color:COLOR; float4 state:TEXCOORD1; UNITY_VERTEX_INPUT_INSTANCE_ID };
+            struct Varyings { float4 positionCS:SV_POSITION; float3 world:TEXCOORD0; half3 normal:TEXCOORD1; half2 baked:TEXCOORD2; half4 state:TEXCOORD3; UNITY_VERTEX_OUTPUT_STEREO };
             float Hash(float2 p){return frac(sin(dot(p,float2(127.1,311.7)))*43758.5453);}
             Varyings vert(Attributes v)
             {
                 Varyings o; UNITY_SETUP_INSTANCE_ID(v); UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+                half4 state=saturate(v.state)*_VertexState;
+                // Charred grass slumps to stubble (its mesh origin is the ground).
+                v.positionOS.y*=1-.62*state.z;
+                o.state=half4(max(_Heat,state.x),max(_Wetness,state.y),max(_Scorch,state.z),max(_Ember,state.w));
                 float3 p=TransformObjectToWorld(v.positionOS.xyz);
                 // Millimetre-scale visual motion only; gameplay anchors never move.
                 // Authored meshes carry a sway weight in vertex alpha (0 on trunks, stone and ground).
                 half sway=_Wind*v.color.a;
-                p.x+=sin(_Time.y*1.6+p.z*9+p.x*3)*.0016*sway;
-                p.z+=sin(_Time.y*1.1+p.x*7)*.0008*sway;
+                p.x+=sin(EmberdeepTime()*1.6+p.z*9+p.x*3)*.0016*sway;
+                p.z+=sin(EmberdeepTime()*1.1+p.x*7)*.0008*sway;
                 o.world=p; o.normal=TransformObjectToWorldNormal(v.normalOS);
                 // Baked ambient occlusion and height tone from Blender; plain primitives read as 1.
                 o.baked=half2(v.color.r,v.color.a);
@@ -50,14 +78,21 @@ Shader "Emberdeep/V2 Sculpted Surface"
             half4 frag(Varyings i):SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+                #if defined(EMBERDEEP_DITHER_FADE)
+                // 4x4 ordered dither in screen pixels: alpha-clip, no blending or sorting pass.
+                uint2 px=uint2(i.positionCS.xy)&3;
+                uint bayer=((px.x^px.y)&1)*8+(px.y&1)*4+(((px.x^px.y)>>1)&1)*2+((px.y>>1)&1);
+                clip((bayer+.5)/16.0-_Fade);
+                #endif
                 half3 n=normalize(i.normal), v=GetWorldSpaceNormalizeViewDir(i.world);
                 Light sun=GetMainLight(TransformWorldToShadowCoord(i.world));
                 half sky=saturate(n.y*.5+.5);
                 half baked=saturate(i.baked.x);
+                half heat=i.state.x, wetness=i.state.y, scorch=i.state.z, ember=i.state.w;
                 // Heat dries foliage to amber-brown from the lowest boughs upward (baked height in alpha).
-                half dry=smoothstep(i.baked.y-.30,i.baked.y+.12,_Heat*1.25)*step(.001,_Heat);
+                half dry=smoothstep(i.baked.y-.30,i.baked.y+.12,heat*1.25)*step(.001,heat);
                 half3 pigment=lerp(_BaseColor.rgb,half3(.40,.21,.06)+_BaseColor.rgb*.18,dry*.82);
-                pigment=lerp(pigment,half3(.075,.085,.08),_Scorch*.88);
+                pigment=lerp(pigment,half3(.075,.085,.08),scorch*.88);
                 // Meadow: broad sunlit and mossy patches plus fine flecks, all procedural and
                 // faded out before they can shimmer at the headset's pixel footprint.
                 float2 gp=i.world.xz*9.0,gi=floor(gp),gf=frac(gp);gf=gf*gf*(3-2*gf);
@@ -69,7 +104,8 @@ Shader "Emberdeep/V2 Sculpted Surface"
                 float fleck=Hash(floor(i.world.xz*260.0))-.5;
                 fleck*=1-smoothstep(.25,1.1,fwidth(i.world.x*260.0)+fwidth(i.world.z*260.0));
                 pigment=lerp(pigment,meadow*(1+fleck*.11),_GroundDetail*saturate(n.y*2-.6));
-                pigment=lerp(pigment,pigment*.68+_WetColor.rgb*.12,_Wetness);
+                // Soaked (§4.3): clearly darker and cooler, with a tight glossy highlight below.
+                pigment=lerp(pigment,pigment*.50+_WetColor.rgb*.10,wetness);
                 // Occluded creases turn deeper and slightly cooler instead of merely grey.
                 pigment*=lerp(half3(.52,.60,.74),half3(1,1,1),baked)*(.55+.45*baked);
                 // Wrapped warm key light over a cool sky / warm ground ambient: soft, toy-like volumes.
@@ -84,12 +120,16 @@ Shader "Emberdeep/V2 Sculpted Surface"
                 float normalVariance=dot(ddx(n),ddx(n))+dot(ddy(n),ddy(n));
                 half spec=pow(saturate(dot(n,h)),lerp(12,70,1-saturate(_Roughness+normalVariance*8)));
                 // Broad dry highlight separates enamel/brass from rough wood.
-                color+=sun.color*spec*(1-_Roughness)*.16*(1-_Scorch);
-                color+=half3(.55,.85,.89)*(spec*.32+fresnel*.13)*_Wetness;
+                color+=sun.color*spec*(1-_Roughness)*.16*(1-scorch);
+                half wetSpec=pow(saturate(dot(n,h)),lerp(56,24,saturate(normalVariance*8)));
+                color+=half3(.62,.88,.92)*(spec*.30+wetSpec*.55+fresnel*.20)*wetness;
                 // Firelight from below: undersides glow and flicker while the tree burns.
-                half flicker=.78+.22*sin(_Time.y*6+i.world.z*40+i.world.x*31);
-                color+=half3(1,.30,.03)*_Heat*(.07+.30*saturate(.55-n.y*.6))*flicker;
+                half flicker=.78+.22*sin(EmberdeepTime()*6+i.world.z*40+i.world.x*31);
+                color+=half3(1,.30,.03)*heat*(.07+.30*saturate(.55-n.y*.6))*flicker;
+                // Forecast (§4.4): the next fuel to catch smoulders, pulsing from below.
+                color+=half3(1,.34,.05)*ember*(.06+.20*saturate(.6-n.y*.5))*(.65+.35*flicker);
                 color+=_EmissionColor.rgb;
+                color=EmberdeepGrade(color,i.world,1);
                 return half4(color,1);
             }
             ENDHLSL

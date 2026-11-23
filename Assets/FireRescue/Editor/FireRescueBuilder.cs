@@ -18,12 +18,12 @@ namespace FireRescue.Editor
         public const string CampScenePath="Assets/FireRescue/Scenes/EmberdeepCamp.unity";
         public const string ShowcaseScenePath="Assets/FireRescue/Scenes/EmberdeepFireground.unity";
         public const string ShowcasePackageId="com.metahackathon2026.emberdeep";
-        public const string ShowcaseVersion="0.2.28";
-        public const int ShowcaseVersionCode=31;
-        public const string ShowcaseIconPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Hydrant-Icon.png";
+        public const string ShowcaseVersion="1.0.0";
+        public const int ShowcaseVersionCode=32; // PICO/Meta: every upload needs a higher code; 0.2.x builds used up to 31
+        public const string ShowcaseIconPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Sheep-Icon.png"; // 2026-11-22 store icon (close-up B); hydrant kept
         const string ShowcaseIconBackgroundPath="Assets/FireRescue/Art/AppIcon/Emberdeep-Icon-Background.png";
-        public const string ShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.28.apk";
-        public const string PicoShowcaseApk="Deliverables/Emberdeep/Emberdeep-0.2.28-Pico.apk";
+        public const string ShowcaseApk="Deliverables/Emberdeep/Emberdeep-1.0.0.apk";
+        public const string PicoShowcaseApk="Deliverables/Emberdeep/Emberdeep-1.0.0-Pico.apk";
         // Return a fresh whitelist so callers cannot accidentally mutate a future build.
         public static string[] ShowcaseScenes=>new[]{CampScenePath,ShowcaseScenePath};
 
@@ -147,11 +147,18 @@ namespace FireRescue.Editor
         }
 
         [MenuItem("Emberdeep/Build standalone Quest showcase")]
-        public static void BuildShowcaseQuest()=>BuildShowcase(false);
+        public static void BuildShowcaseQuest()=>BuildShowcase(false,ShowcaseApk,false,true);
         [MenuItem("Emberdeep/Build standalone PICO showcase")]
-        public static void BuildShowcasePico()=>BuildShowcase(true);
-        static void BuildShowcase(bool pico)
+        public static void BuildShowcasePico()=>BuildShowcase(true,PicoShowcaseApk,false,true);
+        // release: the Deliverables showcase (clean build cache, manifest next to the APK, scene-whitelist audit).
+        // Otherwise a quick incremental build to any path, optionally development, with no manifest
+        // (EmberdeepQuickBuild, Builds/). Both apply and restore the same Emberdeep and PICO settings.
+        public static BuildReport BuildShowcase(bool pico,string output,bool development,bool release)
         {
+            if(release && development)throw new ArgumentException("The release showcase audit rejects development builds.");
+            // PicoBuild keys its pre-build check and PICO player swap on this suffix.
+            if(pico!=output.EndsWith("-Pico.apk",StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException((pico?"A PICO APK name must end in -Pico.apk: ":"A Quest APK name must not end in -Pico.apk: ")+output);
             RequireIdleCleanScenes();
             var android=NamedBuildTarget.Android;
             if(PlayerSettings.GetScriptingBackend(android)!=ScriptingImplementation.IL2CPP
@@ -177,13 +184,17 @@ namespace FireRescue.Editor
             var previousIcons=CaptureAndroidIcons();
             bool previousBundle=EditorUserBuildSettings.buildAppBundle,previousDevelopment=EditorUserBuildSettings.development;
             bool picoPrepared=false;
-            string output=pico?PicoShowcaseApk:ShowcaseApk;
             Directory.CreateDirectory(Path.GetDirectoryName(output));
+            // An up-to-date incremental build can leave an old APK in place; never report that as this build.
+            if(!release && File.Exists(output))File.Delete(output);
             try
             {
                 if(pico)
                 {
                     PhysicalAssembly.Editor.PicoBuild.Prepare();picoPrepared=true;
+                    // The UI hand ray reads PICO's system aim (XR_EXT_hand_interaction) through Unity's Hand
+                    // Interaction Profile. Restore turns it off again; the Quest configuration never has it.
+                    PhysicalAssembly.Editor.PicoBuild.EnablePreparedFeature("HandInteractionProfile");
                     PlayerSettings.Android.minSdkVersion=AndroidSdkVersions.AndroidApiLevel29;
                 }
                 ApplyShowcaseIcons();
@@ -191,11 +202,11 @@ namespace FireRescue.Editor
                 if(art && art.Pipeline)QualitySettings.renderPipeline=art.Pipeline;
                 PlayerSettings.productName="Emberdeep";PlayerSettings.bundleVersion=ShowcaseVersion;PlayerSettings.Android.bundleVersionCode=ShowcaseVersionCode;
                 PlayerSettings.SetApplicationIdentifier(android,ShowcasePackageId);
-                EditorUserBuildSettings.buildAppBundle=false;EditorUserBuildSettings.development=false;
+                EditorUserBuildSettings.buildAppBundle=false;EditorUserBuildSettings.development=development;
                 EditorBuildSettings.scenes=ShowcaseScenes.Select(p=>new EditorBuildSettingsScene(p,true)).ToArray();
                 // An interrupted build must not leave a previous success manifest
                 // looking like evidence for the new source revision.
-                File.WriteAllText(Path.ChangeExtension(output,"manifest.json"),JsonUtility.ToJson(new ShowcaseManifest{
+                if(release)File.WriteAllText(Path.ChangeExtension(output,"manifest.json"),JsonUtility.ToJson(new ShowcaseManifest{
                     productName="Emberdeep",packageId=ShowcasePackageId,version=ShowcaseVersion,versionCode=ShowcaseVersionCode,
                     iconSource=ShowcaseIconPath,iconSha256=FileSha256(ShowcaseIconPath),
                     createdUtc=DateTime.UtcNow.ToString("O"),result="Building",apkPath=output,requestedScenes=ShowcaseScenes,headset=pico?"PICO 4":"Quest"
@@ -203,18 +214,30 @@ namespace FireRescue.Editor
                 // Localization tables and CJK fonts must ship offline in the APK.
                 UnityEditor.AddressableAssets.Settings.AddressableAssetSettings.BuildPlayerContent(out var localizedContent);
                 if(!string.IsNullOrEmpty(localizedContent.Error))throw new InvalidOperationException("Localization content build failed: "+localizedContent.Error);
+                // Cached player data can produce an empty packedAssets scene
+                // report in Unity 6. Use a clean release build for the audit.
+                var options=release?BuildOptions.DetailedBuildReport|BuildOptions.CleanBuildCache:BuildOptions.None;
+                if(development)options|=BuildOptions.Development;
+                EmberdeepRemovedPermissions.Active=EmberdeepRemovedPermissions.StoreBuild; // no unused permissions in any Emberdeep APK
                 var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
                     scenes=ShowcaseScenes,target=BuildTarget.Android,targetGroup=BuildTargetGroup.Android,
-                    // Cached player data can produce an empty packedAssets scene
-                    // report in Unity 6. Use a clean release build for the audit.
-                    locationPathName=output,options=BuildOptions.DetailedBuildReport|BuildOptions.CleanBuildCache});
-                WriteShowcaseManifest(report,output,pico);
+                    locationPathName=output,options=options});
+                if(release)WriteShowcaseManifest(report,output,pico);
+                else
+                {
+                    var apk=new FileInfo(output);
+                    Debug.Log("EMBERDEEP_QUICK_BUILD platform="+(pico?"PICO":"Quest")+" result="+report.summary.result+" errors="+report.summary.totalErrors+
+                        " warnings="+report.summary.totalWarnings+" development="+development+" seconds="+report.summary.totalTime.TotalSeconds.ToString("F0")+
+                        " "+(apk.Exists?"apk="+apk.FullName+" bytes="+apk.Length:"apk=missing"));
+                }
                 if(report.summary.result!=BuildResult.Succeeded || report.summary.totalErrors>0)
                     throw new InvalidOperationException("Emberdeep showcase build failed: "+report.summary.result+" errors="+report.summary.totalErrors);
-                Debug.Log("EMBERDEEP_SHOWCASE_BUILD_OK errors=0 scenes=2 apk="+Path.GetFullPath(output));
+                if(release)Debug.Log("EMBERDEEP_SHOWCASE_BUILD_OK errors=0 scenes=2 apk="+Path.GetFullPath(output));
+                return report;
             }
             finally
             {
+                EmberdeepRemovedPermissions.Active=null;
                 try { if(picoPrepared)PhysicalAssembly.Editor.PicoBuild.Restore(); }
                 finally
                 {

@@ -29,7 +29,8 @@ namespace FireRescue.Editor
                 string path=file.Replace('\\','/');AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
                 var importer=(ModelImporter)AssetImporter.GetAtPath(path);
                 importer.importCameras=false;importer.importLights=false;importer.importAnimation=false;
-                importer.globalScale=1;importer.isReadable=false;importer.meshCompression=ModelImporterMeshCompression.Low;
+                // The terrain stays readable: EmberdeepBoardFit squeezes it to the compact board at runtime (LoopSpec §5).
+                importer.globalScale=1;importer.isReadable=path.EndsWith("EDV2_Terrain.fbx");importer.meshCompression=ModelImporterMeshCompression.Low;
                 importer.importNormals=ModelImporterNormals.Import;importer.SaveAndReimport();
                 var model=AssetDatabase.LoadAssetAtPath<GameObject>(path);var go=(GameObject)PrefabUtility.InstantiatePrefab(model);
                 go.name=Path.GetFileNameWithoutExtension(path);

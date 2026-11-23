@@ -23,8 +23,10 @@ namespace FireRescue.Tests
         InputSettings.BackgroundBehavior background;
         InputSettings.EditorInputBehaviorInPlayMode editorInput;
 
+        EmberdeepSettingsPrefs savedOptions;
         [UnitySetUp] public IEnumerator LoadPlacedCamp()
         {
+            savedOptions=EmberdeepSettingsPrefs.Save();
             hadSoundPreference=PlayerPrefs.HasKey(SoundKey);
             soundPreference=PlayerPrefs.GetInt(SoundKey,1);audioVolume=AudioListener.volume;
             background=InputSystem.settings.backgroundBehavior;
@@ -47,6 +49,7 @@ namespace FireRescue.Tests
             {
                 if(hadSoundPreference)PlayerPrefs.SetInt(SoundKey,soundPreference);
                 else PlayerPrefs.DeleteKey(SoundKey);
+                savedOptions?.Restore();
                 PlayerPrefs.Save();
             }
             finally
@@ -67,7 +70,7 @@ namespace FireRescue.Tests
             Assert.IsNull(camp.HoveredButton);Assert.IsFalse(button.IsHovered,"Head direction alone must not select a hand target");
             Assert.IsFalse(button.transform.parent.Find("Settings ray outline").gameObject.activeSelf);
             Assert.AreEqual(EmberdeepCamp.MenuPage.Main,camp.ActivePage);
-            Assert.IsTrue(camp.GetComponentsInChildren<TextMesh>().Any(t=>t.text.Contains("SHOW AN OPEN HAND")));
+            Assert.IsTrue(camp.GetComponentsInChildren<TextMesh>().Any(t=>t.text==EmberdeepCamp.HandPrompt));
             for(int i=0;i<10;i++)camp.ProcessMenuInput(ray,true,true,Open,false,float.PositiveInfinity,Dt);
             Assert.AreSame(button,camp.HoveredButton);Assert.IsTrue(button.IsHovered);
             Assert.IsTrue(button.transform.parent.Find("Settings ray outline").gameObject.activeSelf);
@@ -76,9 +79,38 @@ namespace FireRescue.Tests
             var miss=new Ray(ray.origin,Vector3.up);
             camp.ProcessMenuInput(miss,true,true,Open,false,float.PositiveInfinity,Dt);
             Assert.IsNull(camp.HoveredButton);Assert.IsFalse(button.IsHovered);
-            Assert.IsTrue(camp.GetComponentsInChildren<LineRenderer>().Any(l=>l.enabled && l.name.Contains("contextual hand ray")),"Camp retains a live hand ray so the player can find the next button");
+            // Headset test 2 (2026-11-22): away from the sign the ray steps down (it stood beside the palm-water aim).
+            Assert.IsFalse(camp.MenuInput.RayVisible(0));
+            for(int i=0;i<10;i++)camp.ProcessMenuInput(miss,true,true,Open,false,float.PositiveInfinity,Dt);
+            Assert.IsFalse(camp.GetComponentsInChildren<LineRenderer>().Any(l=>l.enabled && l.name.Contains("contextual hand ray")),"gone after its short fade");
+            // Near the sign, beside a button, it is back so the player can find the next button.
+            var beside=new Ray(ray.origin,button.transform.position+button.transform.right*(button.transform.lossyScale.x*.5f+.04f)-ray.origin);
+            camp.ProcessMenuInput(beside,true,true,Open,false,float.PositiveInfinity,Dt);
+            Assert.IsNull(camp.HoveredButton);Assert.IsTrue(camp.MenuInput.RayVisible(0));
+            Assert.IsTrue(camp.GetComponentsInChildren<LineRenderer>().Any(l=>l.enabled && l.name.Contains("contextual hand ray")),"Camp shows the ray near the sign so the player can find the next button");
             camp.ProcessMenuInput(ray,false,true,Closed,true,Closed,Dt);
             Assert.IsNull(camp.HoveredButton);Assert.IsFalse(button.IsHovered);
+            yield return null;
+        }
+
+        // Headset test 2 (2026-11-22): the water hand drew its menu ray beside its palm-water aim. While its ray is up (on or
+        // near the sign) the palm aim steps aside; pointed away, the hand is free again once the line has faded.
+        [UnityTest] public IEnumerator WaterHandRayNearTheSignTakesThePalmAimOffThatHand()
+        {
+            var play=camp.Play;Assert.NotNull(play);Assert.IsTrue(play.Built);
+            int water=play.WaterHandLeft?0:1;
+            var button=Button("Settings");var ray=RayTo(button);
+            var beside=new EmberdeepHandRay.Sample(true,new Ray(ray.origin,button.transform.position+button.transform.right*(button.transform.lossyScale.x*.5f+.04f)-ray.origin),Open);
+            var away=new EmberdeepHandRay.Sample(true,new Ray(ray.origin,Vector3.down),Open);
+            void Sample(EmberdeepHandRay.Sample sample)=>camp.ProcessHandMenuInput(water==0?sample:default,water==1?sample:default,true,Dt);
+            Sample(away);Assert.IsFalse(play.WaterRayUp,"pointing at the island: the palm aim owns this hand");
+            Sample(beside);Assert.IsTrue(play.WaterRayUp,"near the sign: the ray owns it");Assert.IsNull(camp.HoveredButton);
+            Sample(new EmberdeepHandRay.Sample(true,ray,Open));Assert.IsTrue(play.WaterRayUp);Assert.AreSame(button,camp.HoveredButton);
+            Sample(away);Assert.IsFalse(camp.MenuInput.RayVisible(water));Assert.IsTrue(play.WaterRayUp,"until its line has faded");
+            for(int i=0;i<10;i++)Sample(away);
+            Assert.IsFalse(play.WaterRayUp);
+            camp.ProcessHandMenuInput(water==1?beside:default,water==0?beside:default,true,Dt);
+            Assert.IsFalse(play.WaterRayUp,"the other hand's ray leaves the water hand free");
             yield return null;
         }
 
@@ -166,17 +198,18 @@ namespace FireRescue.Tests
             yield return null;
         }
 
-        [UnityTest] public IEnumerator SoundToggleUsesPointingHandPinchAndHeldInputDoesNotToggleAgain()
+        // §10 options: the old Sound on/off toggle is now a SOUND volume slider (EmberdeepSettingsPlayTests covers the rest).
+        [UnityTest] public IEnumerator SoundVolumeUsesPointingHandPinchAndHeldInputDoesNotStepAgain()
         {
-            bool initial=camp.SoundEnabled;
-            Select("Settings",true);Select("Sound",false);
-            Assert.AreEqual(!initial,camp.SoundEnabled);
-            Assert.That(AudioListener.volume,Is.EqualTo(initial?0:1).Within(.0001f));
-            Assert.AreEqual(initial?0:1,PlayerPrefs.GetInt(SoundKey));
-            HoldOn("Sound",false);Assert.AreEqual(!initial,camp.SoundEnabled);
+            Select("Settings",true);EmberdeepAudioSettings.SetSfx(.5f);camp.RefreshSettings();
+            Select("Sound down",false);
+            Assert.That(EmberdeepAudioSettings.Sfx,Is.EqualTo(.4f).Within(.0001f));
+            Assert.That(AudioListener.volume,Is.EqualTo(.4f).Within(.0001f));
+            Assert.That(PlayerPrefs.GetFloat(EmberdeepAudioSettings.SfxKey),Is.EqualTo(.4f).Within(.0001f));
+            HoldOn("Sound down",false);Assert.That(EmberdeepAudioSettings.Sfx,Is.EqualTo(.4f).Within(.0001f),"a held pinch steps once");
             // WorkshopButton debounces repeated presses using real unscaled time.
             yield return new WaitForSecondsRealtime(.5f);
-            Select("Sound",true);Assert.AreEqual(initial,camp.SoundEnabled);
+            Select("Sound up",true);Assert.That(EmberdeepAudioSettings.Sfx,Is.EqualTo(.5f).Within(.0001f));Assert.IsTrue(camp.SoundEnabled);
         }
 
         [UnityTest] public IEnumerator RecenterUsesFreshEyeHeightAndHeadingThenRemainsAnchored()

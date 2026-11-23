@@ -2,15 +2,13 @@ using UnityEngine;
 
 namespace FireRescue
 {
-    // Gesture spells replace the hand-held tools in the production (goddess)
-    // flow. Each purchased item keeps its own crystal: palm water uses the mana
-    // crystal, the other three use that item's tank. Crystals recover slowly
-    // over time; the well basin is the fast way to refill them.
+    // Gesture spells (WATER BOLT, RAIN FAN, WATER ORB). LoopSpec §11 cuts them from the
+    // production flow: they are only owned with PlaytestAllSpells. Each keeps its own tank,
+    // which refills at stage start and recovers slowly; palm water uses the gem.
     public sealed partial class FireRun
     {
         public const float SpellRecoveryDelaySeconds=2,SpellRecoverySeconds=45;
         public const float FanFlow=12,FanSpreadDegrees=20;
-        public const float BasinCapacity=60,BasinAbsorbPerSecond=30,BasinValvePerSecond=14,BasinAutoPerSecond=5,BasinButtonPerSecond=24;
         public bool SpellMode=>GoddessTutorial;
         bool playtestAllSpells;
         // Playtest switch: every spell is owned and full from the first level.
@@ -20,11 +18,12 @@ namespace FireRescue
             set{playtestAllSpells=value;if(value)GrantAllSpells();}
         }
         void GrantAllSpells(){for(int i=0;i<4;i++){owned[i]=true;tanks[i]=CapacityFor((FireEquipmentId)i);}}
-        // The well works from the very first level; its demonstration waits until the palm lesson is done.
+        // Legacy tool flow: the station works once the palm lessons are done.
         public bool StationOpen=>SpellMode || !IsPalmLesson;
+        // Production flow sells no spells; the playtest switch grants them all instead.
+        public bool SpellsCut=>SpellMode && !playtestAllSpells;
+        bool SpellCut(FireEquipmentId id)=>SpellsCut && id!=FireEquipmentId.Extinguisher;
         readonly float[] spellIdle=new float[4];
-        public float BasinWater {get;private set;}
-        public bool BasinFlowing {get;private set;}
         public float PowerFor(FireEquipmentId id)=>FireEquipment.Get(id).Power+upgrades[(int)id]*27;
         public float WidthFor(FireEquipmentId id)=>FireEquipment.Get(id).Width+upgrades[(int)id]*.16f;
         public float RangeFor(FireEquipmentId id)=>FireEquipment.Get(id).Range+upgrades[(int)id]*2.5f;
@@ -54,7 +53,7 @@ namespace FireRescue
         {
             if(!SpellMode)return;
             for(int i=1;i<4;i++)if(owned[i])tanks[i]=CapacityFor((FireEquipmentId)i);
-            System.Array.Clear(spellIdle,0,spellIdle.Length);BasinFlowing=false;
+            System.Array.Clear(spellIdle,0,spellIdle.Length);
         }
         public static float BoltCost(float charge)=>3+7*Mathf.Clamp01(charge);
         // One shot per release. A weak crystal fires a proportionally weaker shot.
@@ -94,48 +93,6 @@ namespace FireRescue
                 if(spellIdle[i]<SpellRecoveryDelaySeconds || tanks[i]>=capacity)continue;
                 tanks[i]=Mathf.Min(capacity,tanks[i]+capacity/SpellRecoverySeconds*dt);
             }
-        }
-        // The well lever, the wheel and the automatic feed all pour into the basin.
-        public float AddBasinWater(float units)
-        {
-            if(!SpellMode || !PositiveFinite(units) || Phase==FirePhase.Lost)return 0;
-            float accepted=Mathf.Min(units,BasinCapacity-BasinWater);
-            if(accepted<=0)return 0;
-            BasinWater+=accepted;SuppliedWater+=accepted;return accepted;
-        }
-        public bool SetBasinFlow(bool open)
-        {
-            if(!SpellMode || StationTier==WaterStationTier.LeverWell)return false;
-            BasinFlowing=open && BasinWater<BasinCapacity-.0001f;return true;
-        }
-        public void TickBasin(float dt)
-        {
-            if(!SpellMode || !float.IsFinite(dt) || dt<=0 || !StationOpen || (Phase!=FirePhase.Fighting && Phase!=FirePhase.Cleared && Phase!=FirePhase.Preparing))return;
-            dt=Mathf.Min(dt,.1f);
-            if(StationTier==WaterStationTier.LeverWell)BasinFlowing=false;
-            if(StationTier==WaterStationTier.PushButton)AddBasinWater(BasinAutoPerSecond*dt);
-            if(!BasinFlowing)return;
-            AddBasinWater((StationTier==WaterStationTier.PushButton?BasinButtonPerSecond:BasinValvePerSecond)*dt);
-            if(BasinWater>=BasinCapacity-.0001f)BasinFlowing=false;
-        }
-        // One hand in the basin feeds the emptiest owned crystal first.
-        public float AbsorbBasin(float dt)
-        {
-            if(!SpellMode || !float.IsFinite(dt) || dt<=0 || BasinWater<=0 || Phase==FirePhase.Lost)return 0;
-            int target=-1;float lowest=.9999f;
-            for(int i=0;i<4;i++)
-            {
-                if(!owned[i])continue;
-                float fill=SpellWater((FireEquipmentId)i)/Mathf.Max(1,SpellCapacity((FireEquipmentId)i));
-                if(fill<lowest){lowest=fill;target=i;}
-            }
-            if(target<0)return 0;
-            var id=(FireEquipmentId)target;
-            float moved=Mathf.Min(Mathf.Min(BasinAbsorbPerSecond*Mathf.Min(dt,.1f),BasinWater),SpellCapacity(id)-SpellWater(id));
-            if(moved<=0)return 0;
-            BasinWater-=moved;
-            if(target==0)MagicWater+=moved;else tanks[target]+=moved;
-            return moved;
         }
     }
 }

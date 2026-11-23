@@ -4,21 +4,29 @@ using UnityEngine.Rendering;
 namespace FireRescue
 {
     // A cut gem in a brass leaf setting; fill travels wrist-to-knuckles in the hand's own frame.
+    // LoopSpec §3.1: glass with a visible water level that drains while spraying, rises with
+    // each pump splash, and turns dull when empty.
     [DefaultExecutionOrder(11000)]
     public sealed class EmberdeepManaCrystal : MonoBehaviour
     {
         Material material;Mesh mesh;
         EmberdeepHandVisuals handVisuals;
-        public void FollowLeftHand(EmberdeepHandVisuals source)=>handVisuals=source;
+        bool followLeft=true;
+        public bool FollowsLeft=>followLeft;
+        public void FollowLeftHand(EmberdeepHandVisuals source)=>FollowHand(source,true);
+        public void FollowHand(EmberdeepHandVisuals source,bool left){handVisuals=source;followLeft=left;}
         void LateUpdate()
         {
-            if(handVisuals && handVisuals.TryDisplayPalm(true,out var palm))
+            if(handVisuals && handVisuals.TryDisplayPalm(followLeft,out var palm))
                 transform.SetPositionAndRotation(palm.position+palm.rotation*(Offset-Vector3.up*.016f),palm.rotation);
         }
         // Palm-frame offset: the small spell crystals sit beside the main one.
         public Vector3 Offset;
         public void SetTint(Color color){Ensure();material.SetColor("_Tint",color);}
         public float Fill {get;private set;}
+        public bool Dull {get;private set;}
+        public float Flow {get;private set;}
+        public float Pulse {get;private set;}
         public bool Authored {get;private set;}
         void Awake()=>Ensure();
         // Built on first use as well as on Awake: a crystal created under an inactive
@@ -26,7 +34,7 @@ namespace FireRescue
         void Ensure()
         {
             if(material)return;
-            material=new Material(Resources.Load<Shader>("EmberdeepManaCrystal")){name="Left hand water crystal"};material.SetColor("_Tint",new Color(.04f,.76f,.88f));
+            material=new Material(Resources.Load<Shader>("EmberdeepManaCrystal")){name="Water hand gem"};material.SetColor("_Tint",new Color(.04f,.76f,.88f));
             // Blender kit: faceted stone, brass leaf setting and a cream leather patch.
             var art=EmberdeepArtLibrary.Load();var kit=art?art.Create("Crystal",transform,Vector3.zero):null;
             if(kit)
@@ -47,7 +55,14 @@ namespace FireRescue
             gameObject.AddComponent<MeshFilter>().sharedMesh=mesh;var r=gameObject.AddComponent<MeshRenderer>();r.sharedMaterial=material;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=false;
             EmberdeepCraftDetails.Crystal(transform);
         }
-        public void SetFill(float value){Ensure();Fill=Mathf.Clamp01(value);material.SetFloat("_Fill",Fill);}
+        public void SetFill(float value){Ensure();Fill=Mathf.Clamp01(float.IsFinite(value)?value:0);material.SetFloat("_Fill",Fill);}
+        // flow: -1 draining (spraying) .. +1 filling (pump splash or passive refill).
+        public void SetState(float fill,float flow,bool dull,float pulse)
+        {
+            SetFill(fill);
+            Flow=float.IsFinite(flow)?Mathf.Clamp(flow,-1,1):0;Dull=dull;Pulse=float.IsFinite(pulse)?Mathf.Clamp01(pulse):0;
+            material.SetFloat("_Flow",Flow);material.SetFloat("_Dull",Dull?1:0);material.SetFloat("_Pulse",Pulse);
+        }
         void OnDestroy(){if(material)Destroy(material);if(mesh)Destroy(mesh);}
     }
 }

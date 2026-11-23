@@ -89,9 +89,9 @@ namespace FireRescue.Tests
             var camera=game.Player.ViewCamera;var position=camera.transform.position;var rotation=camera.transform.rotation;
             try
             {
-                var station=game.HydrantStation.transform;
-                var focus=station.TransformPoint(new Vector3(0,.22f,.025f));
-                camera.transform.position=station.TransformPoint(new Vector3(.4f,.45f,-.78f));
+                var station=game.Pump.transform;
+                var focus=station.position+Vector3.up*.2f;
+                camera.transform.position=focus+game.Arena.rotation*new Vector3(.25f,.25f,-.5f);
                 camera.transform.rotation=Quaternion.LookRotation(focus-camera.transform.position);
                 Capture(camera,name);
             }
@@ -103,12 +103,18 @@ namespace FireRescue.Tests
             var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(game.Arena.position+Vector3.up,Quaternion.identity),Open);
             game.ProcessRefillHands(hand==0?sample:idle,hand==1?sample:idle,Dt);
         }
-        void LeverSample(int hand,Pose palm,float closure,int frames=1)
+        // One fist swing through the cap: rest above the rearm height, then fall at ~1.4 m/s.
+        bool Hammer(int hand)
         {
-            var sample=new EmberdeepRefillInteraction.Hand(true,palm,closure>.5f?Closed:Open,palm.position)
-                {GripValid=false,GripStrength=0};
-            var idle=new EmberdeepRefillInteraction.Hand(true,new Pose(game.Arena.position+Vector3.up,Quaternion.identity),Open);
-            for(int i=0;i<frames;i++)game.ProcessRefillHands(hand==0?sample:idle,hand==1?sample:idle,Dt);
+            var top=game.Pump.CapTop;var up=game.Pump.Up;var none=default(EmberdeepFistHammer.Hand);
+            var fist=new EmberdeepFistHammer.Hand(true,top+up*.15f,.95f);
+            game.SamplePumpHands(hand==0?fist:none,hand==1?fist:none,.014f);
+            for(int i=1;i<=10;i++)
+            {
+                fist.Fist=top+up*(.15f-.02f*i);
+                if(game.SamplePumpHands(hand==0?fist:none,hand==1?fist:none,.014f))return true;
+            }
+            return false;
         }
         void CheckStationRefresh(string tank)
         {
@@ -146,11 +152,14 @@ namespace FireRescue.Tests
             camp.enabled=false;Physics.SyncTransforms();
             var start=Button(camp,"New Game");var aim=Point(camp.Player.ViewCamera,start,Open);
             var miss=new EmberdeepHandRay.Sample(true,new Ray(aim.Ray.origin,Vector3.up),Open);
-            CampSample(hand,miss);Assert.IsTrue(camp.MenuInput.RayVisible(hand),"Camp shows live hand aim before acquiring a button");Assert.IsFalse(camp.MenuInput.OwnsInput);
+            // Headset test 2 (2026-11-22): the camp ray shows only on or near the sign, never beside the palm-water aim.
+            CampSample(hand,miss);Assert.IsFalse(camp.MenuInput.RayVisible(hand),"No ray pointing away from the sign");Assert.IsFalse(camp.MenuInput.OwnsInput);
+            var near=new EmberdeepHandRay.Sample(true,new Ray(aim.Ray.origin,start.transform.position+start.transform.right*(start.transform.lossyScale.x*.5f+.04f)-aim.Ray.origin),Open);
+            CampSample(hand,near);Assert.IsTrue(camp.MenuInput.RayVisible(hand),"Camp shows live hand aim near the sign before acquiring a button");Assert.IsFalse(camp.MenuInput.OwnsInput);
             for(int i=0;i<8;i++)CampSample(hand,aim);
             Assert.AreSame(start,camp.HoveredButton);Assert.IsTrue(camp.MenuInput.RayVisible(hand));
             if(hand==1)Capture(camp.Player.ViewCamera,"Editor-synthetic-Camp-hover");
-            CampSample(hand,miss);Assert.IsTrue(camp.MenuInput.RayVisible(hand));Assert.IsNull(camp.HoveredButton);
+            CampSample(hand,miss);Assert.IsFalse(camp.MenuInput.RayVisible(hand));Assert.IsNull(camp.HoveredButton);
             for(int i=0;i<8;i++)CampSample(hand,aim);
             aim.Pinch=Closed;CampSample(hand,aim);
             deadline=Time.realtimeSinceStartup+15;
@@ -163,36 +172,28 @@ namespace FireRescue.Tests
             Assert.AreSame(game.Player.ViewCamera,game.MenuInput.ViewCamera);
             game.enabled=false;game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
             Assert.True(game.Run.IsPalmLesson);Assert.False(game.TakeEquipment(hand));
-            for(int stage=0;stage<3;stage++)
+            for(int stage=0;stage<FireRun.PalmLessons;stage++) // stage cut (T): one palm lesson
             {EmberdeepTestFlow.StartPrepared(game.Run);game.Run.ApplyWater(Vector3.zero,10000,100);game.Run.EvacuateSafeAnimals();if(game.Run.NeedsMagicUpgrade)Assert.True(game.Run.BuyMagicUpgrade());game.StartNext();}
             EmberdeepTestFlow.StartPrepared(game.Run);game.Refresh();Physics.SyncTransforms();
             // Spell mode retires the hand-held tools: nothing to pick up or dock.
-            // The same tracked lever stroke now pours into the altar basin.
+            // Intent changed (LoopSpec §3): the well, its lever and the altar basin are gone;
+            // a fist hammered onto the pump cap refills the gem directly.
             Assert.IsFalse(game.Run.IsPalmLesson);Assert.IsFalse(game.TakeEquipment(hand));Assert.IsFalse(game.HoldingEquipment);
             Assert.IsFalse(game.transform.Find("Equipment rack").gameObject.activeSelf);
             Assert.IsFalse(Button(game,"Return equipment").gameObject.activeSelf);
-            Assert.IsTrue(game.Run.StationOpen);Assert.IsTrue(game.Basin.gameObject.activeInHierarchy);Assert.Zero(game.Run.BasinWater);
+            Assert.IsFalse(game.HydrantStation.gameObject.activeSelf);Assert.IsTrue(game.Pump.gameObject.activeInHierarchy);
             if(hand==1)Capture(game.Player.ViewCamera,"Editor-synthetic-Fireground-overview");
-            var station=game.HydrantStation;Assert.AreEqual(WaterStationTier.LeverWell,game.Run.StationTier);
-            Assert.IsFalse(game.Basin.Contains(station.Lever.position),"Working the lever must not count as a hand in the basin");
-            Assert.IsTrue(game.Basin.Contains(game.Basin.Center));
-            var lever=station.Lever.position;
-            var palm=new Pose(lever,station.Lever.rotation);
-            LeverSample(hand,palm,0,6);
-            LeverSample(hand,palm,1,4);
+            for(int i=0;i<100 && !game.Run.GemEmpty;i++)game.Run.TickMagic(.1f,true,true);
+            Assert.IsTrue(game.Run.GemEmpty);
             for(int stroke=0;stroke<3;stroke++)
             {
-                float before=game.Run.BasinWater;
-                palm.position=lever-station.transform.up*.08f;
-                LeverSample(hand,palm,1);
-                Assert.AreEqual(before,game.Run.BasinWater,"Downstroke alone cannot fill the basin");
-                palm.position=lever;LeverSample(hand,palm,1);
-                Assert.That(game.Run.BasinWater,Is.EqualTo(before+18).Within(.01f),"A returned 8 cm stroke pours 18 units into the basin");
+                float before=game.Run.MagicWater;
+                Assert.IsTrue(Hammer(hand),"A fast fist through the cap is one strike");
+                Assert.That(game.Run.MagicWater,Is.EqualTo(before+EmberdeepWaterTuning.StrikeWater).Within(.01f));
             }
-            LeverSample(hand,palm,0,4);
-            Assert.AreEqual(54,game.Run.BasinWater,.01f);Assert.IsFalse(game.Run.Supply.Locked);Assert.AreEqual(60,game.Run.Water,"The retired tool tank receives nothing");
+            Assert.AreEqual(60,game.Run.Water,"The retired tool tank receives nothing");
             game.Refresh();
-            if(hand==1)CaptureStation("Editor-detail-synthetic-Basin-filled");
+            if(hand==1)CaptureStation("Editor-detail-synthetic-Pump-strike");
             yield return null;
         }
     }

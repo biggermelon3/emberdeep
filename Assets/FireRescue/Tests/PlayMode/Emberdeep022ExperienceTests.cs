@@ -65,11 +65,12 @@ namespace FireRescue.Tests
             Capture(game.Player.ViewCamera,"Game-Quit-Chinese");game.CancelQuit();Assert.False(game.QuitRequested);Assert.False(game.QuitConfirmationOpen);
             game.Run.ApplyWater(Vector3.zero,10000,100);game.Run.EvacuateSafeAnimals();game.OpenShop();yield return null;
             CheckChinese(game.gameObject,"Shop-Lesson-Chinese");Capture(game.Player.ViewCamera,"Shop-Lesson-Chinese");
-            Assert.True(game.Run.NeedsMagicUpgrade);Assert.True(game.BuyShopSelection());
+            Assert.False(game.Run.NeedsMagicUpgrade,"Stage cut (T): no forced shop lesson");Assert.True(game.BuyShopSelection());
             for(int i=0;i<4;i++){game.SelectEquipment(i);yield return null;CheckChinese(game.gameObject,"Shop-"+i);}
             game.ShowShopPage(EmberdeepShopPage.Magic);yield return null;CheckChinese(game.gameObject,"Magic-Shop-Chinese");Capture(game.Player.ViewCamera,"Magic-Shop-Chinese");
             game.ShowShopPage(EmberdeepShopPage.Equipment);Capture(game.Player.ViewCamera,"Shop-Chinese");
-            yield return Localized(game.gameObject,"en");Assert.True(game.GetComponentsInChildren<TextMesh>().Any(t=>t.text.Contains("CASH")));
+            // LoopSpec §11b: the spell flow sells from upgrade tiles (was the gear shop's CASH line).
+            yield return Localized(game.gameObject,"en");Assert.True(game.GetComponentsInChildren<TextMesh>().Any(t=>t.text.Contains("GEM")));
             game.CloseShop();game.RequestQuit();game.ConfirmQuit();Assert.True(game.QuitRequested);game.ReturnToMenu();yield return null;yield return null;
         }
         [UnityTest] public IEnumerator EveryVisualTutorialMovesAndHasNoInputColliders()

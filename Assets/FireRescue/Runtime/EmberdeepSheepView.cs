@@ -6,8 +6,11 @@ namespace FireRescue
 {
     // Shared vertex-colour meshes: no physics bodies, per-animal materials, timers,
     // navigation agents or health bars. The domain clock owns all animation time.
+    // A pet (Affection jumping up, from hands or Pet()) plays EmberdeepSheepHop and the pet sound.
+    // Rescued sheep stay on the safe bank, grazing, so they can be petted.
     public sealed class EmberdeepSheepView : MonoBehaviour
     {
+        const float GrazeCycle=5.5f,GrazeDip=24f;
         sealed class Sheep { public Transform Root,Body,Head,LeftEar,RightEar,Coin,Heart;public Transform[] Legs=new Transform[4]; }
         readonly List<Sheep> flock=new();
         readonly List<Mesh> meshes=new();
@@ -20,9 +23,17 @@ namespace FireRescue
         readonly List<Color> colors=new();readonly List<int> triangles=new();
         static readonly Color Wool=new(.97f,.89f,.69f),Face=new(.39f,.26f,.20f),Pink=new(.93f,.49f,.44f),Dark=new(.08f,.075f,.065f);
         public int Count=>flock.Count;
+        public EmberdeepSheepAudio Audio {get;private set;}
+        float[] hopStart,lastAffection;
+        public Transform SheepRoot(int i)=>flock[i].Root;
+        public bool Hopping(int i)=>run!=null && i>=0 && i<flock.Count && EmberdeepSheepHop.Evaluate(run.Animals[i].AnimationTime-hopStart[i],out _,out _);
+        // Scripted pet (camp tutorial, tests): same cooldown and effect as a hand pet.
+        public bool Pet(int i)=>run!=null && i>=0 && i<run.Animals.Length && EmberdeepSheepInteraction.TryPet(run.Animals[i]);
         public void Initialize(FireRun source)
         {
             run=source;
+            hopStart=new float[run.Animals.Length];lastAffection=new float[run.Animals.Length];
+            for(int i=0;i<hopStart.Length;i++){hopStart[i]=float.NegativeInfinity;lastAffection[i]=run.Animals[i].Affection;}
             material=new Material(Resources.Load<Shader>("EmberdeepSheep")){name="Warm wool and cocoa faces",enableInstancing=true};
             Authored=LoadKit();
             if(!Authored)BuildMeshes();
@@ -38,7 +49,7 @@ namespace FireRescue
                 s.Heart=Part(s.Root,heart,"Affection heart",Vector3.up*1.1f);s.Heart.gameObject.SetActive(false);
                 flock.Add(s);
             }
-            gameObject.AddComponent<EmberdeepSheepAudio>().Initialize(run);
+            Audio=gameObject.AddComponent<EmberdeepSheepAudio>();Audio.Initialize(run);
             Render();
         }
         Transform Part(Transform parent,Mesh mesh,string label,Vector3 at)
@@ -72,15 +83,23 @@ namespace FireRescue
                 var s=flock[i];var a=run.Animals[i];float t=a.AnimationTime;
                 bool moving=a.Velocity.sqrMagnitude>.001f,happy=a.State==AnimalState.Celebrating || (a.Affection>0 && !a.OnFire),done=a.State==AnimalState.Rescued,lost=a.State==AnimalState.Lost;
                 float fear=a.OnFire?1:a.Threat>0 && a.Wetness<=0?.4f:0;
-                s.Root.localScale=Vector3.one*.65f;
-                float bounce=a.HeldBy>=0?0:moving?Mathf.Abs(Mathf.Sin(t*10))*.09f:happy?Mathf.Abs(Mathf.Sin(t*5))*.08f:Mathf.Sin(t*2)*.012f;
+                if(a.Affection>lastAffection[i]+.05f && !lost)
+                {
+                    hopStart[i]=t;
+                    if(Audio)Audio.Pet(a.Position+Vector3.up*FireRun.AnimalHeight,EmberdeepSheepHop.TakeoffTime);
+                }
+                lastAffection[i]=a.Affection;
+                bool hopping=EmberdeepSheepHop.Evaluate(t-hopStart[i],out float lift,out float stretch);
+                s.Root.localScale=EmberdeepSheepHop.Scale(stretch)*.65f;
+                float bounce=a.HeldBy>=0?0:hopping?lift*.65f:moving?Mathf.Abs(Mathf.Sin(t*10))*.09f:happy?Mathf.Abs(Mathf.Sin(t*5))*.08f:Mathf.Sin(t*2)*.012f;
                 s.Root.localPosition=a.Position+Vector3.up*bounce;
+                float graze=done && !moving && !hopping?GrazeDip*Mathf.Clamp01(Mathf.Sin((t+i*1.3f)*Mathf.PI*2/GrazeCycle)*2-1):0;
                 s.Root.localRotation=Quaternion.Slerp(s.Root.localRotation,Quaternion.Euler(0,moving?Mathf.Atan2(-a.Velocity.x,-a.Velocity.z)*Mathf.Rad2Deg:Mathf.Sin(t*.7f+i)*9,0),.22f);
                 float size=.9f+i%3*.06f;
-                if(done || lost)size*=1-Mathf.SmoothStep(0,1,a.StateTime/(done?.45f:.8f));
+                if(lost)size*=1-Mathf.SmoothStep(0,1,a.StateTime/.8f);
                 s.Body.localScale=Vector3.one*size;
                 s.Head.localScale=Vector3.one*size;
-                s.Head.localRotation=Quaternion.Euler(fear*13+Mathf.Sin(t*2)*4,Mathf.Sin(t*15)*a.WaterReaction*18,happy?Mathf.Sin(t*10)*10:fear*Mathf.Sin(t*22)*3);
+                s.Head.localRotation=Quaternion.Euler(fear*13+graze+Mathf.Sin(t*2)*4,Mathf.Sin(t*15)*a.WaterReaction*18,happy?Mathf.Sin(t*10)*10:fear*Mathf.Sin(t*22)*3);
                 s.Body.localRotation=Quaternion.Euler(0,0,lost?Mathf.Min(85,a.StateTime*120):Mathf.Sin(t*20)*a.WaterReaction*6);
                 s.LeftEar.localRotation=Quaternion.Euler(0,0,-18-fear*22+Mathf.Sin(t*4)*9);
                 s.RightEar.localRotation=Quaternion.Euler(0,0,18+fear*22-Mathf.Sin(t*4+.5f)*9);
@@ -89,7 +108,7 @@ namespace FireRescue
                 s.Coin.localPosition=new Vector3(0,.8f+a.StateTime*1.3f,0);
                 s.Coin.localRotation=Quaternion.Euler(0,t*220,0);
                 s.Coin.localScale=Vector3.one*(1-Mathf.Clamp01((a.StateTime-.5f)*2));
-                s.Heart.gameObject.SetActive(a.Affection>0 && !done && !lost && !a.OnFire);
+                s.Heart.gameObject.SetActive(a.Affection>0 && !lost && !a.OnFire);
                 s.Heart.localPosition=Vector3.up*(1.15f+(1.5f-a.Affection)*.22f);
                 s.Heart.localScale=Vector3.one*Mathf.Min(1,a.Affection*3);
                 if(Camera.main)s.Heart.rotation=Camera.main.transform.rotation;

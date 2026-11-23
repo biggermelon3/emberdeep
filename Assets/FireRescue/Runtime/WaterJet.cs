@@ -6,12 +6,16 @@ namespace FireRescue
     // World-space SI units. Rendered droplets and damage use these same moving packets.
     public sealed class WaterJet
     {
-        public struct Packet { public Vector3 Position, Velocity; public float Amount, Age, Distance, Range, Radius, Wetness; public FireDelivery Delivery; public bool Magic; }
+        public struct Packet { public Vector3 Position, Velocity; public float Amount, Age, Distance, Range, Radius, Wetness; public FireDelivery Delivery; public bool Magic; public int Pass; }
         public struct Impact { public Vector3 Point, Normal; public float Amount, Radius, Wetness; public int Tree; public FireDelivery Delivery; public bool Magic; }
         public readonly Packet[] Packets = new Packet[256];
         public int Count { get; private set; }
         int pattern;
         public static readonly Vector3 Gravity = new Vector3(0,-9.81f,0);
+        // Playtest 2026-11-22 ("roots count"): the water target the palm stream flies through, -1 none. FireRescueGame sets it
+        // to the aimed tree on a root aim (EmberdeepPalmAim.ArcTarget's pass), so the water lands on the board at that root
+        // instead of on the tree's own sphere at crown height. Only palm packets (magic Foam) take it, when emitted.
+        public int MagicPass=-1;
         public void Clear() => Count=0;
 
         public static Vector3 MouseTarget(Ray ray,Transform arena,Vector3[] targets)
@@ -100,7 +104,8 @@ namespace FireRescue
                 var side=Vector3.Cross(velocity.normalized,Vector3.up).normalized;
                 var axis=Vector3.Cross(side,velocity.normalized).normalized;
                 float angle=((pattern++%5)-2)*spread*.5f;
-                var packet=new Packet{Position=origin,Velocity=Quaternion.AngleAxis(angle,axis)*velocity,Amount=amount/n,Range=range,Radius=radius,Wetness=wetness,Delivery=delivery,Magic=magic};
+                var packet=new Packet{Position=origin,Velocity=Quaternion.AngleAxis(angle,axis)*velocity,Amount=amount/n,Range=range,Radius=radius,Wetness=wetness,Delivery=delivery,Magic=magic,
+                    Pass=magic && delivery==FireDelivery.Foam?MagicPass:-1};
                 if(Advance(ref packet,dt*(i+.5f)/n,arena,targets,impact))Packets[Count++]=packet;
             }
         }
@@ -112,30 +117,32 @@ namespace FireRescue
                 Vector3 next=packet.Position+packet.Velocity*step+Gravity*(.5f*step*step);
                 float length=Vector3.Distance(packet.Position,next);
                 if(packet.Distance+length>packet.Range || packet.Age>1.5f)return false;
-                if(Segment(packet.Position,next,arena,targets,out var hit))
+                if(Segment(packet.Position,next,arena,targets,out var hit,packet.Pass))
                 { hit.Amount=packet.Amount;hit.Radius=packet.Radius;hit.Wetness=packet.Wetness;hit.Delivery=packet.Delivery;hit.Magic=packet.Magic;callback?.Invoke(hit);return false; }
                 packet.Position=next;packet.Velocity+=Gravity*step;packet.Age+=step;packet.Distance+=length;
             }
             return true;
         }
-        public static bool Predict(Vector3 from,Vector3 velocity,float range,Transform arena,Vector3[] targets,out Impact hit)
+        // pass: a target index the water flies through (MagicPass), -1 none.
+        public static bool Predict(Vector3 from,Vector3 velocity,float range,Transform arena,Vector3[] targets,out Impact hit,int pass=-1)
         {
             float distance=0;hit=default;
             for(int i=0;i<180;i++)
             {
                 var next=from+velocity*.008f+Gravity*(.5f*.008f*.008f);distance+=Vector3.Distance(from,next);
                 if(distance>range)return false;
-                if(Segment(from,next,arena,targets,out hit))return true;
+                if(Segment(from,next,arena,targets,out hit,pass))return true;
                 from=next;velocity+=Gravity*.008f;
             }
             return false;
         }
-        static bool Segment(Vector3 from,Vector3 to,Transform arena,Vector3[] targets,out Impact hit)
+        static bool Segment(Vector3 from,Vector3 to,Transform arena,Vector3[] targets,out Impact hit,int pass=-1)
         {
             hit=default;float best=2;var delta=to-from;float a=delta.sqrMagnitude;
             if(a<1e-12f)return false;
             for(int i=0;i<targets.Length;i++)
             {
+                if(i==pass)continue;
                 var offset=from-targets[i];float b=Vector3.Dot(offset,delta),c=offset.sqrMagnitude-.038f*.038f;
                 float discriminant=b*b-a*c;if(discriminant<0)continue;
                 float t=c<=0?0:(-b-Mathf.Sqrt(discriminant))/a;

@@ -59,6 +59,12 @@ namespace FireRescue.Tests
             float until=Time.realtimeSinceStartup+10;
             while(game.ImmersiveSky.Progress<1 && Time.realtimeSinceStartup<until)yield return null;
             Assert.AreEqual(1,game.ImmersiveSky.Progress);
+            // LoopSpec §6 (L3): a level loads in its Plan phase, where time is stopped (the creek too). Start it with the
+            // bell and let the countdown and the colour flood finish before looking at the water.
+            Assert.True(game.StrikeBell());until=Time.realtimeSinceStartup+5;
+            while(game.Run.Phase==FirePhase.Preparing && Time.realtimeSinceStartup<until)yield return null;
+            Assert.AreEqual(FirePhase.Fighting,game.Run.Phase);
+            until=Time.realtimeSinceStartup+EmberdeepPieceTuning.FloodSeconds+.3f;while(Time.realtimeSinceStartup<until)yield return null;
             var shader=Resources.Load<Shader>("EmberdeepEnvironmentFx");Assert.IsTrue(shader.isSupported);
 #if UNITY_EDITOR
             Assert.IsFalse(UnityEditor.ShaderUtil.ShaderHasError(shader));

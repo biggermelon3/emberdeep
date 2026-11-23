@@ -49,7 +49,9 @@ namespace FireRescue.Tests
             game.SendMessage("OnApplicationFocus",true);game.SendMessage("OnApplicationPause",false);
             Assert.AreEqual(FirePhase.Preparing,game.Run.Phase);Assert.Zero(game.Run.Elapsed);
             for(int i=0;i<20;i++)yield return null;Assert.AreEqual(FirePhase.Preparing,game.Run.Phase);Assert.Zero(game.Run.Elapsed);
-            game.GetComponentsInChildren<WorkshopButton>().Single(b=>b.Command=="Next incident").Press();
+            // LoopSpec §11b: the spell flow starts by striking the rim bell (was the dashboard START button).
+            Assert.False(game.RayAllowed,"No ray in Plan");Assert.True(game.RimHud.BellVisible);
+            Assert.True(game.StrikeBell());Assert.AreEqual(1,game.BellStrikes);
             Assert.Greater(game.Run.CountdownRemaining,2.9f);Assert.False(game.BeginIncident());
             game.SendMessage("OnApplicationPause",true);float remaining=game.Run.CountdownRemaining;
             for(int i=0;i<10;i++)yield return null;Assert.AreEqual(remaining,game.Run.CountdownRemaining);Assert.Zero(game.Run.Elapsed);
@@ -58,7 +60,10 @@ namespace FireRescue.Tests
             Assert.AreEqual(FirePhase.Fighting,game.Run.Phase);Assert.Less(game.Run.Elapsed,.2f);
             game.Run.ApplyWater(Vector3.zero,10000,100);game.Run.EvacuateSafeAnimals();Assert.AreEqual(100,game.Run.Coins);
             Assert.True(game.Run.BuyMagicUpgrade());game.Refresh();
-            game.GetComponentsInChildren<WorkshopButton>().Single(b=>b.Command=="Retry sector").Press();
+            // The results panel's RETRY (was the dashboard RETRY SECTOR button).
+            float shown=Time.realtimeSinceStartup+FireRescueGame.ResultsDelay+1;while(!game.ResultsVisible && Time.realtimeSinceStartup<shown)yield return null;
+            Assert.True(game.ResultsVisible);Assert.True(game.RayAllowed,"The ray is back between levels");
+            game.GetComponentsInChildren<WorkshopButton>().Single(b=>b.Command=="Results retry").Press();
             Assert.AreEqual(FirePhase.Preparing,game.Run.Phase);Assert.AreEqual(0,game.Run.Stage);Assert.AreEqual(25,game.Run.Coins);Assert.AreEqual(1,game.Run.MagicLevel);Assert.Zero(game.Run.Elapsed);
             EmberdeepTestFlow.StartPrepared(game.Run);game.Run.ApplyWater(Vector3.zero,10000,100);game.Run.EvacuateSafeAnimals();Assert.AreEqual(125,game.Run.Coins);
             game.StartNext();Assert.AreEqual(1,game.Run.Stage);Assert.AreEqual(FirePhase.Preparing,game.Run.Phase);Assert.Zero(game.Run.Elapsed);

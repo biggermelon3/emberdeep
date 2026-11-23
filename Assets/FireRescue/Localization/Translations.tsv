@@ -1,7 +1,6 @@
 E M B E R D E E P	余烬深林
-A MINIATURE FIRE EXPEDITION	微缩森林灭火冒险
-Continue	继续游戏
-New Game	开始新游戏
+Continue	继续
+New Game	新游戏
 Settings	设置
 Quit Emberdeep?	退出《余烬深林》？
 This showcase does not save after closing.	此演示版关闭后不会保存进度。
@@ -9,14 +8,12 @@ Yes, Quit	确认退出
 Cancel	取消
 Quit	退出
 Back	返回
-Sound: On	声音：开
-Sound: Off	声音：关
 Recenter Menu	重置菜单位置
-AIM YOUR HAND AT A BUTTON  -  PINCH	用手指向按钮，再捏合确认
-Use either hand. Open your fingers before each pinch.	左右手均可操作，每次捏合前请先张开手指。
-SHOW AN OPEN HAND TO BEGIN	伸出张开的手，开始操作
-BUTTON FOUND  -  PINCH WITH THE POINTING HAND	已选中按钮，用指向它的那只手捏合
-Look ahead\nFinding your headset position...	请看向前方\n正在定位头显……
+Point at a button and pinch	指向按钮，捏合选择
+Either hand works. Open your fingers between pinches.	左右手都可以，每次捏合前先张开手指。
+Hold up an open hand	举起一只张开的手
+Pinch to select	捏合选择
+Look straight ahead	请看向正前方
 E M B E R D E E P  /  FIRE EXPEDITION	余烬深林 / 森林营救
 F I R E   R E S C U E  /  MINI WORLD	森林消防 / 微缩世界
 FIRST RESPONSE	初次出动
@@ -192,15 +189,10 @@ PAR	目标时间
 SHEEP	小羊
 RESCUE	营救
 clear their escape paths. Spray to protect.	打通逃生道路，喷水保护它们。
-FIGHTING	灭火中
-Fighting	灭火中
-CLEARED	已过关
-Cleared	已过关
 Won	全部获救
 Lost	挑战失败
 Ready	准备出发
 FILL	注水
-FIRST SPARK	初起火苗
 PARK PATROL	公园巡护
 THE GROVE	林间营救
 FOREST FRONT	森林前线
@@ -262,7 +254,6 @@ H: dock water station	H：对接补水站
 dock tool	对接工具
 try pump	试用水泵
 GODDESS HAND	女神之手
-GODDESS HAND: extinguish the single tree with your palms.	女神之手：用掌心水扑灭这棵树的火。
 Open left palm: aim. Touch its back with any right fingertip: water.	张开左掌瞄准，用右手任意指尖触碰左手手背喷水。
 Right hand: gold handle. Left hand: nozzle. Squeeze to spray.	右手握金色把手，左手抓喷嘴；握紧右手喷水。
 Lift your fingertip to stop. Crystal refills over time.	抬起指尖停止喷水，晶石会随时间恢复。
@@ -278,11 +269,8 @@ Open left palm: aim / right fingertip on its back: water\nOnly time restores man
 MANA	魔力
 DURATION	持续时间
 RECHARGE	恢复速度
-GROWING MAGIC	成长的魔力
 PALM RESCUE	掌心救援
 PALM RESCUE: cool the grove and protect the sheep.	掌心救援：扑灭林间火焰，保护小羊。
-WATER STATION / EQUIPMENT FROM LEVEL 4	补水站 / 第四关开放装备
-EQUIPMENT FROM LEVEL 4	第四关开放装备
 PALM WATER READY	掌心水已就绪
 FULL RECHARGE	回满时间
 UPGRADE YOUR MAGIC >	升级你的魔力 >
@@ -291,7 +279,6 @@ Visit the shop and buy your first magic upgrade.	进入商店，购买第一次�
 FIRST UPGRADE / MORE PALM WATER	首次升级 / 更多掌心水
 UPGRADE	升级
 More water for your next rescue.\nAim at the gold button and pinch.	为下一次救援增加水量。\n瞄准金色按钮并捏合购买。
-GET READY / RESCUE PREVIEW	准备阶段／查看救援目标
 PALM WATER / Protect the sheep	本关使用掌心水／保护小羊
 TOOLS + PALM WATER / Protect the sheep	本关开放装备和掌心水／保护小羊
 Get comfortable. The fire starts after the countdown.	调整好姿势，倒计时结束后正式开始。
@@ -320,26 +307,7 @@ ORB READY - turn your left palm down and open your hand to drop it	水球就绪�
 RAIN FAN spraying - close your hands to stop	雨扇喷洒中——握拳停止
 RAIN FAN - hold both palms forward	雨扇准备中——保持双掌向前
 CHARGING - open your right hand to fire	蓄力中——张开右手发射
-ABSORBING WATER	正在吸水
 WATER BOLT - make a right fist to charge, open it to fire	水枪——右手握拳蓄力，张开发射
-A crystal is empty - pump the well, then dip a hand in the basin	有晶石空了——去打水，再把手放进水盆吸水
-Cast with your hands. The board on the right shows each gesture.	用双手施法。右侧的法术板列出了每个手势。
-SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: pump | E: absorb	空格：掌心水 | 2：水枪 | 3：雨扇 | 4：水球 | R：打水 | E：吸水
-WATER STATION / OPENS AFTER THE FIRST LESSON	补水站 / 第一关后开放
-PUMP THE LEVER	摇动杠杆打水
-Water fills the basin	水会流进水盆
-FILLING THE BASIN	正在给水盆注水
-TWIST THE WHEEL	握住阀轮拧动
-The basin keeps filling	水盆会持续注水
-FAST FILL	快速注水中
-AUTO FILL	自动补水
-Press the button for a fast fill	按下按钮可快速注满
-BASIN	水盆
-DIP A HAND TO ABSORB	把手放进水盆吸水
-Pump the lever: each stroke fills the basin	摇动杠杆：每次打水都会注入水盆
-Dip a hand in the basin to absorb	把手放进水盆即可吸水
-Twist the wheel once: the basin keeps filling	拧一下阀轮：水盆持续注水
-The basin refills slowly by itself	水盆会自动缓慢补水
 SPELLS / Protect the sheep	本关使用法术／保护小羊
 PALM WATER	掌心水
 LEFT HAND: POINT AT THE FIRE	左手指向火焰
@@ -353,7 +321,121 @@ LEFT PALM UP	左手掌心向上
 RIGHT FINGERS UNDER IT: GROW	右手手指放到下方：蓄力
 MOVE RIGHT HAND AWAY: HOLD	移开右手：托住水球
 FLIP AND OPEN: DROP	翻手张开：投下
-LIFT THE LEVER BACK UP	把杠杆抬回去
-PUSH THE LEVER DOWN	向下压杠杆
-CLOSE YOUR HAND ON THE LEVER	握住杠杆
 WATER ORB - left palm up, right fingers under it	水球——左手掌心向上，右手手指放到下方
+FOREST LOST	火势失控
+FIRE OUT	火已扑灭
+Too many trees burned	烧毁的树太多了
+Open right palm: aim. Touch its back with any left fingertip: water.	张开右掌瞄准，用左手任意指尖触碰右手手背喷水。
+Touch the back of your right hand with any left fingertip. Lift to stop.	用左手任意指尖触碰右手手背，抬起即停。
+GEM EMPTY - hammer the pump with your fist	宝石空了——握拳砸水泵
+Mouse: aim / hold SPACE: spray / R: hammer the pump	鼠标瞄准 / 按住空格：喷水 / R：砸水泵
+Lift your fingertip to stop. Rest or hammer the pump to refill.	抬起指尖停止。歇一会儿或砸水泵补水。
+SPACE: palm water | 2: bolt | 3: fan | 4: orb | R: hammer the pump	空格：掌心水 | 2：水枪 | 3：雨扇 | 4：水球 | R：砸水泵
+WATER GEM	水之宝石
+GEM	宝石
+Open left palm: aim / right fingertip on its back: water\nHammer the pump to refill	张开左掌瞄准／右手指尖触碰手背喷水\n握拳砸水泵补水
+Open right palm: aim / left fingertip on its back: water\nHammer the pump to refill	张开右掌瞄准／左手指尖触碰手背喷水\n握拳砸水泵补水
+PAUSED	暂停
+RESUME	继续
+RETRY	重试
+CAMP	营地
+NEXT	下一关
+UPGRADES	升级
+PLAY	开始
+BACK	返回
+PUMP	水泵
+SLOT	栏位
+TOWER	水塔
+MAX	满级
+FOREST	森林
+CABIN	小屋
+FRONTS	多线
+INFERNO	烈火
+HEIGHT	高度
+DISTANCE	距离
+WATER HAND	喷水手
+LEFT	左手
+RIGHT	右手
+MUSIC	音乐
+SOUND	音效
+How to play	教程
+SKIP	跳过
+WIND	风向
+PLANE	飞机
+EQUIPMENT FROM LEVEL 2	第二关开放装备
+Your progress won't be saved.	进度不会保存。
+SHEEP MEADOW	牧羊草甸
+WELL HOLLOW	老井坳
+TOWER HILL	水塔岗
+WINDY RIDGE	大风岭
+HAYFIELD	干草坡
+EMBERDEEP	余烬深林
+EXCAVATOR	挖掘机
+FOREST SAVED	森林得救
+SAVED	获救
+NEW HERE?	新手上路
+Learn the hand moves at camp first	先在营地学会手势
+TILT	倾角
+FLAT	平放
+TILTED	斜放
+SHOW HINTS	重看提示
+PER STRIKE	每击
+EXTRA TOWERS	额外水塔
+RAIN REACH	喷淋范围
+A bigger gem sprays longer	宝石更大，喷水更久
+Each pump strike puts more water in the gem	每次敲水泵，宝石多进一些水
+One more tower in the tray on every level with pieces	有道具的关卡，托盘里多一座水塔
+Towers rain over a wider circle	水塔喷淋的范围更大
+Point at an upgrade to see what it does	指向一项升级，看看它的作用
+Pick it up and set it near a fire.	拿起它，放在火附近。
+It rains once when fire gets close.	火一靠近，它就会喷淋一次。
+Hmm. Ah, I see. So YOU'RE the new forest guardian they sent?	嗯……哦，明白了。所以他们派来的新任森林守护者，就是你？
+And your name is... You know what, I don't care.	那你叫……算了，我不在乎。
+Let's get your orientation over with, so you can leave me in peace.	赶紧把新人培训走完，好让我清静清静。
+See that blue gem on the back of your hand?	看到你手背上那颗蓝色宝石了吗？
+That's where your water lives. You'll need it to protect the forest.	你的水就住在里面。保护森林全靠它了。
+Now, see that unattended, unauthorized campfire?	看见那堆没人看管、也没人批准的篝火了吗？
+Open your hand and aim your palm at it.	张开手，掌心对准它。
+Like in that movie... Metal Man.	就像那部电影里……金属侠那样。
+Then press the gem with a finger from your other hand, and keep it there.	然后用另一只手的手指按住宝石，别松开。
+What's that? Too fiddly?	什么？嫌麻烦？
+Well, it's either that, or you soak everything you wave at.	要么这样，要么你挥到哪儿就浇到哪儿。
+You gonna... you gonna put that fire out?	你到底……你到底灭不灭火？
+Palm at the fire, finger on the gem.	掌心对准火，手指按住宝石。
+Or are you too good for target practice?	还是说，打靶练习配不上你？
+Palm. Fire. Finger. Gem.	掌心。火。手指。宝石。
+I'll wait. I'm a spirit, waiting is all I do.	我等着。我是精灵，等待就是我的全部。
+You didn't think water was unlimited, did you?	你不会以为水是用不完的吧？
+Or has living around humans made you take everything for granted?	还是跟人类待久了，你把什么都当成理所当然？
+When you run low, make a fist and pound that pump next to you.	水不够了，就握拳去砸你旁边那台水泵。
+Go on, top it up.	去吧，把它灌满。
+The pump. Next to you. Make a fist and hit it.	水泵。就在你旁边。握拳，砸它。
+It won't hit itself.	它可不会自己砸自己。
+There. Full. Try not to waste it.	好了，满了。省着点用。
+Oh, you fluffy idiot. Trying to turn yourself into roast lamb?	哎哟，你这团蠢毛球，想把自己烤成烤全羊吗？
+Guardian, quick! Put out the sheep, and the tree, before it spreads.	守护者，快！把小羊和树上的火扑灭，别让它烧开！
+Still burning. The sheep. And the tree.	还在烧。小羊。还有树。
+Palm, gem, water. You know this.	掌心，宝石，水。你会的。
+Now go on, give it a pat.	去吧，拍拍它。
+Teach it a lesson about how close it came to becoming someone's dinner today.	让它长点记性：今天它差点就成了别人的晚饭。
+...and send the new guardian off with words of encouragement...	……并以鼓励的话语，送新任守护者上路……
+Right. That's your orientation. I'm sure you'll do fine.	好了，培训到此为止。你肯定没问题的。
+It's not like anyone cares about nature these days.	反正现在也没人在乎大自然。
+Am I right, ladies and gentlemen?	我说得对吧，女士们先生们？
+...Okay. Get out of here.	……行了，走吧你。
+PLAN	规划
+Place pieces. Ring the bell to start.	摆好棋子，敲钟开始。
+Ring the bell to start	敲钟开始
+GRASS	草
+FINALE	终局
+Water towers! What do they do? Where do they come from?	水塔！它们是干什么的？又是从哪儿来的？
+And why 'water tower', not 'tower water'? Hmm. Anyway.	还有，为什么叫水塔，不叫塔水？嗯……算了。
+Put one in the middle of the trees,	在树林中间放一座，
+and when fire comes near, it rains on everything around it.	火一靠近，它就会给周围下一场雨。
+Set them down while time's frozen, before you ring the bell,	趁时间冻结、还没敲钟的时候放下，
+or even once the fire's going.	火烧起来以后也能放。
+But they're a one-time thing. Once it's rained, it's done. No refills.	不过它们只能用一次。下完雨就没了，没法再灌。
+Wind. What a cruel creature, lurking in this naive little paradise.	风啊，多么残忍的存在，潜伏在这片天真的小乐园里。
+They lure you close, then rip your heart out and smash it to pieces.	TA先把你引过去，再把你的心掏出来，摔个粉碎。
+Anyway. Be careful of them. They help the fire spread.	总之，离TA远点。TA会帮火蔓延。
+Watch the weathervane: the fire runs the way it points.	看好风向标：它指哪儿，火就往哪儿烧。

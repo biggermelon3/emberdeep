@@ -88,6 +88,18 @@ namespace PhysicalAssembly.Editor
             catch { Restore(); throw; }
         }
 
+        // Turns on one more Android OpenXR feature for this prepared PICO build only (Emberdeep: "HandInteractionProfile",
+        // the runtime's XR_EXT_hand_interaction aim ray). Restore resets it from the snapshot, like every other feature.
+        public static void EnablePreparedFeature(string typeName)
+        {
+            if(!Directory.Exists(Backup)) throw new InvalidOperationException("Prepare the PICO build first, so Restore puts "+typeName+" back.");
+            var feature=OpenXRSettings.GetSettingsForBuildTargetGroup(BuildTargetGroup.Android).GetFeatures<OpenXRFeature>().FirstOrDefault(f=>f.GetType().Name==typeName);
+            if(feature==null) throw new InvalidOperationException("No Android OpenXR feature "+typeName+".");
+            if(feature.enabled) return;
+            feature.enabled=true; EditorUtility.SetDirty(feature); AssetDatabase.SaveAssets();
+            Debug.Log("PICO_BUILD_FEATURE_ENABLED "+typeName);
+        }
+
         [MenuItem("MetaHackthone/Pico/Restore Quest configuration")]
         public static void Restore()
         {

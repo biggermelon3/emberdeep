@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace FireRescue.Tests
 {
-    // Gesture spells: WATER BOLT, RAIN FAN, WATER ORB and the altar basin.
+    // Gesture spells: WATER BOLT, RAIN FAN and WATER ORB. LoopSpec §11 keeps them behind
+    // PlaytestAllSpells; the altar basin and hand dip are gone (LoopSpec §3.1).
     public sealed class EmberdeepSpellTests
     {
         const float Dt=.02f;
@@ -182,31 +183,10 @@ namespace FireRescue.Tests
             for(int i=0;i<1000;i++)run.TickSpellRecovery(.1f,true);
             Assert.AreEqual(run.CapacityFor(FireEquipmentId.PulsePistol),run.SpellWater(FireEquipmentId.PulsePistol));
         }
-        [Test] public void BasinCollectsPumpedWaterAndAHandAbsorbsIntoTheEmptiestCrystal()
+        [Test] public void LegacyRunsCastNoSpells()
         {
-            var run=SpellRun();
-            Assert.Zero(run.AbsorbBasin(.1f),"An empty basin gives nothing");
-            Assert.AreEqual(24,run.AddBasinWater(24));Assert.AreEqual(36,run.AddBasinWater(100),"The basin overflows at its rim");
-            Assert.AreEqual(FireRun.BasinCapacity,run.BasinWater);
-            Assert.Zero(run.AbsorbBasin(.1f),"Full crystals drink nothing");Assert.AreEqual(FireRun.BasinCapacity,run.BasinWater);
-            while(run.SpellWater(FireEquipmentId.PulsePistol)>40)run.CastBolt(1,out _,out _);
-            float low=run.SpellWater(FireEquipmentId.PulsePistol),orbFull=run.SpellWater(FireEquipmentId.PressureCannon);
-            float moved=0;for(int i=0;i<5;i++)moved+=run.AbsorbBasin(.1f);
-            Assert.AreEqual(FireRun.BasinAbsorbPerSecond*.5f,moved,.001f);
-            Assert.AreEqual(low+moved,run.SpellWater(FireEquipmentId.PulsePistol),.001f);
-            Assert.AreEqual(FireRun.BasinCapacity-moved,run.BasinWater,.001f);Assert.AreEqual(orbFull,run.SpellWater(FireEquipmentId.PressureCannon));
-            for(int i=0;i<30;i++)run.TickMagic(.1f,true,true);
-            float mana=run.MagicWater;Assert.Less(mana/run.MagicCapacity,.1f);
-            Assert.Greater(run.AbsorbBasin(.1f),0);Assert.Greater(run.MagicWater,mana,"Palm water drinks from the basin too");
-        }
-        [Test] public void StarterWellHasNoFlowAndLegacyRunsHaveNoBasin()
-        {
-            var run=SpellRun();
-            Assert.False(run.SetBasinFlow(true),"The lever well only fills by pumping");
-            for(int i=0;i<50;i++)run.TickBasin(.1f);
-            Assert.Zero(run.BasinWater);
             var legacy=new FireRun();legacy.StartStage();
-            Assert.Zero(legacy.AddBasinWater(10));Assert.False(legacy.SpellMode);Assert.False(legacy.CanCast(FireEquipmentId.RainFan));
+            Assert.False(legacy.SpellMode);Assert.False(legacy.CanCast(FireEquipmentId.RainFan));Assert.False(legacy.SpellsCut);
         }
         [Test] public void EveryStageStartsWithFullCrystalsAndPurchasesArriveFull()
         {
@@ -223,35 +203,32 @@ namespace FireRescue.Tests
             Assert.AreEqual(FirePhase.Cleared,run.Phase);run.EvacuateSafeAnimals();
             if(run.NeedsMagicUpgrade)Assert.True(run.BuyMagicUpgrade());
         }
-        [Test] public void SpellsAndTheirLessonsArriveOnePurchaseAtATime()
+        // Intent changed (LoopSpec §11): spells used to arrive one purchase at a time; the
+        // production flow now never sells them, and only the playtest switch grants them.
+        [Test] public void ProductionFlowSellsNoSpellsAndThePlaytestSwitchGrantsThemAll()
         {
             Assert.False(EmberdeepSession.PlaytestAllSpells,"The shipping session starts with palm water only");
             EmberdeepSession.NewExpedition();var run=EmberdeepSession.Run;
-            Assert.True(run.Owns(FireEquipmentId.Extinguisher));
+            Assert.True(run.Owns(FireEquipmentId.Extinguisher));Assert.True(run.SpellsCut);
             for(int i=1;i<4;i++){Assert.False(run.Owns((FireEquipmentId)i));Assert.Zero(run.SpellFill01((FireEquipmentId)i));}
-            Assert.AreEqual(-1,run.SpellLesson,"Palm water has its own lesson; no spell lesson yet");
-            for(int lesson=0;lesson<3;lesson++)
-            {
-                Assert.True(run.StartStage());Assert.True(run.IsPalmLesson);
-                Assert.Zero(run.EquipmentIncidents,"Nothing can be bought during the palm lessons");ClearStage(run);
-            }
-            Assert.AreEqual(1,run.EquipmentIncidents);
-            Assert.True(run.CanBuy(FireEquipmentId.PulsePistol),"The water bolt opens as soon as the palm lessons are cleared");
-            Assert.False(run.CanBuy(FireEquipmentId.RainFan));Assert.False(run.CanBuy(FireEquipmentId.PressureCannon));
-            Assert.True(run.BuyEquipment(FireEquipmentId.PulsePistol));
-            Assert.AreEqual(1,run.SpellFill01(FireEquipmentId.PulsePistol));Assert.AreEqual(1,run.SpellLesson,"A new purchase starts its own lesson");
-            run.Learn(EmberdeepInteractionDemo.Action.Bolt);Assert.AreEqual(-1,run.SpellLesson,"The lesson ends once the spell has put out a fire");
-            Assert.True(run.StartStage());ClearStage(run);
-            Assert.AreEqual(2,run.EquipmentIncidents);Assert.False(run.Owns(FireEquipmentId.RainFan),"Later spells still have to be bought");
+            Assert.AreEqual(-1,run.SpellLesson);
+            for(int lesson=0;lesson<4;lesson++){Assert.True(run.StartStage());ClearStage(run);}
+            for(int i=1;i<4;i++)Assert.False(run.CanBuy((FireEquipmentId)i),"Spells are cut from the shop");
+            Assert.False(run.BuyEquipment(FireEquipmentId.PulsePistol));Assert.AreEqual(-1,run.SpellLesson);
+            var playtest=new FireRun(goddessTutorial:true){PlaytestAllSpells=true};
+            Assert.False(playtest.SpellsCut);
+            for(int i=0;i<4;i++)Assert.True(playtest.Owns((FireEquipmentId)i));
         }
-        [Test] public void PalmWaterRecoversSlowlyOnceTheFirstLessonIsOver()
+        // Intent changed (LoopSpec §3.3): the gem refills at a fixed passive rate, so its full
+        // refill time grows with the gem instead of the old 5 s / 30 s recharge.
+        [Test] public void GemRefillTimeFollowsItsCapacity()
         {
             var run=new FireRun(goddessTutorial:true);
-            Assert.AreEqual(5,run.MagicFillSeconds);
+            Assert.AreEqual(EmberdeepWaterTuning.GemCapacity/EmberdeepWaterTuning.PassivePerSecond,run.MagicFillSeconds,.001f);
             run.StartStage();foreach(var tree in run.Trees)if(tree.State==TreeState.Burning)run.ApplyWater(tree.Position,100,.1f);
             run.EvacuateSafeAnimals();Assert.True(run.BuyMagicUpgrade());
-            Assert.AreEqual(30,run.MagicFillSeconds);
-            Assert.True(run.StationOpen,"The well is usable from the very first level");Assert.True(new FireRun(goddessTutorial:true).StationOpen);
+            Assert.AreEqual((EmberdeepWaterTuning.GemCapacity+EmberdeepWaterTuning.GemCapacityPerLevel)/EmberdeepWaterTuning.PassivePerSecond,run.MagicFillSeconds,.001f);
+            Assert.False(run.CanUpgradeStation,"Station tiers are cut from the production flow");
         }
     }
 }

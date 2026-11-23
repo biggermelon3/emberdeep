@@ -8,6 +8,30 @@ using UnityEngine.SceneManagement;
 
 namespace FireRescue
 {
+    // What a hand shows once it stops being valid: its last pose, frozen, for FreezeSeconds (a tracking blip, the frame a
+    // system gesture takes the hand), then nothing until it is valid again. Headset test 2 (2026-11-22): the freeze had no
+    // end, so a lost hand hung in the air where tracking dropped.
+    public struct EmberdeepLostHand
+    {
+        public const float FreezeSeconds=.2f;
+        public enum State{Live,Frozen,Hidden}
+        public State Current {get;private set;}
+        // How long the hand has been frozen (0 while live or hidden).
+        public float LostFor {get;private set;}
+        // valid: the hand may be drawn live this frame. canFreeze: there is a live pose to hold.
+        public State Step(bool valid,bool canFreeze,float dt)
+        {
+            if(valid){Current=State.Live;LostFor=0;}
+            else if(Current==State.Live){Current=canFreeze?State.Frozen:State.Hidden;LostFor=0;}
+            else if(Current==State.Frozen)
+            {
+                LostFor+=float.IsFinite(dt) && dt>0?dt:0;
+                if(LostFor>=FreezeSeconds){Current=State.Hidden;LostFor=0;}
+            }
+            return Current;
+        }
+    }
+
     // A transform-only copy: there are deliberately no HandVisual, SyntheticHand,
     // provider, colliders or interaction components in this disposable display.
     // SDK transforms remain entirely untouched, including during snapshot baking.
@@ -28,7 +52,29 @@ namespace FireRescue
         bool hasContact;
         Vector3 safePalm;
         bool hasSafePalm;
+        // Render-only contact (Constrain): the palm's keep-out radius, and how far the drawn palm may trail the real one at
+        // a surface before it lets go (see Constrain). PinReleased: let go, following the real hand until it is clear.
+        public const float PalmRadius=.023f,PinRelease=.025f;
+        public bool PinReleased {get;private set;}
         readonly List<Mesh> gloves=new();
+        // Palm fit (UnityXR/PICO only). The SDK OpenXR hand mesh hangs its palm rigidly off the
+        // wrist joint at the mesh's own size (no skin weight on the index/middle/ring metacarpals),
+        // while every finger follows its tracked knuckle. ISDK's UnityXR source never sets a hand
+        // scale, and PICO's wrist-to-knuckle geometry differs from the mesh's, so the fingers
+        // sheared off the palm edge (most visibly the index, on the thumb side). The display wrist
+        // is therefore fitted (pose + uniform scale) to the tracked knuckles; the four finger
+        // metacarpals stay rigid with the palm; thumb and finger chains keep their tracked poses.
+        static readonly HandJointId[] FitKnuckles={HandJointId.HandIndex1,HandJointId.HandMiddle1,HandJointId.HandRing1,HandJointId.HandPinky1};
+        static readonly HandJointId[] FitMetacarpals={HandJointId.HandIndex0,HandJointId.HandMiddle0,HandJointId.HandRing0,HandJointId.HandPinky0};
+        const float MinimumPalmScale=.75f,MaximumPalmScale=1.35f;
+        readonly bool fitPalm;
+        Vector3[] bindKnuckles;Pose[] bindMetacarpals;Vector3 bindThumbBase;
+        readonly Vector3[] trackedKnuckles=new Vector3[4];
+        Pose[] heldWorld;bool[] keepWorld;
+        float nextPalmLog;
+        // Extra uniform scale the palm fit applies at the wrist (1 when not fitting).
+        public float PalmScale {get;private set;}=1;
+        public bool FitsPalm=>fitPalm && bindKnuckles!=null;
         sealed class Skin
         {
             public SkinnedMeshRenderer Source,Live;
@@ -36,7 +82,11 @@ namespace FireRescue
             public Mesh Mesh;
             public bool OriginallyMasked,Visible;
         }
+        // Frozen: drawn as the held snapshot (the short grace after tracking loss). Hidden: lost for longer, not drawn.
         public bool Frozen {get;private set;}
+        public bool Hidden=>lost.Current==EmberdeepLostHand.State.Hidden && hasPose;
+        public EmberdeepLostHand.State State=>lost.Current;
+        EmberdeepLostHand lost;
         public int SnapshotCount {get;private set;}
         public bool HasPose=>hasPose;
         public Transform DisplayRoot=>display?display.transform:null;
@@ -55,9 +105,9 @@ namespace FireRescue
         }
         public Renderer SnapshotRenderer(int index)=>index>=0&&index<skins.Length?skins[index].Still:null;
 
-        public EmberdeepHandPresentation(HandVisual hand,Material material)
+        public EmberdeepHandPresentation(HandVisual hand,Material material,bool fitPalmToKnuckles=false)
         {
-            source=hand;
+            source=hand;fitPalm=fitPalmToKnuckles;
             originals=hand.GetComponentsInChildren<Transform>(true);
             copies=new Transform[originals.Length];
             var mapping=new Dictionary<Transform,Transform>(originals.Length);
@@ -115,8 +165,87 @@ namespace FireRescue
                     if(parent>=0 && parent<bindposes.Length)
                         neutral[joint]=(bindposes[parent]*bindposes[i].inverse).rotation;
                 }
+                if(fitPalm && bindKnuckles==null)TryCapturePalmFit(bones,bindposes);
             }
             skins=eligible.ToArray();
+            if(FitsPalm)
+            {
+                heldWorld=new Pose[joints.Length];keepWorld=new bool[joints.Length];
+                var wrist=joints[(int)HandJointId.HandWristRoot];
+                for(int i=0;i<joints.Length;i++)
+                    keepWorld[i]=joints[i] && joints[i]!=wrist && i!=(int)HandJointId.HandPalm && Array.IndexOf(FitMetacarpals,(HandJointId)i)<0
+                        && joints[i].IsChildOf(wrist);
+            }
+        }
+
+        // Bind knuckles, metacarpals and thumb base in the wrist bone's space, from the skin's bindposes.
+        void TryCapturePalmFit(Transform[] bones,Matrix4x4[] bindposes)
+        {
+            var wristJoint=joints[(int)HandJointId.HandWristRoot];
+            int wrist=Array.IndexOf(bones,wristJoint),thumb=Array.IndexOf(bones,joints[(int)HandJointId.HandThumb1]);
+            if(!wristJoint || wrist<0 || wrist>=bindposes.Length || thumb<0 || thumb>=bindposes.Length)return;
+            var knuckles=new Vector3[4];var metacarpals=new Pose[4];
+            for(int f=0;f<4;f++)
+            {
+                var metacarpal=joints[(int)FitMetacarpals[f]];
+                int k=Array.IndexOf(bones,joints[(int)FitKnuckles[f]]),m=Array.IndexOf(bones,metacarpal);
+                if(k<0 || m<0 || k>=bindposes.Length || m>=bindposes.Length || metacarpal.parent!=wristJoint)return;
+                knuckles[f]=(bindposes[wrist]*bindposes[k].inverse).GetColumn(3);
+                var local=bindposes[wrist]*bindposes[m].inverse;metacarpals[f]=new Pose(local.GetColumn(3),local.rotation);
+            }
+            bindThumbBase=(bindposes[wrist]*bindposes[thumb].inverse).GetColumn(3);
+            bindKnuckles=knuckles;bindMetacarpals=metacarpals;
+        }
+
+        void FitPalmToKnuckles(bool left)
+        {
+            var wrist=DisplayJoint(HandJointId.HandWristRoot);if(!wrist)return;
+            Vector3 centroidTracked=Vector3.zero,centroidBind=Vector3.zero;
+            for(int f=0;f<4;f++)
+            {
+                var knuckle=DisplayJoint(FitKnuckles[f]);if(!knuckle)return;
+                trackedKnuckles[f]=knuckle.position;centroidTracked+=knuckle.position*.25f;centroidBind+=bindKnuckles[f]*.25f;
+            }
+            var palmarLocal=left?Constants.LeftPalmar:Constants.RightPalmar;
+            var acrossTracked=trackedKnuckles[3]-trackedKnuckles[0];var acrossBind=bindKnuckles[3]-bindKnuckles[0];
+            if(!PalmFrame(acrossTracked,wrist.rotation*palmarLocal,out var frameTracked) || !PalmFrame(acrossBind,palmarLocal,out var frameBind))return;
+            // World metres per wrist-local unit as tracked (root scale x the mesh's own units).
+            float unit=Mathf.Abs(wrist.lossyScale.x),spanBind=acrossBind.magnitude*unit;
+            if(spanBind<1e-4f || !float.IsFinite(unit))return;
+            float scale=Mathf.Clamp(acrossTracked.magnitude/spanBind,MinimumPalmScale,MaximumPalmScale);
+            var rotation=frameTracked*Quaternion.Inverse(frameBind);
+            var position=centroidTracked-rotation*(centroidBind*(unit*scale));
+            if(!Finite(position) || !Finite(rotation))return;
+            Vector3 trackedWrist=wrist.position;Quaternion trackedWristRotation=wrist.rotation;
+            var thumb=DisplayJoint(HandJointId.HandThumb1);Vector3 trackedThumb=thumb?thumb.position:position;
+            for(int i=0;i<joints.Length;i++)if(keepWorld[i])heldWorld[i]=new Pose(joints[i].position,joints[i].rotation);
+            wrist.SetPositionAndRotation(position,rotation);wrist.localScale*=scale;
+            for(int f=0;f<4;f++)
+            {
+                var metacarpal=DisplayJoint(FitMetacarpals[f]);
+                metacarpal.localPosition=bindMetacarpals[f].position;metacarpal.localRotation=bindMetacarpals[f].rotation;
+            }
+            // Parents precede children in the SDK joint table.
+            for(int i=0;i<joints.Length;i++)if(keepWorld[i])joints[i].SetPositionAndRotation(heldWorld[i].position,heldWorld[i].rotation);
+            PalmScale=scale;
+            // Development builds only: how far the tracked skeleton is from the mesh's.
+            if(Debug.isDebugBuild && !Application.isEditor && Time.unscaledTime>=nextPalmLog)
+            {
+                nextPalmLog=Time.unscaledTime+2;
+                var residual=new System.Text.StringBuilder();
+                for(int f=0;f<4;f++)residual.Append(' ').Append("IMRP"[f]).Append('=').Append((Vector3.Distance(trackedKnuckles[f],wrist.TransformPoint(bindKnuckles[f]))*1000).ToString("F1"));
+                Debug.Log("EMBERDEEP_PALM_FIT hand="+(left?"L":"R")+" scale="+scale.ToString("F3")+" span_mm="+(acrossTracked.magnitude*1000).ToString("F1")
+                    +" wristShift_mm="+(Vector3.Distance(trackedWrist,position)*1000).ToString("F1")+" wristTurn_deg="+Quaternion.Angle(trackedWristRotation,rotation).ToString("F1")
+                    +" knuckleResidual_mm"+residual+" thumbBase_mm="+(Vector3.Distance(trackedThumb,wrist.TransformPoint(bindThumbBase))*1000).ToString("F1"));
+            }
+        }
+        // across: index knuckle -> little knuckle; palmar: out of the palm. Same construction in both spaces.
+        static bool PalmFrame(Vector3 across,Vector3 palmar,out Quaternion frame)
+        {
+            frame=Quaternion.identity;
+            if(across.sqrMagnitude<1e-10f)return false;across.Normalize();
+            palmar-=across*Vector3.Dot(palmar,across);if(palmar.sqrMagnitude<1e-8f)return false;palmar.Normalize();
+            frame=Quaternion.LookRotation(Vector3.Cross(across,palmar),palmar);return true;
         }
 
         Mesh GloveMesh(Mesh source,Transform[] bones,bool left)
@@ -178,12 +307,17 @@ namespace FireRescue
             bool valid=appValid && source.isActiveAndEnabled && !source.ForceOffVisibility && sdkVisible;
             if(!valid)
             {
-                if(wasValid && hasPose)Freeze();
+                var before=lost.Current;
+                var state=lost.Step(false,wasValid && hasPose,deltaTime);
+                if(before==EmberdeepLostHand.State.Live && state==EmberdeepLostHand.State.Frozen)Freeze();
+                else if(state==EmberdeepLostHand.State.Hidden && before!=EmberdeepLostHand.State.Hidden)Hide();
                 wasValid=false;return;
             }
+            lost.Step(true,true,deltaTime);
             CopyTrackedSkeleton();
             float dt=float.IsFinite(deltaTime)?Mathf.Clamp(deltaTime,0,.1f):0;
             bool left=source.Hand!=null && source.Hand.Handedness==Handedness.Left;
+            if(FitsPalm)FitPalmToKnuckles(left);
             bool grip=kind!=EmberdeepHandPoseKind.Free && kind!=EmberdeepHandPoseKind.ButtonPress && anchor;
             bool reachable=false;Pose targetContact=default;
             if(grip && TryGetPalmFrame(out var rawPalm))
@@ -255,11 +389,24 @@ namespace FireRescue
             if(!hasPose || Frozen || contacts==null || !TryGetPalmFrame(out var palm))return;
             if(!gripping)
             {
-                var target=hasSafePalm && Vector3.Distance(safePalm,palm.position)<.5f
-                    ?contacts.Sweep(safePalm,palm.position,.023f):contacts.Resolve(palm.position,.023f);
-                display.transform.position+=target-palm.position;safePalm=target;hasSafePalm=true;
+                // Headset test 2 (2026-11-22): a fist hammering the pump goes on through the cap, and the sweep from the
+                // last safe palm held the drawn hand on the cap until the real hand came back above it ("my hand sticks
+                // to the pump"). The drawn palm now stops at a surface for at most PinRelease of divergence (the strike
+                // still reads as landing), then lets go and follows the real hand, fingers included, until the real palm
+                // is clear of every contact again.
+                var real=palm.position;
+                if(PinReleased)
+                {
+                    safePalm=real;hasSafePalm=true;
+                    if((contacts.Resolve(real,PalmRadius)-real).sqrMagnitude>1e-8f)return; // still inside: follow the real hand
+                    PinReleased=false;
+                }
+                var target=hasSafePalm && Vector3.Distance(safePalm,real)<.5f
+                    ?contacts.Sweep(safePalm,real,PalmRadius):contacts.Resolve(real,PalmRadius);
+                if(Vector3.Distance(target,real)>PinRelease){PinReleased=true;safePalm=real;hasSafePalm=true;return;}
+                display.transform.position+=target-real;safePalm=target;hasSafePalm=true;
             }
-            else {safePalm=palm.position;hasSafePalm=false;}
+            else {safePalm=palm.position;hasSafePalm=false;PinReleased=false;}
             // Resolve only display phalanges, retaining the authored grasp palm.
             // Parents precede children in the SDK joint table; repeated passes
             // handle inherited motion without ever writing to the SDK skeleton.
@@ -314,6 +461,12 @@ namespace FireRescue
             display.transform.position+=Vector3.ClampMagnitude(anchor.position-tip.position,.08f)*blend;
         }
 
+        // Lost past the grace: neither the live copy nor the snapshot is drawn until the hand is valid again.
+        void Hide()
+        {
+            foreach(var skin in skins){skin.Live.enabled=false;skin.Still.enabled=false;}
+            Frozen=false;
+        }
         void Freeze()
         {
             bool any=false;

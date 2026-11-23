@@ -19,6 +19,22 @@ Shader "Emberdeep/V2 Shallow Creek"
             float4x4 _WorldToCreek;
             float _CreekFrameEnabled,_CreekTime;
             CBUFFER_END
+            // Board clock + Plan grade (LoopSpec §6, EmberdeepPlanLook): globals, not per material. With _EmberdeepClockOn 0
+            // (camp, legacy flow) this runs on _Time as before, and the grade is 0 outside Plan.
+            float _EmberdeepClock, _EmberdeepClockOn, _EmberdeepPlanGrade; float4 _EmberdeepPlanFlood;
+            float EmberdeepTime(){return lerp(_Time.y,_EmberdeepClock,_EmberdeepClockOn);}
+            // Time stopped: a whitish chalk grade everywhere outside the flood radius (world xz around the board
+            // centre), which grows from the centre when the fire resumes; a thin warm band marks its front.
+            half3 EmberdeepGrade(half3 color,float3 world,half strength)
+            {
+                if(_EmberdeepPlanGrade<=0)return color;
+                float d=distance(world.xz,_EmberdeepPlanFlood.xz);
+                half outside=smoothstep(_EmberdeepPlanFlood.w-.05,_EmberdeepPlanFlood.w,d);
+                half lum=dot(color,half3(.299,.587,.114));
+                color=lerp(color,(lum*.55+.47)*half3(1,.985,.955),_EmberdeepPlanGrade*outside*strength);
+                half front=saturate(1-abs(d-_EmberdeepPlanFlood.w)/.05)*step(.001,_EmberdeepPlanFlood.w);
+                return color+half3(1,.62,.30)*front*_EmberdeepPlanGrade*strength*.35;
+            }
             struct A { float4 positionOS:POSITION; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct V { float4 positionCS:SV_POSITION; float3 world:TEXCOORD0; UNITY_VERTEX_OUTPUT_STEREO };
             V vert(A a) { V o;UNITY_SETUP_INSTANCE_ID(a);UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);o.world=TransformObjectToWorld(a.positionOS.xyz);o.positionCS=TransformWorldToHClip(o.world);return o; }
@@ -28,7 +44,7 @@ Shader "Emberdeep/V2 Shallow Creek"
                 float enabled=saturate(_CreekFrameEnabled);
                 float3 local=mul(_WorldToCreek,float4(i.world,1)).xyz;
                 float2 p=lerp(i.world.xz/.08,local.xz,enabled);
-                float t=lerp(_Time.y,_CreekTime,enabled)*_FlowSpeed;
+                float t=lerp(EmberdeepTime(),_CreekTime,enabled)*_FlowSpeed;
                 float center=2.1+.035*sin((p.x+4.2)/.42*.8);
                 float cross=(p.y-center)/.5,shore=saturate(abs(cross));
                 // Two travelling wave families create small moving normals, not broad white bands.
@@ -63,6 +79,7 @@ Shader "Emberdeep/V2 Shallow Creek"
                 float bankFilter=1-smoothstep(.6,2.4,fwidth(p.x*5.3+cross*4));
                 float bank=smoothstep(.82,.99,shore)*smoothstep(.35,.85,bankWave)*bankFilter;
                 color=lerp(color,_FoamColor.rgb,bank*.18);
+                color=EmberdeepGrade(color,i.world,1);
                 return half4(color,1);
             }
             ENDHLSL

@@ -14,8 +14,12 @@ namespace FireRescue
             if(ToolOwnsHand(1) || (refill.OwnsControl && refill.OperatingHand==1))right.Valid=false;
             // During a committed cast, do not acquire a sheep along the aiming ray.
             if(palmMagic.Casting){left.Valid=false;right.Valid=false;}
+            if(PieceClaimsHand(0))left.Valid=false;if(PieceClaimsHand(1))right.Valid=false; // carrying, drawing, or about to take a nearer piece (L3)
+            // Headset test 2026-11-22: no petting until every fire is out (not in Plan, not in the fight). Grabbing stays.
+            sheepInteraction.PetAllowed=PetPhase(Run.Phase);
             sheepInteraction.Step(Run,Arena,left,right,dt,NearestSheepFinger(true),NearestSheepFinger(false));
         }
+        public static bool PetPhase(FirePhase phase)=>phase==FirePhase.Cleared || phase==FirePhase.Won;
         Vector3? NearestSheepFinger(bool left)
         {
             Vector3? closest=null;float best=.045f;

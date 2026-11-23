@@ -4,7 +4,7 @@ using UnityEngine;
 namespace FireRescue
 {
     public enum FirePhase { Ready, Fighting, Cleared, Lost, Won, Preparing }
-    public enum TreeState { Safe, Burning, Saved, Burnt }
+    public enum TreeState { Safe, Burning, Saved, Burnt, Cleared } // Cleared: dug by the excavator (FireRun.Pieces.cs), never charred
     public enum FirePropKind { Reservoir, Cabin }
 
     // All economy and fire simulation live here so desktop and hands share the same rules.
@@ -15,6 +15,7 @@ namespace FireRescue
             public Vector3 Position;
             public TreeState State;
             public float Heat, Wetness, Fuel = 100;
+            public FireFuel Kind; // Grass patches reuse this record (FireRun.Board.cs)
         }
         public sealed class Prop
         {
@@ -44,7 +45,7 @@ namespace FireRescue
             "Use cannon splashes on clusters and towers on separate fronts."
         };
         public Prop[] Props { get; private set; } = Array.Empty<Prop>();
-        public string Objective => IsPalmLesson?(Stage==0?"GODDESS HAND: extinguish the single tree with your palms.":"PALM RESCUE: cool the grove and protect the sheep."):$"RESCUE {Animals.Length} SHEEP - clear their escape paths. Spray to protect.";
+        public string Objective => IsPalmLesson?"PALM RESCUE: cool the grove and protect the sheep.":$"RESCUE {Animals.Length} SHEEP - clear their escape paths. Spray to protect.";
         public string Hint => IsPalmLesson?"Open left palm: aim. Touch its back with any right fingertip: water.":GoddessTutorial && Stage==3 && !SpellMode?"Right hand: gold handle. Left hand: nozzle. Squeeze to spray.":Hints[IncidentIndex];
         public int Combo { get; private set; }
         public int BestCombo { get; private set; }
@@ -52,7 +53,7 @@ namespace FireRescue
         public int Stars { get; private set; }
         public int StageBonus { get; private set; }
         public float Elapsed { get; private set; }
-        public float ParTime => ParTimes[IncidentIndex];
+        public float ParTime => Level!=null?Level.Par:ParTimes[IncidentIndex];
         public int[] IncidentStars { get; } = new int[8];
         public int CabinsSaved { get { int count=0; foreach(var prop in Props) if(prop.Kind==FirePropKind.Cabin && prop.Health01>0) count++; return count; } }
         public int CabinsTotal { get { int count=0; foreach(var prop in Props) if(prop.Kind==FirePropKind.Cabin) count++; return count; } }
@@ -62,6 +63,38 @@ namespace FireRescue
         public static readonly string[] Names = { "FIRST RESPONSE", "PARK PATROL", "THE GROVE", "FOREST FRONT", "FOREST INFERNO" };
         static readonly int[] Counts = { 3, 9, 18, 30, 42 };
         static readonly int[] Starts = { 3, 5, 8, 12, 18 };
+        // The Emberdeep board is the compact one (EmberdeepBoardLayout); authored board z goes through BoardZ.
+        public bool CompactBoard => GoddessTutorial;
+        public float BoardZ(float authored) => CompactBoard ? EmberdeepBoardLayout.Z(authored) : authored;
+        // Emberdeep flow: the hand-authored level being played (EmberdeepLevels, LoopSpec §8); null in the legacy tool
+        // flow, which keeps the generated field (Counts/Starts above).
+        public EmberdeepLevel Level { get; private set; }
+        // Dev/test: play this level for every stage instead of the table (like WindOverride, per run).
+        public EmberdeepLevel LevelOverride { get; set; }
+        public int FieldColumns { get; private set; }
+        public int FieldRows { get; private set; }
+        // The field's grid: column x and row z (arena units). An authored level can leave cells empty (clearings),
+        // so Trees holds only real trees; FieldTree maps a grid cell to its tree index, or -1.
+        float[] fieldX=Array.Empty<float>(),fieldZ=Array.Empty<float>();
+        int[] fieldTree=Array.Empty<int>();
+        public float FieldX(int column)=>column>=0 && column<fieldX.Length?fieldX[column]:0;
+        public float FieldZ(int row)=>row>=0 && row<fieldZ.Length?fieldZ[row]:0;
+        public int FieldTree(int column,int row)=>column>=0 && column<FieldColumns && row>=0 && row<FieldRows && column+row*FieldColumns<fieldTree.Length?fieldTree[column+row*FieldColumns]:-1;
+        // Sheep lanes: x of the gaps between neighbouring columns of the front row (one column: either side of it).
+        public float[] FieldLanes()
+        {
+            if(Level!=null && FieldColumns>=2)
+            {
+                var gaps=new float[FieldColumns-1];
+                for(int c=0;c+1<FieldColumns;c++)gaps[c]=(fieldX[c]+fieldX[c+1])*.5f;
+                return gaps;
+            }
+            int columns=Mathf.Min(FieldColumns,Trees.Length);
+            if(columns<2)return new[]{-EmberdeepBoardLayout.ColumnSpacing*.5f,EmberdeepBoardLayout.ColumnSpacing*.5f};
+            var lanes=new float[columns-1];
+            for(int c=0;c+1<columns;c++)lanes[c]=(Trees[c].Position.x+Trees[c+1].Position.x)*.5f;
+            return lanes;
+        }
         static readonly int[] Prices = { 75, 200, 400, 700 };
         public Tree[] Trees { get; private set; } = Array.Empty<Tree>();
         public FirePhase Phase { get; private set; } = FirePhase.Ready;
@@ -70,11 +103,11 @@ namespace FireRescue
         public WaterStationTier StationTier { get; private set; }=WaterStationTier.LeverWell;
         public int StationUpgradeCost=>StationTier==WaterStationTier.LeverWell?100:StationTier==WaterStationTier.RotaryHydrant?200:0;
         // The mandatory first magic upgrade comes before any other spending.
-        public bool CanUpgradeStation=>StationOpen && !NeedsMagicUpgrade && InSupply && !Supply.Locked && StationUpgradeCost>0 && Coins>=StationUpgradeCost;
+        public bool CanUpgradeStation=>!GemMode && StationOpen && !NeedsMagicUpgrade && InSupply && !Supply.Locked && StationUpgradeCost>0 && Coins>=StationUpgradeCost;
         public bool BuyStationUpgrade()
         {
             if(!CanUpgradeStation)return false;
-            Coins-=StationUpgradeCost;StationTier=(WaterStationTier)((int)StationTier+1);BasinFlowing=false;ResetRecovery();return true;
+            Coins-=StationUpgradeCost;StationTier=(WaterStationTier)((int)StationTier+1);ResetRecovery();return true;
         }
         readonly bool[] owned={true,false,false,false};
         readonly int[] upgrades=new int[4];
@@ -102,7 +135,7 @@ namespace FireRescue
             public int Coins, Score, Rescued, BestCombo, Assisted, MagicLevel;
             public float MagicConsumed;
         }
-        public FireRun(bool goddessTutorial=false){GoddessTutorial=goddessTutorial;Supply=new EmberdeepWaterSupply(this);}
+        public FireRun(bool goddessTutorial=false){GoddessTutorial=goddessTutorial;Supply=new EmberdeepWaterSupply(this);MagicWater=MagicCapacity;}
         public float WaterFor(FireEquipmentId id)=>Owns(id)?tanks[(int)id]:0;
         public float CapacityFor(FireEquipmentId id)=>FireEquipment.Get(id).Capacity+upgrades[(int)id]*25;
         public FireEquipmentId Equipped { get; private set; }
@@ -116,7 +149,7 @@ namespace FireRescue
         float triggerChargeSeconds;
         bool chargeReady;
         public bool Owns(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && owned[(int)id];
-        public bool CanBuy(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && !Supply.Locked && InSupply && !Owns(id) && EquipmentIncidents>=FireEquipment.Get(id).Unlock && Coins>=FireEquipment.Get(id).Price;
+        public bool CanBuy(FireEquipmentId id) => (int)id>=0 && (int)id<owned.Length && !SpellCut(id) && !Supply.Locked && InSupply && !Owns(id) && EquipmentIncidents>=FireEquipment.Get(id).Unlock && Coins>=FireEquipment.Get(id).Price;
         public bool BuyEquipment(FireEquipmentId id)
         {if(!CanBuy(id))return false;Coins-=FireEquipment.Get(id).Price;owned[(int)id]=true;if(SpellMode)tanks[(int)id]=CapacityFor(id);ResetRecovery();return true;}
         public bool Equip(FireEquipmentId id)
@@ -184,7 +217,7 @@ namespace FireRescue
         public int UpgradeFor(FireEquipmentId id)=>upgrades[(int)id];
         public int UpgradeCostFor(FireEquipmentId id)=>upgrades[(int)id]<Prices.Length?Prices[upgrades[(int)id]]:0;
         public int UpgradeCost => Upgrade < Prices.Length ? Prices[Upgrade] : 0;
-        public int BurnLimit => Mathf.Max(1, Mathf.CeilToInt(Trees.Length * .3f));
+        public int BurnLimit => Level!=null?Mathf.Max(1,Level.BurnLimit):Mathf.Max(1, Mathf.CeilToInt(Trees.Length * .3f));
         public int Burnt { get { int n=0; foreach(var t in Trees) if(t.State==TreeState.Burnt)n++; return n; } }
         public int Burning { get { int n=0; foreach(var t in Trees) if(t.State==TreeState.Burning)n++; return n; } }
         public bool CanUpgrade => !IsPalmLesson && !Supply.Locked && InSupply && Upgrade < Prices.Length && Coins >= UpgradeCost;
@@ -200,24 +233,36 @@ namespace FireRescue
             if(Phase==FirePhase.Cleared) Stage++;
             entryCheckpoint=new EntryCheckpoint{Tanks=(float[])tanks.Clone(),Owned=(bool[])owned.Clone(),Upgrades=(int[])upgrades.Clone(),StationTier=StationTier,Equipped=Equipped,Supplied=SuppliedWater,Consumed=ConsumedWater,Recovered=recoveredWater,
                 Coins=Coins,Score=Score,Rescued=Rescued,BestCombo=BestCombo,Assisted=AssistedRefills,MagicLevel=MagicLevel,MagicConsumed=MagicConsumed};
-            MagicWater=MagicCapacity;BeginSpellStage();
+            FillGemForStage();BeginSpellStage();
             int incident=IncidentIndex;
-            int count=IsPalmLesson?new[]{1,3,5}[Stage]:Counts[incident], columns=IsPalmLesson?(Stage==0?1:3):incident<2?3:incident==4?7:6;
-            Trees=new Tree[count];
-            for(int i=0;i<count;i++)
+            int columns;
+            // Emberdeep: the hand-authored level (EmberdeepLevels). Legacy tool flow: the generated field below.
+            Level=CompactBoard?LevelOverride??EmberdeepLevels.For(Stage):null;
+            if(Level!=null)columns=BuildLevelField(Level);
+            else
             {
-                float x=(i%columns-(columns-1)*.5f)*1.18f;
-                float z=3+(i/columns)*1.15f;
-                // Later incidents have two groves separated by an access lane.
-                if(incident>=2 && columns%2==0)x+=Mathf.Sign(x)*.24f;
-                if(incident==4)z+=Mathf.Sin((i%columns)*1.2f)*.16f;
-                Trees[i]=new Tree { Position=new Vector3(x,.7f,z), State=TreeState.Safe };
+                int count=Counts[incident];columns=incident<2?3:incident==4?7:6;
+                FieldColumns=columns;FieldRows=count/columns;
+                fieldX=new float[columns];fieldZ=new float[FieldRows];fieldTree=new int[count];
+                Trees=new Tree[count];
+                for(int i=0;i<count;i++)
+                {
+                    float x=(i%columns-(columns-1)*.5f)*EmberdeepBoardLayout.ColumnSpacing;
+                    float z=EmberdeepBoardLayout.FrontRowZ+(i/columns)*EmberdeepBoardLayout.RowSpacing;
+                    // Later incidents have two groves separated by an access lane.
+                    if(incident>=2 && columns%2==0)x+=Mathf.Sign(x)*EmberdeepBoardLayout.AccessLane;
+                    if(incident==4)z+=Mathf.Sin((i%columns)*1.2f)*.16f;
+                    Trees[i]=new Tree { Position=new Vector3(x,.7f,z), State=TreeState.Safe };
+                    fieldX[i%columns]=x;fieldZ[i/columns]=EmberdeepBoardLayout.FrontRowZ+(i/columns)*EmberdeepBoardLayout.RowSpacing;fieldTree[i]=i;
+                }
+                // Distribute the initial fires throughout the forest, deterministically.
+                int starts=Starts[incident];
+                for(int i=0;i<starts;i++) { var tree=Trees[i*count/starts]; tree.State=TreeState.Burning; tree.Heat=100; }
             }
-            // Distribute the initial fires throughout the forest, deterministically.
-            int starts=IsPalmLesson?Stage+1:Starts[incident];
-            for(int i=0;i<starts;i++) { var tree=Trees[i*count/starts]; tree.State=TreeState.Burning; tree.Heat=IsPalmLesson?60+Stage*12:100; }
+            BuildGrass(columns);
             BuildProps();
             BuildAnimals();
+            BuildPieces(); // tray pieces and the board's squares (FireRun.Pieces.cs)
             Combo=Stars=StageBonus=0;Elapsed=comboRemaining=0;
             CountdownRemaining=-1;Phase=prepare?FirePhase.Preparing:FirePhase.Fighting; spreadTime=0;CancelTrigger();cooldown=0; return true;
         }
@@ -246,10 +291,32 @@ namespace FireRescue
             Phase=FirePhase.Ready;
             return StartStage(prepare);
         }
+        // The authored field: trees row-major from the front row, fires as the map says. Grass, cabins, sheep and the
+        // piece squares follow from the same level (BuildGrass, BuildProps, BuildAnimals, BuildPieces).
+        int BuildLevelField(EmberdeepLevel level)
+        {
+            int columns=level.Columns,rows=level.Rows;
+            FieldColumns=columns;FieldRows=rows;
+            fieldX=new float[columns];fieldZ=new float[rows];fieldTree=new int[columns*rows];
+            for(int c=0;c<columns;c++)fieldX[c]=level.ColumnX(c);
+            for(int r=0;r<rows;r++)fieldZ[r]=EmberdeepLevel.RowZ(r);
+            for(int i=0;i<fieldTree.Length;i++)fieldTree[i]=-1;
+            var cells=level.Trees;Trees=new Tree[cells.Length];
+            for(int i=0;i<cells.Length;i++)
+            {
+                var cell=cells[i];
+                Trees[i]=new Tree{Position=new Vector3(fieldX[cell.Column],.7f,fieldZ[cell.Row]),State=cell.Burning?TreeState.Burning:TreeState.Safe,Heat=cell.Burning?level.StartHeat:0};
+                fieldTree[cell.Column+cell.Row*columns]=i;
+            }
+            return columns;
+        }
         void BuildProps()
         {
             int incident=IncidentIndex;
+            // §5: towers come from the tray now (FireRun.Pieces.cs); the board flow pre-places only the level's cabins.
+            if(Level!=null){var at=Level.Cabins;Props=new Prop[at.Length];for(int i=0;i<at.Length;i++)Props[i]=Cabin(at[i].x,at[i].y);return;}
             if(incident==0){Props=Array.Empty<Prop>();return;}
+            // Legacy tool flow: spray-to-fill reservoirs and cabins on the generated field.
             if(incident==1){Props=new[]{Reservoir(-.59f,3.575f)};return;}
             if(incident==2){Props=new[]{Reservoir(-2.6f,3.575f),Cabin(4.25f,4.15f)};return;}
             if(incident==3){Props=new[]{Reservoir(-2.6f,3.575f),Reservoir(2.6f,5.875f),Cabin(4.25f,5.3f)};return;}
@@ -266,13 +333,13 @@ namespace FireRescue
         public void Restart()
         {
             Supply.Interrupt("New expedition");entryCheckpoint=null;SuppliedWater=ConsumedWater=0;recoveredWater=0;ResetRecovery();AssistedRefills=0;triggerNeedsOpen=false;
-            MagicLevel=0;MagicWater=30;MagicConsumed=0;PalmTutorialComplete=false;Array.Clear(LearnedActions,0,LearnedActions.Length);
+            MagicLevel=0;MagicWater=MagicCapacity;MagicConsumed=MagicPumped=0;PalmTutorialComplete=false;Array.Clear(LearnedActions,0,LearnedActions.Length);
             Stage=Coins=Rescued=0;Equipped=FireEquipmentId.Extinguisher;StationTier=WaterStationTier.LeverWell;
             for(int i=0;i<4;i++){owned[i]=i==0;upgrades[i]=0;tanks[i]=i==0?60:0;}
-            Trees=Array.Empty<Tree>();Phase=FirePhase.Ready;spreadTime=cooldown=0;CancelTrigger();
-            Props=Array.Empty<Prop>();Combo=BestCombo=Score=Stars=StageBonus=0;Elapsed=comboRemaining=0;Array.Clear(IncidentStars,0,IncidentStars.Length);
+            Trees=Array.Empty<Tree>();Grass=Array.Empty<Tree>();Phase=FirePhase.Ready;spreadTime=grassSpreadTime=cooldown=0;version++;CancelTrigger();
+            Props=Array.Empty<Prop>();ResetPieces();ResetPieceUpgrades();Combo=BestCombo=Score=Stars=StageBonus=0;Elapsed=comboRemaining=0;Array.Clear(IncidentStars,0,IncidentStars.Length);
             Animals=Array.Empty<Animal>();
-            BasinWater=0;BasinFlowing=false;if(playtestAllSpells)GrantAllSpells();
+            if(playtestAllSpells)GrantAllSpells();
         }
         public float SprayAmount { get; private set; }
         public bool Tick(float dt, bool spraying, bool manualCharge=false)
@@ -312,16 +379,21 @@ namespace FireRescue
                 float used=Mathf.Min(Water,Equipment.Flow*dt);Water-=used;SprayAmount=Power*used/Equipment.Flow;
             }
             wasTrigger=spraying;
-            foreach(var tree in Trees)
+            if(BoardRules)TickBoard(dt); // grass, wind, lasting wetness: FireRun.Board.cs
+            else
             {
-                tree.Wetness=Mathf.Max(0,tree.Wetness-dt*.7f);
-                if(tree.State!=TreeState.Burning)continue;
-                if(!(IsPalmLesson && Stage==0))tree.Fuel-=dt*(.8f+IncidentIndex*.15f);
-                if(tree.Fuel<=0)tree.State=TreeState.Burnt;
+                foreach(var tree in Trees)
+                {
+                    tree.Wetness=Mathf.Max(0,tree.Wetness-dt*.7f);
+                    if(tree.State!=TreeState.Burning)continue;
+                    if(!(IsPalmLesson && Stage==0))tree.Fuel-=dt*(.8f+IncidentIndex*.15f);
+                    if(tree.Fuel<=0)tree.State=TreeState.Burnt;
+                }
+                spreadTime+=dt;
+                if(!(IsPalmLesson && Stage==0) && spreadTime>=10-IncidentIndex) { spreadTime=0; Spread(); }
             }
-            spreadTime+=dt;
-            if(!(IsPalmLesson && Stage==0) && spreadTime>=10-IncidentIndex) { spreadTime=0; Spread(); }
             TickProps(dt);
+            TickPieces(dt); // towers, excavators, plane (FireRun.Pieces.cs)
             TickAnimals(dt);
             CheckOutcome();
             return Phase==FirePhase.Fighting && SprayAmount>0;
@@ -340,24 +412,40 @@ namespace FireRescue
                 Phase=Stage==StageCount-1?FirePhase.Won:FirePhase.Cleared;
                 CancelTrigger();
             }
-            if(Phase!=FirePhase.Fighting){ResetRecovery();foreach(var prop in Props)prop.ActiveRemaining=0;}
+            if(Phase!=FirePhase.Fighting){ResetRecovery();foreach(var prop in Props)prop.ActiveRemaining=0;version++;}
+            if(Phase==FirePhase.Cleared || Phase==FirePhase.Won)SmotherGrass();
         }
-        public void ApplyWater(Vector3 point,float amount,float radius=-1,float wetness=1)
+        // The one splash-reach rule: ApplyWater, the palm aim's crown rings and its aim assist all use it.
+        public static bool WaterReaches(Tree tree,Vector3 point,float radius)=>tree!=null && Vector3.Distance(tree.Position,point)<=radius;
+        // Palm water (playtest 2026-11-22, "the root doesn't count"): against the .7-up point a ground splash only reached
+        // ~.43 from the trunk (MagicRadius .82). column: the distance is to the trunk column instead, the vertical segment
+        // from the ground (Position - TrunkColumn) up to Position. FireRescueGame.OnWaterImpact passes it for palm hits only;
+        // tower rain, the plane, tools and spells keep the point.
+        public const float TrunkColumn=.7f;
+        public static Vector3 TrunkPoint(Tree tree,Vector3 point)
+        {
+            var p=tree.Position;return new Vector3(p.x,Mathf.Clamp(point.y,p.y-TrunkColumn,p.y),p.z);
+        }
+        public static bool WaterReaches(Tree tree,Vector3 point,float radius,bool column)=>
+            column?tree!=null && Vector3.Distance(TrunkPoint(tree,point),point)<=radius:WaterReaches(tree,point,radius);
+        public void ApplyWater(Vector3 point,float amount,float radius=-1,float wetness=1)=>ApplyWater(point,amount,radius,wetness,false);
+        public void ApplyWater(Vector3 point,float amount,float radius,float wetness,bool column)
         {
             if(Phase!=FirePhase.Fighting || !PositiveFinite(amount) || !Finite(point.x) || !Finite(point.y) || !Finite(point.z) || !Finite(radius) || !Finite(wetness))return;
             if(radius<0)radius=.6f+Width;
             for(int i=0;i<Trees.Length;i++)
             {
-                var tree=Trees[i];if(Vector3.Distance(tree.Position,point)>radius)continue;
-                tree.Wetness=Mathf.Max(tree.Wetness,wetness);
+                var tree=Trees[i];if(!WaterReaches(tree,point,radius,column))continue;
+                if(wetness>tree.Wetness){tree.Wetness=wetness;version++;}
                 if(tree.State!=TreeState.Burning)continue;
-                tree.Heat=Mathf.Max(0,tree.Heat-amount);
+                tree.Heat=Mathf.Max(0,tree.Heat-amount);version++;
                 if(tree.Heat>0)continue;
                 tree.State=TreeState.Saved;Rescued++;
                 Combo++;BestCombo=Mathf.Max(BestCombo,Combo);comboRemaining=3;
                 Score+=100+Mathf.Min(Combo-1,9)*20;
                 Extinguished?.Invoke(i);
             }
+            if(BoardRules && ApplyGrassWater(point,amount,radius,wetness))version++;
             ApplyAnimalWater(point,amount,radius);
             CheckOutcome();
         }

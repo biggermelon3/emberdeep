@@ -39,6 +39,8 @@ namespace FireRescue
                 var data=run.Props[i];var root=new GameObject(data.Kind+" "+i).transform;root.SetParent(scenery,false);root.localPosition=new Vector3(data.Position.x,0,data.Position.z);
                 var view=new PropView{Root=root};views[i]=view;
                 if(data.Kind==FirePropKind.Reservoir)BuildReservoir(view,data.Position.y);else BuildCabin(view);
+                // §11b: no text on the board in the spell flow; the cabin keeps its health bar.
+                if(run.SpellMode && view.Label)view.Label.gameObject.SetActive(false);
             }
         }
         void BuildReservoir(PropView view,float height)

@@ -24,6 +24,10 @@ namespace CloudGarden.Integration
         public bool IndependentPortableAim;
         readonly PortableJointAim[] portableAims={new(),new()};
         readonly PortableXRHandInput portableHands=new();
+        // The runtime's own aim ray on the portable rig (XR_EXT_hand_interaction); PortableJointAim is its fallback.
+        readonly PortableSystemAim systemAim=new();
+        // Where a UI ray comes from: the runtime's aim (Meta pointer pose, OpenXR hand-interaction aim) or our joint ray.
+        public enum AimSource{None,System,Fallback}
         Oculus.Interaction.TransformTrackingToWorldTransformer portableSpace;
         public IShadowHost Host;
         Hand[] hands;
@@ -38,7 +42,7 @@ namespace CloudGarden.Integration
             if(!Active)return;
             bool ready=HeadReady;
             if(ready!=headWasReady){headWasReady=ready;Debug.Log("SHAPE_OF_MEMORY_HEAD "+HeadState());}
-            if(UnityXRRig && IndependentPortableAim){portableHands.Bind();return;}
+            if(UnityXRRig && IndependentPortableAim){portableHands.Bind();if(!PortableSystemAim.Installed)PortableSystemAim.Install();return;}
             if(Time.unscaledTime<nextBind)return;
             nextBind=Time.unscaledTime+1;
             rays ??= Player.XRRig.GetComponentsInChildren<Oculus.Interaction.RayInteractor>(true);
@@ -125,23 +129,76 @@ namespace CloudGarden.Integration
         }
         public override bool ReadHand(bool left, out Pose palm, out Vector3 tip, out float pinchDistance)
             =>ReadHandPose(left,out palm,out tip,out pinchDistance);
+        // Where a menu hand ray comes from: for the drawn line and the EMBERDEEP_AIM device log.
+        public struct MenuAimDetail
+        {
+            // The portable (PICO, UnityXR) rig rather than Meta's OVR rig.
+            public bool Portable;
+            // System = the runtime's aim, used as is (Portable: lightly smoothed); Fallback = PortableJointAim.
+            public AimSource Source;
+            // The thumb-index web (虎口): midpoint of the index and thumb knuckles, unfiltered.
+            public bool WebValid;public Vector3 Web;
+            // Fallback only: how the joint ray's direction was blended this frame.
+            public PortableJointAim.Detail Blend;
+            // System only, logs: the runtime's aim before any smoothing, and its tracking flags (Portable).
+            public bool RuntimeAimValid;public Pose RuntimeAim;public int RuntimeAimFlags;
+            // SystemSelect: clicks follow the runtime's select (Meta: index pinch; PICO: aim_activate_ext) rather than
+            // the thumb-index tip distance. Select = its strength 0..1, SelectPressed = its closed state,
+            // SelectReady = the runtime's readiness (PICO aim_activate ready; Meta index high confidence), logs only.
+            public bool SystemSelect,SelectPressed,SelectReady;public float Select;
+        }
         // UI pointing and pinch availability are separate: an obscured fingertip
         // must stop clicks without discarding a still-tracked wrist/knuckle ray.
         public bool ReadMenuHand(bool left,out Pose palm,out Pose aim,out float pinch,out bool pinchAvailable)
+            =>ReadMenuHand(left,out palm,out aim,out pinch,out pinchAvailable,out _);
+        public bool ReadMenuHand(bool left,out Pose palm,out Pose aim,out float pinch,out bool pinchAvailable,out MenuAimDetail detail)
         {
-            palm=aim=default;pinch=float.PositiveInfinity;pinchAvailable=false;
-            if(!ReadInteractionAim(left,out aim))return false;
+            palm=aim=default;pinch=float.PositiveInfinity;pinchAvailable=false;detail=default;
+            if(!ReadInteractionAim(left,out aim,out detail.Source))return false;
             if(UnityXRRig && IndependentPortableAim)
             {
-                if(!ReadPortable(left,out var sample))return false;
-                palm=sample.Wrist;pinchAvailable=sample.PinchAvailable;
-                if(pinchAvailable)pinch=sample.Pinch;
+                detail.Portable=true;
+                if(ReadPortable(left,out var sample))
+                {
+                    palm=sample.Wrist;pinchAvailable=sample.PinchAvailable;
+                    if(pinchAvailable)pinch=sample.Pinch;
+                    detail.WebValid=true;detail.Web=PortableJointAim.Web(sample.IndexBase,sample.ThumbBase);
+                }
+                // The system ray needs no joints; without them the wrist is unknown and only the system select clicks.
+                else if(detail.Source==AimSource.System)palm=aim;
+                else return false;
+                if(detail.Source==AimSource.Fallback)detail.Blend=portableAims[left?0:1].Last;
+                else if(ReadSystemAim(left,out var system)==PortableSystemAim.Report.Tracked) // this frame's cached reading
+                {
+                    detail.RuntimeAimValid=true;detail.RuntimeAim=system.RawAim;detail.RuntimeAimFlags=system.TrackingState;
+                    detail.SystemSelect=system.SelectAvailable && system.SelectProven;
+                    detail.SelectPressed=system.SelectPressed;detail.SelectReady=system.SelectReady;detail.Select=system.Select;
+                }
                 return true;
             }
             var hand=Tracked(left);
             if(!hand || !hand.GetRootPose(out palm) || !float.IsFinite(palm.position.sqrMagnitude))return false;
             pinchAvailable=TryReadPinch(hand,out pinch);
+            // Same knuckles as the portable path (OpenXR IndexProximal/ThumbProximal).
+            if(hand.GetJointPose(HandJointId.HandIndex1,out var index) && hand.GetJointPose(HandJointId.HandThumb2,out var thumb))
+            {detail.Web=PortableJointAim.Web(index.position,thumb.position);detail.WebValid=float.IsFinite(detail.Web.sqrMagnitude);}
+            if(detail.Source==AimSource.System)
+            {
+                // Meta's runtime pinch (OVRHand.GetFingerIsPinching / GetFingerPinchStrength via ISDK): the same select
+                // the system UI uses with this pointer pose. Its threshold belongs to the runtime.
+                detail.RuntimeAimValid=true;detail.RuntimeAim=aim;
+                detail.SystemSelect=true;detail.SelectPressed=hand.GetIndexFingerIsPinching();
+                detail.Select=Mathf.Clamp01(hand.GetFingerPinchStrength(Oculus.Interaction.Input.HandFinger.Index));
+                detail.SelectReady=hand.GetFingerIsHighConfidence(Oculus.Interaction.Input.HandFinger.Index);
+                if(!float.IsFinite(detail.Select))detail.SystemSelect=false;
+            }
             return true;
+        }
+        // The portable rig's system aim this frame (cached per frame, so the ray and the menu detail agree).
+        PortableSystemAim.Report ReadSystemAim(bool left,out PortableSystemAim.Reading reading)
+        {
+            if(!portableSpace)portableSpace=Player.XRRig.GetComponentInChildren<Oculus.Interaction.TransformTrackingToWorldTransformer>(true);
+            return systemAim.Read(left,portableSpace?portableSpace.Transform:null,Time.frameCount,Time.unscaledDeltaTime,out reading);
         }
         bool ReadPortable(bool left,out PortableXRHandInput.Sample sample)
         {
@@ -248,29 +305,42 @@ namespace CloudGarden.Integration
             var hand = Tracked(left);
             return hand && hand.IsPointerPoseValid && hand.GetPointerPose(out aim);
         }
-        // Emberdeep's portable rig owns a joint-driven ray; older shared scenes
-        // retain their filtered SDK pointer binding. Neither uses stale tracking.
-        public bool ReadInteractionAim(bool left,out Pose aim)
+        // The UI ray. Meta's OVR rig: the runtime's pointer pose. Emberdeep's portable rig: the runtime's
+        // XR_EXT_hand_interaction aim when it reports one, else PortableJointAim from the joints. Older shared scenes on
+        // the UnityXR rig keep their filtered SDK pointer binding. None of them uses stale tracking.
+        public bool ReadInteractionAim(bool left,out Pose aim)=>ReadInteractionAim(left,out aim,out _);
+        public bool ReadInteractionAim(bool left,out Pose aim,out AimSource source)
         {
-            aim=default;
+            aim=default;source=AimSource.None;
             if(!HeadReady || !Active || !Player.XRRig.gameObject.activeInHierarchy)
             {InvalidateInteractionAims();return false;}
-            if(SystemOwnsHand(left)){portableAims[left?0:1].Reset();return false;}
+            if(SystemOwnsHand(left)){portableAims[left?0:1].Reset();systemAim.Reset(left);return false;}
             if(UnityXRRig && IndependentPortableAim)
             {
                 var filter=portableAims[left?0:1];
+                switch(ReadSystemAim(left,out var system))
+                {
+                    case PortableSystemAim.Report.Tracked:filter.Reset();aim=system.Aim;source=AimSource.System;return true;
+                    // The runtime has aimed this hand and now says it cannot: no ray, as with Meta's invalid pointer.
+                    case PortableSystemAim.Report.Lost:filter.Reset();return false;
+                }
                 if(!ReadPortable(left,out var sample)){filter.Reset();return false;}
                 // Missing tips relax aiming stiffness; they never become an
                 // open pinch sample. ReadMenuHand reports PinchAvailable=false.
-                return filter.TryRead(Time.frameCount,Player.ViewCamera.transform,left,sample.IndexBase,sample.ThumbBase,
-                    sample.PinchAvailable?sample.Pinch:.08f,Time.unscaledDeltaTime,out aim);
+                if(!filter.TryRead(Time.frameCount,Player.ViewCamera.transform,left,sample.Wrist.position,sample.IndexBase,
+                    sample.ThumbBase,sample.PinchAvailable?sample.Pinch:.08f,Time.unscaledDeltaTime,out aim))return false;
+                source=AimSource.Fallback;return true;
             }
-            if(!UnityXRRig)return ReadAim(left,out aim);
+            if(!UnityXRRig)
+            {
+                if(!ReadAim(left,out aim))return false;
+                source=AimSource.System;return true;
+            }
             var handedness=left?Handedness.Left:Handedness.Right;
             foreach(var binding in interactionAims)
             {
                 if(binding.Hand.Handedness!=handedness)continue;
-                if(binding.TryRead(Time.frameCount,out aim))return true;
+                if(binding.TryRead(Time.frameCount,out aim)){source=AimSource.Fallback;return true;}
             }
             return false;
         }
@@ -304,7 +374,7 @@ namespace CloudGarden.Integration
             public void Dispose(){Hand.WhenHandUpdated-=Updated;freshness.Invalidate();}
         }
         void InvalidateInteractionAims()
-        {foreach(var binding in interactionAims)binding.Invalidate();foreach(var aim in portableAims)aim.Reset();portableHands.Invalidate();}
+        {foreach(var binding in interactionAims)binding.Invalidate();foreach(var aim in portableAims)aim.Reset();portableHands.Invalidate();systemAim.Reset();}
         void OnEnable()=>nextBind=0;
         void OnDisable()
         {
@@ -318,31 +388,100 @@ namespace CloudGarden.Integration
         void OnApplicationPause(bool value) {paused=value;InvalidateInteractionAims();}
     }
 
-    // Driven directly from the current tracked joints. Missing pointer/aim flags
+    // Emberdeep's fallback PICO hand ray, for a runtime that reports no system aim (PortableSystemAim). It is driven
+    // directly from the current tracked joints and built like a system hand ray.
+    // It starts at the thumb-index web (虎口: the midpoint of the index and thumb knuckles) and points along a blend
+    // of two directions: a ray from an estimated shoulder through the web (steady, aimed with the arm), and the hand's
+    // own axis, wrist to index knuckle (aimed with the wrist, so the arm need not reach out along the line). A pinch
+    // barely moves either knuckle. Only in the last centimetre or so before a pinch closes does the direction lag
+    // behind the hand, so the pinch cannot dip it off a button; it glides back afterwards. Missing pointer/aim flags
     // cannot invalidate valid joint aiming; system gestures are gated by the caller.
     public sealed class PortableJointAim
     {
-        readonly OneEuro origin=new(1.2f,3),direction=new(.8f,1.5f);
+        // Shoulder estimate from the head, yaw only: the Meta Interaction SDK's ShoulderEstimatePosition offset
+        // (13 cm out, 25 cm down, 13 cm back). ShoulderHandAim's higher shoulder (14 cm down, 4 cm back) made a
+        // chest-height hand aim low, so the arm had to be pushed out level with the button.
+        public const float ShoulderOut=.13f,ShoulderDrop=.25f,ShoulderBack=.13f;
+        // Share of the hand's own axis in the direction: 0 = shoulder ray only, 1 = hand axis only.
+        public const float HandBlend=.5f;
+        // The hand axis counts fully within this angle of the shoulder ray, fading to nothing at the second
+        // (a sharply bent wrist must not swing the ray).
+        public const float HandTrustFull=50f,HandTrustNone=90f;
+        // Anti-dip hold: the pinch span (index tip to thumb tip) where it starts and where it is full, the direction's
+        // time constant at full hold, and how long the hold takes to let go once the pinch opens again.
+        // Clicks close at ShadowPinch.CloseDistance (18 mm); an open or pinch-ready hand above HoldFrom is never held.
+        public const float HoldFrom=.035f,HoldFull=.022f,HoldSeconds=.3f,HoldRelease=.15f;
+        // Origin: light filtering, so the drawn line stays on the web while the hand moves. Direction: heavy at rest,
+        // light in a sweep.
+        readonly OneEuro origin=new(5f,10f),direction=new(.8f,1.5f);
         Vector3 lastDirection;
+        float held;
         int lastFrame=-1;
         Pose cached;
-        public void Reset(){origin.Reset();direction.Reset();lastDirection=Vector3.zero;lastFrame=-1;}
+        // How the latest direction was made, for device logs.
+        public struct Detail
+        {
+            public float HandWeight,ShoulderHandAngle,Hold;
+            public Vector3 Shoulder,Hand;
+        }
+        public Detail Last{get;private set;}
+        public void Reset(){origin.Reset();direction.Reset();lastDirection=Vector3.zero;held=0;lastFrame=-1;Last=default;}
+        // Without a wrist joint the ray is the shoulder ray alone.
         public bool TryRead(int frame,Transform head,bool left,Vector3 index,Vector3 thumb,float pinch,float dt,out Pose aim)
+            =>Read(frame,head,left,false,default,index,thumb,pinch,dt,out aim);
+        public bool TryRead(int frame,Transform head,bool left,Vector3 wrist,Vector3 index,Vector3 thumb,float pinch,float dt,out Pose aim)
+            =>Read(frame,head,left,true,wrist,index,thumb,pinch,dt,out aim);
+        bool Read(int frame,Transform head,bool left,bool hasWrist,Vector3 wrist,Vector3 index,Vector3 thumb,float pinch,float dt,out Pose aim)
         {
             aim=default;
             if(frame<0 || !head || !Finite(head.position) || !Finite(head.forward) || !Finite(index) || !Finite(thumb)
-                || !float.IsFinite(pinch) || pinch<0 || !float.IsFinite(dt) || dt<=0)
+                || (hasWrist && !Finite(wrist)) || !float.IsFinite(pinch) || pinch<0 || !float.IsFinite(dt) || dt<=0)
             {Reset();return false;}
             if(frame==lastFrame){aim=cached;return true;}
             if(frame<lastFrame || frame-lastFrame>1)Reset();
             dt=Mathf.Clamp(dt,.0001f,.05f);
-            var at=origin.Filter(Vector3.Lerp(index,thumb,.5f),dt);
-            var wanted=ShoulderHandAim.Pointing(head,left,at);
-            var filtered=direction.Filter(wanted,dt).normalized;
-            float hold=Mathf.InverseLerp(.065f,.03f,pinch);
-            float follow=1-Mathf.Pow(.96f*hold,dt*72f);
+            var at=origin.Filter(Web(index,thumb),dt);
+            var shoulder=ShoulderRay(head,left,at);
+            var detail=new Detail{Shoulder=shoulder,Hand=shoulder};
+            var wanted=shoulder;
+            if(hasWrist && (index-wrist).sqrMagnitude>1e-6f)
+            {
+                var hand=(index-wrist).normalized;float angle=Vector3.Angle(shoulder,hand);
+                float weight=HandBlend*Mathf.InverseLerp(HandTrustNone,HandTrustFull,angle);
+                wanted=Vector3.Slerp(shoulder,hand,weight).normalized;
+                detail.Hand=hand;detail.ShoulderHandAngle=angle;detail.HandWeight=weight;
+            }
+            var filtered=direction.Filter(wanted,dt);if(filtered.sqrMagnitude<1e-6f)filtered=wanted;filtered.Normalize();
+            float hold=Mathf.InverseLerp(HoldFrom,HoldFull,pinch);
+            held=hold>=held?hold:Mathf.Max(hold,held-dt/HoldRelease);
+            // Per-frame share of the way to the filtered direction: all of it with no hold, the HoldSeconds time
+            // constant at full hold, and a smooth glide in between (no one-frame catch-up as the hold lets go).
+            float follow=Mathf.Lerp(1,1-Mathf.Exp(-dt/HoldSeconds),held);
             lastDirection=lastDirection.sqrMagnitude>0?Vector3.Slerp(lastDirection,filtered,follow).normalized:filtered;
+            detail.Hold=held;Last=detail;
             cached=new Pose(at,Quaternion.LookRotation(lastDirection,Vector3.up));lastFrame=frame;aim=cached;return true;
+        }
+        // The thumb-index web: midpoint of the index knuckle (IndexProximal / HandIndex1) and the thumb knuckle
+        // (ThumbProximal / HandThumb2).
+        public static Vector3 Web(Vector3 index,Vector3 thumb)=>Vector3.Lerp(index,thumb,.5f);
+        public static Vector3 Shoulder(Transform head,bool left)
+        {
+            var flat=Heading(head);var right=Vector3.Cross(Vector3.up,flat);
+            return head.position+Vector3.down*ShoulderDrop+right*(left?-ShoulderOut:ShoulderOut)-flat*ShoulderBack;
+        }
+        // From the estimated shoulder through the hand.
+        public static Vector3 ShoulderRay(Transform head,bool left,Vector3 hand)
+        {
+            var direction=hand-Shoulder(head,left);
+            return direction.sqrMagnitude<1e-6f?Heading(head):direction.normalized;
+        }
+        // The head's yaw as a level unit vector.
+        static Vector3 Heading(Transform head)
+        {
+            var flat=Vector3.ProjectOnPlane(head.forward,Vector3.up);
+            // Looking straight down (or up), the head's up (or down) axis still points where the body faces.
+            if(flat.sqrMagnitude<1e-4f)flat=Vector3.ProjectOnPlane(head.forward.y<0?head.up:-head.up,Vector3.up);
+            return flat.sqrMagnitude<1e-4f?Vector3.forward:flat.normalized;
         }
         static bool Finite(Vector3 value)=>float.IsFinite(value.x)&&float.IsFinite(value.y)&&float.IsFinite(value.z);
     }

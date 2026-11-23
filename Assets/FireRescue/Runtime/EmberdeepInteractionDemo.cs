@@ -8,7 +8,8 @@ namespace FireRescue
     // Each articulated hand is one reusable mesh rather than 30 finger renderers.
     public sealed class EmberdeepInteractionDemo : MonoBehaviour
     {
-        public enum Action { Extinguisher, Gun, Cannon, Lever, Valve, Button, Dock, Intake, Pump, Goddess, Bolt, Fan, Orb }
+        // Hammer and Slap are first-time hint moves (LoopSpec §11b); FireRun.LearnedActions never indexes them.
+        public enum Action { Extinguisher, Gun, Cannon, Lever, Valve, Button, Dock, Intake, Pump, Goddess, Bolt, Fan, Orb, Hammer, Slap }
         static bool IsSpell(Action action)=>action==Action.Bolt || action==Action.Fan || action==Action.Orb;
         public Action Current {get;private set;}
         public float AnimationTime {get;private set;}
@@ -18,6 +19,8 @@ namespace FireRescue
         EmberdeepManaCrystal gem;
         TextMesh caption;
         public void SetCaptionVisible(bool value){if(caption)caption.gameObject.SetActive(value);}
+        // Ghost: pale see-through-looking hands for first-time hints on the player's own hand or object.
+        public bool Ghost;
         Material blue,pale,glove;
         bool built;
         public void Show(Action action)
@@ -37,6 +40,7 @@ namespace FireRescue
             model=Node("Animated instruction model",transform,Vector3.zero);model.localRotation=Quaternion.Euler(12,-22,0);
             if(action==Action.Goddess)model.localRotation=Quaternion.Euler(-40,-25,0);
             if(IsSpell(action))model.localRotation=Quaternion.Euler(10,-28,0);
+            if(action==Action.Hammer || action==Action.Slap)model.localRotation=Quaternion.identity;
             model.localScale=Vector3.one*.68f;
             tool=Node("Demonstration prop",model,Vector3.zero);
             bool weapon=action==Action.Extinguisher || action==Action.Gun || action==Action.Cannon || action==Action.Dock;
@@ -64,6 +68,12 @@ namespace FireRescue
                 hose=null;control=Node("Demonstrated spell water",tool,Vector3.zero);
                 Shape(control,PrimitiveType.Sphere,Vector3.zero,Vector3.one);control.localScale=Vector3.zero;
             }
+            else if(action==Action.Hammer || action==Action.Slap)
+            {
+                // Hammer: a fist comes down on a cap (pump or bell). Slap: an open hand sweeps sideways.
+                hose=null;control=Node(action==Action.Hammer?"Struck cap":"Slap path",tool,Vector3.zero);
+                // No cap of its own: the hint plays on the real bell or pump.
+            }
             else if(action==Action.Goddess)
             {
                 hose=null;control=Node("Open palm direction",tool,Vector3.zero);
@@ -84,7 +94,7 @@ namespace FireRescue
                 else Shape(control,action==Action.Button || action==Action.Intake?PrimitiveType.Cylinder:PrimitiveType.Cube,Vector3.zero,
                     action==Action.Button || action==Action.Intake?new Vector3(.07f,.018f,.07f):new Vector3(.15f,.028f,.035f));
             }
-            left=new ModelHand(model,glove,true);right=new ModelHand(model,glove,false);
+            left=new ModelHand(model,Ghost?pale:glove,true,Ghost);right=new ModelHand(model,Ghost?pale:glove,false,Ghost);
             gem=null;
             if(action==Action.Goddess){gem=Node("Left hand lesson crystal",left.Root,new Vector3(0,-.018f,0)).gameObject.AddComponent<EmberdeepManaCrystal>();}
             water=Node("Demonstrated water",model,Vector3.zero).gameObject.AddComponent<LineRenderer>();water.sharedMaterial=pale;
@@ -112,6 +122,7 @@ namespace FireRescue
             water.enabled=false;left.Root.gameObject.SetActive(Current==Action.Extinguisher || Current==Action.Cannon);
             tool.localPosition=Vector3.zero;
             if(IsSpell(Current)){AnimateSpell(t);return;}
+            if(Current==Action.Hammer || Current==Action.Slap){AnimateHint(AnimationTime);return;}
             if(Current==Action.Goddess)
             {
                 left.Root.gameObject.SetActive(true);left.Root.localPosition=new Vector3(-.045f,0,0);left.Root.localRotation=Quaternion.LookRotation(Vector3.right,Vector3.down);
@@ -214,6 +225,32 @@ namespace FireRescue
                 caption.text=t<1.2f?"LEFT PALM UP":t<3?"RIGHT FINGERS UNDER IT: GROW":t<3.8f?"MOVE RIGHT HAND AWAY: HOLD":"FLIP AND OPEN: DROP";
             }
         }
+        // First-time hint moves, looped quickly so the rhythm reads.
+        void AnimateHint(float time)
+        {
+            left.Root.gameObject.SetActive(false);
+            if(Current==Action.Hammer)
+            {
+                float t=time%1.3f,fall=t<.55f?0:Mathf.Clamp01((t-.55f)/.16f),rise=Mathf.Clamp01((t-.85f)/.45f);
+                float height=t<.71f?Mathf.Lerp(.15f,.035f,fall*fall):Mathf.Lerp(.035f,.15f,Mathf.SmoothStep(0,1,rise));
+                right.Root.localPosition=new Vector3(0,height,-.02f);
+                right.Root.localRotation=Quaternion.LookRotation(Vector3.forward,Vector3.up)*Quaternion.Euler(90,0,0);
+                // The fist clenches on the way down and eases while it rises.
+                right.Draw(EmberdeepHandPoseKind.LeverGrip,.72f+.28f*(.5f+.5f*Mathf.Cos(2*Mathf.PI*(t-.71f)/1.3f)));
+                float hit=t>=.71f && t<.9f?1-(t-.71f)/.19f:0;
+                control.localScale=new Vector3(1+.25f*hit,1-.35f*hit,1+.25f*hit);
+            }
+            else
+            {
+                float t=time%1.6f,sweep=t<.35f?Mathf.SmoothStep(0,1,t/.35f):t<.7f?1:1-Mathf.SmoothStep(0,1,(t-.7f)/.8f);
+                right.Root.localPosition=new Vector3(Mathf.Lerp(.11f,-.11f,sweep),0,0);
+                // Palm faces the way it slaps.
+                // Fingers up, palm toward the panel: the player sees the back of a hand sweeping across, tipped into the sweep.
+                right.Root.localRotation=Quaternion.Euler(0,0,(sweep>0 && sweep<1?18:6)*(t<.7f?1:-1))*Quaternion.LookRotation(Vector3.up,Vector3.back);
+                // Flat and open through the slap; fingers relax on the slow way back.
+                right.Draw(EmberdeepHandPoseKind.LeverGrip,t<.7f?0:.3f*Mathf.Sin(Mathf.Clamp01((t-.7f)/.8f)*Mathf.PI));
+            }
+        }
         void PoseHand(ModelHand h,Transform anchor,EmberdeepHandPoseKind kind,Vector3 offset,float curl,bool isLeft)
         {
             var pose=EmberdeepHandPose.GripContact(kind,isLeft);
@@ -239,9 +276,10 @@ namespace FireRescue
             readonly List<int> indices=new(2400);
             readonly List<Color> tones=new(600);
             static readonly Color Suede=new(.40f,.56f,.22f),Leather=new(.50f,.29f,.14f),Fleece=new(.97f,.90f,.72f),Pad=new(.31f,.45f,.17f);
-            public ModelHand(Transform parent,Material material,bool isLeft)
+            readonly bool plain; // ghost hints: one pale tone instead of the glove's suede, leather and fleece
+            public ModelHand(Transform parent,Material material,bool isLeft,bool plainTone=false)
             {
-                left=isLeft;Root=Node(isLeft?"Left demonstration hand":"Right demonstration hand",parent,Vector3.zero);
+                left=isLeft;plain=plainTone;Root=Node(isLeft?"Left demonstration hand":"Right demonstration hand",parent,Vector3.zero);
                 mesh=new Mesh{name="Articulated tutorial hand"};mesh.MarkDynamic();Root.gameObject.AddComponent<MeshFilter>().sharedMesh=mesh;
                 var r=Root.gameObject.AddComponent<MeshRenderer>();r.sharedMaterial=material;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=false;
             }
@@ -276,6 +314,7 @@ namespace FireRescue
                 const int sides=10;
                 // Overlap the rounded ends to keep joints visually connected.
                 var begin=a-z*width*.30f;var end=b+z*width*.30f;
+                if(plain)tone=Color.white;
                 for(int ring=0;ring<4;ring++)for(int side=0;side<sides;side++)
                 {float r=ring==0 || ring==3?.70f:1;float angle=side*Mathf.PI*2/sides;v.Add(Vector3.Lerp(begin,end,ring/3f)+(x*Mathf.Cos(angle)*width+y*Mathf.Sin(angle)*depth)*r);tones.Add(tone);}
                 int cap=v.Count;v.Add(begin);v.Add(end);tones.Add(tone);tones.Add(tone);

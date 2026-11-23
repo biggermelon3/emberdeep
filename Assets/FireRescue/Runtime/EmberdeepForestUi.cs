@@ -13,6 +13,30 @@ namespace FireRescue
         Mesh mesh;Material material;Renderer surface;WorkshopButton button;MaterialPropertyBlock tint;
         Transform frame;
         public bool Guided;
+        // A paired choice (FLAT / TILTED, LEFT / RIGHT; headset test 3, 2026-11-22: colour, not an underline): the current
+        // one is a filled, lit tile in the theme's gold with dark ink, the other is muted. None: an ordinary button.
+        public enum Choice{None,Chosen,Other}
+        public Choice Pick {get;private set;}
+        TextMesh label;Color labelColor;
+        public static readonly Color ChosenFace=new(.93f,.69f,.27f),ChosenHover=new(1,.79f,.38f),ChosenEdge=new(1,.93f,.74f);
+        public static readonly Color OtherFace=new(.075f,.16f,.12f),ChosenInk=new(.12f,.075f,.02f),OtherInk=new(.64f,.70f,.66f);
+        // Sets the tile's state and colours its label (the label's own colour comes back with None).
+        public void SetChoice(Choice pick,TextMesh text=null)
+        {
+            if(text && text!=label){if(label)label.color=labelColor;label=text;labelColor=text.color;}
+            Pick=pick;
+            // TextMesh vertex colours are not converted to linear (material colours are): without .linear the dark ink
+            // rendered at .38 grey-brown on the gold (measured), not .12.
+            if(label)label.color=pick==Choice.Chosen?InkColor(ChosenInk):pick==Choice.Other?InkColor(OtherInk):labelColor;
+        }
+        static Color InkColor(Color srgb)=>QualitySettings.activeColorSpace==ColorSpace.Linear?srgb.linear:srgb;
+        // One call for a pair: a's tile is the current choice when aChosen.
+        public static void Pair(WorkshopButton a,TextMesh aLabel,WorkshopButton b,TextMesh bLabel,bool aChosen)
+        {
+            var x=a?a.GetComponent<EmberdeepForestUi>():null;var y=b?b.GetComponent<EmberdeepForestUi>():null;
+            if(x)x.SetChoice(aChosen?Choice.Chosen:Choice.Other,aLabel);
+            if(y)y.SetChoice(aChosen?Choice.Other:Choice.Chosen,bLabel);
+        }
         public Transform Frame=>frame;
         public static void Apply(GameObject go,bool isButton=false)
         {var skin=go.AddComponent<EmberdeepForestUi>();skin.Build(isButton);}
@@ -86,7 +110,12 @@ namespace FireRescue
             if(!surface)return;if(!button)button=GetComponent<WorkshopButton>();if(!button)return;
             Color color=!button.Interactable?new Color(.105f,.14f,.115f):button.IsHovered?new Color(.24f,.43f,.29f):new Color(.13f,.29f,.22f);
             if(Guided && button.Interactable)color=Color.Lerp(color,new Color(.45f,.35f,.13f),.65f+.2f*Mathf.Sin(Time.unscaledTime*3));
-            tint.SetColor("_BaseColor",color);surface.SetPropertyBlock(tint);
+            if(Pick==Choice.Chosen)color=button.IsHovered?ChosenHover:ChosenFace;
+            else if(Pick==Choice.Other && !button.IsHovered && button.Interactable)color=OtherFace;
+            tint.SetColor("_BaseColor",color);
+            // The chosen tile's lip turns cream, so the gold face still reads as a pill inside its brass edge.
+            if(Pick==Choice.Chosen)tint.SetColor("_EdgeColor",ChosenEdge);else tint.SetColor("_EdgeColor",material.GetColor("_EdgeColor"));
+            surface.SetPropertyBlock(tint);
         }
         void OnDestroy(){if(mesh)Destroy(mesh);if(material)Destroy(material);}
     }
